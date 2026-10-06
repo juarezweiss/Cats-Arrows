@@ -30,8 +30,8 @@ python3 - <<'PY'
 import json, tomllib
 from pathlib import Path
 for path in Path('UnityProject').rglob('*.asmdef'):
-    json.loads(path.read_text())
-json.loads(Path('UnityProject/Packages/manifest.json').read_text())
+    json.loads(path.read_text(encoding='utf-8-sig'))
+json.loads(Path('UnityProject/Packages/manifest.json').read_text(encoding='utf-8-sig'))
 tomllib.loads(Path('.codex/config.toml').read_text())
 for path in Path('.codex/agents').glob('*.toml'):
     data = tomllib.loads(path.read_text())

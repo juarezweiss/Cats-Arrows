@@ -6,6 +6,26 @@ Bootstrap tooling is tracked by GitHub Issue #1. Use a local Codex task opened o
 this checkout to run the Unity editor installed on your machine. Running the Codex
 desktop app does not move an existing cloud task onto your Mac.
 
+If fetching a branch fails with `could not read Username for 'https://github.com'`,
+authenticate Git on the Mac; the cloud task's Git proxy authentication is not
+automatically shared with a local checkout. With GitHub CLI installed, run these
+commands yourself in Mac Terminal and complete sign-in through the browser:
+
+```bash
+gh auth login --hostname github.com --git-protocol https --web
+gh auth setup-git --hostname github.com
+```
+
+Then local Codex can fetch/check out the issue branch (or use `gh pr checkout 9`
+for this bootstrap PR). Check the working tree before switching and preserve local
+changes. Alternatively, use GitHub Desktop's signed-in UI to fetch and switch to
+the branch before reopening local Codex. Never paste credentials into chat or copy
+cloud tokens into the local Git configuration.
+
+Repository JSON validation accepts plain UTF-8 and Unity-generated UTF-8 BOMs
+without rewriting package manifests or assembly definitions. Malformed JSON still
+fails validation.
+
 Prerequisites:
 - Install and activate the pinned Unity 6.3 LTS editor through Unity Hub. The
   scripts read the exact patch from `UnityProject/ProjectSettings/ProjectVersion.txt`.
