@@ -1,5 +1,76 @@
 # Testing Strategy
 
+## Local Unity validation
+
+Bootstrap tooling is tracked by GitHub Issue #1. Use a local Codex task opened on
+this checkout to run the Unity editor installed on your machine. Running the Codex
+desktop app does not move an existing cloud task onto your Mac.
+
+Prerequisites:
+- Install and activate the pinned Unity 6.3 LTS editor through Unity Hub. The
+  scripts read the exact patch from `UnityProject/ProjectSettings/ProjectVersion.txt`.
+- Put Python 3.11+ on PATH for `scripts/validate.sh` (which uses `tomllib`) and result
+  checking. Unity Hub does not install this prerequisite; Mac system Python may be
+  absent or older. Check with `python3 --version`.
+- Close the GUI Editor for this project before batch runs. Unity cannot open the
+  same project in two editor processes concurrently.
+
+Run from the repository root, or pass an absolute path to a script from elsewhere:
+
+```bash
+bash scripts/unity.sh
+bash scripts/validate.sh
+bash scripts/compile.sh
+bash scripts/test.sh
+```
+
+Automatic discovery on macOS uses:
+`/Applications/Unity/Hub/Editor/<pinned-version>/Unity.app/Contents/MacOS/Unity`.
+Linux Hub installs use `$HOME/Unity/Hub/Editor/<pinned-version>/Editor/Unity`.
+The scripts never fall back to a different installed patch.
+
+For a custom Hub editor directory:
+
+```bash
+UNITY_HUB_EDITOR_ROOT="/Volumes/Development/Unity Editors" bash scripts/test.sh
+```
+
+For another installation layout, explicitly select the editor executable:
+
+```bash
+UNITY_EDITOR="/Applications/Unity/Hub/Editor/6000.3.25f1/Unity.app/Contents/MacOS/Unity" bash scripts/test.sh
+```
+
+An invalid explicit override fails rather than silently falling back. An explicit
+override can select a different editor; inspect its version first and keep any
+intentional project-version upgrade in separate work.
+
+Compilation imports the project in batch mode and retains `Editor.log`. EditMode
+runs omit `-quit` so the Test Framework controls completion. Each run creates a
+fresh directory under ignored `.unity-results/`; test runs retain `Editor.log` and
+`test-results.xml`. A stale report cannot satisfy a subsequent run. Editor failures
+retain their exit status, and missing/malformed/zero-test, failed, skipped, or
+inconclusive NUnit results make the test command fail. Compilation alone does not
+prove the tests ran.
+
+The bootstrap currently has eight original EditMode tests. `ExtraCatPreventsVictory`
+has a known fixture-ordering defect tracked for triage under #5: it completes the
+solution before adding the extra cat. Do not weaken assertions or delay immediate
+victory while configuring the local runner. Report the actual native results.
+
+The runner contracts themselves can be checked without Unity:
+
+```bash
+python3 -m unittest discover -s scripts/tests -v
+```
+
+These tests use a process fixture to exercise discovery, quoting, working-directory
+independence, fresh results, and failure handling. They do not validate Unity import
+or replace the C# EditMode suite.
+
+References: [Unity editor arguments](https://docs.unity3d.com/6000.3/Documentation/Manual/EditorCommandLineArguments.html)
+and [Test Framework arguments](https://docs.unity3d.com/6000.3/Documentation/Manual/test-framework/reference-command-line.html).
+
 ## Pyramid
 1. Pure domain/EditMode tests: highest volume.
 2. Unity integration/PlayMode tests: board/session/UI wiring.

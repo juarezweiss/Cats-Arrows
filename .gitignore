@@ -8,6 +8,10 @@
 UserSettings/
 MemoryCaptures/
 Recordings/
+/.unity-results/
+
+# Python script tooling
+__pycache__/
 
 # IDE
 .vscode/
