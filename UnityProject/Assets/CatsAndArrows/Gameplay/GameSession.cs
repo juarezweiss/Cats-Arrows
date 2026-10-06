@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using CatsAndArrows.Core;
+
+namespace CatsAndArrows.Gameplay
+{
+    public sealed class GameSession
+    {
+        private readonly Dictionary<BoardCoordinate, PlayerMark> _marks;
+        private readonly HashSet<BoardCoordinate> _protectedCells;
+
+        public PuzzleDefinition Puzzle { get; }
+        public bool IsCompleted { get; private set; }
+        public IReadOnlyDictionary<BoardCoordinate, PlayerMark> Marks => _marks;
+        public IReadOnlyCollection<BoardCoordinate> ProtectedCells => _protectedCells;
+
+        public GameSession(PuzzleDefinition puzzle, IEnumerable<BoardCoordinate> protectedCells = null)
+        {
+            Puzzle = puzzle ?? throw new ArgumentNullException(nameof(puzzle));
+            _protectedCells = new HashSet<BoardCoordinate>(protectedCells ?? Array.Empty<BoardCoordinate>());
+            _marks = new Dictionary<BoardCoordinate, PlayerMark>();
+
+            for (var row = 0; row < puzzle.Size; row++)
+            for (var column = 0; column < puzzle.Size; column++)
+            {
+                var coordinate = new BoardCoordinate(row, column);
+                if (!puzzle.IsArrow(coordinate) && !_protectedCells.Contains(coordinate))
+                    _marks[coordinate] = PlayerMark.Empty;
+            }
+        }
+
+        public bool CanInteract(BoardCoordinate coordinate) =>
+            !IsCompleted && _marks.ContainsKey(coordinate);
+
+        public bool Tap(BoardCoordinate coordinate)
+        {
+            if (!CanInteract(coordinate)) return false;
+
+            _marks[coordinate] = _marks[coordinate] switch
+            {
+                PlayerMark.Empty => PlayerMark.X,
+                PlayerMark.X => PlayerMark.Cat,
+                PlayerMark.Cat => PlayerMark.Empty,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            RefreshCompletion();
+            return true;
+        }
+
+        public int ApplyDrag(IEnumerable<BoardCoordinate> coordinates)
+        {
+            if (IsCompleted || coordinates == null) return 0;
+
+            var changed = 0;
+            var visited = new HashSet<BoardCoordinate>();
+            foreach (var coordinate in coordinates)
+            {
+                if (!visited.Add(coordinate)) continue;
+                if (!_marks.TryGetValue(coordinate, out var mark)) continue;
+                if (mark != PlayerMark.Empty) continue;
+                _marks[coordinate] = PlayerMark.X;
+                changed++;
+            }
+
+            RefreshCompletion();
+            return changed;
+        }
+
+        public bool Clear()
+        {
+            if (IsCompleted) return false;
+            var keys = _marks.Keys.ToArray();
+            foreach (var coordinate in keys) _marks[coordinate] = PlayerMark.Empty;
+            return true;
+        }
+
+        public PlayerMark GetMark(BoardCoordinate coordinate) =>
+            _marks.TryGetValue(coordinate, out var mark) ? mark : PlayerMark.Empty;
+
+        private void RefreshCompletion()
+        {
+            var playerCats = _marks.Where(pair => pair.Value == PlayerMark.Cat).Select(pair => pair.Key);
+            if (Puzzle.SolutionCats.Count == _marks.Count(pair => pair.Value == PlayerMark.Cat) &&
+                new HashSet<BoardCoordinate>(playerCats).SetEquals(Puzzle.SolutionCats))
+            {
+                IsCompleted = true;
+            }
+        }
+    }
+}

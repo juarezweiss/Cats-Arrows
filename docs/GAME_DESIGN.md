@@ -1,0 +1,67 @@
+# Game Design Specification
+
+## Board
+A rectangular square grid. Current target sizes:
+- Easy: 5x5, maximum 2 solution cats per row/column.
+- Medium: 7x7, maximum 3 solution cats per row/column.
+- Hard: 10x10, maximum 4 solution cats per row/column.
+
+Difficulty values are initial design targets, not a substitute for solver-derived difficulty scoring.
+
+## Solution cats
+- A normal cell contains at most one solution cat.
+- Arrow cells can never contain solution cats.
+- The player does not see solution cats directly.
+
+## Row and column totals
+Every row and column displays the exact number of solution cats in that line. Column totals are centered over their columns; row totals are centered beside their rows.
+
+Generation should allow at most one zero-cat row and at most one zero-cat column, unless a later difficulty design changes this rule.
+
+## Arrow clues
+An arrow occupies a grid cell and is non-interactive. Cardinal directions are the MVP: Up, Down, Left, Right.
+
+Meaning: **at least one solution cat exists in the direction the arrow points.** For a horizontal arrow, consider cells in the same row beyond the arrow. For a vertical arrow, consider cells in the same column beyond the arrow. The arrow cell itself never counts.
+
+Example: a row has total 2 and contains a Right arrow. At least one of the two solution cats is somewhere to the right of the arrow. The second cat may be on either side if all other constraints permit it.
+
+## Player cell states
+Interactive normal cells cycle on a discrete tap:
+`Empty -> X -> Cat -> Empty`
+
+X means "I believe no cat is here." Cat means "I believe a cat is here." The game does not punish a wrong intermediate hypothesis.
+
+## Drag-to-mark
+A press-and-drag gesture may travel horizontally or vertically from its origin. It changes only eligible cells that are currently Empty, marking them X. Existing X/Cat cells and all protected cells are ignored by drag. Discrete tapping must still cycle all interactive cell states normally.
+
+Direction locks to horizontal or vertical once movement clearly establishes the axis. A cell is processed at most once per gesture.
+
+## Useless/protected cells
+Some clue combinations can prove cells impossible before player interaction. Initial rule carried from the prototype: when a line has exactly one solution cat and a cardinal arrow in that line guarantees the cat lies in the pointed direction, cells on the opposite side of that arrow can be represented as protected/impossible cells.
+
+This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
+
+Protected cells are non-interactive and must have a non-color visual treatment.
+
+## Hint
+Hint is unlimited. It should reveal or explain one valid logical deduction from the current board/player state. It must not be required for solvability.
+
+A future preferred design is an explanatory hint ("Column 4 is complete, so these cells cannot contain cats") rather than simply revealing a random solution cat.
+
+## Win condition
+Win immediately when the set of player-marked Cat cells exactly equals the solution-cat set.
+
+The state of every non-solution normal cell is irrelevant: it may be Empty or X. Extra player Cat marks prevent victory.
+
+On victory:
+- show a restrained celebration;
+- allow `Back to the Game` to inspect the completed board;
+- the completed board is read-only;
+- Hint and Clear are disabled;
+- New Game and Menu remain available.
+
+## Open design questions
+- Whether diagonal arrows return after MVP.
+- Whether protected cells should be pre-rendered automatically or revealed only through deduction/hints.
+- Final solver-based thresholds for Easy/Medium/Hard.
+- Daily puzzle vs purely infinite mode.

@@ -1,0 +1,26 @@
+name: Bug
+about: Reproducible defect or regression
+body:
+  - type: textarea
+    attributes:
+      label: Reproduction
+      placeholder: "1. ...\n2. ...\n3. ..."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Puzzle seed / generator version
+      description: Required when a specific generated board is involved.
+  - type: textarea
+    attributes:
+      label: Device / build

@@ -1,0 +1,22 @@
+name: Feature
+about: Tracked product/gameplay/engineering feature
+body:
+  - type: textarea
+    attributes:
+      label: Goal
+      description: What player/product outcome are we trying to achieve?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance criteria
+      placeholder: "- [ ] Observable criterion"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Constraints / invariants
+      description: Puzzle, UX, accessibility, mobile, or release constraints.
+  - type: textarea
+    attributes:
+      label: Test plan

@@ -1,0 +1,14 @@
+name: Repository Validation
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+jobs:
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate repository contracts
+        run: bash scripts/validate.sh
