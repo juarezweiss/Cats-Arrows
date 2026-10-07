@@ -98,7 +98,54 @@ up and no game code changed for the benchmark.
 
 This confirms a usable harness and exposes occasional foreground intervals
 longer than a 60 fps frame. It does not determine mobile loading latency, prove a
-mobile blocker, or approve a loading/background policy. On this machine the
-pinned editor has only `MacStandaloneSupport`; Android SDK/adb and full Xcode
-are absent. Physical-device measurement is pending phone availability and the
-corresponding toolchain.
+mobile blocker, or approve a loading/background policy. A later inventory check
+confirmed Android/iOS Unity modules in the `PlaybackEngines` directory beside
+`Unity.app`, plus Unity's bundled Android tools and full Xcode with its iOS SDK.
+The earlier module check inspected only the directory inside `Unity.app` and
+missed the sibling directory. The physical iPhone baseline follows below.
+
+## Physical iPhone baseline, 2026-10-07
+
+Source `be9a288`, Unity `6000.3.25f1`, iPhone 17 (`iPhone18,3`), iOS `27.0.1`.
+Unity exported a non-development iOS player; Xcode built the `Release`
+configuration with IL2CPP and Metal. Development signing was configured in the
+ignored exported project, without changing tracked game code or settings.
+Installation succeeded. Three fresh process launches ran without a debugger
+attached, while the physical phone was connected by USB and the diagnostic app
+was in the foreground. These are short runs on one device, not a thermal or
+battery-condition sweep. No claim is made about Low Power Mode or thermal state.
+
+| Run | First invocation (ms) | Warm median (ms) | Warm p95 (ms) | Warm maximum (ms) | Successful requests |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 33.6173 | 6.4265 | 12.2116 | 23.7290 | 1,000/1,000 |
+| 2 | 29.5815 | 6.2553 | 12.0311 | 20.2426 | 1,000/1,000 |
+| 3 | 30.2734 | 6.3591 | 12.2568 | 23.6608 | 1,000/1,000 |
+
+The pooled 3,000 measurements (three repetitions of seeds `0..999`, not 3,000
+different seeds) have median **6.3469 ms**, p95 **12.1421 ms**, and maximum
+**23.7290 ms**. Seed `371` was slowest in all three runs and required two
+attempts. Eight warm generation calls exceeded `1000/60` ms (0.27%); no warm
+call exceeded `1000/30` ms. First invocation excludes app launch latency.
+
+Coroutine intervals had median approximately 16.66 ms, p95 16.90–16.94 ms,
+and maxima 22.46–27.12 ms. These intervals include scheduling/render waits and
+do not measure tap-to-ready latency, missed presents, GPU time, or actual input
+responsiveness. The diagnostic scene is much simpler than the eventual game UI.
+Allocation counters were unavailable in all three runs; all reported allocation
+values are `-1`. Raw `GC.CollectionCount` deltas do not establish pause counts or
+durations. Allocation and frame-impact profiling remain separate work.
+
+Xcode build log: `.unity-results/issue4-ios-xcode-build.log`. Full reports were
+retrieved from the app data container into `.unity-results/issue4-iphone17-run1.json`,
+`issue4-iphone17-run2.json`, and `issue4-iphone17-run3.json`. Report outcomes and
+statistics were independently recomputed by QA. Build intermediates were removed
+after measurement to reduce local storage; the signed app, export, and reports
+are retained.
+
+The measured Easy generator does not show a substantial loading wait on this
+iPhone 17. This supports continuing development rather than treating generation
+as a demonstrated blocker. Rare calls can exceed a 60 fps CPU frame budget,
+supporting advance preparation or background execution when New Game is wired.
+Choose that scheduling policy with measurements in the real gameplay scene.
+Representative older/midrange Android hardware, the complete New Game path,
+allocation/GC profiling, and future larger/different profiles remain unverified.
