@@ -106,6 +106,16 @@ For interaction/UI changes, test at least:
 
 Run `scripts/validate.sh` before declaring a task complete. If Unity is unavailable, run the repository checks that are available and explicitly report which Unity checks were not executed.
 
+## Local Unity validation (bootstrap #1)
+- Use the existing checkout. Do not create a Git worktree unless the user requests one.
+- In a local macOS Codex task, run `bash scripts/unity.sh` to discover the exact editor pinned in `UnityProject/ProjectSettings/ProjectVersion.txt`.
+- Run `bash scripts/compile.sh` and `bash scripts/test.sh`; both resolve the project independently of the caller's working directory.
+- Standard Hub installs are discovered automatically. For custom locations, use `UNITY_HUB_EDITOR_ROOT`; an explicit absolute `UNITY_EDITOR` executable takes precedence. Do not silently switch editor patches or edit the version pin to make discovery pass.
+- Require Python 3.11+ for repository validation. Keep Unity activation in the user's Hub; never ask for license/account credentials in chat or store them in the repo.
+- Close the GUI Editor for this project before batch validation. Do not add `-quit` to EditMode runs; it can interrupt the Test Framework.
+- Logs and NUnit XML are saved per run under ignored `.unity-results/`. Test success requires a successful editor exit and a complete, passing, nonzero NUnit report. Failed, skipped, inconclusive, missing, or malformed results are not a passing gate.
+- If this task is attached to Linux/cloud, do not claim access to the user's Mac or successful native Unity validation. Test runner contracts with `python3 -m unittest discover -s scripts/tests -v`, then report the local Unity checks still needed.
+
 ## Production safety
 Agents may prepare lower-environment builds and PRs when asked. Agents must not autonomously:
 - merge to `main`

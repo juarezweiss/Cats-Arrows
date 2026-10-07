@@ -24,5 +24,24 @@ Pre-alpha foundation. The previous browser prototype is reference material only;
 4. Work from a GitHub Issue.
 5. Run `scripts/validate.sh` before opening a PR.
 
+## Local Codex and Unity validation
+
+Open this repository as a **local task** in the Codex app to give Codex access to
+the editor on your Mac. A cloud task remains attached to its cloud machine.
+Read [local validation instructions](docs/TESTING.md#local-unity-validation) for
+editor discovery, prerequisites, and artifacts. From the repository root:
+
+```bash
+bash scripts/unity.sh     # Print the discovered editor executable.
+bash scripts/validate.sh # Check repository contracts (Python 3.11+).
+bash scripts/compile.sh  # Import and compile with the local editor.
+bash scripts/test.sh     # Run and validate EditMode results.
+```
+
+The scripts find the exact version in `ProjectVersion.txt` in Unity Hub's default
+installation directory. No manual `UNITY_EDITOR` setting is needed for a standard
+Mac installation. Activate Unity Personal through Hub and close this project's
+GUI Editor before running batch commands.
+
 ## First milestone
 Build a deterministic vertical slice: generate a valid Easy board, render it in portrait, support tap and drag marking, detect victory immediately, and prove the puzzle is solvable without hints.

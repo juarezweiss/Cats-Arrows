@@ -12,3 +12,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate repository contracts
         run: bash scripts/validate.sh
+      - name: Test local Unity runner contracts
+        run: python3 -m unittest discover -s scripts/tests -v
