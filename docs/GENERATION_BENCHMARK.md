@@ -69,3 +69,36 @@ background preparation, and queue-empty behavior.
 
 Desktop/headless results verify the harness and provide a baseline. They cannot
 resolve the mobile performance risk.
+
+## Native baseline, 2026-10-07
+
+Source `5c2a0ff` includes generator commit `d079622` and the reviewed harness.
+Pinned Unity `6000.3.25f1` built and ran a non-development macOS Mono player on an
+Apple M1 MacBook Pro (16 GB), batch mode with Null graphics. Build and player
+exited zero. No compilation or test process overlapped this final measurement.
+
+| Measurement | Median | p95 | Maximum |
+| --- | ---: | ---: | ---: |
+| Warm generation, ms | 6.7926 | 12.1711 | 23.7678 |
+| Baseline coroutine interval, ms | 16.7423 | 18.4863 | 18.6276 |
+| Generation coroutine interval, ms | 16.6774 | 17.3230 | 33.3643 |
+
+First generator invocation took 54.2943 ms. All 1,000 requests succeeded; the
+slowest seed was `371`, which required two attempts. Allocation measurement was
+unavailable and every allocation statistic is explicitly `-1`. The raw
+`GC.CollectionCount` API delta was `[15572]`; this is not a count or duration of
+stop-the-world pauses. Use device Profiler captures to assess actual GC impact.
+
+Logs/report are saved locally under ignored `.unity-results/`:
+`issue4-build-5c2a0ff.log`, `issue4-macos-5c2a0ff.log`, and
+`issue4-macos-5c2a0ff.json`. Native compilation and all 61 EditMode tests passed
+during harness validation (`compile.MKlQ3k`, `editmode.7mn9GQ`). Final build also
+compiled the committed reporting fixes. Temporary scenes/settings were cleaned
+up and no game code changed for the benchmark.
+
+This confirms a usable harness and exposes occasional foreground intervals
+longer than a 60 fps frame. It does not determine mobile loading latency, prove a
+mobile blocker, or approve a loading/background policy. On this machine the
+pinned editor has only `MacStandaloneSupport`; Android SDK/adb and full Xcode
+are absent. Physical-device measurement is pending phone availability and the
+corresponding toolchain.
