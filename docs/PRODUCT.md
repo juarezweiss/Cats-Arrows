@@ -10,6 +10,19 @@ Cats & Arrows is a calm, compact mobile logic puzzle: infer where all hidden cat
 4. **Readable logic** — clues are aligned with the grid and visually distinct without relying on color alone.
 5. **Infinite replayability** — seeded procedural boards can produce effectively unbounded puzzles within validated difficulty bands.
 
+## Localization readiness (Issue #3)
+
+Initial languages are English (`en`), Brazilian Portuguese (`pt-BR`), and Spanish
+(`es`). Player-facing text uses stable resource keys, with English as the fallback
+for unsupported locales or missing translations. Additional locale resources must
+not require changes to puzzle logic. Support explicit language selection and
+device-language detection, locale-aware formatting, accented characters, and
+layouts that accommodate longer translations as UI is built.
+
+Solver explanations are rendered from structured deductions in the selected
+language. The localization foundation does not add a language-selection screen or
+Hint UI before those screens exist. Regional Spanish variants can be added later.
+
 ## Initial audience
 Mobile puzzle players who enjoy Picross/Nonograms, Minesweeper-like deduction, and low-pressure daily/short-session games.
 
