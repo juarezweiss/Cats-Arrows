@@ -121,6 +121,49 @@ Future UI work must separately verify saved preferences, font coverage, and long
 translations at representative portrait aspect ratios; there is no board/settings
 UI to exercise yet.
 
+## Issue #4 generation checks and cost report
+
+`GenerationTests` locks SplitMix64 golden vectors, signed seed mapping, bounded
+rejection sampling, independently calculated SHA-256 fingerprints, and accepted
+board/solution fingerprints for seeds `0`, `-1`, `int.MinValue`, and
+`int.MaxValue`. It checks reproduction from recorded options across cultures,
+instances, interleaved requests, and concurrent requests on one generator.
+Separate positive and zero work limits exercise layout, random, human, and
+verification exhaustion. Pre-cancellation returns no board and consumes no work.
+Returned puzzle and diagnostics collections reject mutation.
+
+The fixed `0..999` Easy corpus independently checks cat positions, row/column
+counts, full-ray arrow truth, clue ceilings, and complete admission for every
+success. Timing encloses only `Generate`, after an unmeasured warm-up; independent
+post-generation checks are excluded. Timing is informational, never a correctness
+assertion. The known corpus is a regression set, not a guarantee that every
+possible seed succeeds.
+
+Native macOS Unity `6000.3.25f1`, 2026-10-07: repository validation and compilation
+passed; all **61 EditMode tests passed**, with zero failed/skipped/inconclusive.
+Final corpus results:
+
+| Measurement | Median | 95th percentile | Maximum |
+| --- | ---: | ---: | ---: |
+| Attempts | 1 | 1 | 2 |
+| Layout nodes | 6 | 6 | 12 |
+| Human constraint evaluations | 1,634 | 3,309 | 5,770 |
+| Verifier nodes | 1 | 1 | 7 |
+| Random draws | 156 | 268 | 503 |
+| Generation time (ms) | 4.306 | 7.973 | 13.835 |
+
+All 1,000 requests succeeded: 1,000 distinct logical boards and 971 distinct cat
+layouts, excluding seed metadata. One layout reached the arrow ceiling and its
+next attempt succeeded. Boards had 4–10 cats (mean 6.962) and 2–10 arrows (mean
+5.053). The earlier warmed run had median 4.343 ms, p95 8.121 ms, and maximum
+17.531 ms; these are observed editor timings, not mobile or cold-start guarantees.
+
+The runtime allocation counter did not advance on a known allocation probe, so
+allocation bytes are **unavailable**, not zero. Device profiling remains required
+for allocations, New Game latency, frame pacing, and eventual background queue
+integration. Measure on representative iOS/Android hardware before deciding on
+loading animation duration or background scheduling policy.
+
 ## Pyramid
 1. Pure domain/EditMode tests: highest volume.
 2. Unity integration/PlayMode tests: board/session/UI wiring.

@@ -70,6 +70,60 @@ NotCat conclusions divided by the initial non-arrow cell count. Maximum unresolv
 candidates per line is the initial maximum eligible row/column cell count, because
 unknown counts only decrease. Neither metric measures verifier branching effort.
 
+## Issue #4 generation contract
+
+The first generator supports Easy 5x5 only: at most two cats per row/column and at
+most one zero row/column. Feasible total cat counts are four through ten. Sample
+quota patterns and bounded randomized layouts instead of relying on manually
+authored board templates. The distribution is not promised to be uniform.
+
+Enumerate truthful cardinal arrow options on non-cat cells. Trial additions use
+the existing human solver and prefer progress on other cells normal in both the
+current and trial board. The newly occupied arrow cell does not count as progress.
+Seeded ordering resolves ties; a zero-immediate-gain addition is permitted because
+later clues can unlock a chain. Never retry a zero-gain stage without a bound.
+
+Stop at the first complete human derivation, then assess the exact frozen board
+against all invariants, exhaustive uniqueness, and the intended cat set. No
+partial or unproved board may be returned on failure. Do not mutate clues after
+proof. Clue removal/minimization, extra deduction rules, and final difficulty
+thresholds remain separate work.
+
+Candidate attempts, layout nodes, trial additions, raw random draws, human
+constraint evaluations, and verifier nodes have deterministic limits. Per-call
+and aggregate solver limits prevent retry multiplication from hiding expensive
+work. Exhaustion returns an explicit failure without a puzzle; it does not trigger
+unchecked dense clues or a template fallback. Cancellation also returns no puzzle.
+
+Specify the PRNG algorithm and signed-seed mapping, test golden vectors, and avoid
+runtime-dependent randomness, culture-dependent fingerprints, and unordered
+iteration. Unbiased bounded sampling consumes the raw-draw budget even on rejected
+draws. Effective options and profile/ruleset versions are part of replay identity.
+
+The initial clue ceiling is ten arrows, leaving at least fifteen normal cells and
+five normal non-cat cells even with ten cats. This is a configurable generation
+policy, not a new gameplay rule or calibrated Easy score. Measure acceptance,
+duplicates, clue/solution distributions, allocations/work, and latency before
+changing the versioned defaults. Desktop timings do not establish mobile waits.
+
+V1 defaults: 64 attempts, 256 layout nodes per attempt (16,384 aggregate), eight
+trials per stage, ten arrows, 500 human evaluations per call (200,000 aggregate),
+5,000 verifier nodes per call (50,000 aggregate), and 100,000 random draws. These
+remain bounds, not target work. The fixed 1,000-seed corpus passed within these
+defaults without increasing them; see `docs/TESTING.md` for measured yield/work.
+
+`IPuzzleGenerator.Generate` returns a `GenerationResult` with `Success`,
+`InvalidProfile`, `UnsupportedProfile`, `Exhausted`, or `Cancelled`. Only success
+contains a puzzle and accepted assessment. Options are immutable, recorded with
+the receipt, and enforce the v1 ten-arrow/eight-trial ceilings. Only the exact Easy
+profile is supported initially. Cancellation is cooperative at work boundaries
+and after bounded solver calls; cancelled requests return no playable artifact.
+
+To reproduce an accepted board, use its seed and effective options with matching
+generator/profile/PRNG/ruleset versions, then compare the canonical fingerprint.
+Retain earlier generation implementations when adding versions that must replay
+saved puzzles. Merely using the same seed with changed defaults is insufficient.
+
 ## Difficulty
 Difficulty should ultimately come from solving characteristics rather than grid size alone. Candidate metrics:
 - number of deduction steps;
