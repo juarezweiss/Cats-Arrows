@@ -91,6 +91,35 @@ or replace the C# EditMode suite.
 References: [Unity editor arguments](https://docs.unity3d.com/6000.3/Documentation/Manual/EditorCommandLineArguments.html)
 and [Test Framework arguments](https://docs.unity3d.com/6000.3/Documentation/Manual/test-framework/reference-command-line.html).
 
+## Issue #3 solver and localization checks
+
+`SolverTests` includes a profile-valid 5x5 target, individual deduction rules,
+trace replay, and an independent exhaustive oracle over 1,377 small-board clue
+variants. The oracle enumerates placements without using production geometry or
+deduction code, and checks each recorded conclusion against surviving completions.
+Fixtures cover cardinal traversal through arrow cells, shared/satisfied arrows,
+invalid inputs, contradictory clues, deterministic ordering, immutable results,
+and work/node budget boundaries.
+
+A separate constructed 7x7 fixture proves that uniqueness does not imply human
+completion: the verifier proves one solution while the approved human rule set
+stalls, and admission rejects it. That fixture uses an explicit test-only 7x7
+profile permitting four cats per line and no zero lines; it does not relax
+Easy/Medium/Hard generation policy.
+
+Malformed sizes, clue lengths, coordinates, or directions are `InvalidInput`.
+Well-formed but infeasible constraints, including totals exceeding non-arrow
+capacity, are `Contradiction`/`NoSolution`. Finding one witness before the search
+budget expires is `Incomplete`, never `Unique`.
+
+`LocalizationTests` checks complete key and placeholder coverage for `en`,
+`pt-BR`, and `es`, English fallback, device and explicit selection, accented text,
+locale formatting, resource immutability, and extension with another locale.
+Actual solver traces and verifier results are checked across the three cultures.
+Future UI work must separately verify saved preferences, font coverage, and long
+translations at representative portrait aspect ratios; there is no board/settings
+UI to exercise yet.
+
 ## Pyramid
 1. Pure domain/EditMode tests: highest volume.
 2. Unity integration/PlayMode tests: board/session/UI wiring.
