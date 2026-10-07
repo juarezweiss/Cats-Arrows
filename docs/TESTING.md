@@ -73,10 +73,11 @@ retain their exit status, and missing/malformed/zero-test, failed, skipped, or
 inconclusive NUnit results make the test command fail. Compilation alone does not
 prove the tests ran.
 
-The bootstrap currently has eight original EditMode tests. `ExtraCatPreventsVictory`
-has a known fixture-ordering defect tracked for triage under #5: it completes the
-solution before adding the extra cat. Do not weaken assertions or delay immediate
-victory while configuring the local runner. Report the actual native results.
+The bootstrap has eight original EditMode tests. Issue #5 corrects the ordering in
+`ExtraCatPreventsVictory`: the extra cat is placed before completing the solution.
+The test checks that each mark was applied, that the extra cat prevents victory,
+and that removing it immediately wins. Gameplay keeps immediate victory and the
+completed-board lock; the correction changes only the fixture.
 
 The runner contracts themselves can be checked without Unity:
 

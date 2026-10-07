@@ -73,20 +73,26 @@ namespace CatsAndArrows.Tests
         public void ExtraCatPreventsVictory()
         {
             var session = new GameSession(MakePuzzle());
+            var extraCat = new BoardCoordinate(2, 2);
             var cells = new[]
             {
+                // Issue #5: place the extra cat before completing the solution,
+                // otherwise immediate victory correctly locks the board first.
+                extraCat,
                 new BoardCoordinate(0, 0),
-                new BoardCoordinate(1, 1),
-                new BoardCoordinate(2, 2)
+                new BoardCoordinate(1, 1)
             };
 
             foreach (var cell in cells)
             {
-                session.Tap(cell);
-                session.Tap(cell);
+                Assert.That(session.Tap(cell), Is.True);
+                Assert.That(session.Tap(cell), Is.True);
+                Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.Cat));
             }
 
             Assert.That(session.IsCompleted, Is.False);
+            Assert.That(session.Tap(extraCat), Is.True); // Cat -> Empty restores the exact solution.
+            Assert.That(session.IsCompleted, Is.True);
         }
     }
 }
