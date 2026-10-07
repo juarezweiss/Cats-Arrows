@@ -8,12 +8,14 @@ namespace CatsAndArrows.Core
     {
         private readonly HashSet<BoardCoordinate> _solutionCats;
         private readonly Dictionary<BoardCoordinate, Direction> _arrows;
+        private readonly IReadOnlyCollection<BoardCoordinate> _solutionCatsView;
+        private readonly IReadOnlyDictionary<BoardCoordinate, Direction> _arrowsView;
 
         public int Size { get; }
         public int Seed { get; }
         public string GeneratorVersion { get; }
-        public IReadOnlyCollection<BoardCoordinate> SolutionCats => _solutionCats;
-        public IReadOnlyDictionary<BoardCoordinate, Direction> Arrows => _arrows;
+        public IReadOnlyCollection<BoardCoordinate> SolutionCats => _solutionCatsView;
+        public IReadOnlyDictionary<BoardCoordinate, Direction> Arrows => _arrowsView;
 
         public PuzzleDefinition(
             int size,
@@ -31,6 +33,8 @@ namespace CatsAndArrows.Core
             _solutionCats = new HashSet<BoardCoordinate>(solutionCats ?? throw new ArgumentNullException(nameof(solutionCats)));
             _arrows = (arrows ?? throw new ArgumentNullException(nameof(arrows)))
                 .ToDictionary(a => a.Coordinate, a => a.Direction);
+            _solutionCatsView = Array.AsReadOnly(_solutionCats.OrderBy(c => c.Row).ThenBy(c => c.Column).ToArray());
+            _arrowsView = new System.Collections.ObjectModel.ReadOnlyDictionary<BoardCoordinate, Direction>(_arrows);
         }
 
         public bool IsInside(BoardCoordinate coordinate) =>
