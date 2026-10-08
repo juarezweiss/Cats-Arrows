@@ -149,3 +149,50 @@ supporting advance preparation or background execution when New Game is wired.
 Choose that scheduling policy with measurements in the real gameplay scene.
 Representative older/midrange Android hardware, the complete New Game path,
 allocation/GC profiling, and future larger/different profiles remain unverified.
+
+## Issue #14 diagonal generator, 2026-10-08
+
+`easy-generator-v2` adds diagonal candidates with `human-v2` / `exhaustive-v2`
+clue semantics and unchanged profile, PRNG and numeric work limits. The fresh
+non-development iOS export and Xcode Release build succeeded, and the app was
+installed on the paired iPhone 17. After the owner unlocked the device, three
+fresh process launches ran the same 0..999 corpus without a debugger attached.
+The historical v1 measurements remain a separate baseline.
+
+Source identity for this local, uncommitted build is
+`fa21ed1+issue14-source-ca671115292a38ec4b8cc9e1dca6d7b1f4981ec801a83080b9ae21f5df63c83f`.
+The SHA-256 covers sorted paths and bytes of the non-test C# sources under
+`Assets/CatsAndArrows`. Logs: `.unity-results/issue14-ios-export.log` and
+`.unity-results/issue14-ios-xcode-build.log`. Development signing was restored
+only in the ignored Xcode export; no signing settings or credentials entered
+tracked source. Native v2 corpus correctness/results are in `TESTING.md`.
+
+| Run | First invocation (ms) | Warm median (ms) | Warm p95 (ms) | Warm maximum (ms) | Successes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 30.4889 | 6.9006 | 13.1006 | 21.6817 | 1,000/1,000 |
+| 2 | 29.5641 | 7.1933 | 13.3472 | 20.5674 | 1,000/1,000 |
+| 3 | 29.3051 | 7.3294 | 13.3914 | 20.2230 | 1,000/1,000 |
+
+Pooled 3,000 requests (three repetitions of 1,000 seeds) have median **7.1056 ms**,
+p95 **13.3421 ms** and maximum **21.6817 ms**. All completed successfully; 21
+warm calls exceeded 16.67 ms (0.7%) and none exceeded 33.33 ms. The slowest seeds
+were 127 in runs 1/2 and 874 in run 3. This is encouraging for Easy generation
+on this iPhone, with a modest median/p95 increase over the historical cardinal
+baseline, without establishing a controlled causal comparison. It does not
+measure the full New Game path, older devices, sustained thermal behavior or
+larger difficulties. Numeric generation bounds were not increased.
+
+Hardware/runtime: iPhone 17 (iPhone18,3), iOS 27.0.1, Unity 6000.3.25f1,
+Release IL2CPP/Metal, non-development/non-batch player. All three reports explicitly
+lack allocation counters; raw collection-count deltas and coroutine intervals
+retain the limitations described above. First invocation excludes app startup.
+No Unity test or Xcode build process overlapped these timed runs.
+
+Full reports: `.unity-results/issue14-iphone17-run1.json`,
+`.unity-results/issue14-iphone17-run2.json`, `.unity-results/issue14-iphone17-run3.json`.
+Per-seed success, seed order, build provenance and nearest-rank statistics were
+independently recomputed by QA from the raw reports. The reused harness retains
+its original `task: Issue #4` metadata; v2 generator/source identity identifies
+this Issue #14 run. The test corpus separately confirms diagonal
+incidence; this timing harness does not record per-board directions. The signed
+benchmark remains installed; it is a diagnostic app, not the playable game.

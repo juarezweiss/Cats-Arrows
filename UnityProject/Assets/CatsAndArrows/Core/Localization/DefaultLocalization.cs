@@ -12,6 +12,9 @@ namespace CatsAndArrows.Core.Localization
             {
                 { "line.row", "Row" }, { "line.column", "Column" },
                 { "direction.up", "up" }, { "direction.down", "down" }, { "direction.left", "left" }, { "direction.right", "right" },
+                { "direction.upleft", "diagonally up and left" }, { "direction.upright", "diagonally up and right" },
+                { "direction.downleft", "diagonally down and left" }, { "direction.downright", "diagonally down and right" },
+                { "help.diagonal-arrows", "A diagonal arrow needs at least one cat along its exact diagonal to the board edge. For example, a down-right arrow points one row down and one column right at each step, continuing through other arrows." },
                 { "deduction.zero-line", "{line} {index} needs no cats. Its remaining cells cannot contain cats." },
                 { "deduction.line-satisfied", "{line} {index} already has its required cats ({total}). Its remaining cells cannot contain cats." },
                 { "deduction.fill-remaining-line", "{line} {index} needs a cat in each remaining cell ({count} remaining)." },
@@ -37,6 +40,9 @@ namespace CatsAndArrows.Core.Localization
             {
                 { "line.row", "Linha" }, { "line.column", "Coluna" },
                 { "direction.up", "para cima" }, { "direction.down", "para baixo" }, { "direction.left", "para a esquerda" }, { "direction.right", "para a direita" },
+                { "direction.upleft", "na diagonal para cima e para a esquerda" }, { "direction.upright", "na diagonal para cima e para a direita" },
+                { "direction.downleft", "na diagonal para baixo e para a esquerda" }, { "direction.downright", "na diagonal para baixo e para a direita" },
+                { "help.diagonal-arrows", "Uma seta diagonal precisa de pelo menos um gato em sua diagonal exata até a borda do tabuleiro. Por exemplo, uma seta para baixo e para a direita aponta uma linha abaixo e uma coluna à direita a cada passo, passando por outras setas." },
                 { "deduction.zero-line", "{line} {index} não precisa de gatos. As células restantes não podem conter gatos." },
                 { "deduction.line-satisfied", "{line} {index} já tem os gatos necessários ({total}). As células restantes não podem conter gatos." },
                 { "deduction.fill-remaining-line", "{line} {index} precisa de um gato em cada célula restante (restantes: {count})." },
@@ -62,6 +68,9 @@ namespace CatsAndArrows.Core.Localization
             {
                 { "line.row", "Fila" }, { "line.column", "Columna" },
                 { "direction.up", "hacia arriba" }, { "direction.down", "hacia abajo" }, { "direction.left", "hacia la izquierda" }, { "direction.right", "hacia la derecha" },
+                { "direction.upleft", "en diagonal hacia arriba y a la izquierda" }, { "direction.upright", "en diagonal hacia arriba y a la derecha" },
+                { "direction.downleft", "en diagonal hacia abajo y a la izquierda" }, { "direction.downright", "en diagonal hacia abajo y a la derecha" },
+                { "help.diagonal-arrows", "Una flecha diagonal necesita al menos un gato en su diagonal exacta hasta el borde del tablero. Por ejemplo, una flecha hacia abajo y a la derecha apunta una fila abajo y una columna a la derecha en cada paso, pasando por otras flechas." },
                 { "deduction.zero-line", "{line} {index} no necesita gatos. Las casillas restantes no pueden contener gatos." },
                 { "deduction.line-satisfied", "{line} {index} ya tiene los gatos necesarios ({total}). Las casillas restantes no pueden contener gatos." },
                 { "deduction.fill-remaining-line", "{line} {index} necesita un gato en cada casilla restante (pendientes: {count})." },

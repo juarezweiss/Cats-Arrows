@@ -46,25 +46,7 @@ namespace CatsAndArrows.Core
         public int GetRowCatCount(int row) => _solutionCats.Count(c => c.Row == row);
         public int GetColumnCatCount(int column) => _solutionCats.Count(c => c.Column == column);
 
-        public IEnumerable<BoardCoordinate> GetDirectionalSegment(BoardCoordinate origin, Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.Up:
-                    for (var row = origin.Row - 1; row >= 0; row--) yield return new BoardCoordinate(row, origin.Column);
-                    break;
-                case Direction.Down:
-                    for (var row = origin.Row + 1; row < Size; row++) yield return new BoardCoordinate(row, origin.Column);
-                    break;
-                case Direction.Left:
-                    for (var column = origin.Column - 1; column >= 0; column--) yield return new BoardCoordinate(origin.Row, column);
-                    break;
-                case Direction.Right:
-                    for (var column = origin.Column + 1; column < Size; column++) yield return new BoardCoordinate(origin.Row, column);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-            }
-        }
+        public IEnumerable<BoardCoordinate> GetDirectionalSegment(BoardCoordinate origin, Direction direction) =>
+            DirectionGeometry.GetDirectionalSegment(Size, origin, direction);
     }
 }

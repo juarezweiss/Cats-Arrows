@@ -20,7 +20,7 @@ namespace CatsAndArrows.Core
 
     public static class DeductionRules
     {
-        public const string RulesetVersion = "human-v1";
+        public const string RulesetVersion = "human-v2";
         public const string ZeroLine = "zero-line";
         public const string LineSatisfied = "line-satisfied";
         public const string FillRemainingLine = "fill-remaining-line";
@@ -147,7 +147,7 @@ namespace CatsAndArrows.Core
 
     public sealed class UniquenessResult
     {
-        public const string VerifierVersion = "exhaustive-v1";
+        public const string VerifierVersion = "exhaustive-v2";
         public UniquenessStatus Status { get; }
         public IReadOnlyList<IReadOnlyList<BoardCoordinate>> Solutions { get; }
         public int NodesVisited { get; }

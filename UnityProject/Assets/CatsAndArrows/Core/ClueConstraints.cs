@@ -37,7 +37,8 @@ namespace CatsAndArrows.Core
                 Enumerable.Range(0, clues.Size).Select(row => row * clues.Size + column).Where(i => !_isArrow[i]))).ToArray();
             Arrows = clues.Arrows.Select(arrow => new ClueConstraint(
                 new ConstraintReference(ConstraintKind.Arrow, -1, arrow.Coordinate, arrow.Direction), 1,
-                DirectionalCells(arrow).Where(i => !_isArrow[i]))).ToArray();
+                DirectionGeometry.GetDirectionalSegment(clues.Size, arrow.Coordinate, arrow.Direction)
+                    .Select(Id).Where(i => !_isArrow[i]))).ToArray();
             All = Rows.Concat(Columns).Concat(Arrows).ToArray();
         }
 
@@ -48,17 +49,5 @@ namespace CatsAndArrows.Core
         public string InitialContradiction() => Clues.RowTotals.Sum(t => (long)t) != Clues.ColumnTotals.Sum(t => (long)t)
             ? "Row and column totals disagree." : null;
 
-        private IEnumerable<int> DirectionalCells(ArrowClue arrow)
-        {
-            var rowStep = arrow.Direction == Direction.Up ? -1 : arrow.Direction == Direction.Down ? 1 : 0;
-            var columnStep = arrow.Direction == Direction.Left ? -1 : arrow.Direction == Direction.Right ? 1 : 0;
-            var row = arrow.Coordinate.Row + rowStep;
-            var column = arrow.Coordinate.Column + columnStep;
-            while (row >= 0 && row < Clues.Size && column >= 0 && column < Clues.Size)
-            {
-                yield return row * Clues.Size + column;
-                row += rowStep; column += columnStep;
-            }
-        }
     }
 }

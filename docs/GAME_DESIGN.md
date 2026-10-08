@@ -19,9 +19,9 @@ Every row and column displays the exact number of solution cats in that line. Co
 Generation should allow at most one zero-cat row and at most one zero-cat column, unless a later difficulty design changes this rule.
 
 ## Arrow clues
-An arrow occupies a grid cell and is non-interactive. Cardinal directions are the MVP: Up, Down, Left, Right.
+An arrow occupies a grid cell and is non-interactive. The initial MVP supports eight directions: Up, Down, Left, Right, UpLeft, UpRight, DownLeft and DownRight (Issue #14).
 
-Meaning: **at least one solution cat exists in the direction the arrow points.** For a horizontal arrow, consider cells in the same row beyond the arrow. For a vertical arrow, consider cells in the same column beyond the arrow. The arrow cell itself never counts.
+Meaning: **at least one solution cat exists in the direction the arrow points.** For a horizontal arrow, consider cells in the same row beyond the arrow. For a vertical arrow, consider cells in the same column beyond the arrow. For a diagonal arrow, advance one row and one column per step along its exact 45-degree ray. All rays continue through other arrow cells to the edge without wrapping; those arrow cells are ineligible for cats. The origin never counts. Multiple arrows may share a cat; a ray may contain more than one cat. Diagonals introduce no diagonal count clues.
 
 Example: a row has total 2 and contains a Right arrow. At least one of the two solution cats is somewhere to the right of the arrow. The second cat may be on either side if all other constraints permit it.
 
@@ -39,14 +39,14 @@ Direction locks to horizontal or vertical once movement clearly establishes the 
 ## Useless/protected cells
 Some clue combinations can prove cells impossible before player interaction. Initial rule carried from the prototype: when a line has exactly one solution cat and a cardinal arrow in that line guarantees the cat lies in the pointed direction, cells on the opposite side of that arrow can be represented as protected/impossible cells.
 
-This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
+This cardinal-only rule must not be applied to diagonal arrows, which cross different rows and columns. This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
 
 Protected cells are non-interactive and must have a non-color visual treatment.
 
 ## Hint
 Hint is unlimited. It should reveal or explain one valid logical deduction from the current board/player state. It must not be required for solvability.
 
-A future preferred design is an explanatory hint ("Column 4 is complete, so these cells cannot contain cats") rather than simply revealing a random solution cat.
+The approved MVP uses an explanatory clue-derived hint, correcting a conflicting player mark with an explanation, rather than relying on player hypotheses as proof. For example ("Column 4 is complete, so these cells cannot contain cats") rather than simply revealing a random solution cat.
 
 ## Win condition
 Win immediately when the set of player-marked Cat cells exactly equals the solution-cat set.
@@ -61,7 +61,6 @@ On victory:
 - New Game and Menu remain available.
 
 ## Open design questions
-- Whether diagonal arrows return after MVP.
 - Whether protected cells should be pre-rendered automatically or revealed only through deduction/hints.
 - Final solver-based thresholds for Easy/Medium/Hard.
 - Daily puzzle vs purely infinite mode.

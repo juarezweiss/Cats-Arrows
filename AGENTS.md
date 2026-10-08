@@ -4,6 +4,8 @@
 Build and ship a cozy, accessible mobile logic puzzle game in Unity while keeping every change traceable, testable, reversible, and human-controlled at production boundaries.
 
 ## Non-negotiable governance
+- The approved `planning/MASTER_PROJECT_PLAN.md` governs product scope and budget.
+- Ask for and receive explicit owner approval before every purchase or subscription, including paid renewals/upgrades/usage charges. Plan or budget approval does not authorize spending.
 - Do not start implementation without a task/issue identifier or an explicitly approved bootstrap task.
 - Do not merge, tag, publish, deploy, or release to production autonomously.
 - `main` is production/release history. Human approval is mandatory for every merge to `main`.

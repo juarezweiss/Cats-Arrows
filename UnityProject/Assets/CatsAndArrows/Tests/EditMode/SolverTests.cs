@@ -53,7 +53,7 @@ namespace CatsAndArrows.Tests
         [Test]
         public void ExhaustiveTwoByTwoCluesAgreeWithIndependentOracle()
         {
-            // All row/column totals, with no arrows and each single cardinal arrow.
+            // All row/column totals, with no arrows and each single cardinal or diagonal arrow.
             for (var r0 = 0; r0 <= 2; r0++)
             for (var r1 = 0; r1 <= 2; r1++)
             for (var c0 = 0; c0 <= 2; c0++)
@@ -297,7 +297,7 @@ namespace CatsAndArrows.Tests
             s.Index + ":" + s.RuleId + ":" + string.Join(",", s.Premises.SelectMany(p => p.Cells).Select(a => a.Coordinate + "=" + a.State)) +
             ":" + string.Join(",", s.Conclusions.Select(a => a.Coordinate + "=" + a.State))).ToArray();
 
-        private static void AssertTraceSound(PuzzleClues clues, HumanSolverResult result, List<HashSet<BoardCoordinate>> oracle)
+        internal static void AssertTraceSound(PuzzleClues clues, HumanSolverResult result, List<HashSet<BoardCoordinate>> oracle)
         {
             Assert.That(oracle, Is.Not.Empty, "Soundness cannot be proven vacuously on inconsistent clues.");
             var state = new Dictionary<BoardCoordinate, CellKnowledge>();
@@ -342,13 +342,17 @@ namespace CatsAndArrows.Tests
                 Assert.That(assignment.State, Is.EqualTo(state[assignment.Coordinate]), "Replay must equal returned state.");
         }
 
-        private static bool PointsAt(BoardCoordinate origin, Direction direction, BoardCoordinate p) =>
+        internal static bool PointsAt(BoardCoordinate origin, Direction direction, BoardCoordinate p) =>
             direction == Direction.Up && p.Column == origin.Column && p.Row < origin.Row ||
             direction == Direction.Down && p.Column == origin.Column && p.Row > origin.Row ||
             direction == Direction.Left && p.Row == origin.Row && p.Column < origin.Column ||
-            direction == Direction.Right && p.Row == origin.Row && p.Column > origin.Column;
+            direction == Direction.Right && p.Row == origin.Row && p.Column > origin.Column ||
+            direction == Direction.UpLeft && p.Row < origin.Row && p.Column < origin.Column && origin.Row - p.Row == origin.Column - p.Column ||
+            direction == Direction.UpRight && p.Row < origin.Row && p.Column > origin.Column && origin.Row - p.Row == p.Column - origin.Column ||
+            direction == Direction.DownLeft && p.Row > origin.Row && p.Column < origin.Column && p.Row - origin.Row == origin.Column - p.Column ||
+            direction == Direction.DownRight && p.Row > origin.Row && p.Column > origin.Column && p.Row - origin.Row == p.Column - origin.Column;
 
-        private static List<HashSet<BoardCoordinate>> EnumerateSolutions(PuzzleClues clues)
+        internal static List<HashSet<BoardCoordinate>> EnumerateSolutions(PuzzleClues clues)
         {
             var solutions = new List<HashSet<BoardCoordinate>>();
             var chosen = new HashSet<BoardCoordinate>();
