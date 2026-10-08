@@ -1,0 +1,14 @@
+{
+  "name": "CatsAndArrows.Benchmarks",
+  "rootNamespace": "CatsAndArrows.Benchmarks",
+  "references": ["CatsAndArrows.Core"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_EDITOR || CATS_ARROWS_BENCHMARK"],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

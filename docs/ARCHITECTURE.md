@@ -34,6 +34,20 @@ clues. A solvability assessment combines their evidence and checks the intended
 answer/profile separately. Structured deduction records support replay and
 localized explanations without coupling reasoning to UI or language.
 
+Issue #4 implements an Easy-only seeded generator in the pure C# domain. Each call
+owns its random stream and work counters. It samples feasible quotas and layouts,
+adds truthful arrows with bounded solver-guided trials, and returns a board only
+after complete admission. Returned puzzle truth and generation receipts are
+immutable. Reproduction records the original seed, generator/profile/ruleset
+versions, effective options, and canonical logical-board fingerprint.
+
+Generation is independent of Unity objects, presentation, ads, and wall-clock
+timing. Its API supports future background preparation; Issue #4 does not start
+threads or implement a puzzle queue. Later gameplay work should prepare a small
+number of validated puzzles ahead of New Game and use a short transition for an
+empty queue. Ads, if separately approved, may overlap preparation but cannot be a
+dependency for generating or receiving a puzzle.
+
 ### Localization
 Pure C# locale resources and a presentation service live under Core/Localization.
 English, Brazilian Portuguese, and Spanish are the initial locales. New locale
