@@ -1,0 +1,7 @@
+{
+  "name": "CatsAndArrows.UI",
+  "rootNamespace": "CatsAndArrows.UI",
+  "references": ["CatsAndArrows.Core", "CatsAndArrows.Gameplay"],
+  "autoReferenced": true,
+  "noEngineReferences": false
+}

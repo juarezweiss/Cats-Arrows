@@ -43,9 +43,9 @@ versions, effective options, and canonical logical-board fingerprint.
 
 Generation is independent of Unity objects, presentation, ads, and wall-clock
 timing. Its API supports future background preparation; Issue #4 does not start
-threads or implement a puzzle queue. Later gameplay work should prepare a small
-number of validated puzzles ahead of New Game and use a short transition for an
-empty queue. Ads, if separately approved, may overlap preparation but cannot be a
+threads or implement a puzzle queue. Later gameplay work should measure the complete New Game path and choose the
+smallest preparation/scheduling approach justified by visible waits. A puzzle
+queue is not a prerequisite for the first board presentation. Ads, if separately approved, may overlap preparation but cannot be a
 dependency for generating or receiving a puzzle.
 
 ### Localization
@@ -88,7 +88,25 @@ tap, and drag intents.
 Use explicit seeds. Avoid `UnityEngine.Random` inside core generation. A seed must reproduce the same logical board for a fixed generator version.
 
 ## Persistence
-MVP persists only local preferences and lightweight progress/statistics. The puzzle seed is sufficient to resume/recreate an active board once save/resume is implemented.
+The approved MVP persists local preferences. Board save/resume and statistics
+remain deferred until feedback justifies them. The puzzle seed is sufficient to resume/recreate an active board once save/resume is implemented.
 
 ## Services
 Analytics, ads, IAP, remote config, and attribution must sit behind interfaces/adapters. Core gameplay cannot require a vendor SDK to compile or run.
+
+## Issue #6 board presentation
+
+The UI assembly references Core and Gameplay. `BoardPresentation` creates a
+read-only display snapshot of visible row/column totals, arrows, protected cells
+and player marks; it does not expose solution positions. `BoardLayout` provides
+one shared cell pitch for row clues, column clues and tiles, while `SafeAreaLayout`
+converts pixel safe areas into the panel's top-left coordinate system.
+
+`PortraitBoardView` binds a session and refreshes its presentation without owning
+puzzle truth or mutating marks. Symbols use vector geometry rather than platform
+font arrow/emoji glyphs. UI-local resources extend the existing three-language
+catalog. The explicit board review scene generates a real seeded Easy puzzle;
+review fixtures demonstrate symbol states separately from that generated board.
+This issue adds no tap/drag mutation, Hint controls or completion modal. Those
+remain Issues #7/#8. Native layout captures are presentation evidence, not proof
+of working phone gestures or screen-reader integration.
