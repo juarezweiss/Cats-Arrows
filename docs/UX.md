@@ -26,3 +26,18 @@ The user specifically found low-contrast red/green states difficult in the proto
 In-game primary controls: `Hint`, `Clear`, `Menu`, `New Game`.
 
 After completion: `Hint` and `Clear` disabled; board read-only; `New Game` and `Menu` enabled; completion modal includes `Back to the Game`.
+
+
+## Issue #7 initial gesture contract
+
+Taps commit once on release in the original cell, with movement below 8 logical
+panel units. Holding does not repeat. Only an Empty cell can start drag marking;
+moving from X/Cat beyond the threshold cancels the tap without changing marks.
+The dominant direction locks the drag to the starting row/column. Reversing does
+not revisit cells; moving diagonally does not switch axes. Internal gaps are
+bridged while dragging, but clues/gaps cannot start a gesture. Leaving the grid
+ends the gesture without another tap. Cancellation retains already applied Xs.
+A second finger cannot take over or finish the first finger's gesture.
+
+This threshold is an initial value for phone testing, not a physical comfort
+claim. Rebind, focus loss and layout changes cancel pending interactions.

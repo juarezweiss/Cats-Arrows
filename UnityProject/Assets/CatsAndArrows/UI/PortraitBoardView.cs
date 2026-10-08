@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace CatsAndArrows.UI
 {
-    // Issue #6 is display-only. A later pointer adapter sends intents to GameSession.
+    // Presentation and a single pointer adapter; GameSession owns every transition.
     public sealed class PortraitBoardView : VisualElement
     {
         public static readonly Color Background = new Color(245 / 255f, 242 / 255f, 233 / 255f);
@@ -25,6 +25,7 @@ namespace CatsAndArrows.UI
         private readonly Label intro = new Label();
         private readonly Label error = new Label();
         private GameSession session;
+        private BoardGestureController gesture;
         private LocalizationService text;
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
@@ -55,6 +56,7 @@ namespace CatsAndArrows.UI
             boardRegion.style.position = Position.Absolute;
             boardRegion.style.left = 0; boardRegion.style.right = 0; boardRegion.style.top = 104; boardRegion.style.bottom = 126;
             board.style.position = Position.Absolute;
+            board.name = "board-grid";
             boardRegion.Add(board);
             error.style.whiteSpace = WhiteSpace.Normal; error.style.fontSize = 18;
             error.style.unityTextAlign = TextAnchor.MiddleCenter; error.style.flexGrow = 1;
@@ -65,11 +67,21 @@ namespace CatsAndArrows.UI
             safeFrame.Add(legend);
             RegisterCallback<GeometryChangedEvent>(_ => UpdateSafeArea());
             boardRegion.RegisterCallback<GeometryChangedEvent>(_ => LayoutBoard());
+            board.RegisterCallback<PointerDownEvent>(OnPointerDown);
+            board.RegisterCallback<PointerMoveEvent>(OnPointerMove);
+            board.RegisterCallback<PointerUpEvent>(OnPointerUp);
+            board.RegisterCallback<PointerCancelEvent>(OnPointerCancel);
+            board.RegisterCallback<PointerCaptureOutEvent>(OnPointerCaptureOut);
+            board.RegisterCallback<GeometryChangedEvent>(_ => CancelInteraction());
+            RegisterCallback<DetachFromPanelEvent>(_ => CancelInteraction());
         }
 
         public void Bind(GameSession newSession, string locale = "en")
         {
-            session = newSession ?? throw new ArgumentNullException(nameof(newSession));
+            if (newSession == null) throw new ArgumentNullException(nameof(newSession));
+            CancelInteraction();
+            gesture = null;
+            session = newSession;
             SetLocale(locale);
             error.style.display = DisplayStyle.None;
             board.style.display = DisplayStyle.Flex;
@@ -78,6 +90,7 @@ namespace CatsAndArrows.UI
         public void Refresh()
         {
             if (session == null) return;
+            if (session.IsCompleted) CancelInteraction();
             Presentation = BoardPresentation.FromSession(session);
             board.Clear();
             intro.text = text.GetText(Presentation.IsCompleted ? "board.completed" : "board.intro");
@@ -104,7 +117,7 @@ namespace CatsAndArrows.UI
                     state = text.Format("board.arrow-description", new Dictionary<string, object> { { "direction", text.GetText("direction." + cell.Direction.ToString().ToLowerInvariant()) } });
                 tile.tooltip = text.Format("board.cell-description", new Dictionary<string, object>
                     { { "row", cell.Coordinate.Row + 1 }, { "column", cell.Coordinate.Column + 1 }, { "state", state } });
-                // Metadata for the forthcoming single-pointer adapter; no input registration here.
+                // Display metadata only; pointer recognition uses shared board geometry.
                 tile.userData = cell;
                 board.Add(tile);
             }
@@ -113,6 +126,7 @@ namespace CatsAndArrows.UI
         public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en")
         {
             if (generationStatus == GenerationStatus.Success) throw new ArgumentException("A failure status is required.", nameof(generationStatus));
+            CancelInteraction(); gesture = null;
             session = null; Presentation = null; board.Clear(); SetLocale(locale);
             board.style.display = DisplayStyle.None;
             error.style.display = DisplayStyle.Flex;
@@ -162,7 +176,14 @@ namespace CatsAndArrows.UI
             if (Presentation == null || !float.IsFinite(boardRegion.contentRect.width) ||
                 !float.IsFinite(boardRegion.contentRect.height) ||
                 boardRegion.contentRect.width <= 0 || boardRegion.contentRect.height <= 0) return;
-            Layout = BoardLayout.Calculate(boardRegion.contentRect.width, boardRegion.contentRect.height, Presentation.Size);
+            var nextLayout = BoardLayout.Calculate(boardRegion.contentRect.width, boardRegion.contentRect.height, Presentation.Size);
+            if (gesture == null || Layout.Size != nextLayout.Size || Layout.CellSize != nextLayout.CellSize ||
+                Layout.Gap != nextLayout.Gap || Layout.ClueSize != nextLayout.ClueSize)
+            {
+                CancelInteraction();
+                gesture = new BoardGestureController(session, nextLayout);
+            }
+            Layout = nextLayout;
             Absolute(board, new Rect((boardRegion.contentRect.width - Layout.Width) / 2,
                 (boardRegion.contentRect.height - Layout.Height) / 2, Layout.Width, Layout.Height));
             for (var line = 0; line < Presentation.Size; line++)
@@ -173,6 +194,48 @@ namespace CatsAndArrows.UI
             }
             foreach (var cell in Presentation.Cells)
                 Absolute(board.Q<VisualElement>("cell-" + cell.Coordinate.Row + "-" + cell.Coordinate.Column), Layout.GetCellRect(cell.Coordinate));
+        }
+        public void CancelInteraction()
+        {
+            if (gesture == null || !gesture.HasActivePointer) return;
+            var pointerId = gesture.ActivePointerId;
+            gesture.Cancel();
+            if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+        }
+        private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
+        private void OnPointerDown(PointerDownEvent evt)
+        {
+            if (evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
+            // Capture belongs to the stable board, never a tile replaced by Refresh.
+            board.CapturePointer(evt.pointerId);
+            evt.StopPropagation();
+        }
+        private void OnPointerMove(PointerMoveEvent evt)
+        {
+            if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
+            var changed = gesture.Move(evt.pointerId, BoardPosition(evt.position));
+            FinishPointerEvent(evt.pointerId, changed);
+            evt.StopPropagation();
+        }
+        private void OnPointerUp(PointerUpEvent evt)
+        {
+            if (evt.button != 0 || gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
+            var changed = gesture.End(evt.pointerId, BoardPosition(evt.position));
+            FinishPointerEvent(evt.pointerId, changed);
+            evt.StopPropagation();
+        }
+        private void OnPointerCancel(PointerCancelEvent evt)
+        {
+            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) CancelInteraction();
+        }
+        private void OnPointerCaptureOut(PointerCaptureOutEvent evt)
+        {
+            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) gesture.Cancel();
+        }
+        private void FinishPointerEvent(int pointerId, bool changed)
+        {
+            if (!gesture.HasActivePointer && board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+            if (changed) Refresh();
         }
         private Label Clue(int total)
         {
