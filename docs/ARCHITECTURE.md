@@ -132,3 +132,26 @@ Capture loss, focus/pause, detach, geometry changes, rebind and generation failu
 also cancel. Later Clear controls must cancel before clearing; New Game uses Bind.
 The explicit review scene offers opt-in mounted-panel synthetic input checks;
 these complement rather than replace physical-device verification.
+
+
+## Issue #8 Easy game shell
+
+`EasyGameLoop` creates only admitted generated sessions and advances the requested
+seed for every attempt. Normal boot selects a fresh initial seed; diagnostic
+arguments can fix it for reproduction. `ClueProtection` derives the narrow
+original-total-one cardinal-arrow aid from visible clues and verifies NotCat
+assignments with the human solver. No answer-based automatic elimination exists.
+
+`GameSession.ApplyHint` caches a complete clue-only proof and rescans for the
+first mismatching interactive conclusion. It applies one Cat/X directly within
+the session, returns the proof and correction flag, and immediately checks
+completion. Player marks never become solver premises. Clear does not alter
+clues/protection or require a persistent hint cursor.
+
+`GameShellView` manages Menu/Play/Failure and blocking Rules/Hint/Victory overlays.
+It sends gameplay intents and listens for board state changes. The compact play
+layout replaces the persistent legend with a 2×2 control group; scrollable help
+explains the symbols. Language preference alone uses PlayerPrefs. A live session
+survives Menu and focus changes; board persistence remains deferred. A final Hint
+combines its explanation with one victory dialog. Diagnostic mounted flow and
+render timing remain opt-in review paths, not analytics or gameplay dependencies.

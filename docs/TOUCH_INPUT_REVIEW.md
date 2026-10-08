@@ -44,8 +44,8 @@ connection reset and a global bundle-ID override; the latter was corrected in th
 ignored Xcode export only. The owner confirmed all requested physical touch checks felt correct: tap cycling,
 horizontal/vertical drag, release suppression, second-finger handling and
 background/reopen. This is a qualitative owner test, not automated device replay.
-The signed app is retained at `Builds/Issue7Board/UnityProject.app`; the Xcode export
-and logs remain available. Disposable DerivedData was removed after installation.
+The signed app is retained at `Builds/Issue7Board/UnityProject.app`; the logs remain available. The reproducible Xcode export was pruned while
+preparing Issue #8 to maintain build headroom; tracked source can regenerate it. Disposable DerivedData was removed after installation.
 Android device verification remains pending. QA found no
 blocking code findings after the final boundary/capture checks.
 The opt-in `--board-input-check=1` review player dispatches synthetic mouse and

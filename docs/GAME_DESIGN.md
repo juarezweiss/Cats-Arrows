@@ -61,6 +61,27 @@ On victory:
 - New Game and Menu remain available.
 
 ## Open design questions
-- Whether protected cells should be pre-rendered automatically or revealed only through deduction/hints.
+- Broader automatic protection beyond the approved cardinal one-cat rule remains deferred.
 - Final solver-based thresholds for Easy/Medium/Hard.
 - Daily puzzle vs purely infinite mode.
+
+
+## Issue #8 Easy loop
+
+The menu offers Easy only, rules help and English/Brazilian Portuguese/Spanish
+selection. Language preference persists; the live board stays in memory through
+Menu and background/foreground, while process termination need not resume it.
+New Game requests a fresh seed, preserving Easy. Normal app launch selects a fresh
+initial seed; an explicit review seed can reproduce a diagnostic run.
+
+Each Hint applies exactly one canonical conclusion from a human proof derived
+only from visible clues. Player hypotheses never enter that proof. The earliest
+unmatched fact is applied (Cat or X), including correcting a conflicting mark,
+with its clue explanation and cell coordinate. Clear and later player edits
+cause hints to rescan rather than advancing a permanent hint cursor.
+
+Before play, only original-total-one cardinal arrows contribute opposite-side
+protection, verified against clue-only solver assignments. Diagonals and totals
+of two do not create this automatic protection. Hint can finish the game; in that
+case its explanation appears in the single victory dialog. Back to the Game
+returns to the read-only board, with Hint/Clear disabled and Menu/New Game enabled.

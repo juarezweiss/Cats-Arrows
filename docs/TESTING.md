@@ -306,3 +306,23 @@ build/signing passed and the app was installed/launched on the iPhone 17;
 the owner confirmed requested physical iPhone checks felt correct (tap cycle,
 horizontal/vertical drag, release, multiple fingers, background/reopen). Android
 device verification remains pending. See `TOUCH_INPUT_REVIEW.md` for steps and limitations.
+
+
+## Issue #8 local complete-loop gate
+
+Native Unity 6000.3.25f1 compilation passed (`compile.DLTpZy`). **210/210 EditMode
+tests passed**, zero failed/skipped/inconclusive (`editmode.PG7Ojs/test-results.xml`).
+Coverage includes clue-only one-fact hints/corrections, Clear/rescan, narrow
+protection, seeded progression/failure, a 20-seed hints-to-win corpus, resources,
+preferences, live-menu resume, modal command guards and completed action locks.
+
+Mounted shell flows passed in all three initial locales. A final mounted pass
+verifies panel picking before synthetic button events (`issue8-panel-picking.log`).
+UX reviewed 18 Menu/Rules/Play/Hint/Victory/Completed captures without blockers.
+QA found no local code/test/render blockers. iOS Release build/sign/install
+passed. Owner iPhone playtest passed the full flow, three languages, saved locale,
+completed-board locks and background/reopen. Native iPhone 17 Release diagnostic
+passed 20 New Game requests: median 65.994 ms, p95 66.966 ms, max 72.543 ms;
+first start separately 59.497 ms. Timing includes queued feedback and rendered
+readiness after synthetic button action, excluding touch hardware latency.
+See `GAME_LOOP_REVIEW.md` for measurements, reproduction and limitations.

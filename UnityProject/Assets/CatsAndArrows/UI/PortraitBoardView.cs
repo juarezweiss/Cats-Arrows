@@ -20,6 +20,7 @@ namespace CatsAndArrows.UI
         private readonly VisualElement boardRegion = new VisualElement();
         private readonly VisualElement board = new VisualElement();
         private readonly VisualElement legend = new VisualElement();
+        private readonly VisualElement header = new VisualElement();
         private readonly Label title = new Label();
         private readonly Label difficulty = new Label();
         private readonly Label intro = new Label();
@@ -27,6 +28,9 @@ namespace CatsAndArrows.UI
         private GameSession session;
         private BoardGestureController gesture;
         private LocalizationService text;
+        private bool interactionSuspended;
+        public event Action StateChanged;
+        public bool InteractionEnabled => !interactionSuspended;
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
 
@@ -40,7 +44,7 @@ namespace CatsAndArrows.UI
             safeFrame.name = "safe-frame";
             safeFrame.style.position = Position.Absolute;
             Add(safeFrame);
-            var header = new VisualElement();
+
             Absolute(header, new Rect(0, 0, 0, 104)); header.style.right = 0; header.style.width = StyleKeyword.Auto;
             header.style.alignItems = Align.Center;
             title.style.fontSize = 26; title.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -76,6 +80,28 @@ namespace CatsAndArrows.UI
             RegisterCallback<DetachFromPanelEvent>(_ => CancelInteraction());
         }
 
+        public void SetPlayLayout()
+        {
+            header.style.height = 48;
+            title.style.fontSize = 20;
+            difficulty.style.fontSize = 14; difficulty.style.marginTop = 2;
+            intro.style.display = DisplayStyle.None;
+            boardRegion.style.top = 56; boardRegion.style.bottom = 120;
+            legend.style.display = DisplayStyle.None;
+            LayoutBoard();
+        }
+        public void SetInteractionSuspended(bool suspended)
+        {
+            CancelInteraction();
+            interactionSuspended = suspended;
+        }
+        public void HighlightCell(BoardCoordinate coordinate)
+        {
+            var tile = board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
+            if (tile == null) return;
+            tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 3;
+            tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = BoardSymbolElement.Ink;
+        }
         public void Bind(GameSession newSession, string locale = "en")
         {
             if (newSession == null) throw new ArgumentNullException(nameof(newSession));
@@ -205,7 +231,7 @@ namespace CatsAndArrows.UI
         private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
+            if (interactionSuspended || evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
             // Capture belongs to the stable board, never a tile replaced by Refresh.
             board.CapturePointer(evt.pointerId);
             evt.StopPropagation();
@@ -235,7 +261,7 @@ namespace CatsAndArrows.UI
         private void FinishPointerEvent(int pointerId, bool changed)
         {
             if (!gesture.HasActivePointer && board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
-            if (changed) Refresh();
+            if (changed) { Refresh(); StateChanged?.Invoke(); }
         }
         private Label Clue(int total)
         {

@@ -81,7 +81,10 @@ namespace CatsAndArrows.UI.Editor
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath }, target = target, targetGroup = group,
-                locationPathName = output, options = BuildOptions.None
+                locationPathName = output, options = BuildOptions.None,
+                // Per-build diagnostic opt-in; never persist this in PlayerSettings.
+                extraScriptingDefines = Environment.GetEnvironmentVariable("CATS_ARROWS_GAME_LOOP_AUTORUN") == "1"
+                    ? new[] { "CATS_ARROWS_GAME_LOOP_CHECK" } : Array.Empty<string>()
             });
             if (report.summary.result != BuildResult.Succeeded) throw new InvalidOperationException("Board review build failed: " + report.summary.result);
             Debug.Log("BOARD_REVIEW_BUILD " + output);
