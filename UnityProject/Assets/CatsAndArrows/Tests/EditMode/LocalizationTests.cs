@@ -187,5 +187,29 @@ namespace CatsAndArrows.Tests
 
         private static string[] Placeholders(string message) => Regex.Matches(message, @"\{[^{}]+\}")
             .Cast<Match>().Select(match => match.Value).ToArray();
+
+        [Test]
+        public void Issue14DiagonalDirectionsAndHelpArePresentedInAllInitialLocales()
+        {
+            foreach (var locale in new[] { "en", "pt-BR", "es" })
+            {
+                var service = new LocalizationService(DefaultLocalization.CreateCatalog(), CultureInfo.GetCultureInfo(locale));
+                Assert.That(service.GetText("help.diagonal-arrows"), Is.Not.Empty);
+                var presenter = new DeductionLocalizer(service);
+                foreach (var direction in new[] { Direction.UpLeft, Direction.UpRight, Direction.DownLeft, Direction.DownRight })
+                {
+                    var name = service.GetText("direction." + direction.ToString().ToLowerInvariant());
+                    Assert.That(name, Is.Not.Empty);
+                    var reference = new ConstraintReference(ConstraintKind.Arrow, -1, new BoardCoordinate(2, 3), direction);
+                    var premise = new DeductionPremise(reference, 1, new[] {
+                        new CellAssignment(new BoardCoordinate(1, 2), CellKnowledge.Unknown) });
+                    var step = new DeductionStep(0, DeductionRules.ArrowSingleton, DeductionKind.ConstraintPropagation,
+                        new[] { premise }, new[] { new CellAssignment(new BoardCoordinate(1, 2), CellKnowledge.Cat) });
+                    var message = presenter.Format(step);
+                    Assert.That(message, Does.Contain(name).And.Contain("3").And.Contain("4"));
+                    Assert.That(message, Does.Not.Contain("{"));
+                }
+            }
+        }
     }
 }

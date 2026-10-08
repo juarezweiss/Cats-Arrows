@@ -226,3 +226,48 @@ loading animation duration or background scheduling policy.
 - older/smaller iPhone viewport;
 - mainstream Android phone;
 - at least one tall/narrow Android aspect ratio.
+
+## Issue #14 diagonal regression checks
+
+The v2 suite uses independent signed-displacement ray predicates for all eight
+directions and exhaustive small-board placements, rather than production ray
+traversal. Focused cases cover exact diagonal geometry, outward edge rays, cats
+in the quadrant but off the ray, traversal through arrows, shared/multiple cats,
+unsatisfied singletons, satisfied arrows and cardinal-only line exclusion. All
+four diagonal directions have explanations and help in en/pt-BR/es.
+
+The generator corpus retains seeds 0..999 and the same numeric work bounds.
+Generator board fingerprints are intentionally refreshed for v2; PRNG and extreme
+seed solution fingerprints remain unchanged. Native results follow; phone timing is recorded in `GENERATION_BENCHMARK.md`; historical v1 measurements above remain
+associated with their original revisions.
+
+Native macOS Unity 6000.3.25f1, 2026-10-08: final compilation passed
+(`compile.gPQJd5`); **84/84 EditMode tests passed**, zero failed/skipped/inconclusive
+(`editmode.V14TG4/test-results.xml`). Repository validation also passed.
+
+All 1,000 v2 corpus requests succeeded on their first attempt: 1,000 distinct
+logical boards, 971 solution layouts, and 917 boards containing diagonals,
+covering all four orientations. Human evaluations median/p95/max were
+1,343/2,907/5,113; verifier nodes 1/1/11; random draws 214/374/445. Arrow count
+median/p95/max was 4/7/10 (mean 4.34), compared with the historical v1 mean 5.053.
+Numeric work bounds were not increased. Editor generation timing was
+3.811/7.391/11.993 ms median/p95/max in this run, with no allocation counter;
+concurrent Xcode work makes these informational editor figures unsuitable for a
+controlled performance comparison. Physical-player measurements are the timing
+gate. This fixed corpus does not prove all possible seeds succeed.
+
+The first measurement intentionally exposed four changed board fingerprint
+expectations. One new multiple-cat fixture was uniquely solvable but human-stalled;
+it was replaced with a line-forced multiple-cat fixture so the test measures
+at-least-one semantics without asserting unsupported reasoning. The final gate
+above includes these corrections and localized diagonal/validator cases.
+
+## Combined session and diagonal integration gate
+
+Before merging PR #15 into `develop` on 2026-10-08, the branch incorporated
+PR #13 session changes. Native Unity 6000.3.25f1 compilation passed and the
+combined **104/104 EditMode tests passed**, with zero failed/skipped/inconclusive.
+Repository validation and whitespace checks passed. Logs:
+`.unity-results/compile.mgYXTV/Editor.log` and
+`.unity-results/editmode.bpkWOt/test-results.xml`. No conflict or additional
+game behavior change was introduced by this integration.

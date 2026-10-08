@@ -40,7 +40,8 @@ arrows may be satisfied by one cat.
 
 The initial human rule set is deliberately bounded: zero/satisfied lines,
 fill-remaining lines, unsatisfied arrow singletons, and elimination outside an
-unsatisfied arrow segment when its line needs exactly one more cat. Repeat these
+unsatisfied cardinal arrow segment when its row/column needs exactly one more cat.
+Diagonal arrows use exact 45-degree rays but never this cardinal line-exclusion rule. Repeat these
 rules deterministically to a fixed point. Disjoint-arrow reservations, hypothetical
 placements, and broader subset reasoning are deferred. A unique board that needs
 unsupported reasoning is stalled and must be rejected.
@@ -77,7 +78,7 @@ most one zero row/column. Feasible total cat counts are four through ten. Sample
 quota patterns and bounded randomized layouts instead of relying on manually
 authored board templates. The distribution is not promised to be uniform.
 
-Enumerate truthful cardinal arrow options on non-cat cells. Trial additions use
+Enumerate truthful eight-direction arrow options on non-cat cells. Trial additions use
 the existing human solver and prefer progress on other cells normal in both the
 current and trial board. The newly occupied arrow cell does not count as progress.
 Seeded ordering resolves ties; a zero-immediate-gain addition is permitted because
@@ -106,7 +107,7 @@ policy, not a new gameplay rule or calibrated Easy score. Measure acceptance,
 duplicates, clue/solution distributions, allocations/work, and latency before
 changing the versioned defaults. Desktop timings do not establish mobile waits.
 
-V1 defaults: 64 attempts, 256 layout nodes per attempt (16,384 aggregate), eight
+Unchanged numeric defaults (v1 and v2): 64 attempts, 256 layout nodes per attempt (16,384 aggregate), eight
 trials per stage, ten arrows, 500 human evaluations per call (200,000 aggregate),
 5,000 verifier nodes per call (50,000 aggregate), and 100,000 random draws. These
 remain bounds, not target work. The fixed 1,000-seed corpus passed within these
@@ -143,3 +144,13 @@ Every generated puzzle exposes/logs:
 - solution hash or equivalent test fingerprint.
 
 A regression test must be able to recreate a reported puzzle exactly.
+
+## Issue #14 version transition
+
+The approved MVP adds four diagonal directions with the same at-least-one semantics.
+The generator, human rules and verifier record v2 provenance; profile, PRNG and
+work-limit defaults stay unchanged. Old cardinal enum values remain 0–3. V1 board
+receipts and benchmark reports refer to their original Git revisions; v2 is not
+an implementation of v1 replay. There are no shipped saved boards requiring a
+runtime migration. Fixed seed vectors are refreshed for v2, while independent
+small-board enumeration checks geometry and deduction soundness.

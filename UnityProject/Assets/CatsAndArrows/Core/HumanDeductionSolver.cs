@@ -67,8 +67,10 @@ namespace CatsAndArrows.Core
                             ruleId = DeductionRules.ArrowSingleton; kind = DeductionKind.ArrowSegment;
                             affected = unknown; conclusionState = CellKnowledge.Cat;
                         }
-                        else
+                        else if (DirectionGeometry.IsCardinal(constraint.Source.Direction))
                         {
+                            // Only cardinal rays lie wholly in one exact row or
+                            // column. Diagonal rays have no corresponding total.
                             var arrow = constraint.Source;
                             var line = arrow.Direction == Direction.Left || arrow.Direction == Direction.Right
                                 ? constraints.Rows[arrow.Coordinate.Row] : constraints.Columns[arrow.Coordinate.Column];

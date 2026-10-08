@@ -1,12 +1,11 @@
-# Current Sprint - Foundation + Vertical Slice Core
+# Current Sprint — Diagonal support, then playable board
 
-Goal: reach a testable deterministic Easy puzzle core before spending time on final art or monetization SDKs.
+Follow the [approved Master Project Plan](MASTER_PROJECT_PLAN.md), version 1.0.
 
-Order:
-1. Bootstrap repo/Unity project.
-2. Encode immutable puzzle model and invariants.
-3. Build solver/uniqueness verifier.
-4. Build generator that only emits solver-validated boards.
-5. Implement GameSession state transitions.
-6. Build portrait board UI and mobile input.
-7. Device-test touch behavior.
+1. Implement focused Issue #14: eight-direction rays, sound deductions, seeded generation, localized explanations and independent tests.
+2. Validate natively and repeat the physical-phone benchmark when accessible; historical cardinal timings remain a baseline.
+3. Review/integrate PR #13 session fixes only when explicitly requested.
+4. Build the portrait board (#6), mobile gestures (#7), then the complete Easy loop (#8).
+
+Keep Easy-only and iOS-first. No purchase/subscription is authorized; ask before every charge.
+No production release or merge is authorized by plan approval.

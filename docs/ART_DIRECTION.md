@@ -12,5 +12,8 @@ The old prototype demonstrates useful information density and board composition 
 - Cat and arrow states must remain distinguishable in common color-vision deficiencies.
 - Avoid ultra-thin icons at small board sizes.
 
+## MVP presentation
+Use simple replaceable symbols and restrained feedback. All eight arrow orientations, including diagonals, must be distinguishable at the 5x5 portrait cell size without relying on color. Final art and extensive animation do not gate the first player trial.
+
 ## Asset policy
 Keep gameplay logic independent from final art so placeholder vector/icons can be replaced without rule changes.

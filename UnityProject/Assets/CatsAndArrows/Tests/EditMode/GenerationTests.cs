@@ -90,21 +90,21 @@ namespace CatsAndArrows.Tests
             var first = generator.Generate(DifficultyProfile.Easy, seed);
             Assert.That(first.IsSuccess, Is.True, "Extreme seed must produce a proven board with default limits.");
             AssertAccepted(first, DifficultyProfile.Easy, seed);
+            TestContext.Out.WriteLine("GENERATION_SEED " + seed.ToString(CultureInfo.InvariantCulture) + " " +
+                first.Metadata.BoardFingerprint + " " + first.Metadata.SolutionFingerprint + " attempt=" + first.Metadata.AcceptedAttempt);
             var goldens = new Dictionary<int, string[]>
             {
-                [0] = new[] { "c2ffb608119db9bd3fd7519c4981ac7f1b4469839b2d9a840a621b3d60c44c96", "cfe51f5b10a1c644653ea6199f4908dbf109fa1fb01f457190477412a8d6030c" },
-                [-1] = new[] { "780c49eb237d1da601dba1c19945f8a3a5b16ce8a05447bf92c3293371038818", "29d27832e2f4e8e56c0d9563d68b426110fba090e34a7107002621b4e05a8f66" },
-                [int.MinValue] = new[] { "362a7da6fd3d97ecb20963dc654de535faa55900acb32e68fce80514a2ae732e", "6b75a5581daefcf974e9b68c43fe420f8af4228e47ba202c8392ab71980d9d1c" },
-                [int.MaxValue] = new[] { "09434e38ba90407963a8c2f99bec18c86a8077a141392a1d50b310dfb73d13d6", "f660d27fc165598b6d408f4422bb5714a1bd1b4f1b1c2b3f02cd6d4cfd1e781a" }
+                [0] = new[] { "c27794e072fa90622c8f4f053373d0b36b25c0380c787a2dd44a5b002be8b59f", "cfe51f5b10a1c644653ea6199f4908dbf109fa1fb01f457190477412a8d6030c" },
+                [-1] = new[] { "83bdf5c791aff18504c7930140563038fadf88f151574d7ae8481efc5ff59c1a", "29d27832e2f4e8e56c0d9563d68b426110fba090e34a7107002621b4e05a8f66" },
+                [int.MinValue] = new[] { "b8a1c833206cd0b03748c234186f18034a8644b786e4f9c681d9700babdb091a", "6b75a5581daefcf974e9b68c43fe420f8af4228e47ba202c8392ab71980d9d1c" },
+                [int.MaxValue] = new[] { "f1555c7814feefc9ca6f292353353bc0c50e30ec8469aa99380fc53804d21135", "f660d27fc165598b6d408f4422bb5714a1bd1b4f1b1c2b3f02cd6d4cfd1e781a" }
             };
-            // Frozen from the native, independently assessed v1 receipts. A changed
+            // Frozen from the native, independently assessed v2 receipts. A changed
             // seed mapping or logical board requires an intentional versioned review.
             CollectionAssert.AreEqual(goldens[seed], new[] { first.Metadata.BoardFingerprint, first.Metadata.SolutionFingerprint });
             Assert.That(first.Metadata.AcceptedAttempt, Is.Zero);
 
             var fingerprint = ResultFingerprint(first);
-            TestContext.Out.WriteLine("GENERATION_SEED " + seed.ToString(CultureInfo.InvariantCulture) + " " +
-                first.Metadata.BoardFingerprint + " " + first.Metadata.SolutionFingerprint + " attempt=" + first.Metadata.AcceptedAttempt);
             var culture = CultureInfo.CurrentCulture; var uiCulture = CultureInfo.CurrentUICulture;
             try
             {
@@ -289,6 +289,8 @@ namespace CatsAndArrows.Tests
             var logicalBoards = new HashSet<string>(); var solutionLayouts = new HashSet<string>();
             var statuses = new Dictionary<string, int>(); var rejected = new Dictionary<string, int>();
             var successes = 0;
+            var diagonalDirections = new HashSet<Direction>();
+            var boardsWithDiagonals = 0;
             for (var seed = 0; seed < 1000; seed++)
             {
                 var beforeBytes = readAllocation?.Invoke() ?? 0;
@@ -309,6 +311,9 @@ namespace CatsAndArrows.Tests
                     continue;
                 }
                 successes++;
+                var diagonals = result.Puzzle.Arrows.Values.Where(d => (int)d >= 4).ToArray();
+                if (diagonals.Length > 0) boardsWithDiagonals++;
+                foreach (var direction in diagonals) diagonalDirections.Add(direction);
                 AssertAccepted(result, DifficultyProfile.Easy, seed);
                 logicalBoards.Add(LogicalBoard(result.Puzzle));
                 solutionLayouts.Add(SolutionLayout(result.Puzzle));
@@ -326,9 +331,13 @@ namespace CatsAndArrows.Tests
                 ",\"elapsedMsInformational\":" + DistributionJson(elapsed) +
                 ",\"allocationCounterAvailable\":" + (readAllocation == null ? "false" : "true") +
                 ",\"allocatedBytesInformational\":" + DistributionJson(allocations) + "}");
-            Assert.That(successes, Is.EqualTo(1000), "This fixed v1 corpus is known to succeed within default work limits.");
+            CollectionAssert.AreEquivalent(new[] { Direction.UpLeft, Direction.UpRight, Direction.DownLeft, Direction.DownRight }, diagonalDirections,
+                "Actual accepted boards must exercise all four diagonal orientations.");
+            Assert.That(boardsWithDiagonals, Is.GreaterThan(0), "Diagonal support must reach playable generated boards.");
+            TestContext.Out.WriteLine("GENERATION_DIAGONALS boards=" + boardsWithDiagonals + " orientations=" + diagonalDirections.Count);
+            Assert.That(successes, Is.EqualTo(1000), "The fixed v2 corpus must succeed within default work limits.");
             Assert.That(logicalBoards.Count, Is.EqualTo(1000), "The fixed corpus must retain its distinct logical boards.");
-            Assert.That(solutionLayouts.Count, Is.GreaterThanOrEqualTo(950), "The observed v1 corpus has 971 different hidden layouts.");
+            Assert.That(solutionLayouts.Count, Is.GreaterThanOrEqualTo(950), "The v2 corpus must retain varied hidden layouts.");
         }
 
         private static Func<long> DetectAllocationCounter()
@@ -357,14 +366,14 @@ namespace CatsAndArrows.Tests
             Assert.That(result.Assessment.IsAccepted, Is.True);
             Assert.That(puzzle.Size, Is.EqualTo(profile.Size)); Assert.That(puzzle.Seed, Is.EqualTo(seed));
             Assert.That(result.Metadata.Seed, Is.EqualTo(seed));
-            Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo("easy-generator-v1"));
+            Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo("easy-generator-v2"));
             Assert.That(puzzle.GeneratorVersion, Is.EqualTo(result.Metadata.GeneratorVersion));
             Assert.That(puzzle.Arrows.Count, Is.LessThanOrEqualTo(result.Metadata.Options.MaxArrows));
             Assert.That(puzzle.Size * puzzle.Size - puzzle.SolutionCats.Count - puzzle.Arrows.Count, Is.GreaterThanOrEqualTo(5));
             Assert.That(result.Metadata.ProfileVersion, Is.EqualTo("easy-profile-v1"));
             Assert.That(result.Metadata.RandomVersion, Is.EqualTo("splitmix64-v1"));
-            Assert.That(result.Metadata.RulesetVersion, Is.EqualTo("human-v1"));
-            Assert.That(result.Metadata.VerifierVersion, Is.EqualTo("exhaustive-v1"));
+            Assert.That(result.Metadata.RulesetVersion, Is.EqualTo("human-v2"));
+            Assert.That(result.Metadata.VerifierVersion, Is.EqualTo("exhaustive-v2"));
             Assert.That(result.Metadata.OptionsVersion, Is.EqualTo("generation-options-v1"));
             Assert.That(result.Metadata.ProfileId, Is.EqualTo(profile.Id));
             Assert.That(result.Metadata.AcceptedAttempt, Is.InRange(0, result.Diagnostics.Attempts - 1));
@@ -420,7 +429,11 @@ namespace CatsAndArrows.Tests
             direction == Direction.Up && cat.Column == origin.Column && cat.Row < origin.Row ||
             direction == Direction.Down && cat.Column == origin.Column && cat.Row > origin.Row ||
             direction == Direction.Left && cat.Row == origin.Row && cat.Column < origin.Column ||
-            direction == Direction.Right && cat.Row == origin.Row && cat.Column > origin.Column;
+            direction == Direction.Right && cat.Row == origin.Row && cat.Column > origin.Column ||
+            direction == Direction.UpLeft && cat.Row < origin.Row && cat.Column < origin.Column && origin.Row - cat.Row == origin.Column - cat.Column ||
+            direction == Direction.UpRight && cat.Row < origin.Row && cat.Column > origin.Column && origin.Row - cat.Row == cat.Column - origin.Column ||
+            direction == Direction.DownLeft && cat.Row > origin.Row && cat.Column < origin.Column && cat.Row - origin.Row == origin.Column - cat.Column ||
+            direction == Direction.DownRight && cat.Row > origin.Row && cat.Column > origin.Column && cat.Row - origin.Row == cat.Column - origin.Column;
 
         private static string SolutionLayout(PuzzleDefinition puzzle) => string.Join(";", puzzle.SolutionCats.OrderBy(c => c.Row).ThenBy(c => c.Column).Select(c => c.Row + "," + c.Column));
         private static string LogicalBoard(PuzzleDefinition puzzle) => puzzle.Size + ":" + SolutionLayout(puzzle) + ":" +

@@ -5,6 +5,22 @@ namespace CatsAndArrows.Tests
 {
     public sealed class PuzzleValidatorTests
     {
+        [TestCase(Direction.UpLeft, 0, 0, 0, 1)]
+        [TestCase(Direction.UpRight, 0, 4, 0, 3)]
+        [TestCase(Direction.DownLeft, 4, 0, 4, 1)]
+        [TestCase(Direction.DownRight, 4, 4, 4, 3)]
+        public void Issue14DiagonalRequiresAnExactRayRatherThanTheWholeQuadrant(
+            Direction direction, int catRow, int catColumn, int offRow, int offColumn)
+        {
+            var arrow = new ArrowClue(new BoardCoordinate(2, 2), direction);
+            var profile = new DifficultyProfile("geometry-fixture", 5, 5, 5, 5);
+            var exact = new PuzzleDefinition(5, 14, "fixture", new[] { new BoardCoordinate(catRow, catColumn) }, new[] { arrow });
+            var offRay = new PuzzleDefinition(5, 14, "fixture", new[] { new BoardCoordinate(offRow, offColumn) }, new[] { arrow });
+            Assert.That(PuzzleValidator.Validate(exact, profile).IsValid, Is.True);
+            Assert.That(PuzzleValidator.Validate(offRay, profile).IsValid, Is.False);
+            Assert.That(PuzzleValidator.Validate(offRay, profile).Errors, Has.Some.Contains("has no solution cat"));
+        }
+
         [Test]
         public void RejectsCellThatIsBothArrowAndCat()
         {

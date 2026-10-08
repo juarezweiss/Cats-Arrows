@@ -9,11 +9,18 @@ namespace CatsAndArrows.Core
     // one call; callers may prepare independently without a Unity dependency.
     public sealed class SeededEasyPuzzleGenerator : IPuzzleGenerator
     {
-        public const string Version = "easy-generator-v1";
+        public const string Version = "easy-generator-v2";
         public const string ProfileVersion = "easy-profile-v1";
         private const int Size = 5;
         private const ulong LayoutStage = 0x4C41594F5554UL;
         private const ulong ArrowStage = 0x4152524F5753UL;
+        // Explicit order is part of v2 seed replay; future enum additions must
+        // not silently alter the candidate pool.
+        private static readonly Direction[] ArrowDirections =
+        {
+            Direction.Up, Direction.Down, Direction.Left, Direction.Right,
+            Direction.UpLeft, Direction.UpRight, Direction.DownLeft, Direction.DownRight
+        };
 
         public GenerationResult Generate(DifficultyProfile profile, int seed, GenerationOptions options = null,
             CancellationToken cancellationToken = default)
@@ -206,9 +213,8 @@ namespace CatsAndArrows.Core
             {
                 var coordinate = new BoardCoordinate(row, column);
                 if (puzzle.IsSolutionCat(coordinate)) continue;
-                for (var value = 0; value < 4; value++)
+                foreach (var direction in ArrowDirections)
                 {
-                    var direction = (Direction)value;
                     if (puzzle.GetDirectionalSegment(coordinate, direction).Any(puzzle.IsSolutionCat))
                         arrows.Add(new ArrowClue(coordinate, direction));
                 }
