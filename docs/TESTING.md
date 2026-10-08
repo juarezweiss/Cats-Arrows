@@ -121,6 +121,34 @@ Future UI work must separately verify saved preferences, font coverage, and long
 translations at representative portrait aspect ratios; there is no board/settings
 UI to exercise yet.
 
+## Issue #5 session regression coverage
+
+`GameSessionTests` covers the tap cycle, extra-cat victory regression, mixed
+Empty/X non-solution marks at victory, completed-state tap/drag/Clear rejection,
+and Clear preserving puzzle identity and protected eligibility. Mixed drags
+include Empty, X, Cat, arrow, protected, duplicate, and outside-board coordinates.
+All four board edges, null/empty drag, null puzzle, copied protected input,
+duplicate/arrow normalization, and invalid protected coordinates/cats are tested.
+
+Collection mutation attempts before and after victory must throw, while the live
+read-only marks view must continue to reflect legitimate session transitions.
+A generic zero-cat fixture starts completed; this does not alter generated Easy
+policy. Gesture axis locking and release-event suppression belong to Issue #7
+and are not claimed as tested by these pure session tests.
+
+Native macOS Unity `6000.3.25f1`, 2026-10-07, Issue #5 branch based on `develop`:
+repository validation and compilation passed; **59/59 EditMode tests passed**,
+including 25 session cases, with zero failures/skips/inconclusive results.
+Logs: `.unity-results/compile.m1cUrF/Editor.log` and
+`.unity-results/editmode.dhZFAw/test-results.xml`. That historical run excluded the then-unmerged Issue #4 generator tests;
+their separate results are recorded below.
+
+After updating PR #13 from `develop` on 2026-10-08, native compilation and the
+combined suite passed: **81/81**, zero failed/skipped/inconclusive. Logs:
+`.unity-results/compile.iB1O8C/Editor.log` and
+`.unity-results/editmode.s34z2D/test-results.xml`. The merge conflict was limited
+to this documentation; both session and generator test records were retained.
+
 ## Issue #4 generation checks and cost report
 
 `GenerationTests` locks SplitMix64 golden vectors, signed seed mapping, bounded
@@ -165,6 +193,7 @@ integration. Measure on representative iOS/Android hardware before deciding on
 loading animation duration or background scheduling policy.
 
 ## Pyramid
+
 1. Pure domain/EditMode tests: highest volume.
 2. Unity integration/PlayMode tests: board/session/UI wiring.
 3. Device smoke tests: iOS + Android touch, safe-area, performance, lifecycle.
