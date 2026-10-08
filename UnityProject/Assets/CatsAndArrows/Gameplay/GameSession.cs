@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CatsAndArrows.Core;
 
@@ -9,17 +10,31 @@ namespace CatsAndArrows.Gameplay
     {
         private readonly Dictionary<BoardCoordinate, PlayerMark> _marks;
         private readonly HashSet<BoardCoordinate> _protectedCells;
+        private readonly IReadOnlyDictionary<BoardCoordinate, PlayerMark> _marksView;
+        private readonly IReadOnlyCollection<BoardCoordinate> _protectedCellsView;
 
         public PuzzleDefinition Puzzle { get; }
         public bool IsCompleted { get; private set; }
-        public IReadOnlyDictionary<BoardCoordinate, PlayerMark> Marks => _marks;
-        public IReadOnlyCollection<BoardCoordinate> ProtectedCells => _protectedCells;
+        public IReadOnlyDictionary<BoardCoordinate, PlayerMark> Marks => _marksView;
+        public IReadOnlyCollection<BoardCoordinate> ProtectedCells => _protectedCellsView;
 
         public GameSession(PuzzleDefinition puzzle, IEnumerable<BoardCoordinate> protectedCells = null)
         {
             Puzzle = puzzle ?? throw new ArgumentNullException(nameof(puzzle));
             _protectedCells = new HashSet<BoardCoordinate>(protectedCells ?? Array.Empty<BoardCoordinate>());
+            foreach (var coordinate in _protectedCells)
+            {
+                if (!puzzle.IsInside(coordinate))
+                    throw new ArgumentException("Protected cells must be inside the board.", nameof(protectedCells));
+                if (puzzle.IsSolutionCat(coordinate))
+                    throw new ArgumentException("Solution cat cells cannot be protected.", nameof(protectedCells));
+            }
+            // Arrows already have their own non-interactive cell kind.
+            _protectedCells.RemoveWhere(puzzle.IsArrow);
+            _protectedCellsView = Array.AsReadOnly(_protectedCells
+                .OrderBy(coordinate => coordinate.Row).ThenBy(coordinate => coordinate.Column).ToArray());
             _marks = new Dictionary<BoardCoordinate, PlayerMark>();
+            _marksView = new ReadOnlyDictionary<BoardCoordinate, PlayerMark>(_marks);
 
             for (var row = 0; row < puzzle.Size; row++)
             for (var column = 0; column < puzzle.Size; column++)
@@ -28,6 +43,7 @@ namespace CatsAndArrows.Gameplay
                 if (!puzzle.IsArrow(coordinate) && !_protectedCells.Contains(coordinate))
                     _marks[coordinate] = PlayerMark.Empty;
             }
+            RefreshCompletion();
         }
 
         public bool CanInteract(BoardCoordinate coordinate) =>

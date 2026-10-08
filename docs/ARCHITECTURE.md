@@ -70,6 +70,20 @@ Unity presentation only:
 ## State ownership
 `PuzzleDefinition` owns immutable puzzle truth. `GameSession` owns mutable player state. Views render state and send intents; they do not modify solution truth.
 
+Issue #5 exposes player marks through a live read-only view and protected cells
+through a copied read-only collection. Callers cannot bypass the session's
+transition or completion checks by mutating those collections. Protected input
+is copied, deduplicated, and checked: outside-board coordinates and solution cats
+are rejected. Arrow coordinates are omitted from the protected set because arrows
+already have their own non-interactive kind. This does not automatically derive
+protected cells; that remains a solver/presentation integration concern.
+
+Completion is checked during construction as well as after marking. A generic
+zero-cat puzzle therefore starts completed and read-only. This edge-case contract
+does not change the Easy generation profile. Clear changes only player marks and
+retains puzzle truth and protected eligibility; completed sessions reject Clear,
+tap, and drag intents.
+
 ## Randomness
 Use explicit seeds. Avoid `UnityEngine.Random` inside core generation. A seed must reproduce the same logical board for a fixed generator version.
 
