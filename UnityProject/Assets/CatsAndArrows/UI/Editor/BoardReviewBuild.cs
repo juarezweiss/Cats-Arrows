@@ -70,10 +70,17 @@ namespace CatsAndArrows.UI.Editor
             var output = Environment.GetEnvironmentVariable("CATS_ARROWS_BOARD_REVIEW_OUTPUT");
             if (string.IsNullOrWhiteSpace(output) || !Path.IsPathRooted(output))
                 throw new ArgumentException("CATS_ARROWS_BOARD_REVIEW_OUTPUT must be an absolute path.");
+            var requestedTarget = Environment.GetEnvironmentVariable("CATS_ARROWS_BOARD_REVIEW_TARGET") ?? "StandaloneOSX";
+            if (!Enum.TryParse(requestedTarget, out BuildTarget target) ||
+                (target != BuildTarget.StandaloneOSX && target != BuildTarget.iOS && target != BuildTarget.Android))
+                throw new ArgumentException("Review target must be StandaloneOSX, iOS or Android.");
+            var group = BuildPipeline.GetBuildTargetGroup(target);
+            if (!BuildPipeline.IsBuildTargetSupported(group, target))
+                throw new InvalidOperationException("Pinned editor lacks build support for " + target);
             PrepareReviewScene();
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
-                scenes = new[] { ScenePath }, target = BuildTarget.StandaloneOSX,
+                scenes = new[] { ScenePath }, target = target, targetGroup = group,
                 locationPathName = output, options = BuildOptions.None
             });
             if (report.summary.result != BuildResult.Succeeded) throw new InvalidOperationException("Board review build failed: " + report.summary.result);

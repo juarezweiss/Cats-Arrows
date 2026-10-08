@@ -27,7 +27,7 @@ namespace CatsAndArrows.UI
             root.style.flexGrow = 1;
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
-            if (!string.IsNullOrEmpty(capture)) Application.runInBackground = true;
+            if (!string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -44,7 +44,8 @@ namespace CatsAndArrows.UI
                 if (result.IsSuccess) view.Bind(new GameSession(result.Puzzle), locale);
                 else view.ShowGenerationFailure(result.Status, locale);
             }
-            if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));
+            if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
+            else if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));
         }
         private void Update()
         {
@@ -53,6 +54,14 @@ namespace CatsAndArrows.UI
                 view.ApplySafeArea(new Rect(0, safeBottom, Screen.width, Mathf.Max(0, Screen.height - safeTop - safeBottom)),
                     new Vector2(Screen.width, Screen.height));
             else view.UpdateSafeArea();
+        }
+        private void OnApplicationFocus(bool focused)
+        {
+            if (!focused) view?.CancelInteraction();
+        }
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused) view?.CancelInteraction();
         }
         private IEnumerator Capture(string path)
         {

@@ -110,3 +110,25 @@ review fixtures demonstrate symbol states separately from that generated board.
 This issue adds no tap/drag mutation, Hint controls or completion modal. Those
 remain Issues #7/#8. Native layout captures are presentation evidence, not proof
 of working phone gestures or screen-reader integration.
+
+
+## Issue #7 pointer adapter
+
+`BoardGestureController` recognizes gestures in board-local panel units and sends
+only `Tap`/`ApplyDrag` intents to `GameSession`. `PortraitBoardView` uses one UI
+Toolkit Pointer event path for mouse and touch, with capture on the stable board
+container. Replacing cell visuals during Refresh therefore does not replace the
+capture owner. No independent mouse-click or legacy touch polling mutates cells.
+
+An eligible press remains pending until release. An 8-panel-unit movement distance
+starts a drag only from Empty, with the dominant component locking horizontal or
+vertical (ties horizontal). X/Cat still support tap cycling; deliberate movement
+from them cancels the pending tap. Swept intervals bridge missed movement samples
+and internal gutters; each coordinate is processed once. Arrows, protected cells,
+existing marks and completed sessions remain guarded by the session.
+
+Leaving the playable grid cancels the gesture, retaining marks already applied.
+Capture loss, focus/pause, detach, geometry changes, rebind and generation failure
+also cancel. Later Clear controls must cancel before clearing; New Game uses Bind.
+The explicit review scene offers opt-in mounted-panel synthetic input checks;
+these complement rather than replace physical-device verification.

@@ -288,3 +288,21 @@ visual review found no blocking layout issue. See `BOARD_PRESENTATION_REVIEW.md`
 for evidence and reproduction. Simulated safe insets and desktop rendering do
 not establish physical-phone touch usability or owner color-vision comfort.
 No input adapter or controls are delivered in this display-only issue.
+
+
+## Issue #7 local input gate
+
+Native Unity 6000.3.25f1 compiled the gesture adapter (`compile.6tFSn5`). Final
+**184/184 EditMode tests passed**, zero failed/skipped/inconclusive
+(`editmode.ZMRYTJ/test-results.xml`). Tests cover tap/hold/release, duplicate and
+secondary pointers, axis locking, sparse movement, mixed/protected/completed
+states, cancellation, exact boundaries/gaps and representative portrait layouts.
+
+The local macOS player passed mounted synthetic mouse and touch dispatch checks,
+including pointer capture surviving two Refresh calls (`issue7-mounted-input.log`).
+The owner played the mouse board to completion and reported correct behavior.
+A subsequent completed-board mouse check left state unchanged. Xcode Release
+build/signing passed and the app was installed/launched on the iPhone 17;
+the owner confirmed requested physical iPhone checks felt correct (tap cycle,
+horizontal/vertical drag, release, multiple fingers, background/reopen). Android
+device verification remains pending. See `TOUCH_INPUT_REVIEW.md` for steps and limitations.
