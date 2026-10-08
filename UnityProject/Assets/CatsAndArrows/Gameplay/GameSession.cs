@@ -12,6 +12,7 @@ namespace CatsAndArrows.Gameplay
         private readonly HashSet<BoardCoordinate> _protectedCells;
         private readonly IReadOnlyDictionary<BoardCoordinate, PlayerMark> _marksView;
         private readonly IReadOnlyCollection<BoardCoordinate> _protectedCellsView;
+        private HumanSolverResult _hintProof;
 
         public PuzzleDefinition Puzzle { get; }
         public bool IsCompleted { get; private set; }
@@ -94,6 +95,32 @@ namespace CatsAndArrows.Gameplay
 
         public PlayerMark GetMark(BoardCoordinate coordinate) =>
             _marks.TryGetValue(coordinate, out var mark) ? mark : PlayerMark.Empty;
+
+        public HintResult ApplyHint()
+        {
+            if (IsCompleted) return new HintResult(HintStatus.Completed);
+
+            // Player marks are hypotheses, never premises for the proof.
+            _hintProof = _hintProof ?? new HumanDeductionSolver().Solve(PuzzleClues.FromPuzzle(Puzzle));
+            if (_hintProof.Status != HumanSolverStatus.Solved)
+                return new HintResult(HintStatus.Unavailable);
+
+            // Rescan after every request: Clear or later taps can reverse an earlier fact.
+            foreach (var step in _hintProof.Steps)
+            foreach (var assignment in step.Conclusions)
+            {
+                if (!_marks.TryGetValue(assignment.Coordinate, out var current)) continue;
+                if (assignment.State == CellKnowledge.Unknown) continue;
+                var target = assignment.State == CellKnowledge.Cat ? PlayerMark.Cat : PlayerMark.X;
+                if (current == target) continue;
+
+                _marks[assignment.Coordinate] = target;
+                RefreshCompletion();
+                return new HintResult(HintStatus.Applied, step, assignment, current != PlayerMark.Empty);
+            }
+
+            return new HintResult(HintStatus.NoChange);
+        }
 
         private void RefreshCompletion()
         {

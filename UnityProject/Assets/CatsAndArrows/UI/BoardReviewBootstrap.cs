@@ -15,6 +15,7 @@ namespace CatsAndArrows.UI
     {
         [SerializeField] private int seed = 14;
         private PortraitBoardView view;
+        private GameShellView shell;
         private float safeTop;
         private float safeBottom;
         private bool simulateSafeArea;
@@ -25,9 +26,14 @@ namespace CatsAndArrows.UI
             root.style.position = Position.Absolute;
             root.style.left = root.style.right = root.style.top = root.style.bottom = 0;
             root.style.flexGrow = 1;
+            #if CATS_ARROWS_GAME_LOOP_CHECK
+            const bool autoReview = true;
+#else
+            const bool autoReview = false;
+#endif
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
-            if (!string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1") Application.runInBackground = true;
+            if (autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -37,18 +43,30 @@ namespace CatsAndArrows.UI
                 int.TryParse(Argument("--board-height="), out var height) && width > 0 && height > 0)
                 Screen.SetResolution(width, height, FullScreenMode.Windowed);
             if (Argument("--board-gallery=") == "1") root.Add(new BoardSymbolGalleryView(locale));
-            else
+            else if (!string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1")
             {
                 view = new PortraitBoardView(); root.Add(view);
                 var result = new SeededEasyPuzzleGenerator().Generate(DifficultyProfile.Easy, seed);
                 if (result.IsSuccess) view.Bind(new GameSession(result.Puzzle), locale);
                 else view.ShowGenerationFailure(result.Status, locale);
             }
-            if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
+            else
+            {
+                var initialSeed = autoReview ? seed : int.TryParse(Argument("--game-seed="), out var reviewSeed)
+                    ? reviewSeed : unchecked((int)DateTime.UtcNow.Ticks ^ Environment.TickCount);
+                shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale=")); root.Add(shell);
+            }
+            if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
+            else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
             else if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));
         }
         private void Update()
         {
+            if (shell != null)
+            {
+                if (simulateSafeArea) shell.ApplySafeArea(new Rect(0, safeBottom, Screen.width, Mathf.Max(0, Screen.height - safeTop - safeBottom)), new Vector2(Screen.width, Screen.height));
+                else shell.UpdateSafeArea();
+            }
             if (view == null) return;
             if (simulateSafeArea)
                 view.ApplySafeArea(new Rect(0, safeBottom, Screen.width, Mathf.Max(0, Screen.height - safeTop - safeBottom)),
@@ -57,11 +75,11 @@ namespace CatsAndArrows.UI
         }
         private void OnApplicationFocus(bool focused)
         {
-            if (!focused) view?.CancelInteraction();
+            if (!focused) { view?.CancelInteraction(); shell?.CancelInteraction(); }
         }
         private void OnApplicationPause(bool paused)
         {
-            if (paused) view?.CancelInteraction();
+            if (paused) { view?.CancelInteraction(); shell?.CancelInteraction(); }
         }
         private IEnumerator Capture(string path)
         {
