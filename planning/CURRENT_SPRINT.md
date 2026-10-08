@@ -1,11 +1,16 @@
-# Current Sprint — Diagonal support, then playable board
+# Current Sprint — Portrait board presentation
 
 Follow the [approved Master Project Plan](MASTER_PROJECT_PLAN.md), version 1.0.
 
-1. Implement focused Issue #14: eight-direction rays, sound deductions, seeded generation, localized explanations and independent tests.
-2. Validate natively and repeat the physical-phone benchmark when accessible; historical cardinal timings remain a baseline.
-3. Review/integrate PR #13 session fixes only when explicitly requested.
-4. Build the portrait board (#6), mobile gestures (#7), then the complete Easy loop (#8).
+Completed integration: session rules (#5 / PR #13), diagonal support (#14 / PR #15),
+104/104 combined native tests and fresh physical Easy generation timing.
 
-Keep Easy-only and iOS-first. No purchase/subscription is authorized; ask before every charge.
-No production release or merge is authorized by plan approval.
+1. Issue #6 implemented and owner-approved: native portrait board, aligned totals, eight arrow directions,
+   player-mark/protected presentation, safe areas and localized supporting text.
+2. Commit approved board work locally; publication and integration remain pending.
+3. Issue #7 next: discrete taps and axis-locked drag, verified on the phone.
+4. Issue #8: complete Easy loop, explanatory Hint, narrow protection, controls and victory.
+
+Keep Easy-only and iOS-first. Every purchase/subscription requires separate approval.
+The owner approved Issue #6 implementation and its local commit.
+Push and merge remain separate next steps; no automatic integration.

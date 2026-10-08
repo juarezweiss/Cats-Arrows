@@ -271,3 +271,20 @@ Repository validation and whitespace checks passed. Logs:
 `.unity-results/compile.mgYXTV/Editor.log` and
 `.unity-results/editmode.bpkWOt/test-results.xml`. No conflict or additional
 game behavior change was introduced by this integration.
+
+
+## Issue #6 local portrait presentation gate
+
+Native macOS Unity 6000.3.25f1 compilation passed (`compile.ICdHwH`). The final
+**144/144 EditMode tests passed**, zero failed/skipped/inconclusive
+(`editmode.FnW9mJ/test-results.xml`). This includes visible snapshot isolation,
+eight arrow directions, protected/completed states, safe-area/clue geometry,
+pre-panel startup, localized header transitions and stale-board failure clearing.
+Repository validation and whitespace checks passed.
+
+A local macOS player rendered six portrait/symbol captures across English,
+Brazilian Portuguese and Spanish, including 320×568 compact layouts. The final
+visual review found no blocking layout issue. See `BOARD_PRESENTATION_REVIEW.md`
+for evidence and reproduction. Simulated safe insets and desktop rendering do
+not establish physical-phone touch usability or owner color-vision comfort.
+No input adapter or controls are delivered in this display-only issue.
