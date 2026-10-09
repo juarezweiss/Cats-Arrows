@@ -326,3 +326,14 @@ passed 20 New Game requests: median 65.994 ms, p95 66.966 ms, max 72.543 ms;
 first start separately 59.497 ms. Timing includes queued feedback and rendered
 readiness after synthetic button action, excluding touch hardware latency.
 See `GAME_LOOP_REVIEW.md` for measurements, reproduction and limitations.
+
+
+## Issue #19 calm portrait board gate
+
+Native Unity compile passed (`compile.PllPPK`) and **219/219 EditMode tests
+passed**, zero failed/skipped/inconclusive (`editmode.ZwmUpM`). Three native
+macOS flows pass centering, inline completion from final hints and mounted board
+pointer taps, action locks and New Game reset. QA/UX reviewed 21 locale/portrait
+captures without blockers. Exported iOS Info.plist permits upright portrait only.
+Owner iPhone review on 2026-10-09 confirmed centered grid, darker cells, working
+orientation lock and improved completion. See `BOARD_POLISH_REVIEW.md`.

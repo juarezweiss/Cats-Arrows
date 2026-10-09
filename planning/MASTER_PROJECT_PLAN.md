@@ -380,3 +380,13 @@ UI arrow rendering and live Hint controls remain in the subsequent UI tasks.
 Fresh physical benchmark: 3,000/3,000 requests succeeded, median 7.11 ms, p95
 13.34 ms, maximum 21.68 ms on iPhone 17; see the benchmark document. PR #13 remains a
 separate pending session change; this task does not merge it.
+
+## Approved presentation amendment — 2026-10-09 (Issue #19)
+
+The owner’s phone playtest requested darker fixed tiles, centering the tile grid
+rather than the grid-plus-clues group, and an upright portrait lock. Completion
+now keeps the read-only board visible with a subtle grey treatment and the
+localized “All cats found!” phrase beneath Easy. This supersedes earlier references
+to an automatic victory modal/Back to the Game completion action; menu resume is
+retained. Final-hint explanation is available on request. Exact-cat completion,
+Hint/Clear locks, Menu/New Game, scope and purchase approval rules are unchanged.

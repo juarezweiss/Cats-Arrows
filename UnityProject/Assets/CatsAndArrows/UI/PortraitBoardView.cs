@@ -14,6 +14,8 @@ namespace CatsAndArrows.UI
     {
         public static readonly Color Background = new Color(245 / 255f, 242 / 255f, 233 / 255f);
         public static readonly Color Tile = new Color(1, 253 / 255f, 247 / 255f);
+        public static readonly Color ImmovableTile = new Color(231 / 255f, 229 / 255f, 220 / 255f);
+        private static readonly Color CompletionTint = new Color(218 / 255f, 222 / 255f, 218 / 255f);
         private static readonly Color Border = new Color(126 / 255f, 140 / 255f, 131 / 255f);
         private static readonly Color Secondary = new Color(93 / 255f, 105 / 255f, 98 / 255f);
         private readonly VisualElement safeFrame = new VisualElement();
@@ -24,13 +26,17 @@ namespace CatsAndArrows.UI
         private readonly Label title = new Label();
         private readonly Label difficulty = new Label();
         private readonly Label intro = new Label();
+        private readonly VisualElement completionRow = new VisualElement();
+        private readonly Label completionStatus = new Label();
+        private readonly Button completionHint;
+        private Action reviewCompletionHint;
         private readonly Label error = new Label();
         private GameSession session;
         private BoardGestureController gesture;
         private LocalizationService text;
         private bool interactionSuspended;
         public event Action StateChanged;
-        public bool InteractionEnabled => !interactionSuspended;
+        public bool InteractionEnabled => !interactionSuspended && session?.IsCompleted != true;
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
 
@@ -57,6 +63,29 @@ namespace CatsAndArrows.UI
                 label.style.marginLeft = label.style.marginRight = label.style.marginBottom = 0;
             }
             header.Add(title); header.Add(difficulty); header.Add(intro); safeFrame.Add(header);
+            completionRow.style.flexDirection = FlexDirection.Row;
+            completionRow.style.alignItems = Align.Center;
+            completionRow.style.justifyContent = Justify.Center;
+            completionRow.style.alignSelf = Align.Stretch;
+            completionRow.style.height = 48;
+            completionRow.style.marginTop = 4;
+            completionRow.style.display = DisplayStyle.None;
+            completionStatus.name = "completion-status";
+            completionStatus.style.fontSize = 14;
+            completionStatus.style.whiteSpace = WhiteSpace.Normal;
+            completionStatus.style.unityTextAlign = TextAnchor.MiddleCenter;
+            completionStatus.style.flexShrink = 1;
+            completionStatus.style.marginLeft = completionStatus.style.marginRight = 0;
+            completionHint = new Button(() => reviewCompletionHint?.Invoke()) { name = "completion-hint" };
+            completionHint.style.minHeight = 48;
+            completionHint.style.width = 92;
+            completionHint.style.flexShrink = 0;
+            completionHint.style.fontSize = 14;
+            completionHint.style.whiteSpace = WhiteSpace.Normal;
+            completionHint.style.marginLeft = 8;
+            completionHint.style.backgroundColor = Tile;
+            completionHint.style.color = BoardSymbolElement.Ink;
+            completionRow.Add(completionStatus); completionRow.Add(completionHint); header.Add(completionRow);
             boardRegion.style.position = Position.Absolute;
             boardRegion.style.left = 0; boardRegion.style.right = 0; boardRegion.style.top = 104; boardRegion.style.bottom = 126;
             board.style.position = Position.Absolute;
@@ -82,13 +111,23 @@ namespace CatsAndArrows.UI
 
         public void SetPlayLayout()
         {
-            header.style.height = 48;
+            // Reserve the same space before and after completion so the grid never
+            // moves when the player places the final cat.
+            header.style.height = 100;
             title.style.fontSize = 20;
             difficulty.style.fontSize = 14; difficulty.style.marginTop = 2;
             intro.style.display = DisplayStyle.None;
-            boardRegion.style.top = 56; boardRegion.style.bottom = 120;
+            boardRegion.style.top = 108; boardRegion.style.bottom = 120;
             legend.style.display = DisplayStyle.None;
             LayoutBoard();
+        }
+        public void SetCompletionFeedback(string status, string hintLabel = null, Action reviewHint = null)
+        {
+            completionStatus.text = status ?? "";
+            completionRow.style.display = string.IsNullOrEmpty(status) ? DisplayStyle.None : DisplayStyle.Flex;
+            completionHint.text = hintLabel ?? "";
+            completionHint.style.display = reviewHint == null ? DisplayStyle.None : DisplayStyle.Flex;
+            reviewCompletionHint = reviewHint;
         }
         public void SetInteractionSuspended(bool suspended)
         {
@@ -108,6 +147,7 @@ namespace CatsAndArrows.UI
             CancelInteraction();
             gesture = null;
             session = newSession;
+            SetCompletionFeedback(null);
             SetLocale(locale);
             error.style.display = DisplayStyle.None;
             board.style.display = DisplayStyle.Flex;
@@ -133,7 +173,10 @@ namespace CatsAndArrows.UI
             {
                 var tile = new VisualElement { name = "cell-" + cell.Coordinate.Row + "-" + cell.Coordinate.Column };
                 tile.style.position = Position.Absolute;
-                tile.style.backgroundColor = Tile;
+                var fill = cell.Kind == BoardCellKind.Arrow || cell.Kind == BoardCellKind.Protected ? ImmovableTile : Tile;
+                // Tint the fills only. Dark vector symbols, hatching and clue text
+                // keep their contrast while the entire tile grid becomes quieter.
+                tile.style.backgroundColor = Presentation.IsCompleted ? Color.Lerp(fill, CompletionTint, .35f) : fill;
                 tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 1;
                 tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = Border;
                 tile.style.borderTopLeftRadius = tile.style.borderTopRightRadius = tile.style.borderBottomLeftRadius = tile.style.borderBottomRightRadius = 7;
@@ -187,7 +230,7 @@ namespace CatsAndArrows.UI
             {
                 var item = new VisualElement(); item.style.width = Length.Percent(20); item.style.alignItems = Align.Center;
                 var swatch = new VisualElement(); swatch.style.width = 38; swatch.style.height = 38;
-                swatch.style.backgroundColor = Tile;
+                swatch.style.backgroundColor = kind == BoardCellKind.Arrow || kind == BoardCellKind.Protected ? ImmovableTile : Tile;
                 swatch.style.borderLeftWidth = swatch.style.borderRightWidth = swatch.style.borderTopWidth = swatch.style.borderBottomWidth = 1;
                 swatch.style.borderLeftColor = swatch.style.borderRightColor = swatch.style.borderTopColor = swatch.style.borderBottomColor = Border;
                 var symbol = new BoardSymbolElement(kind, Direction.UpRight); symbol.style.flexGrow = 1; swatch.Add(symbol); item.Add(swatch);
@@ -210,8 +253,8 @@ namespace CatsAndArrows.UI
                 gesture = new BoardGestureController(session, nextLayout);
             }
             Layout = nextLayout;
-            Absolute(board, new Rect((boardRegion.contentRect.width - Layout.Width) / 2,
-                (boardRegion.contentRect.height - Layout.Height) / 2, Layout.Width, Layout.Height));
+            Absolute(board, new Rect((boardRegion.contentRect.width - Layout.GridSize) / 2 - Layout.ClueGutter,
+                (boardRegion.contentRect.height - Layout.GridSize) / 2 - Layout.ClueGutter, Layout.Width, Layout.Height));
             for (var line = 0; line < Presentation.Size; line++)
             {
                 var row = board.Q<Label>("row-clue-" + line); var column = board.Q<Label>("column-clue-" + line);
@@ -231,7 +274,7 @@ namespace CatsAndArrows.UI
         private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (interactionSuspended || evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
+            if (!InteractionEnabled || evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
             // Capture belongs to the stable board, never a tile replaced by Refresh.
             board.CapturePointer(evt.pointerId);
             evt.StopPropagation();

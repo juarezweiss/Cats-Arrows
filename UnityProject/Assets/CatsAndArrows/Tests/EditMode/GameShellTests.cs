@@ -113,10 +113,12 @@ namespace CatsAndArrows.Tests
             Assert.That(view.NewGameRequestId, Is.EqualTo(1));
         }
 
-        [Test]
-        public void LastHintShowsVictoryAndCompletedBoardReturnsWithDisabledActions()
+        [TestCase("en")]
+        [TestCase("pt-BR")]
+        [TestCase("es")]
+        public void LastHintKeepsCompletedBoardVisibleAndExplanationIsOptional(string locale)
         {
-            var view = new GameShellView(14, "en");
+            var view = new GameShellView(14, locale);
             Assert.That(view.StartNewGame(), Is.True);
             for (var request = 0; request < 25 && !view.Loop.Session.IsCompleted; request++)
             {
@@ -124,7 +126,13 @@ namespace CatsAndArrows.Tests
                 if (!view.Loop.Session.IsCompleted) view.BackToGame();
             }
             Assert.That(view.Loop.Session.IsCompleted, Is.True);
-            Assert.That(view.Modal, Is.EqualTo("victory"));
+            Assert.That(view.Modal, Is.Null);
+            Assert.That(view.Screen, Is.EqualTo("play"));
+            Assert.That(view.BoardView.Q<Label>("completion-status").text,
+                Is.EqualTo(GameLocalization.CreateCatalog().GetResource(locale).Messages["game.victory"]));
+            Assert.That(view.Q<Button>("completion-hint"), Is.Not.Null);
+            view.ShowLastHint();
+            Assert.That(view.Modal, Is.EqualTo("last-hint"));
             Assert.That(view.BoardView.InteractionEnabled, Is.False);
             var completed = view.Loop.Session.Marks.ToArray();
             view.BackToGame();
@@ -137,6 +145,30 @@ namespace CatsAndArrows.Tests
             Assert.That(view.Loop.Session.IsCompleted, Is.False);
             Assert.That(view.Loop.Session.Puzzle.Seed, Is.EqualTo(15));
             Assert.That(view.Q<Button>("action-hint").enabledSelf, Is.True);
+            Assert.That(view.BoardView.Q<Label>("completion-status").text, Is.Empty);
+            Assert.That(view.Q<Button>("completion-hint").style.display.value, Is.EqualTo(DisplayStyle.None));
+            view.ShowLastHint();
+            Assert.That(view.Modal, Is.Null);
+        }
+
+        [Test]
+        public void CompletedBoardSurvivesMenuAndLocaleChangeWithoutAutomaticOverlay()
+        {
+            var view = new GameShellView(14, "en");
+            view.StartNewGame();
+            for (var request = 0; request < 30 && !view.Loop.Session.IsCompleted; request++)
+            { view.RequestHint(); view.BackToGame(); }
+            Assert.That(view.Loop.Session.IsCompleted, Is.True);
+            var session = view.Loop.Session;
+            view.ShowMenu(); view.SelectLanguage("pt-BR"); view.BackToGame();
+            Assert.That(view.Loop.Session, Is.SameAs(session));
+            Assert.That(view.Modal, Is.Null);
+            Assert.That(view.BoardView.InteractionEnabled, Is.False);
+            Assert.That(view.BoardView.Q<Label>("completion-status").text,
+                Is.EqualTo(GameLocalization.CreateCatalog().GetResource("pt-BR").Messages["game.victory"]));
+            view.ShowLastHint();
+            Assert.That(view.Modal, Is.EqualTo("last-hint"));
+            Assert.That(view.Q<Label>("last-hint-explanation").text, Does.Contain("Linha").Or.Contain("coluna"));
         }
 
         [Test]
