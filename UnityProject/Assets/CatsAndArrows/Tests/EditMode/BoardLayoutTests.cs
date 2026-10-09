@@ -8,6 +8,30 @@ namespace CatsAndArrows.Tests
     // Issue #6: geometry checks cover narrow portrait, cutouts, and future grid sizes.
     public sealed class BoardLayoutTests
     {
+        // Issue #19: center playable tiles rather than the asymmetric clue+tile block.
+        [TestCase(288, 232, 5)] // 320 × 568, simulated insets, frame/header/controls reserved.
+        [TestCase(358, 508, 5)]
+        [TestCase(288, 80, 5)] // Height-limited layout must still retain visible clues.
+        [TestCase(358, 508, 7)]
+        [TestCase(358, 508, 10)]
+        public void TileGridIsCenteredWithEveryVisibleClueInsideAvailableRegion(float width, float height, int size)
+        {
+            var layout = BoardLayout.Calculate(width, height, size);
+            var origin = new Vector2((width - layout.GridSize) / 2 - layout.ClueGutter,
+                (height - layout.GridSize) / 2 - layout.ClueGutter);
+            var first = layout.GetCellRect(new BoardCoordinate(0, 0));
+            var last = layout.GetCellRect(new BoardCoordinate(size - 1, size - 1));
+            Assert.That(origin.x + (first.xMin + last.xMax) / 2, Is.EqualTo(width / 2).Within(.001f));
+            Assert.That(origin.y + (first.yMin + last.yMax) / 2, Is.EqualTo(height / 2).Within(.001f));
+            Assert.That(layout.CellSize, Is.GreaterThan(0));
+            for (var index = 0; index < size; index++)
+            {
+                foreach (var rect in new[] { layout.GetRowClueRect(index), layout.GetColumnClueRect(index),
+                    layout.GetCellRect(new BoardCoordinate(index, index)) })
+                    AssertInside(new Rect(rect.position + origin, rect.size), width, height);
+            }
+        }
+
         [TestCase(320, 568, 20, 20, 5)]
         [TestCase(390, 844, 34, 47, 5)]
         [TestCase(393, 852, 34, 59, 5)]

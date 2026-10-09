@@ -20,6 +20,7 @@ namespace CatsAndArrows.UI
         private Button hintButton;
         private Button clearButton;
         private bool loading;
+        private HintResult completionHint;
         public PortraitBoardView BoardView { get; }
         public EasyGameLoop Loop { get; }
         public string Locale => text.SelectedLocale;
@@ -98,6 +99,7 @@ namespace CatsAndArrows.UI
         public bool StartNewGame()
         {
             CancelInteraction();
+            completionHint = null; BoardView.SetCompletionFeedback(null);
             if (!loading) NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
             NewGameRequestId++;
             var success = Loop.NewGame(); loading = false;
@@ -112,7 +114,6 @@ namespace CatsAndArrows.UI
                 return false;
             }
             BoardView.Bind(Loop.Session, Locale); BackToGame();
-            if (Loop.Session.IsCompleted) ShowVictory();
             return true;
         }
         private void QueueNewGame()
@@ -129,7 +130,7 @@ namespace CatsAndArrows.UI
             if (loading || Loop.Session == null) return;
             Screen = "play"; Modal = null; menu.style.display = overlay.style.display = DisplayStyle.None;
             BoardView.style.display = controls.style.display = DisplayStyle.Flex;
-            BoardView.SetInteractionSuspended(false); BuildControls();
+            BoardView.SetInteractionSuspended(Loop.Session.IsCompleted); BuildControls(); UpdateCompletionFeedback();
         }
         private void BuildControls()
         {
@@ -154,6 +155,16 @@ namespace CatsAndArrows.UI
         {
             if (loading || Screen != "play" || Modal != null || Loop.Session == null || Loop.Session.IsCompleted) return;
             CancelInteraction(); var result = Loop.Session.ApplyHint(); BoardView.Refresh();
+            if (result.Assignment.HasValue) BoardView.HighlightCell(result.Assignment.Value.Coordinate);
+            if (Loop.Session.IsCompleted)
+            {
+                completionHint = result;
+                UpdateCompletionFeedback();
+            }
+            else ShowModal("hint", text.GetText("game.hint"), FormatHint(result), MakeButton("modal-back", "game.close", BackToGame));
+        }
+        private string FormatHint(HintResult result)
+        {
             var explanation = text.GetText("game.hint-none");
             if (result.Step != null && result.Assignment.HasValue)
             {
@@ -162,21 +173,26 @@ namespace CatsAndArrows.UI
                     new Dictionary<string, object> { { "row", assignment.Coordinate.Row + 1 }, { "column", assignment.Coordinate.Column + 1 },
                     { "state", text.GetText(assignment.State == CellKnowledge.Cat ? "board.cat" : "board.x") } });
                 if (result.Corrected) explanation += "\n\n" + text.GetText("game.hint-correction");
-                BoardView.HighlightCell(assignment.Coordinate);
             }
-            if (Loop.Session.IsCompleted) ShowVictory(explanation);
-            else ShowModal("hint", text.GetText("game.hint"), explanation, MakeButton("modal-back", "game.close", BackToGame));
+            return explanation;
         }
         private void OnBoardChanged()
         {
-            if (Loop.Session?.IsCompleted == true) ShowVictory();
+            if (Loop.Session?.IsCompleted == true) UpdateCompletionFeedback();
         }
-        private void ShowVictory(string hintExplanation = null)
+        private void UpdateCompletionFeedback()
         {
+            if (Loop.Session?.IsCompleted != true) { BoardView.SetCompletionFeedback(null); return; }
             hintButton?.SetEnabled(false); clearButton?.SetEnabled(false);
-            ShowModal("victory", text.GetText("game.victory"),
-                (hintExplanation == null ? "" : hintExplanation + "\n\n") + text.GetText("game.victory-body"),
-                MakeButton("modal-new-game", "game.new", QueueNewGame), MakeButton("modal-back", "game.back", BackToGame));
+            BoardView.SetInteractionSuspended(true);
+            BoardView.SetCompletionFeedback(text.GetText("game.victory"), text.GetText("game.last-hint"),
+                completionHint == null ? null : (Action)ShowLastHint);
+        }
+        public void ShowLastHint()
+        {
+            if (loading || Screen != "play" || Modal != null || Loop.Session?.IsCompleted != true || completionHint == null) return;
+            ShowModal("last-hint", text.GetText("game.last-hint"), FormatHint(completionHint),
+                MakeButton("modal-back", "game.close", BackToGame));
         }
         public void ShowRules()
         {
@@ -192,7 +208,9 @@ namespace CatsAndArrows.UI
             overlay.style.paddingTop = overlay.style.paddingBottom = 8;
             overlay.Add(Heading(heading, 23));
             var scroll = new ScrollView(ScrollViewMode.Vertical); scroll.style.flexGrow = 1; scroll.style.flexShrink = 1;
-            scroll.Add(Paragraph(body)); overlay.Add(scroll);
+            var explanation = Paragraph(body);
+            if (kind == "last-hint") explanation.name = "last-hint-explanation";
+            scroll.Add(explanation); overlay.Add(scroll);
             var footer = new VisualElement(); footer.style.flexShrink = 0;
             foreach (var action in actions) footer.Add(action);
             overlay.Add(footer);

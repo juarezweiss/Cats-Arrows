@@ -29,6 +29,7 @@ namespace CatsAndArrows.UI
             if (!Check(() => Require(shell.Loop.Session != null && shell.Screen == "play", "Easy start"))) yield break;
             var firstMs = Elapsed(shell);
             yield return Capture(captures, "play");
+            if (!Check(() => CheckGridCentered(shell))) yield break;
             var session = shell.Loop.Session;
             var puzzle = session.Puzzle;
             var protectedCells = session.ProtectedCells.ToArray();
@@ -55,8 +56,15 @@ namespace CatsAndArrows.UI
                 if (!session.IsCompleted) shell.BackToGame();
                 yield return new WaitForEndOfFrame();
             }
-            if (!Check(() => Require(session.IsCompleted && shell.Modal == "victory", "immediate hint victory"))) yield break;
-            yield return Capture(captures, "victory");
+            if (!Check(() =>
+            {
+                Require(session.IsCompleted && shell.Modal == null && shell.Screen == "play", "completion stays on grid");
+                Require(!shell.BoardView.InteractionEnabled, "completed view read-only");
+                Require(!string.IsNullOrEmpty(shell.Q<Label>("completion-status").text), "inline completion message");
+                Click(shell, "completion-hint");
+                Require(shell.Modal == "last-hint", "final hint explanation is opt-in");
+            })) yield break;
+            yield return Capture(captures, "last-hint");
             if (!Check(() =>
             {
                 Click(shell, "modal-back");
@@ -72,10 +80,35 @@ namespace CatsAndArrows.UI
                 var previous = shell.Loop.RequestedSeed;
                 if (!Check(() => Click(shell, "action-new-game"))) yield break;
                 yield return Ready(shell);
-                if (!Check(() => Require(shell.Loop.Session != null && shell.Loop.RequestedSeed != previous, "new seed/ready"))) yield break;
+                if (!Check(() =>
+                {
+                    Require(shell.Loop.Session != null && shell.Loop.RequestedSeed != previous, "new seed/ready");
+                    Require(string.IsNullOrEmpty(shell.Q<Label>("completion-status").text), "New Game clears completion");
+                    Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "New Game clears final hint");
+                    CheckGridCentered(shell);
+                })) yield break;
                 samples.Add(Elapsed(shell));
                 UnityEngine.Debug.Log("GAME_LOOP_READY seed=" + shell.Loop.RequestedSeed + " ms=" + samples.Last().ToString("F3", CultureInfo.InvariantCulture));
             }
+            // Separate from generation timing: exercise the actual board adapter
+            // through mounted pointer events so completion is not only hint-tested.
+            var tappedSession = shell.Loop.Session;
+            foreach (var cat in tappedSession.Puzzle.SolutionCats)
+            {
+                if (!Check(() => { TapCell(shell, cat); TapCell(shell, cat); })) yield break;
+                yield return new WaitForEndOfFrame();
+            }
+            if (!Check(() =>
+            {
+                Require(tappedSession.IsCompleted && shell.Modal == null && shell.Screen == "play", "pointer completion stays on grid");
+                Require(!shell.BoardView.InteractionEnabled, "pointer completion disables view input");
+                Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "pointer completion has no final-hint action");
+                var before = tappedSession.Marks.ToArray();
+                TapCell(shell, tappedSession.Puzzle.SolutionCats.First());
+                Require(tappedSession.Marks.SequenceEqual(before), "completed pointer tap has no effect");
+                Require(!shell.Q<Button>("action-hint").enabledSelf && !shell.Q<Button>("action-clear").enabledSelf, "pointer completion disables Hint/Clear");
+            })) yield break;
+            yield return Capture(captures, "completed-tap");
             samples.Sort();
             var report = "GAME_LOOP_REVIEW_PASS locale=" + shell.Locale + " platform=" + Application.platform +
                 " source=synthetic-button firstMs=" + firstMs.ToString("F3", CultureInfo.InvariantCulture) +
@@ -89,6 +122,13 @@ namespace CatsAndArrows.UI
         {
             for (var frame = 0; frame < 120 && shell.Modal == "loading"; frame++) yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+        }
+        private static void CheckGridCentered(GameShellView shell)
+        {
+            var board = shell.BoardView.Q<VisualElement>("board-grid");
+            var gridCenter = board.LocalToWorld(new Vector2(shell.BoardView.Layout.ClueGutter + shell.BoardView.Layout.GridSize / 2,
+                shell.BoardView.Layout.ClueGutter + shell.BoardView.Layout.GridSize / 2));
+            Require(Vector2.Distance(gridCenter, board.parent.worldBound.center) < .6f, "actual tile grid centered");
         }
         private static double Elapsed(GameShellView shell) =>
             (Stopwatch.GetTimestamp() - shell.NewGameStartedAtTimestamp) * 1000.0 / Stopwatch.Frequency;
@@ -110,6 +150,17 @@ namespace CatsAndArrows.UI
             { down.target = button; button.SendEvent(down); }
             using (var up = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, button = 0, mousePosition = position }))
             { up.target = button; button.SendEvent(up); }
+        }
+        private static void TapCell(GameShellView shell, BoardCoordinate coordinate)
+        {
+            var board = shell.BoardView.Q<VisualElement>("board-grid");
+            var position = board.LocalToWorld(shell.BoardView.Layout.GetCellRect(coordinate).center);
+            var picked = shell.panel.Pick(position);
+            Require(picked == board || (picked != null && board.Contains(picked)), "panel picks tile " + coordinate);
+            using (var down = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, button = 0, mousePosition = position }))
+            { down.target = board; board.SendEvent(down); }
+            using (var up = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, button = 0, mousePosition = position }))
+            { up.target = board; board.SendEvent(up); }
         }
         private static bool Check(Action action)
         {

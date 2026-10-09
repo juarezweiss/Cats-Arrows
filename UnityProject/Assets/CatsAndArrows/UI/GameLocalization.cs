@@ -13,6 +13,7 @@ namespace CatsAndArrows.UI
             {
                 { "game.start", new[] { "Start Easy", "Jogar no Fácil", "Jugar en Fácil" } },
                 { "game.hint", new[] { "Hint", "Dica", "Pista" } },
+                { "game.last-hint", new[] { "Last hint", "Última dica", "Última pista" } },
                 { "game.clear", new[] { "Clear", "Limpar", "Limpiar" } },
                 { "game.menu", new[] { "Menu", "Menu", "Menú" } },
                 { "game.new", new[] { "New Game", "Novo Jogo", "Nuevo Juego" } },

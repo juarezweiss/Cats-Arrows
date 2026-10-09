@@ -64,7 +64,7 @@ Unity presentation only:
 - row/column clue views;
 - cell views;
 - pointer/touch interaction adapter;
-- victory modal;
+- inline completion presentation;
 - accessibility presentation.
 
 ## State ownership
@@ -148,10 +148,19 @@ the session, returns the proof and correction flag, and immediately checks
 completion. Player marks never become solver premises. Clear does not alter
 clues/protection or require a persistent hint cursor.
 
-`GameShellView` manages Menu/Play/Failure and blocking Rules/Hint/Victory overlays.
+`GameShellView` manages Menu/Play/Failure and blocking Rules/Hint overlays and inline completion.
 It sends gameplay intents and listens for board state changes. The compact play
 layout replaces the persistent legend with a 2×2 control group; scrollable help
 explains the symbols. Language preference alone uses PlayerPrefs. A live session
 survives Menu and focus changes; board persistence remains deferred. A final Hint
-combines its explanation with one victory dialog. Diagnostic mounted flow and
+retains its structured proof for optional review, without opening an overlay. Diagnostic mounted flow and
 render timing remain opt-in review paths, not analytics or gameplay dependencies.
+
+## Issue #19 calm board polish
+
+Completion remains domain-owned and immediate. Views apply a subtle completed
+palette and inline localized status while keeping the grid visible. Final-hint
+proof is retained by the shell only for optional explanation review and resets
+with New Game. Tile-grid centering reserves symmetric clue gutters while pointer
+mapping continues to use shared BoardLayout coordinates. PlayerSettings locks
+mobile orientation to upright portrait; no solver/generator changes are involved.

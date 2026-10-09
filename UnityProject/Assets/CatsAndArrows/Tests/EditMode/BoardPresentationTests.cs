@@ -13,6 +13,47 @@ namespace CatsAndArrows.Tests
     public sealed class BoardPresentationTests
     {
         [Test]
+        public void ImmovableTilesRemainDarkerAndSymbolsFullyVisibleAfterCompletionAndNewGame()
+        {
+            // Issue #19: completion must not flatten arrow/protection distinction or fade ink.
+            var protectedCell = new BoardCoordinate(3, 1);
+            var arrow = new BoardCoordinate(4, 2);
+            var normal = new BoardCoordinate(3, 2);
+            var session = new GameSession(MakePuzzle(), new[] { protectedCell });
+            var view = new PortraitBoardView();
+            view.Bind(session, "en");
+            var normalFill = Cell(view, normal).style.backgroundColor.value;
+            var fixedFill = Cell(view, protectedCell).style.backgroundColor.value;
+            Assert.That(Cell(view, arrow).style.backgroundColor.value, Is.EqualTo(fixedFill));
+            Assert.That(Luminance(fixedFill), Is.LessThan(Luminance(normalFill)));
+            foreach (var cat in session.Puzzle.SolutionCats)
+            {
+                session.Tap(cat);
+                session.Tap(cat);
+            }
+            view.Refresh();
+            var completedNormal = Cell(view, normal).style.backgroundColor.value;
+            var completedFixed = Cell(view, protectedCell).style.backgroundColor.value;
+            Assert.That(completedNormal, Is.Not.EqualTo(normalFill));
+            Assert.That(Luminance(completedFixed), Is.LessThan(Luminance(completedNormal)));
+            foreach (var coordinate in new[] { arrow, protectedCell, new BoardCoordinate(1, 1) })
+            {
+                var tile = Cell(view, coordinate);
+                Assert.That(tile.Q<BoardSymbolElement>(), Is.Not.Null);
+                Assert.That(tile.style.opacity.keyword == StyleKeyword.Null || tile.style.opacity.value == 1, Is.True);
+            }
+            view.Bind(new GameSession(MakePuzzle(), new[] { protectedCell }), "en");
+            Assert.That(Cell(view, normal).style.backgroundColor.value, Is.EqualTo(normalFill));
+            Assert.That(Cell(view, protectedCell).style.backgroundColor.value, Is.EqualTo(fixedFill));
+            Assert.That(view.Presentation.IsCompleted, Is.False);
+        }
+
+        private static VisualElement Cell(PortraitBoardView view, BoardCoordinate coordinate) =>
+            view.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
+
+        private static float Luminance(Color color) => .2126f * color.linear.r + .7152f * color.linear.g + .0722f * color.linear.b;
+
+        [Test]
         public void UnmarkedSolutionCellsAreIndistinguishableFromOtherEmptyCells()
         {
             var session = new GameSession(MakePuzzle());

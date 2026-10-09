@@ -10,6 +10,8 @@ namespace CatsAndArrows.UI
         public float CellSize { get; }
         public float Gap { get; }
         public float ClueSize { get; }
+        public float ClueGutter => ClueSize + Gap;
+        public float GridSize => Size * CellSize + (Size - 1) * Gap;
         public float Width { get; }
         public float Height => Width;
         private BoardLayout(int size, float cell, float gap, float clue)
@@ -22,7 +24,9 @@ namespace CatsAndArrows.UI
             var extent = Mathf.Min(availableWidth, availableHeight, 520);
             var gap = Mathf.Min(4, extent / (size * 12f));
             var clue = Mathf.Min(32, extent / (size + 1));
-            return new BoardLayout(size, Mathf.Min(64, Mathf.Max(0, (extent - clue - gap * size) / size)), gap, clue);
+            // Reserve the clue gutter on both sides so the tile grid itself can be
+            // centered while the visible left/top clues remain inside the region.
+            return new BoardLayout(size, Mathf.Min(64, Mathf.Max(0, (extent - 2 * (clue + gap) - (size - 1) * gap) / size)), gap, clue);
         }
         public Rect GetCellRect(BoardCoordinate coordinate)
         {

@@ -54,8 +54,9 @@ Win immediately when the set of player-marked Cat cells exactly equals the solut
 The state of every non-solution normal cell is irrelevant: it may be Empty or X. Extra player Cat marks prevent victory.
 
 On victory:
-- show a restrained celebration;
-- allow `Back to the Game` to inspect the completed board;
+- show the localized “All cats found!” inline beneath the difficulty;
+- keep the completed board visible with a subtle grey treatment;
+- do not automatically open a completion screen;
 - the completed board is read-only;
 - Hint and Clear are disabled;
 - New Game and Menu remain available.
@@ -82,6 +83,7 @@ cause hints to rescan rather than advancing a permanent hint cursor.
 
 Before play, only original-total-one cardinal arrows contribute opposite-side
 protection, verified against clue-only solver assignments. Diagonals and totals
-of two do not create this automatic protection. Hint can finish the game; in that
-case its explanation appears in the single victory dialog. Back to the Game
-returns to the read-only board, with Hint/Clear disabled and Menu/New Game enabled.
+of two do not create this automatic protection. Hint can finish the game. The
+completed grid stays visible; an optional Last hint action opens that deduction
+on request. Hint/Clear are disabled and Menu/New Game remain enabled. The owner’s
+Issue #19 decision supersedes the earlier automatic victory-dialog presentation.
