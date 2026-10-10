@@ -70,7 +70,7 @@ namespace CatsAndArrows.Tests
         [Test]
         public void HintOverlayPreventsCommandsUntilReturnAndClearKeepsSamePuzzle()
         {
-            var view = new GameShellView(14, "en");
+            var view = new GameShellView(14, "en", useInlineHints: false);
             Assert.That(view.Screen, Is.EqualTo("menu"));
             Assert.That(view.Loop.Session, Is.Null);
             Assert.That(view.StartNewGame(), Is.True);
@@ -93,7 +93,7 @@ namespace CatsAndArrows.Tests
         [Test]
         public void MenuRulesAndLanguagePreserveLiveSessionAndReturnWithoutNewGeneration()
         {
-            var view = new GameShellView(14, "en");
+            var view = new GameShellView(14, "en", useInlineHints: false);
             Assert.That(view.StartNewGame(), Is.True);
             var session = view.Loop.Session;
             session.Tap(session.Marks.Keys.First());
@@ -118,7 +118,7 @@ namespace CatsAndArrows.Tests
         [TestCase("es")]
         public void LastHintKeepsCompletedBoardVisibleAndExplanationIsOptional(string locale)
         {
-            var view = new GameShellView(14, locale);
+            var view = new GameShellView(14, locale, useInlineHints: false);
             Assert.That(view.StartNewGame(), Is.True);
             for (var request = 0; request < 25 && !view.Loop.Session.IsCompleted; request++)
             {
@@ -154,7 +154,7 @@ namespace CatsAndArrows.Tests
         [Test]
         public void CompletedBoardSurvivesMenuAndLocaleChangeWithoutAutomaticOverlay()
         {
-            var view = new GameShellView(14, "en");
+            var view = new GameShellView(14, "en", useInlineHints: false);
             view.StartNewGame();
             for (var request = 0; request < 30 && !view.Loop.Session.IsCompleted; request++)
             { view.RequestHint(); view.BackToGame(); }
@@ -178,7 +178,7 @@ namespace CatsAndArrows.Tests
             var attempts = 0;
             var loop = new EasyGameLoop(14, seed => ++attempts == 2 ? null
                 : generator.Generate(DifficultyProfile.Easy, seed));
-            var view = new GameShellView(14, "es", loop);
+            var view = new GameShellView(14, "es", loop, useInlineHints: false);
             Assert.That(view.StartNewGame(), Is.True);
             Assert.That(view.StartNewGame(), Is.False);
             Assert.That(view.Screen, Is.EqualTo("failure"));

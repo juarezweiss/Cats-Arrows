@@ -40,20 +40,48 @@ namespace CatsAndArrows.UI
                 Require(session.Marks.Values.All(mark => mark == PlayerMark.Empty), "Clear resets marks");
                 Require(ReferenceEquals(puzzle, session.Puzzle) && session.ProtectedCells.SequenceEqual(protectedCells), "Clear preserves clues/protection");
                 Click(shell, "action-hint");
-                Require(shell.Modal == "hint" && !shell.BoardView.InteractionEnabled, "hint blocks input");
-                var marks = session.Marks.ToArray(); shell.ClearBoard();
-                Require(session.Marks.SequenceEqual(marks), "modal suppresses Clear");
+                if (shell.UseInlineHints)
+                {
+                    Require(shell.Modal == null && shell.BoardView.InteractionEnabled, "immediate hint keeps board playable");
+                    CheckNoHintExplanation(shell);
+                    Require(session.Marks.Values.Count(mark => mark != PlayerMark.Empty) == 1, "Hint applies exactly one mark");
+                    CheckGridCentered(shell);
+                }
+                else
+                {
+                    Require(shell.Modal == "hint" && !shell.BoardView.InteractionEnabled, "legacy hint blocks input");
+                    var marks = session.Marks.ToArray(); shell.ClearBoard();
+                    Require(session.Marks.SequenceEqual(marks), "modal suppresses Clear");
+                }
             })) yield break;
             yield return Capture(captures, "hint");
-            if (!Check(() => Click(shell, "modal-back"))) yield break;
+            if (!Check(() =>
+            {
+                if (!shell.UseInlineHints) return;
+                var before = session.Marks.ToArray();
+                var coordinate = session.Marks.First(pair => pair.Value == PlayerMark.Empty).Key;
+                TapCell(shell, coordinate); TapCell(shell, coordinate); TapCell(shell, coordinate);
+                Require(session.Marks.SequenceEqual(before) && shell.Modal == null, "board taps continue after Hint");
+                CheckNoHintExplanation(shell);
+                CheckGridCentered(shell);
+            })) yield break;
+            if (!Check(() => { if (!shell.UseInlineHints) Click(shell, "modal-back"); })) yield break;
             yield return new WaitForEndOfFrame();
             if (!Check(() => { Click(shell, "action-menu"); Require(ReferenceEquals(session, shell.Loop.Session), "Menu keeps board"); })) yield break;
             yield return new WaitForEndOfFrame();
             if (!Check(() => Click(shell, "menu-back"))) yield break;
+            yield return new WaitForEndOfFrame();
+            if (!Check(() =>
+            {
+                if (!shell.UseInlineHints) return;
+                CheckNoHintExplanation(shell);
+                shell.ClearBoard();
+                Require(session.Marks.Values.All(mark => mark == PlayerMark.Empty), "Clear resets after immediate hint");
+            })) yield break;
             for (var i = 0; i < 30 && !session.IsCompleted; i++)
             {
                 if (!Check(() => shell.RequestHint())) yield break;
-                if (!session.IsCompleted) shell.BackToGame();
+                if (!session.IsCompleted && !shell.UseInlineHints) shell.BackToGame();
                 yield return new WaitForEndOfFrame();
             }
             if (!Check(() =>
@@ -61,13 +89,21 @@ namespace CatsAndArrows.UI
                 Require(session.IsCompleted && shell.Modal == null && shell.Screen == "play", "completion stays on grid");
                 Require(!shell.BoardView.InteractionEnabled, "completed view read-only");
                 Require(!string.IsNullOrEmpty(shell.Q<Label>("completion-status").text), "inline completion message");
-                Click(shell, "completion-hint");
-                Require(shell.Modal == "last-hint", "final hint explanation is opt-in");
+                if (shell.UseInlineHints)
+                {
+                    CheckNoHintExplanation(shell);
+                    Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "completed hint has no explanation action");
+                }
+                else
+                {
+                    Click(shell, "completion-hint");
+                    Require(shell.Modal == "last-hint", "legacy final hint explanation is opt-in");
+                }
             })) yield break;
-            yield return Capture(captures, "last-hint");
+            if (!shell.UseInlineHints) yield return Capture(captures, "last-hint");
             if (!Check(() =>
             {
-                Click(shell, "modal-back");
+                if (!shell.UseInlineHints) Click(shell, "modal-back");
                 Require(!shell.Q<Button>("action-hint").enabledSelf && !shell.Q<Button>("action-clear").enabledSelf, "completed controls disabled");
                 Require(shell.Q<Button>("action-new-game").enabledSelf && shell.Q<Button>("action-menu").enabledSelf, "new/menu remain active");
                 var before = session.Marks.ToArray(); shell.RequestHint(); shell.ClearBoard();
@@ -85,6 +121,7 @@ namespace CatsAndArrows.UI
                     Require(shell.Loop.Session != null && shell.Loop.RequestedSeed != previous, "new seed/ready");
                     Require(string.IsNullOrEmpty(shell.Q<Label>("completion-status").text), "New Game clears completion");
                     Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "New Game clears final hint");
+                    if (shell.UseInlineHints) CheckNoHintExplanation(shell);
                     CheckGridCentered(shell);
                 })) yield break;
                 samples.Add(Elapsed(shell));
@@ -103,6 +140,7 @@ namespace CatsAndArrows.UI
                 Require(tappedSession.IsCompleted && shell.Modal == null && shell.Screen == "play", "pointer completion stays on grid");
                 Require(!shell.BoardView.InteractionEnabled, "pointer completion disables view input");
                 Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "pointer completion has no final-hint action");
+                if (shell.UseInlineHints) CheckNoHintExplanation(shell);
                 var before = tappedSession.Marks.ToArray();
                 TapCell(shell, tappedSession.Puzzle.SolutionCats.First());
                 Require(tappedSession.Marks.SequenceEqual(before), "completed pointer tap has no effect");
@@ -111,6 +149,7 @@ namespace CatsAndArrows.UI
             yield return Capture(captures, "completed-tap");
             samples.Sort();
             var report = "GAME_LOOP_REVIEW_PASS locale=" + shell.Locale + " platform=" + Application.platform +
+                " hintFlow=" + (shell.UseInlineHints ? "immediate" : "legacy") +
                 " source=synthetic-button firstMs=" + firstMs.ToString("F3", CultureInfo.InvariantCulture) +
                 " requests=20 medianMs=" + samples[9].ToString("F3", CultureInfo.InvariantCulture) +
                 " p95Ms=" + samples[18].ToString("F3", CultureInfo.InvariantCulture) +
@@ -122,6 +161,11 @@ namespace CatsAndArrows.UI
         {
             for (var frame = 0; frame < 120 && shell.Modal == "loading"; frame++) yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+        }
+        private static void CheckNoHintExplanation(GameShellView shell)
+        {
+            Require(shell.Q<Button>("action-why") == null, "no Why action");
+            Require(shell.Q<VisualElement>("hint-explanation-scroll") == null && shell.Q<Label>("hint-explanation") == null, "no inline explanation UI");
         }
         private static void CheckGridCentered(GameShellView shell)
         {

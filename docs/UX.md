@@ -51,3 +51,13 @@ Completed boards remain visible with the localized “All cats found!” phrase 
 the difficulty, without an automatic overlay. A final Hint can be reviewed via an
 optional “Last hint” action; opening its explanation is deliberate. New Game
 clears the completion treatment. Upright portrait is mandatory on mobile.
+
+## Issue #23 immediate hints
+
+The owner approved immediate hints as the ongoing default on 2026-10-10 after
+rejecting the optional Why explanation in device review. Hint applies
+one guaranteed Cat/X conclusion immediately, briefly outlines the target and
+keeps the board playable. There is no Why button, explanation area or final-hint
+review action in the default flow. Hint/Clear share the first control row;
+Menu/New Game remain below. Completion keeps its calm inline status and readonly
+grid. The previous modal/Last hint presentation remains a rollback configuration.

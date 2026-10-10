@@ -337,3 +337,12 @@ pointer taps, action locks and New Game reset. QA/UX reviewed 21 locale/portrait
 captures without blockers. Exported iOS Info.plist permits upright portrait only.
 Owner iPhone review on 2026-10-09 confirmed centered grid, darker cells, working
 orientation lock and improved completion. See `BOARD_POLISH_REVIEW.md`.
+
+## Issue #23 immediate hints
+
+InlineHintTests cover immediate one-fact application, all three locales,
+correction of conflicting marks, consecutive hints, reset/menu/locale behavior
+and completed-board controls without explanation UI. Existing GameShellTests
+exercise the legacy presentation for rollback. Native GameLoopReviewChecks
+exercise both configurations with mounted pointer events and fixed-grid checks.
+See INLINE_HINT_REVIEW.md for fresh results and owner review status.

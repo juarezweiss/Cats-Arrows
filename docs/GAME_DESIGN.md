@@ -87,3 +87,13 @@ of two do not create this automatic protection. Hint can finish the game. The
 completed grid stays visible; an optional Last hint action opens that deduction
 on request. Hint/Clear are disabled and Menu/New Game remain enabled. The owner’s
 Issue #19 decision supersedes the earlier automatic victory-dialog presentation.
+
+## Issue #23 immediate-hint presentation
+
+The owner's 2026-10-10 approval establishes the ongoing default and supersedes
+the proposed Why experiment: Hint applies
+one clue-proven fact immediately with no explanation UI. It may mark Cat or X,
+correct a conflicting player mark and finish the board. Completed boards remain
+readonly with Hint/Clear disabled; no Last hint action is shown. Unlimited
+assistance, clue-only proof and exact-cat victory remain unchanged. The previous
+modal/Last hint presentation is retained only as rollback.

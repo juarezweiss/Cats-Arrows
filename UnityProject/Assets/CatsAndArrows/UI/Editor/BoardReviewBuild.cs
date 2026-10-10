@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -78,13 +79,15 @@ namespace CatsAndArrows.UI.Editor
             if (!BuildPipeline.IsBuildTargetSupported(group, target))
                 throw new InvalidOperationException("Pinned editor lacks build support for " + target);
             PrepareReviewScene();
+            var defines = new List<string>();
+            if (Environment.GetEnvironmentVariable("CATS_ARROWS_GAME_LOOP_AUTORUN") == "1") defines.Add("CATS_ARROWS_GAME_LOOP_CHECK");
+            if (Environment.GetEnvironmentVariable("CATS_ARROWS_HINT_FLOW") == "legacy") defines.Add("CATS_ARROWS_LEGACY_HINTS");
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath }, target = target, targetGroup = group,
                 locationPathName = output, options = BuildOptions.None,
                 // Per-build diagnostic opt-in; never persist this in PlayerSettings.
-                extraScriptingDefines = Environment.GetEnvironmentVariable("CATS_ARROWS_GAME_LOOP_AUTORUN") == "1"
-                    ? new[] { "CATS_ARROWS_GAME_LOOP_CHECK" } : Array.Empty<string>()
+                extraScriptingDefines = defines.ToArray()
             });
             if (report.summary.result != BuildResult.Succeeded) throw new InvalidOperationException("Board review build failed: " + report.summary.result);
             Debug.Log("BOARD_REVIEW_BUILD " + output);
