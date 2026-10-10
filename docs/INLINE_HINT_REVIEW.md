@@ -15,8 +15,9 @@ Puzzle logic is unchanged.
 
 ## Rollback
 
-The accepted Issue #19 signed iPhone app is preserved at
-Builds/Issue19Board/Playable/UnityProject.app (develop baseline dcae803).
+The owner authorized purging the Issue #19 signed iPhone rollback app on
+2026-10-10 after adopting the new flow. That prebuilt app is no longer available;
+the prior source remains in develop history (baseline dcae803).
 GameShellView useInlineHints=false, the bootstrap setting, or the per-build
 CATS_ARROWS_HINT_FLOW=legacy restore the previous modal/Last hint flow. Desktop
 review also supports --hint-flow=legacy. Revert only scoped Issue #23 changes;
@@ -49,4 +50,5 @@ edge-case results were not separately reported.
 
 The revised iOS IL2CPP/Xcode Release build succeeded, was installed and launched
 on the paired iPhone 17. Saved app: Builds/Issue23Board/Playable/UnityProject.app.
-The accepted Issue #19 app remains untouched for rollback. Owner review approved.
+The accepted Issue #19 app was subsequently purged at the owner’s request.
+Owner review approved.
