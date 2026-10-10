@@ -21,6 +21,8 @@ namespace CatsAndArrows.UI
         private Button clearButton;
         private bool loading;
         private HintResult completionHint;
+        // True selects immediate assistance; false retains the approved modal rollback.
+        public bool UseInlineHints { get; }
         public PortraitBoardView BoardView { get; }
         public EasyGameLoop Loop { get; }
         public string Locale => text.SelectedLocale;
@@ -29,9 +31,10 @@ namespace CatsAndArrows.UI
         public long NewGameStartedAtTimestamp { get; private set; }
         public int NewGameRequestId { get; private set; }
 
-        public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null)
+        public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true)
         {
             name = "game-shell";
+            UseInlineHints = useInlineHints;
             Loop = loop ?? new EasyGameLoop(initialSeed);
             text = new LocalizationService(GameLocalization.CreateCatalog());
             text.SelectLanguage(locale ?? LanguagePreference.Load());
@@ -155,7 +158,12 @@ namespace CatsAndArrows.UI
         {
             if (loading || Screen != "play" || Modal != null || Loop.Session == null || Loop.Session.IsCompleted) return;
             CancelInteraction(); var result = Loop.Session.ApplyHint(); BoardView.Refresh();
-            if (result.Assignment.HasValue) BoardView.HighlightCell(result.Assignment.Value.Coordinate);
+            if (result.Assignment.HasValue) BoardView.HighlightCell(result.Assignment.Value.Coordinate, UseInlineHints ? 700 : 0);
+            if (UseInlineHints)
+            {
+                if (Loop.Session.IsCompleted) UpdateCompletionFeedback();
+                return;
+            }
             if (Loop.Session.IsCompleted)
             {
                 completionHint = result;
@@ -186,11 +194,11 @@ namespace CatsAndArrows.UI
             hintButton?.SetEnabled(false); clearButton?.SetEnabled(false);
             BoardView.SetInteractionSuspended(true);
             BoardView.SetCompletionFeedback(text.GetText("game.victory"), text.GetText("game.last-hint"),
-                completionHint == null ? null : (Action)ShowLastHint);
+                UseInlineHints || completionHint == null ? null : (Action)ShowLastHint);
         }
         public void ShowLastHint()
         {
-            if (loading || Screen != "play" || Modal != null || Loop.Session?.IsCompleted != true || completionHint == null) return;
+            if (UseInlineHints || loading || Screen != "play" || Modal != null || Loop.Session?.IsCompleted != true || completionHint == null) return;
             ShowModal("last-hint", text.GetText("game.last-hint"), FormatHint(completionHint),
                 MakeButton("modal-back", "game.close", BackToGame));
         }

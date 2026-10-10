@@ -29,6 +29,7 @@ namespace CatsAndArrows.UI
         private readonly VisualElement completionRow = new VisualElement();
         private readonly Label completionStatus = new Label();
         private readonly Button completionHint;
+        private int highlightVersion;
         private Action reviewCompletionHint;
         private readonly Label error = new Label();
         private GameSession session;
@@ -134,12 +135,19 @@ namespace CatsAndArrows.UI
             CancelInteraction();
             interactionSuspended = suspended;
         }
-        public void HighlightCell(BoardCoordinate coordinate)
+        public void HighlightCell(BoardCoordinate coordinate, long durationMs = 0)
         {
+            var version = ++highlightVersion;
             var tile = board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
             if (tile == null) return;
             tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 3;
             tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = BoardSymbolElement.Ink;
+            if (durationMs > 0) schedule.Execute(() =>
+            {
+                if (version != highlightVersion || !board.Contains(tile)) return;
+                tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 1;
+                tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = Border;
+            }).StartingIn(durationMs);
         }
         public void Bind(GameSession newSession, string locale = "en")
         {

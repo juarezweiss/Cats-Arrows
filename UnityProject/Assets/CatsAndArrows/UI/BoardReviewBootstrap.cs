@@ -14,6 +14,7 @@ namespace CatsAndArrows.UI
     public sealed class BoardReviewBootstrap : MonoBehaviour
     {
         [SerializeField] private int seed = 14;
+        [SerializeField] private bool inlineHints = true;
         private PortraitBoardView view;
         private GameShellView shell;
         private float safeTop;
@@ -54,7 +55,12 @@ namespace CatsAndArrows.UI
             {
                 var initialSeed = autoReview ? seed : int.TryParse(Argument("--game-seed="), out var reviewSeed)
                     ? reviewSeed : unchecked((int)DateTime.UtcNow.Ticks ^ Environment.TickCount);
-                shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale=")); root.Add(shell);
+#if CATS_ARROWS_LEGACY_HINTS
+                const bool useInlineHints = false;
+#else
+                var useInlineHints = Argument("--hint-flow=") == "legacy" ? false : inlineHints;
+#endif
+                shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints); root.Add(shell);
             }
             if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));

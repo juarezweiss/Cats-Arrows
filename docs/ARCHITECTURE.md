@@ -164,3 +164,12 @@ proof is retained by the shell only for optional explanation review and resets
 with New Game. Tile-grid centering reserves symmetric clue gutters while pointer
 mapping continues to use shared BoardLayout coordinates. PlayerSettings locks
 mobile orientation to upright portrait; no solver/generator changes are involved.
+
+## Issue #23 immediate hints
+
+The default shell applies the domain's HintResult directly and briefly highlights
+its target without opening a modal or retaining a presentation explanation.
+The existing useInlineHints configuration selects immediate presentation; false
+retains the prior modal/Last hint flow for rollback. The domain still owns every
+assignment and completion check; proof data stays available within the domain
+without adding player-facing explanation controls.
