@@ -15,6 +15,9 @@ namespace CatsAndArrows.UI
         private readonly GameSession session;
         private readonly BoardLayout layout;
         private readonly float threshold;
+        private readonly Func<BoardCoordinate, bool> canInteract;
+        private readonly Func<BoardCoordinate, bool> tap;
+        private readonly Func<IEnumerable<BoardCoordinate>, int> applyDrag;
         private readonly HashSet<BoardCoordinate> visited = new HashSet<BoardCoordinate>();
         private BoardCoordinate origin;
         private Vector2 pressPosition;
@@ -25,7 +28,9 @@ namespace CatsAndArrows.UI
         public bool IsDragging => Axis != BoardDragAxis.None;
         public BoardDragAxis Axis { get; private set; }
 
-        public BoardGestureController(GameSession session, BoardLayout layout, float dragThreshold = 8f)
+        public BoardGestureController(GameSession session, BoardLayout layout, float dragThreshold = 8f,
+            Func<BoardCoordinate, bool> canInteract = null, Func<BoardCoordinate, bool> tap = null,
+            Func<IEnumerable<BoardCoordinate>, int> applyDrag = null)
         {
             this.session = session ?? throw new ArgumentNullException(nameof(session));
             if (layout.Size != session.Puzzle.Size || layout.CellSize <= 0)
@@ -34,11 +39,14 @@ namespace CatsAndArrows.UI
                 throw new ArgumentOutOfRangeException(nameof(dragThreshold));
             this.layout = layout;
             threshold = dragThreshold;
+            this.canInteract = canInteract ?? session.CanInteract;
+            this.tap = tap ?? session.Tap;
+            this.applyDrag = applyDrag ?? session.ApplyDrag;
         }
 
         public bool Begin(int pointerId, Vector2 position)
         {
-            if (HasActivePointer || !TryGetCell(position, out var coordinate) || !session.CanInteract(coordinate)) return false;
+            if (HasActivePointer || !TryGetCell(position, out var coordinate) || !canInteract(coordinate)) return false;
             HasActivePointer = true;
             ActivePointerId = pointerId;
             origin = coordinate;
@@ -79,7 +87,7 @@ namespace CatsAndArrows.UI
                 if (high >= start && low < end && visited.Add(coordinate)) coordinates.Add(coordinate);
             }
             previousPosition = position;
-            return session.ApplyDrag(coordinates) > 0;
+            return applyDrag(coordinates) > 0;
         }
 
         public bool End(int pointerId, Vector2 position)
@@ -88,7 +96,7 @@ namespace CatsAndArrows.UI
             var changed = Move(pointerId, position);
             if (!HasActivePointer) return changed;
             if (!IsDragging && TryGetCell(position, out var coordinate) && coordinate.Equals(origin))
-                changed |= session.Tap(origin);
+                changed |= tap(origin);
             Cancel();
             return changed;
         }

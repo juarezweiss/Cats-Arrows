@@ -33,10 +33,12 @@ namespace CatsAndArrows.UI
         private Action reviewCompletionHint;
         private readonly Label error = new Label();
         private GameSession session;
+        private TutorialController tutorial;
         private BoardGestureController gesture;
         private LocalizationService text;
         private bool interactionSuspended;
         public event Action StateChanged;
+        public event Action InteractionEnded;
         public bool InteractionEnabled => !interactionSuspended && session?.IsCompleted != true;
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
@@ -69,13 +71,20 @@ namespace CatsAndArrows.UI
             completionRow.style.justifyContent = Justify.Center;
             completionRow.style.alignSelf = Align.Stretch;
             completionRow.style.height = 48;
+            completionRow.style.minHeight = 48;
+            completionRow.style.flexShrink = 0;
             completionRow.style.marginTop = 4;
             completionRow.style.display = DisplayStyle.None;
             completionStatus.name = "completion-status";
+            completionStatus.enableRichText = true;
             completionStatus.style.fontSize = 14;
             completionStatus.style.whiteSpace = WhiteSpace.Normal;
             completionStatus.style.unityTextAlign = TextAnchor.MiddleCenter;
             completionStatus.style.flexShrink = 1;
+            completionStatus.style.height = completionStatus.style.minHeight = 48;
+            completionStatus.style.paddingLeft = completionStatus.style.paddingRight = 0;
+            completionStatus.style.paddingTop = completionStatus.style.paddingBottom = 0;
+            completionStatus.style.marginTop = completionStatus.style.marginBottom = 0;
             completionStatus.style.marginLeft = completionStatus.style.marginRight = 0;
             completionHint = new Button(() => reviewCompletionHint?.Invoke()) { name = "completion-hint" };
             completionHint.style.minHeight = 48;
@@ -130,6 +139,20 @@ namespace CatsAndArrows.UI
             completionHint.style.display = reviewHint == null ? DisplayStyle.None : DisplayStyle.Flex;
             reviewCompletionHint = reviewHint;
         }
+        public void SetTutorial(TutorialController controller)
+        {
+            CancelInteraction(); tutorial = controller; gesture = null;
+        }
+        public void SetTutorialFeedback(string instruction, bool expanded = false)
+        {
+            SetCompletionFeedback(instruction);
+            completionStatus.style.fontSize = string.IsNullOrEmpty(instruction) ? 14 : 16;
+            // The full goal needs three lines on compact phones. Use the clear
+            // header-to-grid gap without moving the board or reducing its text.
+            var height = !string.IsNullOrEmpty(instruction) && expanded ? 60 : 48;
+            completionRow.style.height = completionRow.style.minHeight = height;
+            completionStatus.style.height = completionStatus.style.minHeight = height;
+        }
         public void SetInteractionSuspended(bool suspended)
         {
             CancelInteraction();
@@ -177,8 +200,16 @@ namespace CatsAndArrows.UI
                 columnLabel.tooltip = text.Format("board.column-total", Values("index", row + 1, "total", Presentation.ColumnTotals[row]));
                 board.Add(columnLabel);
             }
-            foreach (var cell in Presentation.Cells)
+            foreach (var actualCell in Presentation.Cells)
             {
+                // Intro examples are presentation-only. No cat/X intent is sent
+                // to the session, so lesson demonstrations cannot win the board.
+                var cell = actualCell;
+                if (tutorial?.DemoCoordinate is BoardCoordinate demonstration && demonstration.Equals(actualCell.Coordinate) &&
+                    tutorial.DemoMark is PlayerMark mark)
+                    cell = new BoardCellPresentation(actualCell.Coordinate,
+                        mark == PlayerMark.Cat ? BoardCellKind.Cat : mark == PlayerMark.X ? BoardCellKind.X : BoardCellKind.Empty,
+                        actualCell.Direction, false);
                 var tile = new VisualElement { name = "cell-" + cell.Coordinate.Row + "-" + cell.Coordinate.Column };
                 tile.style.position = Position.Absolute;
                 var fill = cell.Kind == BoardCellKind.Arrow || cell.Kind == BoardCellKind.Protected ? ImmovableTile : Tile;
@@ -199,6 +230,7 @@ namespace CatsAndArrows.UI
                 board.Add(tile);
             }
             LayoutBoard();
+            ApplyTutorialHighlights();
         }
         public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en")
         {
@@ -258,7 +290,10 @@ namespace CatsAndArrows.UI
                 Layout.Gap != nextLayout.Gap || Layout.ClueSize != nextLayout.ClueSize)
             {
                 CancelInteraction();
-                gesture = new BoardGestureController(session, nextLayout);
+                gesture = new BoardGestureController(session, nextLayout,
+                    canInteract: coordinate => tutorial == null ? session.CanInteract(coordinate) : tutorial.CanInteract(coordinate),
+                    tap: coordinate => tutorial == null ? session.Tap(coordinate) : tutorial.Tap(coordinate),
+                    applyDrag: coordinates => tutorial == null ? session.ApplyDrag(coordinates) : tutorial.ApplyDrag(coordinates));
             }
             Layout = nextLayout;
             Absolute(board, new Rect((boardRegion.contentRect.width - Layout.GridSize) / 2 - Layout.ClueGutter,
@@ -278,6 +313,7 @@ namespace CatsAndArrows.UI
             var pointerId = gesture.ActivePointerId;
             gesture.Cancel();
             if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+            InteractionEnded?.Invoke();
         }
         private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
         private void OnPointerDown(PointerDownEvent evt)
@@ -292,6 +328,7 @@ namespace CatsAndArrows.UI
             if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
             var changed = gesture.Move(evt.pointerId, BoardPosition(evt.position));
             FinishPointerEvent(evt.pointerId, changed);
+            if (!gesture.HasActivePointer) InteractionEnded?.Invoke();
             evt.StopPropagation();
         }
         private void OnPointerUp(PointerUpEvent evt)
@@ -299,6 +336,7 @@ namespace CatsAndArrows.UI
             if (evt.button != 0 || gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
             var changed = gesture.End(evt.pointerId, BoardPosition(evt.position));
             FinishPointerEvent(evt.pointerId, changed);
+            InteractionEnded?.Invoke();
             evt.StopPropagation();
         }
         private void OnPointerCancel(PointerCancelEvent evt)
@@ -307,12 +345,27 @@ namespace CatsAndArrows.UI
         }
         private void OnPointerCaptureOut(PointerCaptureOutEvent evt)
         {
-            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) gesture.Cancel();
+            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) CancelInteraction();
         }
         private void FinishPointerEvent(int pointerId, bool changed)
         {
             if (!gesture.HasActivePointer && board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
             if (changed) { Refresh(); StateChanged?.Invoke(); }
+        }
+        private void ApplyTutorialHighlights()
+        {
+            if (tutorial == null) return;
+            foreach (var coordinate in tutorial.HighlightedCells)
+                Outline(board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column), 3);
+            foreach (var row in tutorial.HighlightedRows) Outline(board.Q<Label>("row-clue-" + row), 2);
+            foreach (var column in tutorial.HighlightedColumns) Outline(board.Q<Label>("column-clue-" + column), 2);
+        }
+        private static void Outline(VisualElement element, int width)
+        {
+            if (element == null) return;
+            element.style.borderLeftWidth = element.style.borderRightWidth = element.style.borderTopWidth = element.style.borderBottomWidth = width;
+            element.style.borderLeftColor = element.style.borderRightColor = element.style.borderTopColor = element.style.borderBottomColor = BoardSymbolElement.Ink;
+            element.style.borderTopLeftRadius = element.style.borderTopRightRadius = element.style.borderBottomLeftRadius = element.style.borderBottomRightRadius = 5;
         }
         private Label Clue(int total)
         {

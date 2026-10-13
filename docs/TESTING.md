@@ -346,3 +346,22 @@ and completed-board controls without explanation UI. Existing GameShellTests
 exercise the legacy presentation for rollback. Native GameLoopReviewChecks
 exercise both configurations with mounted pointer events and fixed-grid checks.
 See INLINE_HINT_REVIEW.md for fresh results and owner review status.
+
+## Issue #26 tutorial checks
+
+Deterministic tests cover exact fixture quotas, true arrows/protection, current
+human-solver completion and independent exhaustive uniqueness; complete lesson
+replay; tap-cycle sequence; off-target input; zero-line overlap; two-cat lessons;
+no early victory; final completion lock; fresh replay; first-play/Skip/Menu/locale
+routing and ordinary-game regression. Native mounted checks must exercise actual
+pointer events through tutorial gates, including swipes across fixed cells and
+existing cats, gesture cancellation/second fingers, Skip and replay. Render the
+three locales at compact/standard/tall portrait sizes and verify text fit,
+stationary grid and non-color highlights. Owner phone walkthrough remains the
+acceptance gate for touch comfort.
+
+Owner refinements add separate sample-state rendering/mark-isolation tests,
+protected-only and arrow-only highlights, welcome Continue emphasis, a clean
+same-fixture session swap, and independent play with wrong-cat recovery before
+completion. Native checks must prove the first independent pointer tap works,
+not merely test the replacement session directly.

@@ -61,3 +61,32 @@ keeps the board playable. There is no Why button, explanation area or final-hint
 review action in the default flow. Hint/Clear share the first control row;
 Menu/New Game remain below. Completion keeps its calm inline status and readonly
 grid. The previous modal/Last hint presentation remains a rollback configuration.
+
+## Issue #26 guided first play
+
+Short localized instructions use the existing top completion-message area without
+moving the centered grid. Outlines identify relevant totals, arrows, paths and
+current input targets without depending on color alone. Informational stages
+use Continue/Start; guided stages provide Skip and Menu instead of normal
+Hint/Clear/New Game controls. The three editable states are demonstrated separately, with their names bold.
+
+Swipes start at an eligible Empty cell, skip fixed/existing marks, and advance
+the lesson after the gesture ends, never midway through it. A tap-based marking
+path can satisfy the same state predicates. The practice stage requires the
+actual Empty→X→Cat→Empty sequence. After the guided solve, the same board resets for independent play with a
+“Now try it yourself” message. Only independent completion stays visible and
+readonly with Play opening a random board. Menu/locale changes retain the active
+lesson; selecting Tutorial explicitly restarts it. Starting Tutorial replaces
+the prior in-memory game; Skip/Play do not restore it.
+
+First-play history is stored locally after successful presentation, including
+manual entry, so interrupted or skipped tutorials do not autoappear again.
+Existing installations without that preference see the tutorial on next Start.
+Backgrounding retains the in-memory lesson while cancelling gestures; force-quit
+does not save tutorial progress. Reinstallation/resetting app data may reset
+first-play history. English, Brazilian Portuguese and Spanish are required.
+
+The welcome explicitly directs the player to Continue and outlines that button.
+A short editable-cell introduction precedes individual Empty, X and Cat examples
+with one highlighted example at a time. Hatching highlights only protected cells; the following
+arrow introduction highlights only arrows. Sample marks never enter the session.

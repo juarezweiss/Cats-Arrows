@@ -173,3 +173,22 @@ The existing useInlineHints configuration selects immediate presentation; false
 retains the prior modal/Last hint flow for rollback. The domain still owns every
 assignment and completion check; proof data stays available within the domain
 without adding player-facing explanation controls.
+
+## Issue #26 tutorial mode
+
+A versioned immutable TutorialFixture defines the approved fixed puzzle. A small
+pure-C# TutorialController owns only lesson progression and allowed targets; its
+GameSession owns marks and victory. Ordinary EasyGameLoop generation remains
+independent. The shell chooses an active tutorial or ordinary session explicitly.
+
+Both tap and swept drag intents pass through the same target gate before session
+mutation. Tutorial progression reconciles after gesture end/cancellation, with
+input cancelled before changing targets. This prevents one swipe affecting the
+next lesson. A local seen preference is separate from language and board data;
+manual replays create fresh sessions and counters. Tutorial instructions are
+locale resources; no persistence/backend or reusable tutorial framework is added.
+
+The refined tutorial projects read-only Empty/X/Cat samples into the view without
+mutating GameSession or BoardPresentation. Guided completion creates a fresh
+GameSession for the same fixture; the shell rebinds input and re-enables the view
+for independent play. Only a real independent cat-set win completes onboarding.

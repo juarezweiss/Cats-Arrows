@@ -97,3 +97,29 @@ correct a conflicting player mark and finish the board. Completed boards remain
 readonly with Hint/Clear disabled; no Last hint action is shown. Unlimited
 assistance, clue-only proof and exact-cat victory remain unchanged. The previous
 modal/Last hint presentation is retained only as rollback.
+
+## Issue #26 interactive tutorial
+
+The owner approved one fixed authored Easy 5×5 onboarding board on 2026-10-13.
+Ordinary games remain seeded procedural puzzles. Both tutorial axes contain
+one zero-total line, one two-total line and three one-total lines; the five-cat
+fixture includes cardinal and diagonal arrows and derived protected cells.
+The fixed fixture must pass the same human-solvability and uniqueness contract.
+
+The lesson teaches goal, sequential Empty/X/Cat demonstrations, separate hatching
+and arrow introductions, a full tap cycle, zero-column
+and zero-row drags, cardinal singleton cats, exact diagonal rays and two-cat
+quotas. It uses ordinary GameSession taps/drags and immediate cat-set victory.
+Only current targets accept guided input. Existing X intersections count; arrows
+and hatches never require X. No cleanup action follows the final cat.
+
+First ordinary Start presents the tutorial once; Skip starts a fresh random Easy
+board. A permanent Tutorial menu action always restarts the same board/flow.
+The tutorial is an explicit exception to previously deferred tutorial frameworks;
+no generic framework or change to ordinary puzzle generation is included.
+
+Owner device-review refinement (2026-10-13): guided completion immediately resets
+the same fixture to Empty for an independent attempt, without step targets or
+assistance. Only that independent win shows tutorial completion and Play for
+random boards. Skip remains available as the explicit bypass. Demonstration X/Cat
+are temporary presentation samples, not player placements or hidden answers.
