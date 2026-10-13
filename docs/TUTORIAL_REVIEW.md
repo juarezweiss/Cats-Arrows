@@ -1,7 +1,7 @@
 # Issue #26 — Interactive first-play tutorial
 
 The owner approved the design and refined it after iPhone review on 2026-10-13.
-Implementation is on feat/26-interactive-tutorial; the owner accepted all revised iPhone tutorial checks on 2026-10-13. Owner authorized commit and push; merge remains subject to explicit approval. Unrelated #21/#22 planning files
+Implementation is on feat/26-interactive-tutorial; the owner accepted all revised iPhone tutorial checks on 2026-10-13. Owner authorized commit, push and integration into develop. Unrelated #21/#22 planning files
 and original_material.md are preserved.
 
 ## Revised flow
@@ -79,8 +79,9 @@ background/reopen. The owner confirmed all revised tutorial checks work on the i
 
 Disable enableTutorial/bootstrap tutorial setting (desktop --tutorial=off) to
 restore ordinary random Start without a Tutorial entry. Seen history is separate
-from puzzle generation. Accepted Issue #23 phone app remains at
-Builds/Issue23Board/Playable/UnityProject.app for local reinstall. Revert only #26
+from puzzle generation. The owner authorized purging the superseded Issue #23
+apps after accepting this tutorial; rollback now uses configuration/source
+history rather than a prior prebuilt app. Revert only #26
 source changes, preserving unrelated local files. No purchases, production
 release or store submission is required. Temporary Xcode export/DerivedData can
 be regenerated and should be removed after saving the signed review app.
@@ -92,4 +93,12 @@ tutorial app was saved to Builds/Issue26Tutorial/Playable/UnityProject.app,
 installed and launched on the paired iPhone 17. Owner reviewed via the menu Tutorial entry and confirmed all revised checks
 work on 2026-10-13. Temporary export/DerivedData were purged after installation.
 Commit and push were authorized after owner acceptance. All pre-existing local
-changes match the before-task hashes; merge remains pending.
+changes match the before-task hashes.
+
+## Approved post-acceptance cleanup
+
+The superseded Issue #23 apps, older capture sets and regenerable Unity Library
+cache were removed at the owner’s request. Current tutorial phone/macOS apps,
+final revised captures and validation reports are retained. The next Unity run
+will reimport the project. No source, local planning or original material was
+removed.
