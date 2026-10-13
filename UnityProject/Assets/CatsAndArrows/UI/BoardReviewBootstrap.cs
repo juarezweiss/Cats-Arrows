@@ -15,6 +15,7 @@ namespace CatsAndArrows.UI
     {
         [SerializeField] private int seed = 14;
         [SerializeField] private bool inlineHints = true;
+        [SerializeField] private bool tutorialEnabled = true;
         private PortraitBoardView view;
         private GameShellView shell;
         private float safeTop;
@@ -34,7 +35,8 @@ namespace CatsAndArrows.UI
 #endif
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
-            if (autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
+            var tutorialCheck = Argument("--tutorial-check=") == "1";
+            if (tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -60,9 +62,15 @@ namespace CatsAndArrows.UI
 #else
                 var useInlineHints = Argument("--hint-flow=") == "legacy" ? false : inlineHints;
 #endif
-                shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints); root.Add(shell);
+                var reviewSeen = false;
+                shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints,
+                    enableTutorial: tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
+                    tutorialSeen: tutorialCheck ? (Func<bool>)(() => reviewSeen) : null,
+                    markTutorialSeen: tutorialCheck ? (Action)(() => reviewSeen = true) : null);
+                root.Add(shell);
             }
-            if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
+            if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
+            else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
             else if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));
         }
