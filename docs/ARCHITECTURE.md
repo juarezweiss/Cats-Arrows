@@ -94,6 +94,18 @@ remain deferred until feedback justifies them. The puzzle seed is sufficient to 
 ## Services
 Analytics, ads, IAP, remote config, and attribution must sit behind interfaces/adapters. Core gameplay cannot require a vendor SDK to compile or run.
 
+Issue #29 specifies future services in
+[ADR 0002](decisions/0002-provider-agnostic-monetization.md) and
+[MONETIZATION.md](MONETIZATION.md). Pure-C# policy/application coordinators own
+completed-board cadence, verified entitlement and rewarded-hint orchestration;
+Core/Gameplay never reference Monetization or SDKs. UI sends intents; bootstrap
+injects replaceable adapters. Atomic monetization state is separate from board
+save/resume and preferences. Issue #30 implements the pure-C# Monetization assembly,
+atomic versioned store and shell seams using SDK-free contracts; cached evidence
+verification stays inside IPurchaseService. GameSession exposes PrepareHint and
+MarkRevision without owning commercial access. Default runtime remains free;
+Editor/development-only mock composition is explicit and isolates its state/ledger.
+
 ## Issue #6 board presentation
 
 The UI assembly references Core and Gameplay. `BoardPresentation` creates a

@@ -52,6 +52,24 @@ the difficulty, without an automatic overlay. A final Hint can be reviewed via a
 optional “Last hint” action; opening its explanation is deliberate. New Game
 clears the completion treatment. Upright portrait is mandatory on mobile.
 
+## Issue #29 future monetization controls
+
+Current free-MVP controls remain unchanged. Future enabled monetization #29 uses
+`Hint (ads)` for unowned players and `Hint` for verified owners. Main menu includes
+`Remove All Ads`, store-localized price, both-removals explanation and a distinct
+`Restore Purchases` action. Pending/unavailable/owned status is textual and localized
+in en/pt-BR/es. Reward loading suspends gestures; cancellation/errors restore
+controls only after native presentation ends. No rewarded ad without an eligible
+hint; no automatic mutation of a different board after a stale callback. Confirmed
+unused rewards have a recoverable next-hint status.
+
+Progression ads follow deliberate next-board intent after every fourth ordinary
+completion, preserving immediate inline win and solved-board viewing. Tutorials
+are excluded. Unavailable progression ads never block play; unpaid rewarded hints
+may be unavailable offline, while verified paid hints remain direct. Current
+ad-free trial remains unchanged. Full failure/cadence policy:
+[MONETIZATION.md](MONETIZATION.md).
+
 ## Issue #23 immediate hints
 
 The owner approved immediate hints as the ongoing default on 2026-10-10 after

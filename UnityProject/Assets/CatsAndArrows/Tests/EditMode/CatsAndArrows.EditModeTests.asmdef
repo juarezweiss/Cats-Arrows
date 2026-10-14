@@ -1,7 +1,7 @@
 {
   "name": "CatsAndArrows.EditModeTests",
   "rootNamespace": "CatsAndArrows.Tests",
-  "references": ["CatsAndArrows.Core", "CatsAndArrows.Gameplay", "CatsAndArrows.UI"],
+  "references": ["CatsAndArrows.Core", "CatsAndArrows.Gameplay", "CatsAndArrows.Monetization", "CatsAndArrows.UI"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

@@ -44,7 +44,13 @@ This cardinal-only rule must not be applied to diagonal arrows, which cross diff
 Protected cells are non-interactive and must have a non-color visual treatment.
 
 ## Hint
-Hint is unlimited. It should reveal or explain one valid logical deduction from the current board/player state. It must not be required for solvability.
+
+Future design #29 gates hints with rewarded ads only when monetization is explicitly
+enabled; Remove All Ads restores direct unlimited access. Current free trial
+behavior remains unchanged. See [MONETIZATION.md](MONETIZATION.md) for access policy;
+clue-derived truth, one-fact application, immediate wins and hint-free solvability
+are invariant in both modes.
+Hint is unlimited in the current free MVP. It should reveal or explain one valid logical deduction from the current board/player state. It must not be required for solvability.
 
 The approved MVP uses an explanatory clue-derived hint, correcting a conflicting player mark with an explanation, rather than relying on player hypotheses as proof. For example ("Column 4 is complete, so these cells cannot contain cats") rather than simply revealing a random solution cat.
 

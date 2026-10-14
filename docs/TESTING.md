@@ -1,6 +1,52 @@
 # Testing Strategy
 
-## Local Unity validation
+## Issue #29 monetization design test plan
+
+Implementation #30 adds `MonetizationTests`, `MonetizationStateStoreTests`,
+`MonetizationShellTests` and `HintPreparationTests`. These exercise the pure state
+machine, actual disk restart/checksum/backup/future-schema/revision/lock behavior,
+reward storage faults, entitlement/pending/finalization and localized UI/input
+regressions with controlled SDK-free adapters. Native execution evidence is recorded
+with the implementation PR; the broader future real-provider matrix below remains
+an integration gate, not a claim that any live ad/store integration was tested.
+
+SDK-free implementation validation (2026-10-14): pinned Unity 6000.3.25f1 compile
+passed; final EditMode report `editmode.ObOY2x` passed 319/319 with zero failed,
+skipped or inconclusive and successful editor exit. A development macOS review
+player passed mounted checks in EN 320×568, pt-BR 390×844 and ES 430×932, including
+button text/bounds, reward delivery and safe input return, mock purchase and direct
+owned hints. Fifteen captures/logs are retained under ignored `.unity-results/`;
+three representative images are in `docs/evidence/issue30/`. QA found no blockers.
+No physical-phone, real-provider sandbox, charge or store checks were performed.
+
+The matrix below remains the contract/integration target; it is not a claim of
+real-provider execution.
+Use pure-C# policy/coordinator tests with manually controlled ad/store callbacks,
+fake clock, revisioned memory store/fault injection and deterministic operation IDs.
+Recreate coordinators from serialized state to test restart, not just object reuse.
+
+| Area | Required cases |
+| --- | --- |
+| Cadence | Completions 1–3 none, 4/8/12 due; starts/abandon/Clear/generation failure none; same seed/new instance counts; duplicate win and final-hint win each count once |
+| Boundaries | No ad at victory/Menu/launch/resume; explicit fresh-board transition only; tutorial guided/independent and already-complete fixtures excluded; fourth win persists before restart |
+| Opportunity handling | Persist-before-present; crash before/after consumption; no-fill/offline/restricted/failed skip without debt; no queued catch-up; final rewarded-hint win retains fourth-completion opportunity |
+| Storage | Atomic envelope and expected-revision conflicts, migration, damaged primary/last-good recovery, missing and future-schema preservation, write failures during count/reward/purchase; no mandatory ad loop |
+| Hints | Prepare without mutation; no eligible fact means no ad; reward vs close-only; duplicate taps/reward/closed callbacks in either order; board/revision mismatch; no stale auto-apply; one recovered grant; crash around apply/consume; earn-write and consume-write failures retain in-memory deduplication and unlock only after native closure; retry latest snapshot, not consumed grant; completed/tutorial locks |
+| Ownership | Disabled direct/free; Owned bypasses both placements and survives restart/offline; grant consumes due milestone; revocation creates no catch-up; unknown bootstrap cannot charge restored owner an ad |
+| Purchase/restore | Pending/cancel/verification/network failure cannot grant/revoke; pending survives restart and incomplete queries, including failed pending-state write; no duplicate purchase before pending refresh; verified success/AlreadyOwned; persist before success/finalization; replay unfinished store work; duplicate transaction updates; same-store fresh-install restore; authoritative revocation; adapter migration preserves ownership |
+| Presentation races | Purchase during queued/presented ad, timeout vs native overlay, pause/resume, focus loss, menu/session replacement, input cancellation and localization changes; no mutation beneath ad or duplicate hint delivery |
+| Adapter portability | Identical contract suite for fakes and future provider sandboxes; late callbacks, unsupported/restricted inventory, platform evidence, finalization replay and store-account changes |
+
+Mounted/UI checks retain tap cycle, axis drag, protected cells, completed-board lock,
+Clear/New Game behavior, menu/replay/tutorial flows and representative compact/
+standard/tall portrait layouts in en/pt-BR/es. Check Hint (ads)/Hint, earned status,
+Restore/owned/pending/error labels and touch targets without color-only information.
+Physical iPhone lifecycle/ad/store sandbox checks are future integration gates;
+Android follows its own deferred platform task. No live charge or production SDK
+is needed for design validation. Documentation changes use scripts/validate.sh
+and git diff --check; native compile/EditMode runs apply when code is implemented.
+
+## Local Unity validation (existing tooling)
 
 Bootstrap tooling is tracked by GitHub Issue #1. Use a local Codex task opened on
 this checkout to run the Unity editor installed on your machine. Running the Codex

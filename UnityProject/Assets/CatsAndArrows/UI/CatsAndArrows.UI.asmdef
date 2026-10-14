@@ -1,7 +1,7 @@
 {
   "name": "CatsAndArrows.UI",
   "rootNamespace": "CatsAndArrows.UI",
-  "references": ["CatsAndArrows.Core", "CatsAndArrows.Gameplay"],
+  "references": ["CatsAndArrows.Core", "CatsAndArrows.Gameplay", "CatsAndArrows.Monetization"],
   "autoReferenced": true,
   "noEngineReferences": false
 }

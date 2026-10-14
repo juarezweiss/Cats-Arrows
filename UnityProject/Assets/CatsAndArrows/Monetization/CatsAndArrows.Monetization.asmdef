@@ -1,0 +1,7 @@
+{
+  "name": "CatsAndArrows.Monetization",
+  "rootNamespace": "CatsAndArrows.Monetization",
+  "references": ["CatsAndArrows.Gameplay"],
+  "autoReferenced": true,
+  "noEngineReferences": true
+}

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using CatsAndArrows.Core;
 using CatsAndArrows.Core.Localization;
 using CatsAndArrows.Gameplay;
+using CatsAndArrows.Monetization;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -20,6 +21,10 @@ namespace CatsAndArrows.UI
         private Button hintButton;
         private Button clearButton;
         private bool loading;
+        private bool nextBoardPending;
+        private int queuedGenerationVersion;
+        private readonly MonetizationCoordinator monetization;
+        private bool CommercialBusy => monetization?.IsBusy == true;
         private readonly bool enableTutorial;
         private readonly Func<bool> tutorialSeen;
         private readonly Action markTutorialSeen;
@@ -37,9 +42,10 @@ namespace CatsAndArrows.UI
         public int NewGameRequestId { get; private set; }
 
         public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true,
-            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null)
+            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, MonetizationCoordinator monetization = null)
         {
             name = "game-shell";
+            this.monetization = monetization;
             UseInlineHints = useInlineHints;
             this.enableTutorial = enableTutorial;
             this.tutorialSeen = tutorialSeen ?? TutorialPreference.HasSeen;
@@ -62,6 +68,11 @@ namespace CatsAndArrows.UI
             overlay.name = "game-overlay"; Fill(overlay); overlay.style.backgroundColor = PortraitBoardView.Background;
             safeFrame.Add(overlay);
             RegisterCallback<GeometryChangedEvent>(_ => UpdateSafeArea());
+            if (monetization != null)
+            {
+                monetization.Changed += OnMonetizationChanged;
+                monetization.HintDelivered += OnHintDelivered;
+            }
             ShowMenu();
         }
 
@@ -78,7 +89,7 @@ namespace CatsAndArrows.UI
 
         public void ShowMenu()
         {
-            if (loading) return;
+            if (loading || CommercialBusy) return;
             BoardView.SetInteractionSuspended(true);
             BoardView.style.display = DisplayStyle.None;
             Screen = "menu"; Modal = null; overlay.style.display = DisplayStyle.None;
@@ -93,6 +104,7 @@ namespace CatsAndArrows.UI
             if (ActiveSession != null) scroll.Add(MakeButton("menu-back", "game.back", BackToGame));
             if (enableTutorial) scroll.Add(MakeButton("menu-tutorial", "tutorial.title", StartTutorial));
             scroll.Add(MakeButton("menu-rules", "game.rules", ShowRules));
+            AddMonetizationMenu(scroll);
             scroll.Add(Paragraph(text.GetText("game.language")));
             AddLanguage(scroll, "en", "English");
             AddLanguage(scroll, "pt-BR", "Português (Brasil)");
@@ -105,22 +117,23 @@ namespace CatsAndArrows.UI
         }
         public void SelectLanguage(string locale)
         {
-            if (loading) return;
+            if (loading || CommercialBusy) return;
             CancelInteraction(); text.SelectLanguage(locale); LanguagePreference.Save(Locale);
             if (ActiveSession != null) BoardView.Bind(ActiveSession, Locale);
             ShowMenu();
         }
         public void StartPlaying()
         {
-            if (loading) return;
+            if (loading || CommercialBusy) return;
             if (enableTutorial && !tutorialSeen()) StartTutorial();
             else QueueNewGame();
         }
         public void StartTutorial()
         {
-            if (loading || !enableTutorial) return;
+            if (loading || CommercialBusy || !enableTutorial) return;
             CancelInteraction(); completionHint = null;
             Tutorial = new TutorialController();
+            monetization?.BindSession(Tutorial.Session, ordinary: false);
             BoardView.SetTutorial(Tutorial);
             BoardView.Bind(Tutorial.Session, Locale);
             markTutorialSeen();
@@ -128,13 +141,13 @@ namespace CatsAndArrows.UI
         }
         public void ContinueTutorial()
         {
-            if (loading || Screen != "play" || Modal != null || Tutorial == null || !Tutorial.CanContinue) return;
+            if (loading || CommercialBusy || Screen != "play" || Modal != null || Tutorial == null || !Tutorial.CanContinue) return;
             CancelInteraction();
             if (Tutorial.Continue()) RefreshTutorial();
         }
         public void SkipTutorial()
         {
-            if (loading || Tutorial == null) return;
+            if (loading || CommercialBusy || Tutorial == null) return;
             QueueNewGame();
         }
         private void OnTutorialGestureEnded()
@@ -146,6 +159,7 @@ namespace CatsAndArrows.UI
             {
                 // Guided victory starts a fresh attempt at the same board. Rebind
                 // the pointer recognizer as well as visuals to the new authority.
+                monetization?.BindSession(Tutorial.Session, ordinary: false);
                 BoardView.Bind(Tutorial.Session, Locale);
                 BoardView.SetInteractionSuspended(Screen != "play" || Modal != null || Tutorial.Session.IsCompleted);
             }
@@ -165,6 +179,25 @@ namespace CatsAndArrows.UI
         }
         public bool StartNewGame()
         {
+            if (nextBoardPending || CommercialBusy) return false;
+            queuedGenerationVersion++;
+            if (!loading) NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
+            monetization?.RecordCompletion();
+            if (monetization?.Enabled != true) return GenerateNewGame();
+            nextBoardPending = true; loading = true;
+            CancelInteraction();
+            ShowModal("loading", text.GetText("game.loading"), "");
+            var result = false;
+            monetization.BeginNextBoard(() =>
+            {
+                nextBoardPending = false;
+                result = GenerateNewGame();
+            });
+            // False also means an asynchronous transition is pending; no board was generated yet.
+            return result;
+        }
+        private bool GenerateNewGame()
+        {
             LeaveTutorial();
             completionHint = null; BoardView.SetCompletionFeedback(null);
             if (!loading) NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
@@ -172,6 +205,7 @@ namespace CatsAndArrows.UI
             var success = Loop.NewGame(); loading = false;
             if (!success)
             {
+                monetization?.BindSession(null);
                 Screen = "failure"; menu.style.display = controls.style.display = DisplayStyle.None;
                 BoardView.style.display = DisplayStyle.Flex;
                 BoardView.ShowGenerationFailure(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile, Locale);
@@ -180,21 +214,24 @@ namespace CatsAndArrows.UI
                     MakeButton("modal-retry", "game.retry", QueueNewGame), MakeButton("modal-menu", "game.menu", ShowMenu));
                 return false;
             }
+            monetization?.BindSession(ActiveSession);
             BoardView.Bind(ActiveSession, Locale); BackToGame();
             return true;
         }
         private void QueueNewGame()
         {
-            if (loading) return;
+            if (loading || CommercialBusy) return;
             NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
-            LeaveTutorial(); loading = true; BoardView.SetInteractionSuspended(true);
+            if (Tutorial != null) LeaveTutorial();
+            loading = true; BoardView.SetInteractionSuspended(true);
             ShowModal("loading", text.GetText("game.loading"), "");
             // Give feedback a frame before the small synchronous Easy generation call.
-            schedule.Execute(() => StartNewGame()).StartingIn(1);
+            var version = ++queuedGenerationVersion;
+            schedule.Execute(() => { if (version == queuedGenerationVersion) StartNewGame(); }).StartingIn(1);
         }
         public void BackToGame()
         {
-            if (loading || ActiveSession == null) return;
+            if (loading || CommercialBusy || ActiveSession == null) return;
             Screen = "play"; Modal = null; menu.style.display = overlay.style.display = DisplayStyle.None;
             BoardView.style.display = controls.style.display = DisplayStyle.Flex;
             BoardView.SetInteractionSuspended(ActiveSession.IsCompleted);
@@ -205,15 +242,16 @@ namespace CatsAndArrows.UI
             controls.Clear();
             if (Tutorial != null) { BuildTutorialControls(); return; }
             var first = ActionRow(); var second = ActionRow();
-            hintButton = MakeButton("action-hint", "game.hint", RequestHint);
+            hintButton = MakeButton("action-hint", monetization?.Enabled == true && !monetization.IsOwned ? "monetization.hint-ads" : "game.hint", RequestHint);
             clearButton = MakeButton("action-clear", "game.clear", ClearBoard);
-            hintButton.SetEnabled(!ActiveSession.IsCompleted); clearButton.SetEnabled(!ActiveSession.IsCompleted);
+            hintButton.SetEnabled(!ActiveSession.IsCompleted && !CommercialBusy); clearButton.SetEnabled(!ActiveSession.IsCompleted && !CommercialBusy);
             first.Add(hintButton); first.Add(clearButton);
             second.Add(MakeButton("action-menu", "game.menu", ShowMenu));
             second.Add(MakeButton("action-new-game", "game.new", QueueNewGame));
             foreach (var row in new[] { first, second })
                 foreach (var child in row.Children()) { child.style.flexGrow = 1; child.style.flexBasis = 0; }
             controls.Add(first); controls.Add(second);
+            controls.SetEnabled(!CommercialBusy);
         }
         private void BuildTutorialControls()
         {
@@ -238,13 +276,25 @@ namespace CatsAndArrows.UI
         }
         public void ClearBoard()
         {
-            if (Tutorial != null || loading || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
+            if (Tutorial != null || loading || CommercialBusy || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
             CancelInteraction(); ActiveSession.Clear(); BoardView.Refresh();
         }
         public void RequestHint()
         {
-            if (Tutorial != null || loading || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
-            CancelInteraction(); var result = ActiveSession.ApplyHint(); BoardView.Refresh();
+            if (Tutorial != null || loading || CommercialBusy || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
+            CancelInteraction();
+            if (monetization?.Enabled == true) { monetization.RequestHint(); return; }
+            PresentHint(ActiveSession.ApplyHint());
+        }
+        private void OnHintDelivered(HintDelivery delivery)
+        {
+            if (!ReferenceEquals(ActiveSession, delivery.Session) || Tutorial != null) return;
+            PresentHint(delivery.Result);
+        }
+        private void PresentHint(HintResult result)
+        {
+            monetization?.RecordCompletion();
+            BoardView.Refresh();
             if (result.Assignment.HasValue) BoardView.HighlightCell(result.Assignment.Value.Coordinate, UseInlineHints ? 700 : 0);
             if (UseInlineHints)
             {
@@ -273,11 +323,15 @@ namespace CatsAndArrows.UI
         }
         private void OnBoardChanged()
         {
-            if (Tutorial == null && ActiveSession?.IsCompleted == true) UpdateCompletionFeedback();
+            if (Tutorial == null && ActiveSession?.IsCompleted == true)
+            {
+                monetization?.RecordCompletion();
+                UpdateCompletionFeedback();
+            }
         }
         private void UpdateCompletionFeedback()
         {
-            if (ActiveSession?.IsCompleted != true) { BoardView.SetCompletionFeedback(null); return; }
+            if (ActiveSession?.IsCompleted != true) { BoardView.SetCompletionFeedback(MonetizationMessage()); return; }
             hintButton?.SetEnabled(false); clearButton?.SetEnabled(false);
             BoardView.SetInteractionSuspended(true);
             BoardView.SetCompletionFeedback(text.GetText("game.victory"), text.GetText("game.last-hint"),
@@ -285,15 +339,79 @@ namespace CatsAndArrows.UI
         }
         public void ShowLastHint()
         {
-            if (UseInlineHints || loading || Screen != "play" || Modal != null || ActiveSession?.IsCompleted != true || completionHint == null) return;
+            if (UseInlineHints || loading || CommercialBusy || Screen != "play" || Modal != null || ActiveSession?.IsCompleted != true || completionHint == null) return;
             ShowModal("last-hint", text.GetText("game.last-hint"), FormatHint(completionHint),
                 MakeButton("modal-back", "game.close", BackToGame));
         }
-        public void ShowRules()
+        private string MonetizationMessage()
+        {
+            if (monetization?.Enabled != true || monetization.Status == MonetizationStatus.None) return null;
+            return text.GetText("monetization.status." + monetization.Status);
+        }
+        private void AddMonetizationMenu(VisualElement parent)
+        {
+            if (monetization?.Enabled != true) return;
+            parent.Add(Paragraph(text.GetText("monetization.explanation")));
+            if (monetization.Offer?.IsReviewOffer == true)
+                parent.Add(Paragraph(text.GetText("monetization.review")));
+            var purchase = MakeButton("menu-remove-ads", "monetization.remove", PurchaseRemoveAds);
+            if (monetization.IsOwned) purchase.text = text.GetText("monetization.status.Owned");
+            else if (monetization.Offer?.Available == true && !string.IsNullOrEmpty(monetization.Offer.LocalizedPrice))
+                purchase.text += " · " + monetization.Offer.LocalizedPrice;
+            purchase.SetEnabled(monetization.CanPurchase && !CommercialBusy); parent.Add(purchase);
+            var restore = MakeButton("menu-restore", "monetization.restore", RestorePurchases);
+            restore.SetEnabled(!CommercialBusy); parent.Add(restore);
+            var status = Paragraph(MonetizationMessage()); status.name = "monetization-menu-status"; parent.Add(status);
+        }
+        public void PurchaseRemoveAds()
+        {
+            if (loading || CommercialBusy || Screen != "menu" || Modal != null) return;
+            CancelInteraction(); monetization?.PurchaseRemoveAds();
+        }
+        public void RestorePurchases()
+        {
+            if (loading || CommercialBusy || Screen != "menu" || Modal != null) return;
+            CancelInteraction(); monetization?.RestorePurchases();
+        }
+        private void OnMonetizationChanged()
         {
             if (loading) return;
+            if (Screen == "menu" && Modal == null)
+            {
+                // Rebuild without allowing a busy menu action to escape input suspension.
+                if (!CommercialBusy) ShowMenu();
+                else
+                {
+                    menu.SetEnabled(false);
+                    var status = menu.Q<Label>("monetization-menu-status");
+                    if (status != null) status.text = MonetizationMessage();
+                }
+                if (!CommercialBusy) menu.SetEnabled(true);
+                return;
+            }
+            if (Screen != "play") return;
+            BuildControls();
+            BoardView.SetInteractionSuspended(CommercialBusy || Modal != null || ActiveSession?.IsCompleted == true);
+            if (Tutorial == null) UpdateCompletionFeedback();
+        }
+        public void SuspendMonetizationDelivery()
+        {
+            CancelInteraction(); monetization?.CancelHintDelivery();
+        }
+        public void RefreshMonetization() => monetization?.RefreshPurchases();
+        public void TickMonetization() => monetization?.Tick();
+        public void DisposeMonetization()
+        {
+            if (monetization == null) return;
+            monetization.Changed -= OnMonetizationChanged;
+            monetization.HintDelivered -= OnHintDelivered;
+            monetization.Dispose();
+        }
+        public void ShowRules()
+        {
+            if (loading || CommercialBusy) return;
             var returnToMenu = Screen == "menu";
-            ShowModal("rules", text.GetText("game.rules"), text.GetText("game.rules-body"),
+            ShowModal("rules", text.GetText("game.rules"), text.GetText(monetization?.Enabled == true ? "monetization.rules-body" : "game.rules-body"),
                 MakeButton("modal-back", "game.close", () => { if (returnToMenu) ShowMenu(); else BackToGame(); }));
         }
         private void ShowModal(string kind, string heading, string body, params Button[] actions)

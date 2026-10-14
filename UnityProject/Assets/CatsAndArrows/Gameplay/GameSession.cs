@@ -16,6 +16,7 @@ namespace CatsAndArrows.Gameplay
 
         public PuzzleDefinition Puzzle { get; }
         public bool IsCompleted { get; private set; }
+        public long MarkRevision { get; private set; }
         public IReadOnlyDictionary<BoardCoordinate, PlayerMark> Marks => _marksView;
         public IReadOnlyCollection<BoardCoordinate> ProtectedCells => _protectedCellsView;
 
@@ -62,6 +63,7 @@ namespace CatsAndArrows.Gameplay
                 _ => throw new ArgumentOutOfRangeException()
             };
 
+            MarkRevision++;
             RefreshCompletion();
             return true;
         }
@@ -81,6 +83,7 @@ namespace CatsAndArrows.Gameplay
                 changed++;
             }
 
+            if (changed > 0) MarkRevision++;
             RefreshCompletion();
             return changed;
         }
@@ -88,15 +91,18 @@ namespace CatsAndArrows.Gameplay
         public bool Clear()
         {
             if (IsCompleted) return false;
+            var changed = _marks.Values.Any(mark => mark != PlayerMark.Empty);
             var keys = _marks.Keys.ToArray();
             foreach (var coordinate in keys) _marks[coordinate] = PlayerMark.Empty;
+            if (changed) MarkRevision++;
             return true;
         }
 
         public PlayerMark GetMark(BoardCoordinate coordinate) =>
             _marks.TryGetValue(coordinate, out var mark) ? mark : PlayerMark.Empty;
 
-        public HintResult ApplyHint()
+        // Preparation uses the same clue-only proof without changing player state.
+        public HintResult PrepareHint()
         {
             if (IsCompleted) return new HintResult(HintStatus.Completed);
 
@@ -114,12 +120,21 @@ namespace CatsAndArrows.Gameplay
                 var target = assignment.State == CellKnowledge.Cat ? PlayerMark.Cat : PlayerMark.X;
                 if (current == target) continue;
 
-                _marks[assignment.Coordinate] = target;
-                RefreshCompletion();
                 return new HintResult(HintStatus.Applied, step, assignment, current != PlayerMark.Empty);
             }
 
             return new HintResult(HintStatus.NoChange);
+        }
+
+        public HintResult ApplyHint()
+        {
+            var result = PrepareHint();
+            if (result.Status != HintStatus.Applied || !result.Assignment.HasValue) return result;
+            var assignment = result.Assignment.Value;
+            _marks[assignment.Coordinate] = assignment.State == CellKnowledge.Cat ? PlayerMark.Cat : PlayerMark.X;
+            MarkRevision++;
+            RefreshCompletion();
+            return result;
         }
 
         private void RefreshCompletion()

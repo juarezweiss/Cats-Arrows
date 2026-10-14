@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using CatsAndArrows.Core;
 using CatsAndArrows.Gameplay;
+using CatsAndArrows.Monetization;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,9 @@ namespace CatsAndArrows.UI
         [SerializeField] private bool tutorialEnabled = true;
         private PortraitBoardView view;
         private GameShellView shell;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private ReviewAdService reviewAds;
+#endif
         private float safeTop;
         private float safeBottom;
         private bool simulateSafeArea;
@@ -36,6 +40,10 @@ namespace CatsAndArrows.UI
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
             var tutorialCheck = Argument("--tutorial-check=") == "1";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            var monetizationCheck = Argument("--monetization-check=") == "1";
+            if (monetizationCheck) Application.runInBackground = true;
+#endif
             if (tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
@@ -63,12 +71,37 @@ namespace CatsAndArrows.UI
                 var useInlineHints = Argument("--hint-flow=") == "legacy" ? false : inlineHints;
 #endif
                 var reviewSeen = false;
+                MonetizationCoordinator monetization = null;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                if (Argument("--monetization-mock=") == "1")
+                {
+                    var reviewDirectory = Path.Combine(Application.persistentDataPath, "monetization-mock-review");
+                    if (monetizationCheck)
+                    {
+                        var captures = Argument("--game-captures=");
+                        if (string.IsNullOrEmpty(captures) || !Path.IsPathRooted(captures))
+                            throw new ArgumentException("Monetization check captures must be absolute.");
+                        // Each mounted check is isolated from manually reviewed ownership.
+                        reviewDirectory = Path.Combine(captures, "state-" + Guid.NewGuid().ToString("N"));
+                    }
+                    reviewAds = new ReviewAdService(() => Time.realtimeSinceStartupAsDouble);
+                    monetization = new MonetizationCoordinator(true,
+                        new FileMonetizationStateStore(Path.Combine(reviewDirectory, "state.bin")), reviewAds,
+                        new ReviewPurchaseService(Path.Combine(reviewDirectory, "mock-store.txt")),
+                        () => Time.realtimeSinceStartupAsDouble);
+                }
+#endif
                 shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints,
                     enableTutorial: tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
                     tutorialSeen: tutorialCheck ? (Func<bool>)(() => reviewSeen) : null,
-                    markTutorialSeen: tutorialCheck ? (Action)(() => reviewSeen = true) : null);
+                    markTutorialSeen: tutorialCheck ? (Action)(() => reviewSeen = true) : null, monetization: monetization);
                 root.Add(shell);
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (monetizationCheck && shell != null)
+                StartCoroutine(MonetizationReviewChecks.Run(shell, Argument("--game-captures=")));
+            else
+#endif
             if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
@@ -76,6 +109,10 @@ namespace CatsAndArrows.UI
         }
         private void Update()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            reviewAds?.Tick();
+#endif
+            shell?.TickMonetization();
             if (shell != null)
             {
                 if (simulateSafeArea) shell.ApplySafeArea(new Rect(0, safeBottom, Screen.width, Mathf.Max(0, Screen.height - safeTop - safeBottom)), new Vector2(Screen.width, Screen.height));
@@ -89,12 +126,15 @@ namespace CatsAndArrows.UI
         }
         private void OnApplicationFocus(bool focused)
         {
-            if (!focused) { view?.CancelInteraction(); shell?.CancelInteraction(); }
+            if (!focused) { view?.CancelInteraction(); shell?.SuspendMonetizationDelivery(); }
+            else shell?.RefreshMonetization();
         }
         private void OnApplicationPause(bool paused)
         {
-            if (paused) { view?.CancelInteraction(); shell?.CancelInteraction(); }
+            if (paused) { view?.CancelInteraction(); shell?.SuspendMonetizationDelivery(); }
+            else shell?.RefreshMonetization();
         }
+        private void OnDestroy() => shell?.DisposeMonetization();
         private IEnumerator Capture(string path)
         {
             if (!Path.IsPathRooted(path)) throw new ArgumentException("Review capture path must be absolute.");
