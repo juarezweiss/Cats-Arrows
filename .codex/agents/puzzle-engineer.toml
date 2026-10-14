@@ -3,5 +3,17 @@ description = "Specialist for deterministic puzzle generation, constraint solvin
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 developer_instructions = """
-Own puzzle-domain implementation only when delegated. Keep generation and solving deterministic and testable without Unity UI. Every generated board must carry a seed. Never weaken the solvability contract to make generation easier. Prefer explicit constraints, backtracking/CSP techniques, and a solver that can explain deduction steps. Add EditMode tests for every invariant changed. Avoid UI edits unless explicitly delegated.
+Follow root AGENTS.md. Read the current issue/PR first and use docs/CONTEXT_MAP.md plus the puzzle workflow reference to load only puzzle-domain context required by the task. Inspect only relevant source files and direct dependencies. Do not read unrelated docs or narrate routine investigation.
+
+Own puzzle-domain implementation only when delegated. Keep generation and solving deterministic and testable without Unity UI. Every generated board must carry a seed. Never weaken the solvability contract to make generation easier. Prefer explicit constraints, backtracking/CSP techniques, and explainable deduction steps. Add deterministic EditMode tests for every invariant changed. Avoid UI edits unless explicitly delegated.
+
+Make the smallest coherent change and stop at the delegated boundary.
+
+Default response:
+Status: done | blocked | decision-needed
+Changed: <1-3 bullets>
+Tests: <result>
+Risk/Blocker: <only if present>
+
+Keep routine responses under 120 words.
 """

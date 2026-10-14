@@ -16,24 +16,59 @@ Build and ship a cozy, accessible mobile logic puzzle game in Unity while keepin
 - Prefer reversible changes, feature flags, and configuration over destructive migrations.
 - Never add secrets, signing keys, store credentials, ad-network credentials, or API keys to the repository.
 
+## Context and token discipline
+Treat the repository as durable project memory. Conversation history is temporary working context.
+
+- Start with root `AGENTS.md` and the current GitHub issue/task.
+- Use `docs/CONTEXT_MAP.md` to decide which additional documents to load. Do not read all of `docs/`, `planning/`, issues, PRs, or source files by default.
+- Load only the minimum context needed to complete the current task correctly.
+- GitHub Issues are the primary task specification. Prefer issue acceptance criteria over reconstructing requirements from conversation history.
+- Treat short prompts such as `Do #51`, `Review PR #42`, or `Fix #27` as sufficient when the referenced issue/PR and repository instructions provide the required context.
+- Inspect relevant source files and their direct dependencies instead of asking the orchestrator/user to paste code or project history.
+- Do not repeatedly reload unchanged files already inspected in the current task unless their state may have changed.
+- Do not restate project history, requirements, or documents merely to show they were read.
+- When a decision must survive the current task, write it to the appropriate issue, source-of-truth document, ADR, test, or code comment instead of carrying it only in conversation.
+- Prefer a fresh task/thread after a meaningful milestone when durable state has already been captured in the repository.
+- If `docs/CONTEXT_MAP.md` is missing or incomplete, use the Source of truth section below as the fallback router.
+- Context minimization must not reduce correctness. Broaden context when necessary for high-risk work, especially puzzle correctness, solver/generator changes, save-data migrations, monetization behavior, analytics schemas, release/signing, or architecture changes.
+
 ## Work orchestration
-The primary Codex thread acts as orchestrator/PM. Delegate bounded work to the custom agents in `.codex/agents/` when specialization or parallel analysis materially helps.
+The primary Codex thread acts as orchestrator/PM. Delegate bounded work to the custom agents in `.codex/agents/` only when specialization, independent review, or parallel analysis materially improves the outcome.
+
+Do not delegate by default:
+- trivial/local change: orchestrator or one implementation agent;
+- normal feature: one relevant specialist/implementation agent when useful;
+- risky domain or interaction change: relevant specialist plus QA review;
+- architecture/product change: specialist analysis, human decision when required, then implementation and QA.
 
 For implementation tasks:
-1. Read the issue/task and relevant docs.
-2. Confirm acceptance criteria and affected systems.
-3. Ask read-only specialists to analyze in parallel when useful.
-4. Produce a short implementation plan.
+1. Read the issue/task, root instructions, and only the context routed by `docs/CONTEXT_MAP.md`.
+2. Confirm acceptance criteria and affected systems. Ask the user only for unresolved decisions that cannot be answered from repository state.
+3. Decide whether delegation is actually useful. Prefer zero or one specialist for routine work.
+4. For non-trivial or architectural work, produce a short implementation plan. For simple/local changes, proceed directly.
 5. Make the smallest coherent change.
 6. Add/update tests.
 7. Run validation.
-8. Ask `qa_reviewer` to review risky logic or interaction changes.
-9. Update task traceability and documentation when behavior changed.
+8. Ask `qa_reviewer` to review risky logic, puzzle, architecture, persistence, monetization, release, or interaction changes.
+9. Update task traceability and durable documentation only when behavior, architecture, or an approved decision changed.
 10. Stop at a review-ready state unless the user explicitly requested lower-environment merge/deployment.
+
+When delegating, send the smallest viable brief:
+- objective;
+- issue/PR number;
+- relevant paths, if known;
+- explicit question or expected output.
+
+Do not copy large project context into subagent prompts. Specialists should retrieve their own relevant context through `AGENTS.md`, `docs/CONTEXT_MAP.md`, the repo-local Skill, and their specialist instructions.
 
 Avoid concurrent write-heavy subagents on overlapping files. Parallelize research, review, puzzle analysis, UX analysis, and test analysis before parallelizing code edits.
 
+The repo-local Skill defines repeatable workflow routing; specialist agent files define role-specific behavior. Do not duplicate those instructions in this file unless they are global governance rules.
+
 ## Source of truth
+Use `docs/CONTEXT_MAP.md` as the first routing index for task-specific context.
+
+Fallback source list:
 - Product intent: `docs/PRODUCT.md`
 - Game rules: `docs/GAME_DESIGN.md`
 - Puzzle guarantees: `docs/PUZZLE_SOLVABILITY.md`
@@ -47,10 +82,21 @@ Avoid concurrent write-heavy subagents on overlapping files. Parallelize researc
 - Analytics: `docs/ANALYTICS.md`
 - Current priorities: `planning/ROADMAP.md` and GitHub Issues
 
+Do not load every source above for every task. Load only what the context map/task requires.
+
 If these sources disagree, do not silently choose. Surface the conflict and prefer the most recently approved explicit product decision.
 
 ## Task traceability
-Use GitHub Issues as the authoritative work item. Reference issue numbers in branches, commits, PRs, tests where useful, and release notes.
+Use GitHub Issues as the authoritative work item. A well-scoped issue should carry enough context that implementation can start without replaying prior conversations.
+
+When creating or refining an issue, include as applicable:
+- goal;
+- acceptance criteria;
+- relevant area/files;
+- dependencies;
+- explicit non-goals or boundaries.
+
+Reference issue numbers in branches, commits, PRs, tests where useful, and release notes.
 
 Branch naming:
 - `feat/<issue>-short-name`
@@ -72,6 +118,44 @@ Every PR must state:
 - tests run
 - screenshots/video for UI changes when available
 - risk and rollback notes
+
+Keep PR descriptions factual and compact. Link to the issue/source of truth instead of repeating large requirements verbatim.
+
+## Communication
+Default to terse operational responses.
+
+Do not:
+- repeat the user's task;
+- narrate routine file reads, searches, or implementation steps;
+- summarize documents merely because they were inspected;
+- paste code unless requested or necessary to explain a blocking issue;
+- provide tutorials unless requested;
+- restate acceptance criteria already present in the issue;
+- produce long completion summaries for routine work.
+
+For routine completion/status responses, use only the fields that apply:
+
+```text
+Status: done | blocked | decision-needed
+Changed:
+- <1-3 short bullets>
+Tests: <result>
+Blockers/Risks: <only if present>
+PR: <number/link if applicable>
+```
+
+Target <=120 words for routine agent/orchestrator responses. Exceed this only when a design decision, failure analysis, safety issue, or requested explanation requires it.
+
+Specialist responses should default to:
+
+```text
+Finding:
+Recommendation:
+Risk:
+Blocker:
+```
+
+Omit empty fields. Return evidence or detail only when it materially affects the decision.
 
 ## Unity rules
 - Target Unity 6.3 LTS unless an ADR changes this.
@@ -107,6 +191,8 @@ For interaction/UI changes, test at least:
 - portrait mobile layout at representative aspect ratios
 
 Run `scripts/validate.sh` before declaring a task complete. If Unity is unavailable, run the repository checks that are available and explicitly report which Unity checks were not executed.
+
+Do not run unrelated expensive test suites by default when a narrower reliable validation exists. Use the smallest test scope that provides adequate confidence, then run broader required gates before merge/release as defined by `docs/TESTING.md`.
 
 ## Local Unity validation (bootstrap #1)
 - Use the existing checkout. Do not create a Git worktree unless the user requests one.
