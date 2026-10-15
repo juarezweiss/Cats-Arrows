@@ -19,6 +19,18 @@ namespace CatsAndArrows.UI
         {
             for (var i = 0; i < 12; i++) yield return new WaitForEndOfFrame();
             if (!Check(() => Require(shell.Screen == "menu", "starts in menu"))) yield break;
+            var requestedDifficulty = shell.Loop.SelectedDifficulty.Id;
+            foreach (var id in new[] { "easy", "medium", "hard" })
+            {
+                if (shell.Loop.SelectedDifficulty.Id == id) continue;
+                if (!Check(() => Click(shell, "menu-difficulty-" + id))) yield break;
+                yield return new WaitForEndOfFrame();
+            }
+            if (shell.Loop.SelectedDifficulty.Id != requestedDifficulty)
+            {
+                if (!Check(() => Click(shell, "menu-difficulty-" + requestedDifficulty))) yield break;
+                yield return new WaitForEndOfFrame();
+            }
             yield return Capture(captures, "menu");
             if (!Check(() => Click(shell, "menu-rules"))) yield break;
             yield return Capture(captures, "rules");
@@ -26,7 +38,8 @@ namespace CatsAndArrows.UI
             yield return new WaitForEndOfFrame();
             if (!Check(() => Click(shell, "menu-start"))) yield break;
             yield return Ready(shell);
-            if (!Check(() => Require(shell.Loop.Session != null && shell.Screen == "play", "Easy start"))) yield break;
+            if (!Check(() => Require(shell.Loop.Session != null && shell.Screen == "play" &&
+                shell.Loop.Session.Puzzle.Size == shell.Loop.SelectedDifficulty.Size, "selected difficulty start"))) yield break;
             var firstMs = Elapsed(shell);
             yield return Capture(captures, "play");
             if (!Check(() => CheckGridCentered(shell))) yield break;
@@ -78,7 +91,7 @@ namespace CatsAndArrows.UI
                 shell.ClearBoard();
                 Require(session.Marks.Values.All(mark => mark == PlayerMark.Empty), "Clear resets after immediate hint");
             })) yield break;
-            for (var i = 0; i < 30 && !session.IsCompleted; i++)
+            for (var i = 0; i < Math.Max(30, session.Puzzle.Size * session.Puzzle.Size) && !session.IsCompleted; i++)
             {
                 if (!Check(() => shell.RequestHint())) yield break;
                 if (!session.IsCompleted && !shell.UseInlineHints) shell.BackToGame();
@@ -119,6 +132,8 @@ namespace CatsAndArrows.UI
                 if (!Check(() =>
                 {
                     Require(shell.Loop.Session != null && shell.Loop.RequestedSeed != previous, "new seed/ready");
+                    Require(shell.Loop.Session.Puzzle.Size == shell.Loop.SelectedDifficulty.Size &&
+                        shell.Loop.SelectedDifficulty.Id == requestedDifficulty, "New Game retains selected difficulty");
                     Require(string.IsNullOrEmpty(shell.Q<Label>("completion-status").text), "New Game clears completion");
                     Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "New Game clears final hint");
                     if (shell.UseInlineHints) CheckNoHintExplanation(shell);
@@ -149,6 +164,7 @@ namespace CatsAndArrows.UI
             yield return Capture(captures, "completed-tap");
             samples.Sort();
             var report = "GAME_LOOP_REVIEW_PASS locale=" + shell.Locale + " platform=" + Application.platform +
+                " difficulty=" + shell.Loop.SelectedDifficulty.Id + " size=" + shell.Loop.SelectedDifficulty.Size +
                 " hintFlow=" + (shell.UseInlineHints ? "immediate" : "legacy") +
                 " source=synthetic-button firstMs=" + firstMs.ToString("F3", CultureInfo.InvariantCulture) +
                 " requests=20 medianMs=" + samples[9].ToString("F3", CultureInfo.InvariantCulture) +

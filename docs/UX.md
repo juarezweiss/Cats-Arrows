@@ -23,6 +23,21 @@ The user specifically found low-contrast red/green states difficult in the proto
 - Hint should explain a deduction where feasible.
 
 ## Controls
+
+Issue #32 adds an initial-menu Easy / Medium / Hard choice (5×5 / 6×6 / 7×7),
+localized in English, pt-BR and Spanish. The selected choice is bold, outlined and
+disabled rather than identified by color alone. Start names the selected mode.
+Difficulty selection is session-local; restart defaults to Easy. Choosing another
+mode in Menu preserves the live board until Start/New Game; Back to the Game keeps
+its actual difficulty label. Clear preserves the active board and its profile.
+Failure/retry retains the selected mode. Tutorial always presents the same fixed
+Easy lesson; Skip/Play continues to the selected ordinary mode without changing
+the lesson. Default Easy behavior is preserved.
+
+Review evidence: [localized menu](evidence/issue32/difficulty-menu-pt390.png),
+[Medium compact portrait](evidence/issue32/medium-en320.png),
+[Hard compact portrait](evidence/issue32/hard-en320.png). Mounted pointer checks
+pass; physical comfort on compact screens remains a device-review gate.
 In-game primary controls: `Hint`, `Clear`, `Menu`, `New Game`.
 
 After completion: `Hint` and `Clear` disabled; board read-only; `New Game` and `Menu` enabled; completion stays inline so the finished board remains visible.

@@ -37,18 +37,23 @@ namespace CatsAndArrows.Core
 
             var zeroRows = 0;
             var zeroColumns = 0;
+            var hasRequiredLine = !profile.RequiredCatCountInSomeLine.HasValue;
             for (var i = 0; i < puzzle.Size; i++)
             {
                 var rowCount = puzzle.GetRowCatCount(i);
                 var columnCount = puzzle.GetColumnCatCount(i);
                 if (rowCount == 0) zeroRows++;
                 if (columnCount == 0) zeroColumns++;
+                if (rowCount == profile.RequiredCatCountInSomeLine || columnCount == profile.RequiredCatCountInSomeLine)
+                    hasRequiredLine = true;
                 if (rowCount > profile.MaxCatsPerLine) errors.Add($"Row {i} has {rowCount} cats; max is {profile.MaxCatsPerLine}.");
                 if (columnCount > profile.MaxCatsPerLine) errors.Add($"Column {i} has {columnCount} cats; max is {profile.MaxCatsPerLine}.");
             }
 
             if (zeroRows > profile.MaxZeroRows) errors.Add($"Puzzle has {zeroRows} zero-cat rows; max is {profile.MaxZeroRows}.");
             if (zeroColumns > profile.MaxZeroColumns) errors.Add($"Puzzle has {zeroColumns} zero-cat columns; max is {profile.MaxZeroColumns}.");
+
+            if (!hasRequiredLine) errors.Add($"Puzzle requires a row or column with exactly {profile.RequiredCatCountInSomeLine} cats.");
 
             return new PuzzleValidationResult(errors);
         }

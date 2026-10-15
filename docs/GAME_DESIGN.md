@@ -3,10 +3,14 @@
 ## Board
 A rectangular square grid. Current target sizes:
 - Easy: 5x5, maximum 2 solution cats per row/column.
-- Medium: 7x7, maximum 3 solution cats per row/column.
-- Hard: 10x10, maximum 4 solution cats per row/column.
+- Medium: 6x6, maximum 3 solution cats per row/column; zero-cat lines are permitted.
+- Hard: 7x7, maximum 4 solution cats per row/column; no zero-cat lines and at least
+  one row or column with exactly 3 solution cats on every generated board.
 
-Difficulty values are initial design targets, not a substitute for solver-derived difficulty scoring.
+Issue #32 records the owner's size/zero/three-cat requirements. Existing maximum
+cats per line are retained; these labels do not introduce extra deduction rules,
+clue-density requirements or calibrated difficulty thresholds. Easy generation
+and the fixed Easy tutorial are unchanged.
 
 ## Solution cats
 - A normal cell contains at most one solution cat.
@@ -16,7 +20,10 @@ Difficulty values are initial design targets, not a substitute for solver-derive
 ## Row and column totals
 Every row and column displays the exact number of solution cats in that line. Column totals are centered over their columns; row totals are centered beside their rows.
 
-Generation should allow at most one zero-cat row and at most one zero-cat column, unless a later difficulty design changes this rule.
+Easy and Medium permit at most one zero-cat row and at most one zero-cat column.
+Hard permits none. Medium may include 3-cat lines but need not contain one; Hard
+must contain a 3-cat row or column. These admission rules never act as hidden
+constraints inside the clue-only solver or uniqueness proof.
 
 ## Arrow clues
 An arrow occupies a grid cell and is non-interactive. The initial MVP supports eight directions: Up, Down, Left, Right, UpLeft, UpRight, DownLeft and DownRight (Issue #14).
@@ -113,8 +120,9 @@ quotas. It uses ordinary GameSession taps/drags and immediate cat-set victory.
 Only current targets accept guided input. Existing X intersections count; arrows
 and hatches never require X. No cleanup action follows the final cat.
 
-First ordinary Start presents the tutorial once; Skip starts a fresh random Easy
-board. A permanent Tutorial menu action always restarts the same board/flow.
+First ordinary Start presents the tutorial once; Skip starts a fresh random board
+at the menu-selected difficulty (Easy by default). A permanent Tutorial menu
+action always restarts the same fixed Easy board/flow, independent of that choice.
 The tutorial is an explicit exception to previously deferred tutorial frameworks;
 no generic framework or change to ordinary puzzle generation is included.
 

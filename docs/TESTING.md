@@ -1,5 +1,26 @@
 # Testing Strategy
 
+## Issue #32 difficulty coverage
+
+Pinned Unity 6000.3.25f1 compile passed; EditMode `editmode.dIeNZn` passed 285/285
+with successful editor exit, zero failed/skipped/inconclusive. Difficulty tests
+cover 128 fixed seeds per profile with independent human/uniqueness reassessment,
+truthful arrows, quotas/zeros/required 3, frozen signed-seed receipts, explicit
+budgets/cancellation/invalid profiles and concurrent/interleaved replay. Easy
+goldens and the existing tutorial tests pass; new shell regressions check the
+unchanged tutorial fingerprint after Medium/Hard selection, localized choices,
+actual/live-vs-next labels, retry, protected input and completed-board invariants.
+Separate pure-C# seed 0–999 corpora accepted 1,000/1,000 for each new profile.
+
+Mounted macOS checks passed Easy/Medium/Hard EN 320×568, Medium pt-BR 390×844,
+Hard ES 430×932: actual menu pointer selection, Hint/Clear/Menu/NewGame, protected
+cells, pointer tap cycle/completion/readonly state, centered grid and 20 new-game
+transitions per run. Thirty captures and logs are retained in ignored
+`.unity-results/issue32-captures/`; representative images are in
+`docs/evidence/issue32/`. These are desktop portrait simulations, not physical
+phone comfort/latency evidence. QA found no blocking source defects. No new solver
+rules or difficulty-score thresholds were used.
+
 ## Local Unity validation
 
 Bootstrap tooling is tracked by GitHub Issue #1. Use a local Codex task opened on
