@@ -9,17 +9,20 @@ Every purchase/subscription requires separate explicit owner approval.
 - Deterministic bounded Easy generator (#4 / merged PR #12).
 
 ## M1 — Playable Easy MVP
-- Review/integrate pending session fixes (#5 / PR #13) when explicitly requested.
-- Eight-direction arrows including diagonals (#14), native tests and phone timing.
-- Portrait board (#6), taps and horizontal/vertical drag (#7).
-- Clear/New Game/Menu, unlimited explanatory Hint, narrow cardinal protection, immediate win and completed-board review (#8).
+- Session rules (#5 / merged PR #13).
+- Eight-direction arrows (#14 / merged PR #15), native tests and phone timing.
+- Portrait board (#6), taps and horizontal/vertical drag (#7): iPhone verified; Android verification deferred.
+- Clear/New Game/Menu, unlimited immediate Hint, narrow cardinal protection, immediate win and completed-board review (#8/#23).
 - English, Brazilian Portuguese and Spanish with language selection.
-- Play on iPhone, then observe a small TestFlight trial and fix concrete blockers.
+- Owner iPhone loop/visual tests passed; polish integrated in PR #20.
+- Medium 6×6 / Hard 7×7 and menu selection (#32 / merged PR #33); native 285/285
+  tests passed. Fixed Easy tutorial unchanged; Medium/Hard phone review pending.
+- Prepare a small iOS tester trial (#21); enrollment/distribution are separate approval gates.
 - Prepare public iOS release for explicit owner approval.
 
 ## Later, guided by feedback
-- Android with its own physical-device checks.
-- Medium/Hard and measured difficulty, lightweight save/resume, additional languages.
+- Android development and its own physical-device checks (#7), explicitly deferred by owner on 2026-10-09.
+- Measured difficulty, lightweight save/resume, additional languages.
 - Optional monetization experiment under a separate approved scope and budget.
 - Analytics or acquisition only when needed for a defined learning question.
 

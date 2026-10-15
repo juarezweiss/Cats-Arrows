@@ -391,6 +391,14 @@ to an automatic victory modal/Back to the Game completion action; menu resume is
 retained. Final-hint explanation is available on request. Exact-cat completion,
 Hint/Clear locks, Menu/New Game, scope and purchase approval rules are unchanged.
 
+## Delivery sequencing confirmation — 2026-10-09 (#21)
+
+The owner explicitly chose to continue iOS delivery and return to Android later.
+Android development/physical acceptance (#7) stays deferred, with no unsupported
+claim of Android readiness. The next active milestone is small iOS tester trial
+preparation. Owner reports no paid Apple Developer membership yet; enrollment and
+every related purchase remain subject to separate explicit approval.
+
 ## Approved difficulty extension — 2026-10-14 (#32)
 
 The owner explicitly authorized Medium/Hard generation and an initial-menu choice,
