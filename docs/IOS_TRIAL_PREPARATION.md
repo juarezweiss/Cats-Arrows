@@ -7,11 +7,14 @@ Easy. Android development and physical checks (#7) are deferred by owner on
 2026-10-09. Baseline develop commit 2ca1e14 includes merged PR #33 (#32): Easy 5×5,
 Medium 6×6 and Hard 7×7 selection, with the fixed Easy tutorial unchanged. Native
 Unity 6000.3.25f1 compile, 285/285 EditMode tests, repository checks and five mounted
-desktop portrait flows passed. Earlier owner iPhone loop/visual/portrait evidence
-does not validate the new Medium/Hard phone experience; compact Hard targets and
-generation latency still need device review. PR #31 monetization is unmerged and
-excluded. This document is a preparation plan, not a claim that a distribution
-archive exists.
+desktop portrait flows passed. On 2026-10-14, the owner passed Medium 6×6 and Hard
+7×7 smoke tests on iPhone 17 / iOS 27.0.1: touch comfort/readability, tap/drag, controls,
+completion locks, repeated New Game, background/reopen and portrait lock, with
+no visible pauses reported. All three languages (English, pt-BR and Spanish)
+also passed. Smaller physical phones and measured Medium/Hard latency remain
+unverified. See [TESTING.md](TESTING.md) for build provenance and
+limits. PR #31 monetization is unmerged and excluded. This document is a
+preparation plan, not a claim that a distribution archive exists.
 
 The owner confirmed no paid Apple Developer Program membership. Local installed
 phone builds can continue, but TestFlight requires enrollment. Every purchase or

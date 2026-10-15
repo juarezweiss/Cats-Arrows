@@ -2,9 +2,10 @@
 
 Follow the approved Master Project Plan. The playable loop and calm board polish
 are integrated in develop (PRs #18/#20). PR #33 adds Medium/Hard selection (#32);
-develop baseline 2ca1e14 passed native compile and 285/285 tests. Earlier owner
-physical iPhone checks passed for Easy; Medium/Hard device comfort and latency
-remain to be checked. No further game feature is required to begin trial preparation.
+develop baseline 2ca1e14 passed native compile and 285/285 tests. Owner physical
+iPhone checks passed for Easy and the Medium 6×6 / Hard 7×7 smoke tests, plus all
+three languages (iPhone 17, 2026-10-14). Smaller phones and measured Medium/Hard
+latency remain unverified. No further game feature is required to begin trial preparation.
 
 Prepare a versioned, reproducible clean iOS game build and a small 5–8 tester
 feedback loop (#22 collects responses and visual preferences). Confirm durable app identity, build numbering, diagnostic exclusion,

@@ -16,7 +16,8 @@ Every purchase/subscription requires separate explicit owner approval.
 - English, Brazilian Portuguese and Spanish with language selection.
 - Owner iPhone loop/visual tests passed; polish integrated in PR #20.
 - Medium 6×6 / Hard 7×7 and menu selection (#32 / merged PR #33); native 285/285
-  tests passed. Fixed Easy tutorial unchanged; Medium/Hard phone review pending.
+  tests passed. Fixed Easy tutorial unchanged; owner Medium/Hard iPhone 17 smoke
+  and all three languages passed. Smaller phones and measured Medium/Hard latency remain unverified.
 - Prepare a small iOS tester trial (#21); enrollment/distribution are separate approval gates.
 - Prepare public iOS release for explicit owner approval.
 
