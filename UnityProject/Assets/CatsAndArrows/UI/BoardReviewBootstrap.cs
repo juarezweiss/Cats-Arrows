@@ -68,6 +68,8 @@ namespace CatsAndArrows.UI
                     tutorialSeen: tutorialCheck ? (Func<bool>)(() => reviewSeen) : null,
                     markTutorialSeen: tutorialCheck ? (Action)(() => reviewSeen = true) : null);
                 root.Add(shell);
+                var difficulty = Argument("--game-difficulty=");
+                if (!string.IsNullOrEmpty(difficulty)) shell.SelectDifficulty(difficulty);
             }
             if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));

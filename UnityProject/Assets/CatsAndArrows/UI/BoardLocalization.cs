@@ -13,6 +13,8 @@ namespace CatsAndArrows.UI
             {
                 { "board.title", new[] { "Cats & Arrows", "Gatos e Setas", "Gatos y Flechas" } },
                 { "board.easy", new[] { "Easy · 5 × 5", "Fácil · 5 × 5", "Fácil · 5 × 5" } },
+                { "board.medium", new[] { "Medium · 6 × 6", "Médio · 6 × 6", "Medio · 6 × 6" } },
+                { "board.hard", new[] { "Hard · 7 × 7", "Difícil · 7 × 7", "Difícil · 7 × 7" } },
                 { "board.intro", new[] { "A little space to think.", "Um pequeno espaço para pensar.", "Un pequeño espacio para pensar." } },
                 { "board.review", new[] { "Board preview", "Prévia do tabuleiro", "Vista previa del tablero" } },
                 { "board.symbols", new[] { "Symbols", "Símbolos", "Símbolos" } },

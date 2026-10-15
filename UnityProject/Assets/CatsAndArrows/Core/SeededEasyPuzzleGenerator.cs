@@ -35,7 +35,7 @@ namespace CatsAndArrows.Core
             if (profile == null || profile.MaxZeroRows < 0 || profile.MaxZeroColumns < 0)
                 return Result(GenerationStatus.InvalidProfile);
             if (!string.Equals(profile.Id, "easy", StringComparison.Ordinal) || profile.Size != Size ||
-                profile.MaxCatsPerLine != 2 || profile.MaxZeroRows != 1 || profile.MaxZeroColumns != 1)
+                profile.MaxCatsPerLine != 2 || profile.MaxZeroRows != 1 || profile.MaxZeroColumns != 1 || profile.RequiredCatCountInSomeLine.HasValue)
                 return Result(GenerationStatus.UnsupportedProfile);
             if (cancellationToken.IsCancellationRequested) return Stopped();
             if (options.MaxAttempts == 0) return Stopped();

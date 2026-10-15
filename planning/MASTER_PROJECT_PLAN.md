@@ -390,3 +390,15 @@ localized “All cats found!” phrase beneath Easy. This supersedes earlier ref
 to an automatic victory modal/Back to the Game completion action; menu resume is
 retained. Final-hint explanation is available on request. Exact-cat completion,
 Hint/Clear locks, Menu/New Game, scope and purchase approval rules are unchanged.
+
+## Approved difficulty extension — 2026-10-14 (#32)
+
+The owner explicitly authorized Medium/Hard generation and an initial-menu choice,
+superseding their earlier deferral for this tracked implementation. Easy and the
+fixed Easy tutorial remain unchanged. Medium is 6×6 and permits zero/three-cat
+lines; Hard is 7×7, has no zero-cat rows/columns and always has a row or column with
+exactly three cats. Existing Medium max3/Hard max4 caps and Medium's at-most-one
+zero row/column remain; no extra difficulty rules or solver families are approved.
+All difficulties retain seeded determinism, independent uniqueness and complete
+human-style derivation. Scope includes focused tests/docs and PR to develop only;
+no merge, spending, production release or unrelated integration is authorized.

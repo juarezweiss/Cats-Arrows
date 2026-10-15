@@ -85,6 +85,19 @@ retains puzzle truth and protected eligibility; completed sessions reject Clear,
 tap, and drag intents.
 
 ## Randomness
+
+Issue #32 adds a profile-dispatching SeededPuzzleGenerator. Easy delegates to the
+existing SeededEasyPuzzleGenerator with unchanged seed mapping, options and replay
+identity. Medium/Hard use a separate bounded, versioned path and the same human
+deduction/independent uniqueness engines. Profile admission enforces size, quotas,
+zero limits and Hard's required 3-cat line; these are not hidden solving premises.
+
+The existing EasyGameLoop name is retained for caller compatibility. It owns menu
+selection and snapshots SessionDifficulty only after successful admission. Menu
+selection changes the next board; a live session and its header remain unchanged
+on return from Menu. New Game/retry use the selected profile and next seed.
+The tutorial owns its fixed Easy session separately; it consumes no generation
+seed and its lesson is unaffected by menu selection.
 Use explicit seeds. Avoid `UnityEngine.Random` inside core generation. A seed must reproduce the same logical board for a fixed generator version.
 
 ## Persistence

@@ -88,8 +88,24 @@ namespace CatsAndArrows.UI
             scroll.contentContainer.style.paddingBottom = 8; menu.Add(scroll);
             scroll.Add(Heading(text.GetText("board.title"), 26));
             scroll.Add(Paragraph(text.GetText("board.intro")));
-            scroll.Add(Paragraph(text.GetText("board.easy")));
-            scroll.Add(MakeButton("menu-start", "game.start", StartPlaying));
+            scroll.Add(Paragraph(text.GetText("game.difficulty")));
+            var choices = ActionRow();
+            foreach (var id in new[] { "easy", "medium", "hard" })
+            {
+                var choice = MakeButton("menu-difficulty-" + id, "game.difficulty." + id, () => SelectDifficulty(id));
+                choice.style.flexGrow = 1; choice.style.flexBasis = 0;
+                var selected = id == Loop.SelectedDifficulty.Id;
+                choice.SetEnabled(!selected);
+                if (selected)
+                {
+                    choice.style.unityFontStyleAndWeight = FontStyle.Bold;
+                    choice.style.borderLeftWidth = choice.style.borderRightWidth = choice.style.borderTopWidth = choice.style.borderBottomWidth = 3;
+                }
+                choices.Add(choice);
+            }
+            scroll.Add(choices);
+            scroll.Add(Paragraph(text.GetText("board." + Loop.SelectedDifficulty.Id)));
+            scroll.Add(MakeButton("menu-start", Loop.SelectedDifficulty.Id == "easy" ? "game.start" : "game.start." + Loop.SelectedDifficulty.Id, StartPlaying));
             if (ActiveSession != null) scroll.Add(MakeButton("menu-back", "game.back", BackToGame));
             if (enableTutorial) scroll.Add(MakeButton("menu-tutorial", "tutorial.title", StartTutorial));
             scroll.Add(MakeButton("menu-rules", "game.rules", ShowRules));
@@ -102,6 +118,11 @@ namespace CatsAndArrows.UI
         {
             var button = new Button(() => SelectLanguage(locale)) { name = "language-" + locale, text = label };
             StyleButton(button); button.SetEnabled(locale != Locale); parent.Add(button);
+        }
+        public void SelectDifficulty(string id)
+        {
+            if (loading || Screen != "menu" || Modal != null) return;
+            CancelInteraction(); Loop.SelectDifficulty(id); ShowMenu();
         }
         public void SelectLanguage(string locale)
         {
@@ -174,7 +195,7 @@ namespace CatsAndArrows.UI
             {
                 Screen = "failure"; menu.style.display = controls.style.display = DisplayStyle.None;
                 BoardView.style.display = DisplayStyle.Flex;
-                BoardView.ShowGenerationFailure(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile, Locale);
+                BoardView.ShowGenerationFailure(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile, Locale, Loop.SelectedDifficulty);
                 ShowModal("failure", text.GetText("game.failure"),
                     new GenerationLocalizer(text).Format(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile),
                     MakeButton("modal-retry", "game.retry", QueueNewGame), MakeButton("modal-menu", "game.menu", ShowMenu));

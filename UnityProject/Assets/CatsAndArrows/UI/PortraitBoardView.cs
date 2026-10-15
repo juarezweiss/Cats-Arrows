@@ -57,6 +57,7 @@ namespace CatsAndArrows.UI
             Absolute(header, new Rect(0, 0, 0, 104)); header.style.right = 0; header.style.width = StyleKeyword.Auto;
             header.style.alignItems = Align.Center;
             title.style.fontSize = 26; title.style.unityFontStyleAndWeight = FontStyle.Bold;
+            difficulty.name = "board-difficulty";
             difficulty.style.fontSize = 16; difficulty.style.marginTop = 8;
             intro.style.fontSize = 15; intro.style.marginTop = 6; intro.style.color = Secondary;
             intro.name = "board-status";
@@ -232,11 +233,12 @@ namespace CatsAndArrows.UI
             LayoutBoard();
             ApplyTutorialHighlights();
         }
-        public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en")
+        public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en", DifficultyProfile profile = null)
         {
             if (generationStatus == GenerationStatus.Success) throw new ArgumentException("A failure status is required.", nameof(generationStatus));
             CancelInteraction(); gesture = null;
             session = null; Presentation = null; board.Clear(); SetLocale(locale);
+            difficulty.text = text.GetText("board." + (profile ?? DifficultyProfile.Easy).Id);
             board.style.display = DisplayStyle.None;
             error.style.display = DisplayStyle.Flex;
             error.text = new GenerationLocalizer(text).Format(generationStatus);
@@ -257,7 +259,11 @@ namespace CatsAndArrows.UI
         {
             text = new LocalizationService(BoardLocalization.CreateCatalog(), CultureInfo.GetCultureInfo("en"));
             text.SelectLanguage(locale);
-            title.text = text.GetText("board.title"); difficulty.text = text.GetText("board.easy"); intro.text = text.GetText("board.intro");
+            var difficultyKey = session?.Puzzle.Size switch
+            {
+                6 => "board.medium", 7 => "board.hard", _ => "board.easy"
+            };
+            title.text = text.GetText("board.title"); difficulty.text = text.GetText(difficultyKey); intro.text = text.GetText("board.intro");
             BuildLegend();
         }
         private void BuildLegend()

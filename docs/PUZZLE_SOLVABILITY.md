@@ -125,7 +125,38 @@ generator/profile/PRNG/ruleset versions, then compare the canonical fingerprint.
 Retain earlier generation implementations when adding versions that must replay
 saved puzzles. Merely using the same seed with changed defaults is insufficient.
 
-## Difficulty
+## Issue #32 Medium/Hard extension
+
+`SeededPuzzleGenerator` delegates Easy to the original v2 implementation, retaining
+its quota sampling, options, signed-seed mapping and golden fingerprints. The
+separate larger-board path generates Medium 6×6 / Hard 7×7. Existing caps are
+Medium max 3/at-most-one zero row and column, Hard max 4/no zero row or column;
+Hard admission additionally requires some row or column total exactly 3. Medium
+permits but does not require a 3-total line. These checks use the frozen solution
+for admission; the human solver and independent verifier still receive clues only.
+Both proofs must complete and agree with the intended cat set before success.
+
+The larger path uses bounded quota/layout search and truthful eight-direction
+arrow growth with the same documented deductions. Its cached quota arrays are
+private/read-only after initialization; per-call RNG, layouts and work counters
+are independent. No new solver families, clue-density targets or calibrated
+score thresholds are introduced. Metadata records the actual generator/profile
+and effective options versions. Easy defaults/public v1 ceilings remain intact.
+
+Larger-board defaults (`generation-options-large-v1`): 64 attempts, 512 layout nodes
+per attempt/32,768 aggregate, 8 arrow trials per stage, 24 arrows, 2,000 human
+evaluations per call/200,000 aggregate, 5,000 verifier nodes per call/50,000 aggregate,
+100,000 raw draws. These are finite work/clue ceilings, not additional game rules.
+When caller-supplied tighter v1 options exhaust, failure is explicit and returns no board;
+no unchecked fallback, guessed proof or authored game template is used.
+
+Measured non-Unity desktop corpus: 1,000/1,000 successes per new profile. Peak arrow
+count Medium 15 / Hard 23, attempts 1/6, human evaluations 10,040/27,390, verifier nodes 27/63
+and draws 1,001/2,248. Warm desktop Mono p95 was 6.15 ms / 14.16 ms; this is implementation
+evidence, not phone latency or calibrated player difficulty. Native test/review
+evidence is recorded in TESTING.md and the #32 PR.
+
+## Difficulty calibration (deferred)
 Difficulty should ultimately come from solving characteristics rather than grid size alone. Candidate metrics:
 - number of deduction steps;
 - hardest deduction family required;
