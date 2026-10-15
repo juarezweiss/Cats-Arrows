@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using CatsAndArrows.Core;
 using Unity.Profiling;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace CatsAndArrows.Benchmarks
         private const int Runs = 1000;
         private static readonly ProfilerMarker GenerateMarker = new ProfilerMarker("CatsAndArrows.Benchmark.Generate");
         public string SourceRevision = "unspecified";
+        public string ProfileId = "easy";
         private string _status = "Starting generation benchmark";
         private string _outputPath;
         private bool _quit;
@@ -27,6 +29,13 @@ namespace CatsAndArrows.Benchmarks
             _outputPath = outputIndex >= 0 && outputIndex + 1 < arguments.Length
                 ? arguments[outputIndex + 1]
                 : Path.Combine(Application.persistentDataPath, "generation-benchmark-" + DateTime.UtcNow.ToString("yyyyMMddTHHmmssfffZ") + ".json");
+            var profileIndex = Array.IndexOf(arguments, "-benchmarkProfile");
+            var profileId = profileIndex >= 0 && profileIndex + 1 < arguments.Length ? arguments[profileIndex + 1] : ProfileId;
+            var profile = profileId switch
+            {
+                "easy" => DifficultyProfile.Easy, "medium" => DifficultyProfile.Medium,
+                "hard" => DifficultyProfile.Hard, _ => null
+            };
             var report = new Report
             {
                 utcStarted = DateTime.UtcNow.ToString("O"), sourceRevision = SourceRevision,
@@ -35,7 +44,7 @@ namespace CatsAndArrows.Benchmarks
                 processorCount = SystemInfo.processorCount, systemMemoryMb = SystemInfo.systemMemorySize,
                 operatingSystem = SystemInfo.operatingSystem, developmentBuild = Debug.isDebugBuild,
                 batchMode = Application.isBatchMode, graphicsDevice = SystemInfo.graphicsDeviceType.ToString(),
-                generatorVersion = SeededEasyPuzzleGenerator.Version, targetFrameRate = 60,
+                profileId = profileId, targetFrameRate = 60,
                 samples = new Sample[Runs]
             };
 #if ENABLE_IL2CPP
@@ -45,10 +54,13 @@ namespace CatsAndArrows.Benchmarks
 #else
             report.scriptingBackend = "unknown";
 #endif
-            var generator = new SeededEasyPuzzleGenerator();
-            var profile = DifficultyProfile.Easy;
+            if (profile == null) { Finish(report, "Unsupported benchmark profile: " + profileId); yield break; }
+            IPuzzleGenerator generator = new SeededPuzzleGenerator();
             if (!TryMeasure(generator, profile, 0, false, out report.firstInvocation, out var error))
             { Finish(report, error); yield break; }
+            report.generatorVersion = report.firstInvocation.generatorVersion;
+            report.profileVersion = report.firstInvocation.profileVersion;
+            report.optionsVersion = report.firstInvocation.optionsVersion;
             yield return null;
 
             // First invocation precedes all generator warm-up. This is not app launch latency.
@@ -92,7 +104,7 @@ namespace CatsAndArrows.Benchmarks
             Finish(report, null);
         }
 
-        private static bool TryMeasure(SeededEasyPuzzleGenerator generator, DifficultyProfile profile, int seed,
+        private static bool TryMeasure(IPuzzleGenerator generator, DifficultyProfile profile, int seed,
             bool allocationAvailable, out Sample sample, out string error)
         {
             sample = null; error = null;
@@ -111,6 +123,29 @@ namespace CatsAndArrows.Benchmarks
                     attempts = result.Diagnostics.Attempts, humanEvaluations = result.Diagnostics.HumanConstraintEvaluations,
                     verifierNodes = result.Diagnostics.VerifierNodesVisited
                 };
+                sample.generatorVersion = result.Metadata.GeneratorVersion;
+                sample.profileVersion = result.Metadata.ProfileVersion;
+                sample.optionsVersion = result.Metadata.OptionsVersion;
+                sample.boardFingerprint = result.Metadata.BoardFingerprint;
+                sample.pruningTrials = result.Diagnostics.PruningTrials;
+                sample.pruningDeletionsRetained = result.Diagnostics.PruningDeletionsRetained;
+                sample.pruningHumanEvaluations = result.Diagnostics.PruningHumanConstraintEvaluations;
+                sample.pruningVerifierNodes = result.Diagnostics.PruningVerifierNodesVisited;
+                sample.pruningBudgetExhausted = result.Diagnostics.PruningBudgetExhausted;
+                if (result.IsSuccess)
+                {
+                    sample.arrows = result.Puzzle.Arrows.Count;
+                    sample.hatches = ClueProtectionRules.Derive(PuzzleClues.FromPuzzle(result.Puzzle),
+                        result.Assessment.Solver.Human).Count;
+                    sample.fixedCellFraction = (double)(sample.arrows + sample.hatches) /
+                        (result.Puzzle.Size * result.Puzzle.Size);
+                    sample.cats = result.Puzzle.SolutionCats.Count;
+                    sample.deductionSteps = result.Assessment.Solver.Human.Metrics.StepCount;
+                    sample.dependencyDepth = result.Assessment.Solver.Human.Metrics.MaximumDependencyDepth;
+                    sample.stepsToLastCat = result.Assessment.Solver.Human.Steps
+                        .Where(step => step.Conclusions.Any(a => a.State == CellKnowledge.Cat))
+                        .Select(step => step.Index + 1).DefaultIfEmpty(0).Max();
+                }
                 return true;
             }
             catch (Exception exception) { error = exception.ToString(); return false; }
@@ -173,14 +208,15 @@ namespace CatsAndArrows.Benchmarks
         [Serializable]
         private sealed class Report
         {
-            public string schemaVersion = "generation-benchmark-v1";
-            public string task = "Issue #4";
+            public string schemaVersion = "generation-benchmark-v2";
+            public string task = "Issue #4 / #35";
             public string measurement = "first generator invocation then warmed foreground corpus; Generate plus ProfilerMarker scope overhead; excludes app launch";
             public string frameMeasurement = "coroutine resume interval, includes scheduling/render wait; not input latency or GPU timing";
             public string allocationMeasurement = "current thread Generate plus ProfilerMarker scope bytes if known allocation probe advances; -1 unavailable, first invocation unmeasured";
             public string gcMeasurement = "raw GC.CollectionCount API deltas over corpus including harness and frame waits; not evidence of full collection cycles or pauses";
+            public string clueMeasurement = "post-Generate metrics excluded from generation timing/allocation; hatches use the accepted proof; canonical step/depth counts are not calibrated player difficulty";
             public string utcStarted, sourceRevision, unityVersion, platform, deviceModel, processor, operatingSystem;
-            public string scriptingBackend, graphicsDevice, generatorVersion, error;
+            public string scriptingBackend, graphicsDevice, generatorVersion, profileId, profileVersion, optionsVersion, error;
             public int processorCount, systemMemoryMb, targetFrameRate;
             public int seedFirst = 0, seedLast = 999, requestedRuns = Runs;
             public int completedRuns, successes, failures, slowestSeed;
@@ -196,6 +232,11 @@ namespace CatsAndArrows.Benchmarks
         private sealed class Sample
         {
             public int seed, attempts, humanEvaluations, verifierNodes;
+            public int arrows = -1, cats = -1, deductionSteps = -1, dependencyDepth = -1, stepsToLastCat = -1;
+            public int hatches = -1, pruningTrials, pruningDeletionsRetained, pruningHumanEvaluations, pruningVerifierNodes;
+            public bool pruningBudgetExhausted;
+            public double fixedCellFraction = -1;
+            public string generatorVersion, profileVersion, optionsVersion, boardFingerprint;
             public string status;
             public bool success;
             public double generationMs, coroutineIntervalMs;

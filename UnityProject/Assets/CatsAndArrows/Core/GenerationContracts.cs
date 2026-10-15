@@ -25,6 +25,9 @@ namespace CatsAndArrows.Core
         public int MaxVerifierNodesPerCall { get; }
         public int MaxVerifierNodes { get; }
         public int MaxRandomDraws { get; }
+        public int MaxPruningTrials { get; }
+        public int MaxPruningHumanConstraintEvaluations { get; }
+        public int MaxPruningVerifierNodes { get; }
 
         public GenerationOptions(int maxAttempts = 64, int maxLayoutNodesPerAttempt = 256, int maxLayoutNodes = 16384,
             int arrowTrialsPerStage = 8, int maxArrows = 10, int maxHumanConstraintEvaluationsPerCall = 500,
@@ -32,18 +35,24 @@ namespace CatsAndArrows.Core
             int maxVerifierNodes = 50000, int maxRandomDraws = 100000)
             : this(maxAttempts, maxLayoutNodesPerAttempt, maxLayoutNodes, arrowTrialsPerStage, maxArrows,
                 maxHumanConstraintEvaluationsPerCall, maxHumanConstraintEvaluations, maxVerifierNodesPerCall,
-                maxVerifierNodes, maxRandomDraws, false) { }
+                maxVerifierNodes, maxRandomDraws, false, 0, 0, 0) { }
 
-        // Issue #32: separate versioned work limits; Easy defaults and public v1 ceilings remain unchanged.
-        public static GenerationOptions ForLargeBoard() => new GenerationOptions(64, 512, 32768, 8, 24,
-            2000, 200000, 5000, 50000, 100000, true);
+        // Issue #35: optional pruning shares the original aggregate proof budgets.
+        // Zero pruning work keeps the fully proved base; these are not difficulty thresholds.
+        public static GenerationOptions ForLargeBoard(int maxPruningTrials = 48,
+            int maxPruningHumanConstraintEvaluations = 40000, int maxPruningVerifierNodes = 10000,
+            int maxHumanConstraintEvaluations = 200000, int maxVerifierNodes = 50000) =>
+            new GenerationOptions(64, 512, 32768, 8, 24, 2000, maxHumanConstraintEvaluations,
+                5000, maxVerifierNodes, 100000, true, maxPruningTrials,
+                maxPruningHumanConstraintEvaluations, maxPruningVerifierNodes);
 
         private GenerationOptions(int maxAttempts, int maxLayoutNodesPerAttempt, int maxLayoutNodes,
             int arrowTrialsPerStage, int maxArrows, int maxHumanConstraintEvaluationsPerCall,
             int maxHumanConstraintEvaluations, int maxVerifierNodesPerCall, int maxVerifierNodes,
-            int maxRandomDraws, bool largeBoard)
+            int maxRandomDraws, bool largeBoard, int maxPruningTrials,
+            int maxPruningHumanConstraintEvaluations, int maxPruningVerifierNodes)
         {
-            EffectiveVersion = largeBoard ? "generation-options-large-v1" : Version;
+            EffectiveVersion = largeBoard ? "generation-options-large-v2" : Version;
             MaxAttempts = NonNegative(maxAttempts, nameof(maxAttempts));
             MaxLayoutNodesPerAttempt = NonNegative(maxLayoutNodesPerAttempt, nameof(maxLayoutNodesPerAttempt));
             MaxLayoutNodes = NonNegative(maxLayoutNodes, nameof(maxLayoutNodes));
@@ -56,6 +65,10 @@ namespace CatsAndArrows.Core
             MaxVerifierNodesPerCall = NonNegative(maxVerifierNodesPerCall, nameof(maxVerifierNodesPerCall));
             MaxVerifierNodes = NonNegative(maxVerifierNodes, nameof(maxVerifierNodes));
             MaxRandomDraws = NonNegative(maxRandomDraws, nameof(maxRandomDraws));
+            MaxPruningTrials = NonNegative(maxPruningTrials, nameof(maxPruningTrials));
+            if (maxPruningTrials > 48) throw new ArgumentOutOfRangeException(nameof(maxPruningTrials));
+            MaxPruningHumanConstraintEvaluations = NonNegative(maxPruningHumanConstraintEvaluations, nameof(maxPruningHumanConstraintEvaluations));
+            MaxPruningVerifierNodes = NonNegative(maxPruningVerifierNodes, nameof(maxPruningVerifierNodes));
         }
 
         private static int NonNegative(int value, string name)
@@ -99,12 +112,23 @@ namespace CatsAndArrows.Core
         public int VerifierNodesVisited { get; }
         public int RandomDraws { get; }
         public int ArrowTrials { get; }
+        public int PruningTrials { get; }
+        public int PruningDeletionsRetained { get; }
+        public int PruningOrdersCompleted { get; }
+        public int PruningHumanConstraintEvaluations { get; }
+        public int PruningVerifierNodesVisited { get; }
+        public bool PruningBudgetExhausted { get; }
         public IReadOnlyDictionary<GenerationRejectionReason, int> RejectionCounts { get; }
         internal GenerationDiagnostics(int attempts, int layoutNodes, int humanEvaluations, int verifierNodes,
-            int randomDraws, int arrowTrials, IDictionary<GenerationRejectionReason, int> rejections)
+            int randomDraws, int arrowTrials, IDictionary<GenerationRejectionReason, int> rejections,
+            int pruningTrials = 0, int pruningDeletionsRetained = 0, int pruningOrdersCompleted = 0,
+            int pruningHumanEvaluations = 0, int pruningVerifierNodes = 0, bool pruningBudgetExhausted = false)
         {
             Attempts = attempts; LayoutNodesVisited = layoutNodes; HumanConstraintEvaluations = humanEvaluations;
             VerifierNodesVisited = verifierNodes; RandomDraws = randomDraws; ArrowTrials = arrowTrials;
+            PruningTrials = pruningTrials; PruningDeletionsRetained = pruningDeletionsRetained;
+            PruningOrdersCompleted = pruningOrdersCompleted; PruningHumanConstraintEvaluations = pruningHumanEvaluations;
+            PruningVerifierNodesVisited = pruningVerifierNodes; PruningBudgetExhausted = pruningBudgetExhausted;
             RejectionCounts = new ReadOnlyDictionary<GenerationRejectionReason, int>(new Dictionary<GenerationRejectionReason, int>(rejections));
         }
     }

@@ -50,7 +50,9 @@ Mobile puzzle players who enjoy Picross/Nonograms, Minesweeper-like deduction, a
 
 Start the first tester session with Easy; Medium and Hard are available for
 optional follow-up play. The approved #32 amendment supersedes their earlier
-deferral. Current profile rules live in [GAME_DESIGN.md](GAME_DESIGN.md); validation
+deferral. The approved #35 pilot limits Hard lines to 1–3 cats and prunes redundant
+Medium/Hard arrows with both solvability proofs intact; density ranges remain
+soft targets. Current profile rules live in [GAME_DESIGN.md](GAME_DESIGN.md); validation
 and physical-device evidence live in [TESTING.md](TESTING.md). Keep the first trial
 focused on player understanding, comfortable input and concrete feedback.
 

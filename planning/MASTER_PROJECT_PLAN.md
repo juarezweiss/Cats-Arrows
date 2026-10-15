@@ -410,3 +410,14 @@ zero row/column remain; no extra difficulty rules or solver families are approve
 All difficulties retain seeded determinism, independent uniqueness and complete
 human-style derivation. Scope includes focused tests/docs and PR to develop only;
 no merge, spending, production release or unrelated integration is authorized.
+
+## Approved difficulty pruning pilot — 2026-10-15 (#35)
+
+The owner approved Hard 7×7 with 1–3 cats per row/column, no zero lines and at
+least one exactly-3 row or column, superseding #32's Hard max4. Medium remains
+6×6/max3/at-most-one zero row and column. Both tuned profiles use bounded,
+deterministic clue pruning with unchanged human deduction rules and independent
+unique-solution proof. Keep the 24-arrow search ceiling; density bands are soft
+research targets, not new rejection rules. Preserve Easy and the fixed tutorial.
+Implementation, focused tests/benchmarks and a review-ready PR to develop are
+within this pilot; integration and production actions retain their approval gates.

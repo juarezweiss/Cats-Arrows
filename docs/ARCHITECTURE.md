@@ -98,6 +98,15 @@ selection changes the next board; a live session and its header remain unchanged
 on return from Menu. New Game/retry use the selected profile and next seed.
 The tutorial owns its fixed Easy session separately; it consumes no generation
 seed and its lesson is unaffected by menu selection.
+
+Issue #35 versions the Medium/Hard generator/profile and larger-board options.
+Its optional two-order arrow-pruning phase shares the original solver work
+ceilings and keeps only fully admitted variants. Exhaustion retains the best
+proved board; cancellation returns none. Core `ClueProtectionRules` derives the
+existing cardinal one-cat hatches from an already accepted human proof, allowing
+pruning to count actual non-interactive cells without depending on Gameplay or
+running an unmetered solver. Gameplay's existing protection facade delegates to
+that same rule. Easy and tutorial truth/interaction contracts remain unchanged.
 Use explicit seeds. Avoid `UnityEngine.Random` inside core generation. A seed must reproduce the same logical board for a fixed generator version.
 
 ## Persistence

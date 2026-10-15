@@ -4,13 +4,16 @@
 A rectangular square grid. Current target sizes:
 - Easy: 5x5, maximum 2 solution cats per row/column.
 - Medium: 6x6, maximum 3 solution cats per row/column; zero-cat lines are permitted.
-- Hard: 7x7, maximum 4 solution cats per row/column; no zero-cat lines and at least
+- Hard: 7x7, 1–3 solution cats per row/column; no zero-cat lines and at least
   one row or column with exactly 3 solution cats on every generated board.
 
-Issue #32 records the owner's size/zero/three-cat requirements. Existing maximum
-cats per line are retained; these labels do not introduce extra deduction rules,
-clue-density requirements or calibrated difficulty thresholds. Easy generation
-and the fixed Easy tutorial are unchanged.
+Issue #35's approved pilot supersedes #32's original Hard max4 cap with max3.
+Medium's counts and both sizes remain unchanged. Medium/Hard remove redundant
+arrows only after complete no-guess/unique proof, favoring fewer combined arrow
+and derived-hatched cells. Indicative bands (Medium 3–9 arrows/~21% fixed cells,
+Hard 7–13/~27%) are soft research observations, not per-board acceptance limits
+or calibrated difficulty scores. No additional deductions are introduced. Easy
+generation and the fixed Easy tutorial are unchanged.
 
 ## Solution cats
 - A normal cell contains at most one solution cat.

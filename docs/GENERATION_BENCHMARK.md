@@ -4,6 +4,18 @@ This internal diagnostic player measures the existing seeded Easy generator. It
 does not add a game screen or change puzzle admission. The benchmark assembly is
 excluded from ordinary players unless `CATS_ARROWS_BENCHMARK` is defined.
 
+Issue #35 extends this opt-in harness to Medium/Hard; Easy remains the default.
+Set `CATS_ARROWS_BENCHMARK_PROFILE=medium` or `hard` when building, including for
+phones where managed launch arguments may be unavailable. Desktop launches may
+override the serialized choice with `-benchmarkProfile medium` or `hard`.
+Unsupported profiles fail explicitly. Schema `generation-benchmark-v2` records
+actual generator/profile/options versions, fingerprints, arrows/hatches, combined
+fixed-cell fraction, canonical proof steps/depth, steps through the last cat and
+pruning work/exhaustion. These extra clue metrics are computed after the timed
+Generate call, using its accepted proof without an extra solver run. They do not
+add new game rules, density rejection thresholds or calibrated difficulty scores.
+Earlier results below retain their original generator and harness identities.
+
 The first `Generate(Easy, 0)` invocation is recorded before generator warm-up;
 this is not application startup or New Game input latency. After warm-up and 60
 baseline frames, seeds `0..999` run on the main thread, one request per frame.
