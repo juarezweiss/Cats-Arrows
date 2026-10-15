@@ -28,6 +28,18 @@ counts include harness work. Neither is a direct measure of production UI lag.
 
 ## Build and run
 
+For the #35 pilot, native macOS schema-v2 reports completed 1,000/1,000 per
+profile, and the physical iPhone 17 Hard run repeated seeds 0–999 three times
+with 3,000/3,000 successes. Source `e9b19ca`, Unity 6000.3.25f1, Xcode 27.0,
+iOS 27.0.1 Release/IL2CPP: warm p95 35.44/37.24/37.30 ms (pooled 36.95 ms),
+maximum 53.52 ms; first invocation 67.37–69.05 ms. All phone board fingerprints
+matched the native macOS report. These are 1,000 distinct seeds repeated across
+fresh launches, not 3,000 independent seeds. Full schema reports and raw logs
+are retained in `.unity-results/issue35/benchmark-iphone-hard-run{1,2,3}.*`;
+`phone-summary.json` and `validation-manifest.json` retain summaries/checksums.
+No input-to-ready, older-device, Medium-phone or perceived-difficulty claim is
+made. The existing playable review build was restored afterward.
+
 Close the project in the GUI Editor. Use the exact editor reported by
 `bash scripts/unity.sh`. Build output should use the ignored `Builds/` directory.
 For example, from the repository root:

@@ -27,6 +27,18 @@ generation-only measurements, not phone/New Game input latency. Reports and
 build logs remain under `.unity-results/issue35/benchmark-*`; new per-board clue
 metrics are calculated outside the timed Generate/allocation scope.
 
+Physical iPhone 17 / iOS 27.0.1, source `e9b19ca`, Xcode 27.0 Release/IL2CPP:
+three fresh Hard benchmark launches each accepted seeds 0–999 (3,000 successes,
+1,000 distinct seeds). Warm p95 was 35.44/37.24/37.30 ms; pooled p95 36.95 ms,
+maximum 53.52 ms. First invocation was 67.37–69.05 ms, excluding app startup.
+Every fingerprint matched the native macOS Hard report; reported proof/pruning
+work stayed within all ceilings with no pruning exhaustion. Full reports,
+logs and checksums are retained under `.unity-results/issue35/`, and the signed
+diagnostic/symbols under `Builds/Issue35Pruning/`. The prior playable review app
+was restored after measurement. These are generation-only measurements on one
+device, not New Game touch-to-ready latency, Medium phone timing or perceived
+challenge/playtest evidence for the tuned boards.
+
 The earlier #32 phone smoke evidence below covers the original generator/profile.
 It does not establish the tuned pilot's player comfort or subjective challenge.
 
