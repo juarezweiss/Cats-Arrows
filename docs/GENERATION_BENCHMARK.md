@@ -4,6 +4,18 @@ This internal diagnostic player measures the existing seeded Easy generator. It
 does not add a game screen or change puzzle admission. The benchmark assembly is
 excluded from ordinary players unless `CATS_ARROWS_BENCHMARK` is defined.
 
+Issue #35 extends this opt-in harness to Medium/Hard; Easy remains the default.
+Set `CATS_ARROWS_BENCHMARK_PROFILE=medium` or `hard` when building, including for
+phones where managed launch arguments may be unavailable. Desktop launches may
+override the serialized choice with `-benchmarkProfile medium` or `hard`.
+Unsupported profiles fail explicitly. Schema `generation-benchmark-v2` records
+actual generator/profile/options versions, fingerprints, arrows/hatches, combined
+fixed-cell fraction, canonical proof steps/depth, steps through the last cat and
+pruning work/exhaustion. These extra clue metrics are computed after the timed
+Generate call, using its accepted proof without an extra solver run. They do not
+add new game rules, density rejection thresholds or calibrated difficulty scores.
+Earlier results below retain their original generator and harness identities.
+
 The first `Generate(Easy, 0)` invocation is recorded before generator warm-up;
 this is not application startup or New Game input latency. After warm-up and 60
 baseline frames, seeds `0..999` run on the main thread, one request per frame.
@@ -15,6 +27,18 @@ scope overhead. Frame intervals include scheduling/render waits; collection
 counts include harness work. Neither is a direct measure of production UI lag.
 
 ## Build and run
+
+For the #35 pilot, native macOS schema-v2 reports completed 1,000/1,000 per
+profile, and the physical iPhone 17 Hard run repeated seeds 0–999 three times
+with 3,000/3,000 successes. Source `e9b19ca`, Unity 6000.3.25f1, Xcode 27.0,
+iOS 27.0.1 Release/IL2CPP: warm p95 35.44/37.24/37.30 ms (pooled 36.95 ms),
+maximum 53.52 ms; first invocation 67.37–69.05 ms. All phone board fingerprints
+matched the native macOS report. These are 1,000 distinct seeds repeated across
+fresh launches, not 3,000 independent seeds. Full schema reports and raw logs
+are retained in `.unity-results/issue35/benchmark-iphone-hard-run{1,2,3}.*`;
+`phone-summary.json` and `validation-manifest.json` retain summaries/checksums.
+No input-to-ready, older-device, Medium-phone or perceived-difficulty claim is
+made. The existing playable review build was restored afterward.
 
 Close the project in the GUI Editor. Use the exact editor reported by
 `bash scripts/unity.sh`. Build output should use the ignored `Builds/` directory.

@@ -39,17 +39,15 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void Issue32HardRetainsFourCatCapAlongsideRequiredThreeLine()
+        public void Issue35HardRejectsFourAlongsideOtherwiseValidRequiredThreeLine()
         {
             var cats = Enumerable.Range(0, 7).Select(i => new BoardCoordinate(i, i)).Concat(new[] {
                 new BoardCoordinate(0, 1), new BoardCoordinate(0, 2), new BoardCoordinate(0, 3),
                 new BoardCoordinate(1, 2), new BoardCoordinate(1, 3) }).ToArray();
-            var four = new PuzzleDefinition(7, 32, "fixture", cats, Array.Empty<ArrowClue>());
+            var four = new PuzzleDefinition(7, 35, "fixture", cats, Array.Empty<ArrowClue>());
             Assert.That(four.GetRowCatCount(0), Is.EqualTo(4));
             Assert.That(four.GetRowCatCount(1), Is.EqualTo(3));
-            Assert.That(PuzzleValidator.Validate(four, DifficultyProfile.Hard).IsValid, Is.True);
-            var five = new PuzzleDefinition(7, 32, "fixture", cats.Concat(new[] { new BoardCoordinate(0, 4) }), Array.Empty<ArrowClue>());
-            Assert.That(PuzzleValidator.Validate(five, DifficultyProfile.Hard).Errors, Has.Some.Contains("max is 4"));
+            Assert.That(PuzzleValidator.Validate(four, DifficultyProfile.Hard).Errors, Has.Some.Contains("max is 3"));
         }
 
         [TestCase(Direction.UpLeft, 0, 0, 0, 1)]

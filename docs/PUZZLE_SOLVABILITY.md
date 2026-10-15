@@ -87,8 +87,9 @@ later clues can unlock a chain. Never retry a zero-gain stage without a bound.
 Stop at the first complete human derivation, then assess the exact frozen board
 against all invariants, exhaustive uniqueness, and the intended cat set. No
 partial or unproved board may be returned on failure. Do not mutate clues after
-proof. Clue removal/minimization, extra deduction rules, and final difficulty
-thresholds remain separate work.
+proof. Issue #35 adds bounded clue removal for Medium/Hard only; Easy retains
+this original first-complete-board behavior. Extra deduction rules and calibrated
+difficulty thresholds remain separate work.
 
 Candidate attempts, layout nodes, trial additions, raw random draws, human
 constraint evaluations, and verifier nodes have deterministic limits. Per-call
@@ -155,6 +156,44 @@ count Medium 15 / Hard 23, attempts 1/6, human evaluations 10,040/27,390, verifi
 and draws 1,001/2,248. Warm desktop Mono p95 was 6.15 ms / 14.16 ms; this is implementation
 evidence, not phone latency or calibrated player difficulty. Native test/review
 evidence is recorded in TESTING.md and the #32 PR.
+
+## Approved #35 clue-pruning pilot
+
+The current tuned path is `difficulty-generator-v2` / `difficulty-profile-v2`.
+Hard remains 7×7 with no zero lines and at least one exactly-3 row or column,
+but its cap is now 3. Medium remains 6×6/max3/at-most-one zero row and column.
+Easy delegates unchanged, retaining its versions, options and frozen seed output.
+The #32 v1 results above describe the original implementation, not tuned receipts.
+There are no shipped board saves requiring a runtime v1 replay path; reproduce
+older receipts with their original source revision and versions.
+
+After complete initial admission, try removing arrows in ascending and descending
+coordinate order, each starting from the same proved board. A bounded human-only
+preflight rejects stalled deletions; every retained deletion then requires full
+human/independent-uniqueness assessment and intended-answer agreement. Compare
+proved variants by combined arrows plus derived hatches, then arrow count; retain
+the deterministic first candidate on ties. Hatches come from the same existing
+cardinal one-cat rule and accepted proof used by gameplay, never additional solver
+premises. No new deductions, difficulty scores or density rejection rules apply.
+
+`generation-options-large-v2` retains the 24-arrow search ceiling and original
+aggregate human/verifier limits. Its optional pruning phase has ceilings of 48
+deletion trials, 40,000 human evaluations and 10,000 verifier nodes, also charged
+to the unchanged 200,000/50,000 shared totals. Per-call limits remain 2,000/5,000.
+Options record tighter overrides; diagnostics record phase trials, work, completed
+orders, retained deletions across both paths and pruning exhaustion. The retained
+deletion count is not the final board's arrow-count delta.
+
+If optional pruning exhausts, return only the last/best fully admitted artifact;
+do not reject an otherwise valid board for missing a density target. If initial
+generation cannot prove a board, fail explicitly without a puzzle. Cancellation
+always returns no puzzle. Scoring reuses accepted proofs without hidden solver
+calls. All effective options and versions form replay identity.
+
+Soft research observations are Medium 3–9 arrows/~21% combined fixed occupancy
+and Hard 7–13/~27%. They are corpus distributions, not universal minima or hard
+acceptance limits. The research and limitations are recorded in Issue #35;
+implementation validation is recorded separately in TESTING.md.
 
 ## Difficulty calibration (deferred)
 Difficulty should ultimately come from solving characteristics rather than grid size alone. Candidate metrics:

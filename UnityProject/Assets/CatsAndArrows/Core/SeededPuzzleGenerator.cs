@@ -9,8 +9,8 @@ namespace CatsAndArrows.Core
     // one call; callers may prepare independently without a Unity dependency.
     public sealed class SeededPuzzleGenerator : IPuzzleGenerator
     {
-        public const string Version = "difficulty-generator-v1";
-        public const string ProfileVersion = "difficulty-profile-v1";
+        public const string Version = "difficulty-generator-v2";
+        public const string ProfileVersion = "difficulty-profile-v2";
 
         // Canonical quota arrays are private and never mutated. Lazy caches avoid
         // rebuilding up to 5^7 bounded patterns on every synchronous menu request.
@@ -40,6 +40,13 @@ namespace CatsAndArrows.Core
                 PuzzleAssessmentResult assessment = null, int acceptedAttempt = -1) => new GenerationResult(status,
                     puzzle, assessment, new GenerationMetadata(seed, profile, options, acceptedAttempt, puzzle, Version, ProfileVersion), work.Snapshot());
             GenerationResult Stopped() => Result(cancellationToken.IsCancellationRequested ? GenerationStatus.Cancelled : GenerationStatus.Exhausted);
+            GenerationResult Accepted(PuzzleDefinition puzzle, PuzzleAssessmentResult assessment, int attempt)
+            {
+                Prune(puzzle, assessment, profile, work, out var retained, out var retainedAssessment);
+                // Cancellation invalidates the whole request, including a previously proved base.
+                return cancellationToken.IsCancellationRequested ? Stopped() :
+                    Result(GenerationStatus.Success, retained, retainedAssessment, attempt);
+            }
 
             if (profile == null || profile.MaxZeroRows < 0 || profile.MaxZeroColumns < 0)
                 return Result(GenerationStatus.InvalidProfile);
@@ -91,7 +98,7 @@ namespace CatsAndArrows.Core
                 {
                     var assessment = work.Assess(barePuzzle, profile);
                     if (cancellationToken.IsCancellationRequested) return Stopped();
-                    if (assessment.IsAccepted) return Result(GenerationStatus.Success, barePuzzle, assessment, attempt);
+                    if (assessment.IsAccepted) return Accepted(barePuzzle, assessment, attempt);
                     work.RejectAssessment(assessment);
                     continue;
                 }
@@ -125,7 +132,7 @@ namespace CatsAndArrows.Core
                             attemptedCompleteBoard = true;
                             var assessment = work.Assess(candidate, profile);
                             if (cancellationToken.IsCancellationRequested) return Stopped();
-                            if (assessment.IsAccepted) return Result(GenerationStatus.Success, candidate, assessment, attempt);
+                            if (assessment.IsAccepted) return Accepted(candidate, assessment, attempt);
                             work.RejectAssessment(assessment);
                             break;
                         }
@@ -148,6 +155,61 @@ namespace CatsAndArrows.Core
             }
             return Stopped();
         }
+
+        // Two deterministic greedy paths start from the same fully proved board.
+        // Removing an arrow restores a normal cell, so every retained deletion is re-proved.
+        private static void Prune(PuzzleDefinition original, PuzzleAssessmentResult originalAssessment,
+            DifficultyProfile profile, GenerationWork work, out PuzzleDefinition retained,
+            out PuzzleAssessmentResult retainedAssessment)
+        {
+            var best = original;
+            var bestAssessment = originalAssessment;
+            var bestFixed = FixedCount(best, bestAssessment);
+            void Consider(PuzzleDefinition puzzle, PuzzleAssessmentResult assessment)
+            {
+                var fixedCount = FixedCount(puzzle, assessment);
+                if (fixedCount > bestFixed || (fixedCount == bestFixed && puzzle.Arrows.Count >= best.Arrows.Count)) return;
+                best = puzzle; bestAssessment = assessment; bestFixed = fixedCount;
+            }
+
+            var ordered = original.Arrows.OrderBy(a => a.Key.Row).ThenBy(a => a.Key.Column)
+                .Select(a => a.Key).ToArray();
+            for (var order = 0; order < 2; order++)
+            {
+                var current = original;
+                var assessment = originalAssessment;
+                foreach (var coordinate in order == 0 ? ordered : ordered.Reverse())
+                {
+                    if (!work.BeginPruningTrial())
+                    {
+                        Consider(current, assessment);
+                        retained = best; retainedAssessment = bestAssessment; return;
+                    }
+                    var candidate = new PuzzleDefinition(original.Size, original.Seed, Version, original.SolutionCats,
+                        current.Arrows.Where(a => a.Key != coordinate).Select(a => new ArrowClue(a.Key, a.Value)));
+                    // A stalled deletion never needs an exhaustive verifier call.
+                    var human = work.SolveHuman(candidate, true);
+                    if (!work.CanAssessPruning)
+                    {
+                        work.NotePruningBudgetExhausted();
+                        Consider(current, assessment);
+                        retained = best; retainedAssessment = bestAssessment; return;
+                    }
+                    if (human.Status != HumanSolverStatus.Solved) continue;
+                    var proof = work.Assess(candidate, profile, true);
+                    if (!proof.IsAccepted) continue;
+                    current = candidate; assessment = proof;
+                    work.PruningDeletionsRetained++;
+                }
+                work.PruningOrdersCompleted++;
+                // Equal scores retain the earlier deterministic path/base.
+                Consider(current, assessment);
+            }
+            retained = best; retainedAssessment = bestAssessment;
+        }
+
+        private static int FixedCount(PuzzleDefinition puzzle, PuzzleAssessmentResult assessment) =>
+            puzzle.Arrows.Count + ClueProtectionRules.Derive(PuzzleClues.FromPuzzle(puzzle), assessment.Solver.Human).Count;
 
         private static Dictionary<int, List<int[]>> QuotaVectors(DifficultyProfile profile)
         {
@@ -260,6 +322,22 @@ namespace CatsAndArrows.Core
             public int VerifierNodes { get; private set; }
             public int RandomDraws { get; private set; }
             public int ArrowTrials { get; set; }
+            public int PruningTrials { get; private set; }
+            public int PruningDeletionsRetained { get; set; }
+            public int PruningOrdersCompleted { get; set; }
+            public int PruningHumanEvaluations { get; private set; }
+            public int PruningVerifierNodes { get; private set; }
+            public bool PruningBudgetExhausted { get; private set; }
+            public bool CanAssessPruning => !IsStopped && VerifierNodes < Options.MaxVerifierNodes &&
+                PruningHumanEvaluations < Options.MaxPruningHumanConstraintEvaluations &&
+                PruningVerifierNodes < Options.MaxPruningVerifierNodes;
+            public void NotePruningBudgetExhausted() { PruningBudgetExhausted = true; }
+            public bool BeginPruningTrial()
+            {
+                if (PruningTrials >= Options.MaxPruningTrials || !CanAssessPruning)
+                { PruningBudgetExhausted = true; return false; }
+                PruningTrials++; return true;
+            }
             public bool IsStopped => _cancellationToken.IsCancellationRequested || _randomStopped || _layoutStopped || _verificationStopped ||
                 HumanEvaluations >= Options.MaxHumanConstraintEvaluations;
 
@@ -267,7 +345,8 @@ namespace CatsAndArrows.Core
             { Options = options; _cancellationToken = cancellationToken; }
             public void Reject(GenerationRejectionReason reason) { _rejections[reason]++; }
             public GenerationDiagnostics Snapshot() => new GenerationDiagnostics(Attempts, LayoutNodes, HumanEvaluations,
-                VerifierNodes, RandomDraws, ArrowTrials, _rejections);
+                VerifierNodes, RandomDraws, ArrowTrials, _rejections, PruningTrials, PruningDeletionsRetained,
+                PruningOrdersCompleted, PruningHumanEvaluations, PruningVerifierNodes, PruningBudgetExhausted);
 
             public bool NextInt(SplitMix64Random random, int exclusiveMax, out int value)
             {
@@ -300,21 +379,33 @@ namespace CatsAndArrows.Core
                 return true;
             }
 
-            public HumanSolverResult SolveHuman(PuzzleDefinition puzzle)
+            public HumanSolverResult SolveHuman(PuzzleDefinition puzzle, bool pruning = false)
             {
                 var allowance = Math.Min(Options.MaxHumanConstraintEvaluationsPerCall, Options.MaxHumanConstraintEvaluations - HumanEvaluations);
+                if (pruning) allowance = Math.Min(allowance, Options.MaxPruningHumanConstraintEvaluations - PruningHumanEvaluations);
                 var result = new HumanDeductionSolver().Solve(PuzzleClues.FromPuzzle(puzzle), new SolverOptions(allowance, 0));
                 HumanEvaluations += result.Metrics.ConstraintEvaluations;
+                if (pruning) PruningHumanEvaluations += result.Metrics.ConstraintEvaluations;
                 return result;
             }
 
-            public PuzzleAssessmentResult Assess(PuzzleDefinition puzzle, DifficultyProfile profile)
+            public PuzzleAssessmentResult Assess(PuzzleDefinition puzzle, DifficultyProfile profile, bool pruning = false)
             {
                 var humanAllowance = Math.Min(Options.MaxHumanConstraintEvaluationsPerCall, Options.MaxHumanConstraintEvaluations - HumanEvaluations);
                 var verifierAllowance = Math.Min(Options.MaxVerifierNodesPerCall, Options.MaxVerifierNodes - VerifierNodes);
+                if (pruning)
+                {
+                    humanAllowance = Math.Min(humanAllowance, Options.MaxPruningHumanConstraintEvaluations - PruningHumanEvaluations);
+                    verifierAllowance = Math.Min(verifierAllowance, Options.MaxPruningVerifierNodes - PruningVerifierNodes);
+                }
                 var assessment = PuzzleSolvabilityAssessment.Assess(puzzle, profile, new SolverOptions(humanAllowance, verifierAllowance));
                 HumanEvaluations += assessment.Solver.Human.Metrics.ConstraintEvaluations;
                 VerifierNodes += assessment.Solver.Uniqueness.NodesVisited;
+                if (pruning)
+                {
+                    PruningHumanEvaluations += assessment.Solver.Human.Metrics.ConstraintEvaluations;
+                    PruningVerifierNodes += assessment.Solver.Uniqueness.NodesVisited;
+                }
                 return assessment;
             }
 

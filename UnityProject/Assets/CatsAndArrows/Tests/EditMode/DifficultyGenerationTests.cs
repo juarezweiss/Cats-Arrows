@@ -52,7 +52,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo(SeededPuzzleGenerator.Version));
                 Assert.That(puzzle.GeneratorVersion, Is.EqualTo(result.Metadata.GeneratorVersion));
                 Assert.That(result.Metadata.ProfileVersion, Is.EqualTo(SeededPuzzleGenerator.ProfileVersion));
-                Assert.That(result.Metadata.OptionsVersion, Is.EqualTo("generation-options-large-v1"));
+                Assert.That(result.Metadata.OptionsVersion, Is.EqualTo("generation-options-large-v2"));
                 Assert.That(result.Metadata.RulesetVersion, Is.EqualTo("human-v2"));
                 Assert.That(result.Metadata.BoardFingerprint, Is.EqualTo(GenerationFingerprints.ForBoard(puzzle)));
                 WithinBudgets(result);
@@ -63,14 +63,15 @@ namespace CatsAndArrows.Tests
             Assert.That(boards.Count, Is.EqualTo(128));
         }
 
-        [TestCase("medium", 0, "f0d16059f54ccbd56559a89bc86ba9f5b6a7e4bce90b3386d7d13e83197cb4a2")]
-        [TestCase("medium", -1, "47914097981bfa905e4c74a3aa785ec9fd91636ea5de8e2ec6601206fe3bc739")]
-        [TestCase("medium", int.MinValue, "3654eeb7d47f54e59a9e36c4ea0e9d504cf7c3d6862c4639cbc51cd871f4ad97")]
-        [TestCase("medium", int.MaxValue, "08bfb7b3bfc67f913632823643370ecf41b46780fa01a47973b9055777afa9c7")]
-        [TestCase("hard", 0, "91bc41c827a0db001ba4bacd01ea24ae5898aa92c5baa390f961f16013c7a94e")]
-        [TestCase("hard", -1, "69d4c0d94906b79d9c1a199e3016c375a6d6d44edb6c3638ad89c027aa858cba")]
-        [TestCase("hard", int.MinValue, "dfb5c51d86cb68a45d4050aa9d2e0a5f8d7e46d3c71bc6b4f365b979f248c456")]
-        [TestCase("hard", int.MaxValue, "dd0e01a10a295dd83b134649e251415ca527249fc9f7937423c87ebe9ab03d70")]
+        // Issue #35 v2 receipts from native Mono, with full independent assessment.
+        [TestCase("medium", 0, "3bf0fb47cdfecf4526952ad8e281f4f7c20340b6782722f607bac9529d35cd1b")]
+        [TestCase("medium", -1, "fc97730017cb5cbeb789de6db620c2c3febb40ad3003c0677abf0a85f1353a65")]
+        [TestCase("medium", int.MinValue, "f14406637fd7f4179f17232e9e8d7b826f1cfd367529986b8a41183558bc1c54")]
+        [TestCase("medium", int.MaxValue, "8eeaeff3ba70b253c74a2afc05d3ec6f8bd5ad794751c79c7c44981fe889090c")]
+        [TestCase("hard", 0, "b2c71295f015e903a73577aa5c304c72e0004d1ced438641db9bf6269c994e0a")]
+        [TestCase("hard", -1, "8c7701abdc5009d6f852a617eefa7a1f99ca8621a77fc0242400e808212fb1e0")]
+        [TestCase("hard", int.MinValue, "e249fcdba2874900aeb00238a5baa6d4da96fecb45ed8a4c019ddaf0207e6c17")]
+        [TestCase("hard", int.MaxValue, "0f694d43a2c477b869dac61a5c1c37063b28bb585486021f8ac522c7f8bc56b4")]
         public void SignedSeedsReplayAcrossInstancesAndInterleavedDifficulty(string id, int seed, string fingerprint)
         {
             var generator = new SeededPuzzleGenerator();
@@ -150,7 +151,7 @@ namespace CatsAndArrows.Tests
             var generator = new SeededPuzzleGenerator();
             foreach (var p in new[] { new DifficultyProfile("medium", 7, 3), new DifficultyProfile("medium", 6, 4),
                 new DifficultyProfile("medium", 6, 3, 2, 1), new DifficultyProfile("hard", 7, 4),
-                new DifficultyProfile("hard", 7, 4, 0, 0), new DifficultyProfile("hard", 7, 4, 0, 0, 2),
+                new DifficultyProfile("hard", 7, 3, 0, 0), new DifficultyProfile("hard", 7, 4, 0, 0, 3), new DifficultyProfile("hard", 7, 4, 0, 0, 2),
                 new DifficultyProfile("easy", 5, 2, 1, 1, 2), new DifficultyProfile("custom", 7, 4) })
             {
                 var result = generator.Generate(p, 32);
@@ -169,7 +170,9 @@ namespace CatsAndArrows.Tests
             r.Metadata.SolutionFingerprint + ":" + r.Metadata.AcceptedAttempt + ":" + r.Metadata.GeneratorVersion + ":" +
             r.Metadata.ProfileVersion + ":" + r.Metadata.OptionsVersion + ":" + r.Diagnostics.Attempts + ":" +
             r.Diagnostics.LayoutNodesVisited + ":" + r.Diagnostics.HumanConstraintEvaluations + ":" +
-            r.Diagnostics.VerifierNodesVisited + ":" + r.Diagnostics.RandomDraws + ":" + r.Diagnostics.ArrowTrials;
+            r.Diagnostics.VerifierNodesVisited + ":" + r.Diagnostics.RandomDraws + ":" + r.Diagnostics.ArrowTrials + ":" +
+            r.Diagnostics.PruningTrials + ":" + r.Diagnostics.PruningDeletionsRetained + ":" + r.Diagnostics.PruningOrdersCompleted + ":" +
+            r.Diagnostics.PruningHumanConstraintEvaluations + ":" + r.Diagnostics.PruningVerifierNodesVisited + ":" + r.Diagnostics.PruningBudgetExhausted;
         private static void WithinBudgets(GenerationResult r)
         {
             var o = r.Metadata.Options;
@@ -180,6 +183,9 @@ namespace CatsAndArrows.Tests
             Assert.That(r.Diagnostics.VerifierNodesVisited, Is.InRange(0, o.MaxVerifierNodes));
             Assert.That(r.Diagnostics.RandomDraws, Is.InRange(0, o.MaxRandomDraws));
             Assert.That(r.Diagnostics.ArrowTrials, Is.LessThanOrEqualTo((long)r.Diagnostics.Attempts * o.MaxArrows * o.ArrowTrialsPerStage));
+            Assert.That(r.Diagnostics.PruningTrials, Is.InRange(0, o.MaxPruningTrials));
+            Assert.That(r.Diagnostics.PruningHumanConstraintEvaluations, Is.InRange(0, o.MaxPruningHumanConstraintEvaluations));
+            Assert.That(r.Diagnostics.PruningVerifierNodesVisited, Is.InRange(0, o.MaxPruningVerifierNodes));
         }
     }
 }

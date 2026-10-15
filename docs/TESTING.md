@@ -1,5 +1,47 @@
 # Testing Strategy
 
+## Issue #35 clue-pruning pilot
+
+Pinned Unity 6000.3.25f1 compile passed (`compile.KyrwU0`); native EditMode
+`editmode.ejNSDX` passed **294/294**, with successful editor exit and zero
+failed/skipped/inconclusive. This includes unchanged Easy goldens/tutorial/shell
+regressions, new signed Medium/Hard v2 receipts, paired 128-seed/profile
+occupancy/proof checks, independent two-order reference selection, and zero/tiny
+phase/shared-budget retention of only previously admitted boards. Default cases
+complete both orders; all proof work is accounted for in phase and shared limits.
+
+The fresh seeds 1000–1999 accepted 1,000/1,000 per tuned profile and matched every
+research-selected fingerprint. Each result was independently re-assessed and
+work-checked. Combined arrow/hatch occupancy averaged 20.9% Medium and 26.7% Hard;
+arrow p10/median/p90 was 3/5/9 and 7/10/13. Median waves to the last cat, counting
+the UI's existing hatches as already known facts, were 5 and 7. No tuned request
+exhausted pruning in this corpus. Peak shared human/verifier work was
+16,475/113 and 49,351/419, below the unchanged aggregate ceilings. Raw reports
+and the measurement-only wave harness are under ignored `.unity-results/issue35/`.
+These are corpus observations, not universal yield or perceived-difficulty proof.
+
+The opt-in native macOS/Mono benchmark completed 1,000/1,000 successful samples
+for each Easy/Medium/Hard profile with schema-v2 clue/version/work fields populated.
+Warm Generate p95 was 11.14/28.36/66.63 ms respectively. These are desktop
+generation-only measurements, not phone/New Game input latency. Reports and
+build logs remain under `.unity-results/issue35/benchmark-*`; new per-board clue
+metrics are calculated outside the timed Generate/allocation scope.
+
+Physical iPhone 17 / iOS 27.0.1, source `e9b19ca`, Xcode 27.0 Release/IL2CPP:
+three fresh Hard benchmark launches each accepted seeds 0–999 (3,000 successes,
+1,000 distinct seeds). Warm p95 was 35.44/37.24/37.30 ms; pooled p95 36.95 ms,
+maximum 53.52 ms. First invocation was 67.37–69.05 ms, excluding app startup.
+Every fingerprint matched the native macOS Hard report; reported proof/pruning
+work stayed within all ceilings with no pruning exhaustion. Full reports,
+logs and checksums are retained under `.unity-results/issue35/`, and the signed
+diagnostic/symbols under `Builds/Issue35Pruning/`. The prior playable review app
+was restored after measurement. These are generation-only measurements on one
+device, not New Game touch-to-ready latency, Medium phone timing or perceived
+challenge/playtest evidence for the tuned boards.
+
+The earlier #32 phone smoke evidence below covers the original generator/profile.
+It does not establish the tuned pilot's player comfort or subjective challenge.
+
 ## Issue #32 difficulty coverage
 
 Pinned Unity 6000.3.25f1 compile passed; EditMode `editmode.dIeNZn` passed 285/285

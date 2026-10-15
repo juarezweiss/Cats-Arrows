@@ -29,6 +29,6 @@ namespace CatsAndArrows.Core
 
         public static DifficultyProfile Easy => new DifficultyProfile("easy", 5, 2);
         public static DifficultyProfile Medium => new DifficultyProfile("medium", 6, 3);
-        public static DifficultyProfile Hard => new DifficultyProfile("hard", 7, 4, 0, 0, 3);
+        public static DifficultyProfile Hard => new DifficultyProfile("hard", 7, 3, 0, 0, 3);
     }
 }
