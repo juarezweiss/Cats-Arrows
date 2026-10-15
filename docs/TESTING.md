@@ -28,6 +28,18 @@ The [compact Hard capture](evidence/issue37/hard-en-320x568.png) shows normal
 interactive cells instead of derived hatches. Logs and all 18 captures remain
 under `.unity-results/issue37/`; portrait simulation does not prove phone comfort.
 
+Physical iPhone 17, 2026-10-15, playable develop `2131cc9`: the owner confirmed all
+requested hatch-fix checks passed. Multiple Hard boards had no initial hatches;
+former one-cat-arrow consequence cells accepted manual X by tap/drag. Hint,
+Clear, Menu/back, repeated New Game and completed-board lock passed; brief
+Easy/Medium hatch regression checks also passed. The owner reported “hard feels
+better.” Build/export, native signing verification, install and launch passed;
+the existing 303/303 test evidence applies to identical merged code. This is
+qualitative evidence on one device, not measured touch-to-ready latency,
+calibrated difficulty or smaller-device coverage. Signed app/symbols and receipt
+are under ignored `Builds/Issue37Playtest/`, with logs/duplicate receipt under
+`.unity-results/issue37-playtest*`. See [#37](https://github.com/juarezweiss/Cats-Arrows/issues/37).
+
 ## Issue #35 clue-pruning pilot
 
 Pinned Unity 6000.3.25f1 compile passed (`compile.KyrwU0`); native EditMode
