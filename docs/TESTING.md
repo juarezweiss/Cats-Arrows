@@ -21,6 +21,25 @@ transitions per run. Thirty captures and logs are retained in ignored
 phone comfort/latency evidence. QA found no blocking source defects. No new solver
 rules or difficulty-score thresholds were used.
 
+Physical iPhone 17 / iOS 27.0.1, 2026-10-14: the owner confirmed all requested
+Medium 6×6 and Hard 7×7 smoke checks passed: edge/rapid/held taps and the tap cycle,
+horizontal/vertical drags, Hint/Clear/Menu/back, repeated New Game, hints-to-win
+and completed-board lock, background/reopen and portrait lock. No missed/extra
+marks, cramped targets, unreadable clues, visible pauses or layout problems were
+reported. The owner also confirmed all three languages (English, pt-BR and
+Spanish) passed. This is qualitative acceptance on one device; smaller physical
+phones and measured Medium/Hard p95 latency are not established by this run.
+
+The Release/IL2CPP arm64 review build used source d3452ba (gameplay identical to
+develop 2ca1e14), Unity 6000.3.25f1 and Xcode 27.0 (27A266a). Export, final Xcode
+build, signature verification, install and launch passed. Logs/receipt remain in
+ignored `.unity-results/issue32-ios-export.log`, `issue32-ios-xcode-final.log`,
+`issue32-iphone-install-final.json`, `issue32-iphone-flow-final.log` and
+`issue32-device-build.json`. Signed app/symbols remain in
+`Builds/Issue32Difficulty/Playable/` and `Symbols/`; generated Xcode intermediates
+were removed after preservation. Managed launch arguments did not enable the
+diagnostic flow, so no fresh automated phone timing result is claimed.
+
 ## Local Unity validation
 
 Bootstrap tooling is tracked by GitHub Issue #1. Use a local Codex task opened on
