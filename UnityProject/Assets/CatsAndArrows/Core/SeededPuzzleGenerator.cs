@@ -11,6 +11,8 @@ namespace CatsAndArrows.Core
     {
         public const string Version = "difficulty-generator-v2";
         public const string ProfileVersion = "difficulty-profile-v2";
+        public const string HardVersion = "hard-generator-v3";
+        public const string HardProfileVersion = "hard-profile-v3";
 
         // Canonical quota arrays are private and never mutated. Lazy caches avoid
         // rebuilding up to 5^7 bounded patterns on every synchronous menu request.
@@ -35,10 +37,12 @@ namespace CatsAndArrows.Core
                 return new SeededEasyPuzzleGenerator().Generate(profile, seed, options, cancellationToken);
             options = options ?? GenerationOptions.ForLargeBoard();
             var size = profile?.Size ?? 0;
+            var generatorVersion = profile?.Id == "hard" ? HardVersion : Version;
+            var profileVersion = profile?.Id == "hard" ? HardProfileVersion : ProfileVersion;
             var work = new GenerationWork(options, cancellationToken);
             GenerationResult Result(GenerationStatus status, PuzzleDefinition puzzle = null,
                 PuzzleAssessmentResult assessment = null, int acceptedAttempt = -1) => new GenerationResult(status,
-                    puzzle, assessment, new GenerationMetadata(seed, profile, options, acceptedAttempt, puzzle, Version, ProfileVersion), work.Snapshot());
+                    puzzle, assessment, new GenerationMetadata(seed, profile, options, acceptedAttempt, puzzle, generatorVersion, profileVersion), work.Snapshot());
             GenerationResult Stopped() => Result(cancellationToken.IsCancellationRequested ? GenerationStatus.Cancelled : GenerationStatus.Exhausted);
             GenerationResult Accepted(PuzzleDefinition puzzle, PuzzleAssessmentResult assessment, int attempt)
             {
@@ -86,7 +90,7 @@ namespace CatsAndArrows.Core
                 }
 
                 var selected = new List<ArrowClue>();
-                var barePuzzle = new PuzzleDefinition(size, seed, Version, cats, selected);
+                var barePuzzle = new PuzzleDefinition(size, seed, generatorVersion, cats, selected);
                 var pool = TruthfulArrows(barePuzzle);
                 var current = work.SolveHuman(barePuzzle);
                 if (cancellationToken.IsCancellationRequested) return Stopped();
@@ -119,7 +123,7 @@ namespace CatsAndArrows.Core
                     {
                         if (work.IsStopped) return Stopped();
                         var arrow = available[trial];
-                        var candidate = new PuzzleDefinition(size, seed, Version, cats, selected.Concat(new[] { arrow }));
+                        var candidate = new PuzzleDefinition(size, seed, generatorVersion, cats, selected.Concat(new[] { arrow }));
                         work.ArrowTrials++;
                         var solved = work.SolveHuman(candidate);
                         if (cancellationToken.IsCancellationRequested) return Stopped();
@@ -164,10 +168,10 @@ namespace CatsAndArrows.Core
         {
             var best = original;
             var bestAssessment = originalAssessment;
-            var bestFixed = FixedCount(best, bestAssessment);
+            var bestFixed = FixedCount(profile, best, bestAssessment);
             void Consider(PuzzleDefinition puzzle, PuzzleAssessmentResult assessment)
             {
-                var fixedCount = FixedCount(puzzle, assessment);
+                var fixedCount = FixedCount(profile, puzzle, assessment);
                 if (fixedCount > bestFixed || (fixedCount == bestFixed && puzzle.Arrows.Count >= best.Arrows.Count)) return;
                 best = puzzle; bestAssessment = assessment; bestFixed = fixedCount;
             }
@@ -185,7 +189,7 @@ namespace CatsAndArrows.Core
                         Consider(current, assessment);
                         retained = best; retainedAssessment = bestAssessment; return;
                     }
-                    var candidate = new PuzzleDefinition(original.Size, original.Seed, Version, original.SolutionCats,
+                    var candidate = new PuzzleDefinition(original.Size, original.Seed, original.GeneratorVersion, original.SolutionCats,
                         current.Arrows.Where(a => a.Key != coordinate).Select(a => new ArrowClue(a.Key, a.Value)));
                     // A stalled deletion never needs an exhaustive verifier call.
                     var human = work.SolveHuman(candidate, true);
@@ -208,8 +212,8 @@ namespace CatsAndArrows.Core
             retained = best; retainedAssessment = bestAssessment;
         }
 
-        private static int FixedCount(PuzzleDefinition puzzle, PuzzleAssessmentResult assessment) =>
-            puzzle.Arrows.Count + ClueProtectionRules.Derive(PuzzleClues.FromPuzzle(puzzle), assessment.Solver.Human).Count;
+        private static int FixedCount(DifficultyProfile profile, PuzzleDefinition puzzle, PuzzleAssessmentResult assessment) =>
+            puzzle.Arrows.Count + ClueProtectionRules.ForProfile(profile, PuzzleClues.FromPuzzle(puzzle), assessment.Solver.Human).Count;
 
         private static Dictionary<int, List<int[]>> QuotaVectors(DifficultyProfile profile)
         {

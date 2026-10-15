@@ -50,7 +50,7 @@ namespace CatsAndArrows.Gameplay
                 return false;
             }
 
-            Session = new GameSession(result.Puzzle, ClueProtection.Derive(PuzzleClues.FromPuzzle(result.Puzzle)));
+            Session = new GameSession(result.Puzzle, ClueProtection.Derive(PuzzleClues.FromPuzzle(result.Puzzle), SelectedDifficulty));
             SessionDifficulty = SelectedDifficulty;
             return true;
         }

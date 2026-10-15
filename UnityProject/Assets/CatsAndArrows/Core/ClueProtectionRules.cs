@@ -7,6 +7,17 @@ namespace CatsAndArrows.Core
     // Presentation-only derived facts; never supplied as premises to a solver.
     public static class ClueProtectionRules
     {
+        // Issue #37: Hard leaves every normal cell for the player to classify.
+        // No proof is required and no consequence-derived hatches are selected.
+        public static IReadOnlyList<BoardCoordinate> ForProfile(DifficultyProfile profile,
+            PuzzleClues clues, HumanSolverResult proof)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            if (clues == null) throw new ArgumentNullException(nameof(clues));
+            return string.Equals(profile.Id, "hard", StringComparison.Ordinal)
+                ? Array.Empty<BoardCoordinate>() : Derive(clues, proof);
+        }
+
         public static IReadOnlyList<BoardCoordinate> Derive(PuzzleClues clues, HumanSolverResult proof)
         {
             if (clues == null) throw new ArgumentNullException(nameof(clues));

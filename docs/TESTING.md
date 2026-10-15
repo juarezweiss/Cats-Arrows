@@ -1,5 +1,33 @@
 # Testing Strategy
 
+## Issue #37 Hard hatch regression
+
+Pinned Unity 6000.3.25f1 compile passed (`compile.Uv7Gv7`); native EditMode
+`editmode.imRrEn` passed **303/303**, successful editor exit and zero
+failed/skipped/inconclusive. Hard policy tests require no solver proof and return
+no initial hatches even on boards with cardinal one-cat NotCat consequences.
+Generated-session/UI snapshots verify former hatch cells start Empty, accept
+manual X via tap/drag, reset on Clear, and stay unhatched across Menu, language
+and optional Hint. Arrow protection and completion locks retain existing tests.
+The fixed Easy tutorial's exact hatch set remains unchanged after Hard selection.
+
+Medium's 131 full receipts (seeds 0–127, -1, int.MinValue, int.MaxValue) match
+the original revision exactly, including board/solution hashes, versions and work
+counters. Existing Easy goldens, signed Hard v3 replay, 128-seed/profile independent
+human/uniqueness proofs, independent pruning reference and tight-budget/cancellation
+coverage pass. Hard's int.MaxValue golden intentionally changes because pruning
+now scores actual arrows alone; Medium's frozen goldens remain unchanged.
+Core focused checks passed 34/34. QA found no blockers. Logs/corpus comparison
+are under ignored `.unity-results/issue37/`. This is not new physical-device or
+perceived-difficulty evidence; the #35 phone numbers below refer to Hard v2.
+
+Mounted native macOS flows passed Hard EN 320×568, Hard ES 390×844 and Medium
+pt-BR 390×844: actual menu/button and board pointer events, tap cycle, protected
+arrows, Hint/Clear/Menu, 20 New Games per flow, centered grids and completed locks.
+The [compact Hard capture](evidence/issue37/hard-en-320x568.png) shows normal
+interactive cells instead of derived hatches. Logs and all 18 captures remain
+under `.unity-results/issue37/`; portrait simulation does not prove phone comfort.
+
 ## Issue #35 clue-pruning pilot
 
 Pinned Unity 6000.3.25f1 compile passed (`compile.KyrwU0`); native EditMode

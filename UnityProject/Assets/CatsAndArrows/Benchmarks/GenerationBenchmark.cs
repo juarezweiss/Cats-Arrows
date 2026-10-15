@@ -135,7 +135,7 @@ namespace CatsAndArrows.Benchmarks
                 if (result.IsSuccess)
                 {
                     sample.arrows = result.Puzzle.Arrows.Count;
-                    sample.hatches = ClueProtectionRules.Derive(PuzzleClues.FromPuzzle(result.Puzzle),
+                    sample.hatches = ClueProtectionRules.ForProfile(profile, PuzzleClues.FromPuzzle(result.Puzzle),
                         result.Assessment.Solver.Human).Count;
                     sample.fixedCellFraction = (double)(sample.arrows + sample.hatches) /
                         (result.Puzzle.Size * result.Puzzle.Size);
@@ -214,7 +214,7 @@ namespace CatsAndArrows.Benchmarks
             public string frameMeasurement = "coroutine resume interval, includes scheduling/render wait; not input latency or GPU timing";
             public string allocationMeasurement = "current thread Generate plus ProfilerMarker scope bytes if known allocation probe advances; -1 unavailable, first invocation unmeasured";
             public string gcMeasurement = "raw GC.CollectionCount API deltas over corpus including harness and frame waits; not evidence of full collection cycles or pauses";
-            public string clueMeasurement = "post-Generate metrics excluded from generation timing/allocation; hatches use the accepted proof; canonical step/depth counts are not calibrated player difficulty";
+            public string clueMeasurement = "post-Generate metrics excluded from generation timing/allocation; profile hatch policy (Hard none, others accepted proof); canonical step/depth counts are not calibrated player difficulty";
             public string utcStarted, sourceRevision, unityVersion, platform, deviceModel, processor, operatingSystem;
             public string scriptingBackend, graphicsDevice, generatorVersion, profileId, profileVersion, optionsVersion, error;
             public int processorCount, systemMemoryMb, targetFrameRate;

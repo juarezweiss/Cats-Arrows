@@ -15,6 +15,9 @@ pruning work/exhaustion. These extra clue metrics are computed after the timed
 Generate call, using its accepted proof without an extra solver run. They do not
 add new game rules, density rejection thresholds or calibrated difficulty scores.
 Earlier results below retain their original generator and harness identities.
+Issue #37 makes hatch counts profile-aware: Hard v3 reports zero hatches, while
+Easy/Medium still use the admitted proof's cardinal rule. The #35 density and
+phone results below describe Hard v2, not new measurements for this fix.
 
 The first `Generate(Easy, 0)` invocation is recorded before generator warm-up;
 this is not application startup or New Game input latency. After warm-up and 60

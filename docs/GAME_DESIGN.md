@@ -9,9 +9,10 @@ A rectangular square grid. Current target sizes:
 
 Issue #35's approved pilot supersedes #32's original Hard max4 cap with max3.
 Medium's counts and both sizes remain unchanged. Medium/Hard remove redundant
-arrows only after complete no-guess/unique proof, favoring fewer combined arrow
-and derived-hatched cells. Indicative bands (Medium 3–9 arrows/~21% fixed cells,
-Hard 7–13/~27%) are soft research observations, not per-board acceptance limits
+arrows only after complete no-guess/unique proof. Medium favors fewer combined
+arrow and derived-hatched cells. Issue #37 removes initial hatches in Hard, so
+Hard favors fewer arrows only. Indicative #35 bands (Medium 3–9 arrows/~21% fixed
+cells, Hard 7–13/~27%) describe that earlier pilot, not per-board acceptance limits
 or calibrated difficulty scores. No additional deductions are introduced. Easy
 generation and the fixed Easy tutorial are unchanged.
 
@@ -49,7 +50,14 @@ Direction locks to horizontal or vertical once movement clearly establishes the 
 ## Useless/protected cells
 Some clue combinations can prove cells impossible before player interaction. Initial rule carried from the prototype: when a line has exactly one solution cat and a cardinal arrow in that line guarantees the cat lies in the pointed direction, cells on the opposite side of that arrow can be represented as protected/impossible cells.
 
-This cardinal-only rule must not be applied to diagonal arrows, which cross different rows and columns. This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
+This cardinal-only rule applies to Easy, Medium and the fixed Easy tutorial; it must not be applied to diagonal arrows, which cross different rows and columns. This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
+
+Hard has no initial hatches (Issue #37). Even a provable NotCat cell behind a
+cardinal arrow in a one-cat line remains Empty and interactive until the player
+marks it or requests an optional Hint. No solver consequences become automatic
+protection. Hatches are optional, so this fix introduces no independent hatch
+count or selection rule. An empty hatch set is deterministic for every seed;
+the existing clue-only uniqueness and no-guess proofs require no hatch premises.
 
 Protected cells are non-interactive and must have a non-color visual treatment.
 
