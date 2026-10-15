@@ -57,6 +57,7 @@ namespace CatsAndArrows.Tests
         [TestCase("medium", 32)]
         [TestCase("hard", 0)]
         [TestCase("hard", 32)]
+        [TestCase("hard", int.MaxValue)]
         public void TwoOrderResultMatchesIndependentGreedyProofAndTieSelection(string id, int seed)
         {
             var profile = Profile(id);
@@ -73,7 +74,7 @@ namespace CatsAndArrows.Tests
                         current.SolutionCats, current.Arrows.Where(a => a.Key != coordinate).Select(a => new ArrowClue(a.Key, a.Value)));
                     if (PuzzleSolvabilityAssessment.Assess(candidate, profile).IsAccepted) current = candidate;
                 }
-                var currentFixed = FixedCount(current); var bestFixed = FixedCount(best);
+                var currentFixed = FixedCount(current, profile); var bestFixed = FixedCount(best, profile);
                 if (currentFixed < bestFixed || (currentFixed == bestFixed && current.Arrows.Count < best.Arrows.Count)) best = current;
             }
             var actual = generator.Generate(profile, seed);
@@ -122,9 +123,11 @@ namespace CatsAndArrows.Tests
 
         private static DifficultyProfile Profile(string id) => id == "medium" ? DifficultyProfile.Medium : DifficultyProfile.Hard;
         private static int FixedCount(GenerationResult result) => result.Puzzle.Arrows.Count +
-            ClueProtectionRules.Derive(PuzzleClues.FromPuzzle(result.Puzzle), result.Assessment.Solver.Human).Count;
-        private static int FixedCount(PuzzleDefinition puzzle)
+            (result.Metadata.ProfileId == "hard" ? 0 :
+                ClueProtectionRules.Derive(PuzzleClues.FromPuzzle(result.Puzzle), result.Assessment.Solver.Human).Count);
+        private static int FixedCount(PuzzleDefinition puzzle, DifficultyProfile profile)
         {
+            if (profile.Id == "hard") return puzzle.Arrows.Count;
             var clues = PuzzleClues.FromPuzzle(puzzle);
             return puzzle.Arrows.Count + ClueProtectionRules.Derive(clues, new HumanDeductionSolver().Solve(clues)).Count;
         }

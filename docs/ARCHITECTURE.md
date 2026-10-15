@@ -106,7 +106,13 @@ proved board; cancellation returns none. Core `ClueProtectionRules` derives the
 existing cardinal one-cat hatches from an already accepted human proof, allowing
 pruning to count actual non-interactive cells without depending on Gameplay or
 running an unmetered solver. Gameplay's existing protection facade delegates to
-that same rule. Easy and tutorial truth/interaction contracts remain unchanged.
+that same rule. Issue #37 adds `ClueProtectionRules.ForProfile`: Hard returns an
+empty protection set without consulting a proof; other modes retain `Derive`.
+Session creation uses the selected/admitted profile and skips the presentation
+solver for Hard. Core pruning and benchmark counts use the same profile policy:
+Hard scores arrows only, while Medium keeps its existing combined occupancy.
+Hard alone uses `hard-generator-v3` / `hard-profile-v3`; Medium's v2 receipt and
+Easy/tutorial truth/interaction contracts remain unchanged.
 Use explicit seeds. Avoid `UnityEngine.Random` inside core generation. A seed must reproduce the same logical board for a fixed generator version.
 
 ## Persistence

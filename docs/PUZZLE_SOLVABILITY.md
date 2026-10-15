@@ -195,6 +195,27 @@ and Hard 7–13/~27%. They are corpus distributions, not universal minima or har
 acceptance limits. The research and limitations are recorded in Issue #35;
 implementation validation is recorded separately in TESTING.md.
 
+## Issue #37 Hard hatch policy
+
+Hard uses `hard-generator-v3` / `hard-profile-v3`: no initial protected/hatch cells
+are derived or displayed, including NotCat cells behind one-cat cardinal arrows.
+The player may mark these cells with X. Optional Hint remains a single requested
+deduction, with no automatic protection. No independent hatches are selected in
+this minimal fix; the empty set is deterministic and needs no new random draws.
+
+Hard's bounded two-order pruning therefore compares arrow count alone. All
+retained boards still pass the same clue-only human and independent uniqueness
+assessment with intended-answer agreement. Existing attempt, pruning, solver,
+verifier and random-draw ceilings are unchanged. Cancellation and exhaustion
+contracts are unchanged. No new solver rules or difficulty thresholds apply.
+
+Medium retains `difficulty-generator-v2` / `difficulty-profile-v2`, its combined
+arrow/derived-hatch scoring, original hatch behavior and frozen replay receipts.
+Easy and the fixed Easy tutorial are unchanged. `generation-options-large-v2`
+remains the common options identity because the limits have not changed. Earlier
+Hard receipts/measurements refer to their original revision; reproduce them there,
+not by interpreting a v2 receipt as a v3 board. No shipped board saves need migration.
+
 ## Difficulty calibration (deferred)
 Difficulty should ultimately come from solving characteristics rather than grid size alone. Candidate metrics:
 - number of deduction steps;

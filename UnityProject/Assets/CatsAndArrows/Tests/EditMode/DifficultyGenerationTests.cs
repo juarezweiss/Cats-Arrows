@@ -49,9 +49,9 @@ namespace CatsAndArrows.Tests
                 CollectionAssert.AreEquivalent(puzzle.SolutionCats, independent.Solver.Uniqueness.Solutions.Single());
                 CollectionAssert.AreEquivalent(puzzle.SolutionCats, independent.Solver.Human.Assignments
                     .Where(a => a.State == CellKnowledge.Cat).Select(a => a.Coordinate));
-                Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo(SeededPuzzleGenerator.Version));
+                Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo(id == "hard" ? SeededPuzzleGenerator.HardVersion : SeededPuzzleGenerator.Version));
                 Assert.That(puzzle.GeneratorVersion, Is.EqualTo(result.Metadata.GeneratorVersion));
-                Assert.That(result.Metadata.ProfileVersion, Is.EqualTo(SeededPuzzleGenerator.ProfileVersion));
+                Assert.That(result.Metadata.ProfileVersion, Is.EqualTo(id == "hard" ? SeededPuzzleGenerator.HardProfileVersion : SeededPuzzleGenerator.ProfileVersion));
                 Assert.That(result.Metadata.OptionsVersion, Is.EqualTo("generation-options-large-v2"));
                 Assert.That(result.Metadata.RulesetVersion, Is.EqualTo("human-v2"));
                 Assert.That(result.Metadata.BoardFingerprint, Is.EqualTo(GenerationFingerprints.ForBoard(puzzle)));
@@ -63,7 +63,7 @@ namespace CatsAndArrows.Tests
             Assert.That(boards.Count, Is.EqualTo(128));
         }
 
-        // Issue #35 v2 receipts from native Mono, with full independent assessment.
+        // Medium retains #35 v2 receipts. Hard #37 v3 scores only displayed arrows.
         [TestCase("medium", 0, "3bf0fb47cdfecf4526952ad8e281f4f7c20340b6782722f607bac9529d35cd1b")]
         [TestCase("medium", -1, "fc97730017cb5cbeb789de6db620c2c3febb40ad3003c0677abf0a85f1353a65")]
         [TestCase("medium", int.MinValue, "f14406637fd7f4179f17232e9e8d7b826f1cfd367529986b8a41183558bc1c54")]
@@ -71,7 +71,7 @@ namespace CatsAndArrows.Tests
         [TestCase("hard", 0, "b2c71295f015e903a73577aa5c304c72e0004d1ced438641db9bf6269c994e0a")]
         [TestCase("hard", -1, "8c7701abdc5009d6f852a617eefa7a1f99ca8621a77fc0242400e808212fb1e0")]
         [TestCase("hard", int.MinValue, "e249fcdba2874900aeb00238a5baa6d4da96fecb45ed8a4c019ddaf0207e6c17")]
-        [TestCase("hard", int.MaxValue, "0f694d43a2c477b869dac61a5c1c37063b28bb585486021f8ac522c7f8bc56b4")]
+        [TestCase("hard", int.MaxValue, "ea303b7d513e5e2e15de95e119fd882a76fed7dbde2511a9b8b15d20324fecf4")]
         public void SignedSeedsReplayAcrossInstancesAndInterleavedDifficulty(string id, int seed, string fingerprint)
         {
             var generator = new SeededPuzzleGenerator();
@@ -81,6 +81,62 @@ namespace CatsAndArrows.Tests
             generator.Generate(Profile(id == "medium" ? "hard" : "medium"), seed);
             var replay = new SeededPuzzleGenerator().Generate(Profile(id), seed, first.Metadata.Options);
             Assert.That(Receipt(replay), Is.EqualTo(Receipt(first)));
+        }
+
+        [Test]
+        public void HardInitialHatchesIgnoreAllProofConsequencesIncludingOneCatArrowExclusions()
+        {
+            var sawFormerHatches = false;
+            for (var seed = 0; seed < 32; seed++)
+            {
+                var result = new SeededPuzzleGenerator().Generate(DifficultyProfile.Hard, seed);
+                Assert.That(result.IsSuccess, Is.True);
+                var clues = PuzzleClues.FromPuzzle(result.Puzzle);
+                var proof = result.Assessment.Solver.Human;
+                var formerHatches = ClueProtectionRules.Derive(clues, proof);
+                sawFormerHatches |= formerHatches.Count > 0;
+                Assert.That(ClueProtectionRules.ForProfile(DifficultyProfile.Hard, clues, proof), Is.Empty);
+                Assert.That(ClueProtectionRules.ForProfile(DifficultyProfile.Hard, clues, null), Is.Empty,
+                    "Hard must not need a solver proof to select hatches.");
+                foreach (var coordinate in formerHatches)
+                {
+                    Assert.That(result.Puzzle.Arrows.ContainsKey(coordinate), Is.False);
+                    Assert.That(result.Puzzle.IsSolutionCat(coordinate), Is.False);
+                    Assert.That(proof.Assignments.Single(a => a.Coordinate == coordinate).State,
+                        Is.EqualTo(CellKnowledge.NotCat));
+                }
+            }
+            Assert.That(sawFormerHatches, Is.True, "Regression must exercise actual cardinal one-cat consequences.");
+        }
+
+        [TestCase("easy")]
+        [TestCase("medium")]
+        public void OtherProfilesRetainExistingConsequenceHatches(string id)
+        {
+            var profile = id == "easy" ? DifficultyProfile.Easy : DifficultyProfile.Medium;
+            var sawHatches = false;
+            for (var seed = 0; seed < 32; seed++)
+            {
+                var result = new SeededPuzzleGenerator().Generate(profile, seed);
+                Assert.That(result.IsSuccess, Is.True);
+                var clues = PuzzleClues.FromPuzzle(result.Puzzle);
+                var oldHatches = ClueProtectionRules.Derive(clues, result.Assessment.Solver.Human);
+                sawHatches |= oldHatches.Count > 0;
+                CollectionAssert.AreEqual(oldHatches,
+                    ClueProtectionRules.ForProfile(profile, clues, result.Assessment.Solver.Human));
+            }
+            Assert.That(sawHatches, Is.True);
+        }
+
+        [Test]
+        public void HatchPolicyRequiresProfileAndCluesButOnlyLegacyModesRequireProof()
+        {
+            var result = new SeededPuzzleGenerator().Generate(DifficultyProfile.Medium, 0);
+            var clues = PuzzleClues.FromPuzzle(result.Puzzle);
+            Assert.Throws<ArgumentNullException>(() => ClueProtectionRules.ForProfile(null, clues, null));
+            Assert.Throws<ArgumentNullException>(() => ClueProtectionRules.ForProfile(DifficultyProfile.Hard, null, null));
+            Assert.Throws<ArgumentNullException>(() => ClueProtectionRules.ForProfile(DifficultyProfile.Medium, clues, null));
+            Assert.Throws<ArgumentNullException>(() => ClueProtectionRules.ForProfile(DifficultyProfile.Easy, clues, null));
         }
 
         [Test]
