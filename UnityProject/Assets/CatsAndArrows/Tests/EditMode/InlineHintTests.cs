@@ -141,8 +141,8 @@ namespace CatsAndArrows.Tests
         {
             var generator = new SeededEasyPuzzleGenerator();
             var attempts = 0;
-            var loop = new EasyGameLoop(14, seed => ++attempts == 2 ? null : generator.Generate(DifficultyProfile.Easy, seed));
-            var view = new GameShellView(14, "en", loop);
+            var loop = PlayTestFactory.Loop(14, seed => ++attempts == 2 ? null : generator.Generate(DifficultyProfile.Easy, seed));
+            var view = PlayTestFactory.Shell(14, "en", loop);
             Assert.That(view.StartNewGame(), Is.True);
             view.RequestHint();
             Assert.That(view.StartNewGame(), Is.False);
@@ -162,7 +162,7 @@ namespace CatsAndArrows.Tests
 
         private static GameShellView Started(string locale)
         {
-            var view = new GameShellView(14, locale);
+            var view = PlayTestFactory.Shell(14, locale);
             Assert.That(view.StartNewGame(), Is.True);
             return view;
         }

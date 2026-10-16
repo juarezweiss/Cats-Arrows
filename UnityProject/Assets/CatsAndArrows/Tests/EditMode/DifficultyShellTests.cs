@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace CatsAndArrows.Tests
 {
-    // Issue #32: selection belongs to the next game, tutorial truth stays fixed Easy.
+    // Issues #43/#37: random ordinary starts preserve each profile's input policy.
     public sealed class DifficultyShellTests
     {
         private bool hadLanguage;
@@ -19,81 +19,119 @@ namespace CatsAndArrows.Tests
         [TearDown] public void RestoreLanguage()
         { if(hadLanguage)PlayerPrefs.SetString(LanguagePreference.Key,language);else PlayerPrefs.DeleteKey(LanguagePreference.Key);PlayerPrefs.Save(); }
 
-        [TestCase("en","Easy","Medium","Hard")]
-        [TestCase("pt-BR","Fácil","Médio","Difícil")]
-        [TestCase("es","Fácil","Medio","Difícil")]
-        public void MenuExposesAllThreeLocalizedChoicesAndSelectedState(string locale,string easy,string medium,string hard)
+        [TestCase("en", "Play", "Next board")]
+        [TestCase("pt-BR", "Jogar", "Próximo tabuleiro")]
+        [TestCase("es", "Jugar", "Siguiente tablero")]
+        public void MenuOffersPlayTutorialRulesLanguagesWithoutDifficultyChoice(string locale, string play, string next)
         {
-            var shell=new GameShellView(14,locale,enableTutorial:false);
-            Assert.That(shell.Q<Button>("menu-difficulty-easy").text,Is.EqualTo(easy));
-            Assert.That(shell.Q<Button>("menu-difficulty-medium").text,Is.EqualTo(medium));
-            Assert.That(shell.Q<Button>("menu-difficulty-hard").text,Is.EqualTo(hard));
-            Assert.That(shell.Q<Button>("menu-difficulty-easy").enabledSelf,Is.False);
-            shell.SelectDifficulty("medium");
-            Assert.That(shell.Loop.SelectedDifficulty.Id,Is.EqualTo("medium"));
-            Assert.That(shell.Q<Button>("menu-difficulty-medium").enabledSelf,Is.False);
-            Assert.That(shell.Q<Button>("menu-difficulty-easy").enabledSelf,Is.True);
+            var shell = PlayTestFactory.Shell(14, locale);
+            Assert.That(shell.Q<Button>("menu-start").text, Is.EqualTo(play));
+            Assert.That(shell.Q<Button>("menu-tutorial"), Is.Not.Null);
+            Assert.That(shell.Q<Button>("menu-rules"), Is.Not.Null);
+            foreach (var id in new[] { "easy", "medium", "hard" })
+                Assert.That(shell.Q<Button>("menu-difficulty-" + id), Is.Null);
+            foreach (var id in new[] { "en", "pt-BR", "es" })
+                Assert.That(shell.Q<Button>("language-" + id), Is.Not.Null);
+            Assert.That(shell.StartNewGame(), Is.True);
+            Assert.That(shell.Q<Button>("action-new-game").text, Is.EqualTo(next));
         }
-        [TestCase("easy",5)] [TestCase("medium",6)] [TestCase("hard",7)]
-        public void SelectedDifficultyDrivesStartAndNewGameWithoutChangingTapDragOrWin(string id,int size)
+
+        [TestCase("easy", 5)] [TestCase("medium", 6)] [TestCase("hard", 7)]
+        public void RandomProfilePreservesTapDragProtectedCellsWinAndNextBoard(string id, int size)
         {
-            var shell=new GameShellView(14,"en",enableTutorial:false);shell.SelectDifficulty(id);
-            Assert.That(shell.StartNewGame(),Is.True);var session=shell.ActiveSession;
-            Assert.That(session.Puzzle.Size,Is.EqualTo(size));Assert.That(shell.Loop.SessionDifficulty.Id,Is.EqualTo(id));
-            Assert.That(shell.Q<Label>("board-difficulty").text,Does.Contain(size+" × "+size));
-            var normal=session.Marks.Keys.First();
-            Assert.That(session.Tap(normal),Is.True);Assert.That(session.GetMark(normal),Is.EqualTo(PlayerMark.X));
-            Assert.That(session.Tap(normal),Is.True);Assert.That(session.GetMark(normal),Is.EqualTo(PlayerMark.Cat));
-            Assert.That(session.Tap(normal),Is.True);Assert.That(session.GetMark(normal),Is.EqualTo(PlayerMark.Empty));
-            var row=session.Marks.Keys.Where(c=>c.Row==normal.Row).ToArray();
-            Assert.That(session.ApplyDrag(row),Is.EqualTo(row.Length));
-            foreach(var arrow in session.Puzzle.Arrows.Keys)Assert.That(session.Tap(arrow),Is.False);
-            foreach(var fixedCell in session.ProtectedCells)Assert.That(session.Tap(fixedCell),Is.False);
-            shell.ClearBoard();Assert.That(session.Marks.Values,Is.All.EqualTo(PlayerMark.Empty));
-            foreach(var cat in session.Puzzle.SolutionCats){session.Tap(cat);session.Tap(cat);}
-            Assert.That(session.IsCompleted,Is.True);Assert.That(session.Tap(normal),Is.False);Assert.That(session.Clear(),Is.False);
-            Assert.That(shell.StartNewGame(),Is.True);Assert.That(shell.ActiveSession.Puzzle.Size,Is.EqualTo(size));
-            Assert.That(shell.ActiveSession.Puzzle.Seed,Is.EqualTo(15));Assert.That(shell.Loop.SelectedDifficulty.Id,Is.EqualTo(id));
+            var loop = PlayTestFactory.Loop(14, difficultySelection: PlayTestFactory.Selection(id));
+            var shell = PlayTestFactory.Shell(14, "en", loop);
+            Assert.That(shell.StartNewGame(), Is.True);
+            var session = shell.ActiveSession;
+            Assert.That(session.Puzzle.Size, Is.EqualTo(size));
+            Assert.That(shell.Q<Label>("board-difficulty").text, Does.Contain(size + " × " + size));
+            var normal = session.Marks.Keys.First();
+            foreach (var state in new[] { PlayerMark.X, PlayerMark.Cat, PlayerMark.Empty })
+            { Assert.That(session.Tap(normal), Is.True); Assert.That(session.GetMark(normal), Is.EqualTo(state)); }
+            var row = session.Marks.Keys.Where(c => c.Row == normal.Row).ToArray();
+            Assert.That(session.ApplyDrag(row), Is.EqualTo(row.Length));
+            foreach (var arrow in session.Puzzle.Arrows.Keys) Assert.That(session.Tap(arrow), Is.False);
+            foreach (var cell in session.ProtectedCells) Assert.That(session.Tap(cell), Is.False);
+            shell.ClearBoard(); Assert.That(session.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
+            foreach (var cat in session.Puzzle.SolutionCats) { session.Tap(cat); session.Tap(cat); }
+            Assert.That(session.IsCompleted, Is.True);
+            Assert.That(session.Tap(normal), Is.False); Assert.That(session.Clear(), Is.False);
+            Assert.That(shell.StartNewGame(), Is.True);
+            Assert.That(shell.ActiveSession, Is.Not.SameAs(session));
+            Assert.That(shell.ActiveSession.Puzzle.Seed, Is.EqualTo(15));
+            Assert.That(loop.DifficultySelection.History.ConsecutiveStarts, Is.EqualTo(2));
+            Assert.That(shell.StartNewGame(), Is.True);
+            Assert.That(loop.SessionDifficulty.Id, Is.Not.EqualTo(id));
         }
-        [Test] public void ChoosingNextDifficultyPreservesLiveBoardAndItsHeaderAcrossMenuAndLocale()
+
+        [Test] public void MenuLocaleResumeDoesNotConsumeHistoryOrReplaceBoard()
         {
-            var shell=new GameShellView(14,"en",enableTutorial:false);Assert.That(shell.StartNewGame(),Is.True);
-            var first=shell.ActiveSession;shell.ShowMenu();shell.SelectDifficulty("hard");shell.SelectLanguage("es");shell.BackToGame();
-            Assert.That(shell.ActiveSession,Is.SameAs(first));Assert.That(first.Puzzle.Size,Is.EqualTo(5));
-            Assert.That(shell.Q<Label>("board-difficulty").text,Is.EqualTo("Fácil · 5 × 5"));
-            shell.SelectDifficulty("medium");Assert.That(shell.Loop.SelectedDifficulty.Id,Is.EqualTo("hard"),"choice is a menu-only intent");
-            Assert.That(shell.StartNewGame(),Is.True);Assert.That(shell.ActiveSession.Puzzle.Size,Is.EqualTo(7));
+            var shell = PlayTestFactory.Shell(); Assert.That(shell.StartNewGame(), Is.True);
+            var session = shell.ActiveSession;
+            var history = shell.Loop.DifficultySelection.History;
+            shell.ShowMenu(); shell.SelectLanguage("es"); shell.BackToGame();
+            Assert.That(shell.ActiveSession, Is.SameAs(session));
+            Assert.That(shell.Loop.DifficultySelection.History, Is.SameAs(history));
+            Assert.That(shell.Q<Label>("board-difficulty").text, Is.EqualTo("Fácil · 5 × 5"));
         }
+
+        [Test] public void FirstPlayAndManualReplayKeepExactTutorialAndDoNotConsumeOrdinaryRun()
+        {
+            var seen = false;
+            var selection = PlayTestFactory.Selection("hard");
+            var shell = PlayTestFactory.Shell(loop: PlayTestFactory.Loop(difficultySelection: selection),
+                tutorialSeen: () => seen, markTutorialSeen: () => seen = true);
+            shell.StartTutorial(); Assert.That(seen, Is.False);
+            shell.ShowMenu(); shell.StartPlaying();
+            Assert.That(shell.Tutorial, Is.Not.Null);
+            Assert.That(GenerationFingerprints.ForBoard(shell.ActiveSession.Puzzle),
+                Is.EqualTo(GenerationFingerprints.ForBoard(TutorialFixture.CreatePuzzle())));
+            Assert.That(shell.Loop.RequestedSeed, Is.Null);
+            Assert.That(selection.History, Is.Null);
+            shell.StartTutorial(); Assert.That(shell.Tutorial.Step, Is.EqualTo(TutorialStep.Welcome));
+            shell.SkipTutorial(); Assert.That(shell.StartNewGame(), Is.True);
+            Assert.That(shell.ActiveSession.Puzzle.Size, Is.EqualTo(7));
+            Assert.That(shell.ActiveSession.Puzzle.Seed, Is.EqualTo(14));
+            Assert.That(selection.History.ConsecutiveStarts, Is.EqualTo(1));
+        }
+
         [TestCase("medium")] [TestCase("hard")]
-        public void FirstPlayAndReplayStayTheExactFixedEasyTutorialAfterHigherSelection(string id)
+        public void FailureAndRetryRetainPendingDifficultyAndOnlySuccessCommits(string id)
         {
-            var seen=false;var shell=new GameShellView(14,"en",tutorialSeen:()=>seen,markTutorialSeen:()=>seen=true);
-            shell.SelectDifficulty(id);shell.StartPlaying();
-            Assert.That(shell.Tutorial,Is.Not.Null);Assert.That(shell.ActiveSession.Puzzle.Size,Is.EqualTo(5));
-            Assert.That(shell.ActiveSession.Puzzle.Seed,Is.EqualTo(TutorialFixture.Seed));
-            Assert.That(GenerationFingerprints.ForBoard(shell.ActiveSession.Puzzle),Is.EqualTo(GenerationFingerprints.ForBoard(TutorialFixture.CreatePuzzle())));
-            Assert.That(shell.Loop.RequestedSeed,Is.Null);Assert.That(shell.Q<Label>("board-difficulty").text,Is.EqualTo("Easy · 5 × 5"));
-            shell.StartTutorial();Assert.That(shell.Tutorial.Step,Is.EqualTo(TutorialStep.Welcome));
-            shell.SkipTutorial();Assert.That(shell.StartNewGame(),Is.True);
-            Assert.That(shell.Tutorial,Is.Null);Assert.That(shell.ActiveSession.Puzzle.Size,Is.EqualTo(id=="medium"?6:7));
-            Assert.That(shell.ActiveSession.Puzzle.Seed,Is.EqualTo(14));
+            var generator = new RetryGenerator();
+            var selection = PlayTestFactory.Selection(id);
+            var loop = PlayTestFactory.Loop(14, generator: generator, difficultySelection: selection);
+            var shell = PlayTestFactory.Shell(14, "en", loop);
+            Assert.That(shell.StartNewGame(), Is.False);
+            Assert.That(shell.Screen, Is.EqualTo("failure"));
+            Assert.That(selection.History, Is.Null);
+            Assert.That(loop.RequestedDifficulty.Id, Is.EqualTo(id));
+            Assert.That(shell.Q<Label>("board-difficulty").text, Does.StartWith(id == "medium" ? "Medium" : "Hard"));
+            Assert.That(shell.StartNewGame(), Is.True);
+            Assert.That(loop.RequestedSeed, Is.EqualTo(15));
+            Assert.That(loop.SessionDifficulty.Id, Is.EqualTo(id));
+            Assert.That(generator.Requested, Is.EqualTo(new[] { id, id }));
+            Assert.That(selection.History.ConsecutiveStarts, Is.EqualTo(1));
         }
-        [TestCase("medium")] [TestCase("hard")]
-        public void FailureAndRetryRetainRequestedDifficultyAndConsumeNextSeed(string id)
+
+        [Test] public void WrongProfileInjectedSuccessCannotReachGameplayOrCommitHistory()
         {
-            var generator=new RetryGenerator();var loop=new EasyGameLoop(14,generator:generator);
-            var shell=new GameShellView(14,"en",loop,enableTutorial:false);shell.SelectDifficulty(id);
-            Assert.That(shell.StartNewGame(),Is.False);Assert.That(shell.Screen,Is.EqualTo("failure"));
-            Assert.That(loop.SelectedDifficulty.Id,Is.EqualTo(id));Assert.That(shell.Q<Label>("board-difficulty").text,Does.StartWith(id=="medium"?"Medium":"Hard"));
-            Assert.That(shell.StartNewGame(),Is.True);Assert.That(loop.RequestedSeed,Is.EqualTo(15));
-            Assert.That(loop.SessionDifficulty.Id,Is.EqualTo(id));Assert.That(generator.Requested,Is.EqualTo(new[]{id,id}));
+            var loop = PlayTestFactory.Loop(14, seed => new SeededEasyPuzzleGenerator().Generate(DifficultyProfile.Easy, seed),
+                difficultySelection: PlayTestFactory.Selection("hard"));
+            Assert.That(loop.NewGame(), Is.False); Assert.That(loop.Session, Is.Null);
+            Assert.That(loop.DifficultySelection.History, Is.Null);
         }
-        [Test] public void UnsupportedMenuChoiceCannotChangeCurrentDifficulty()
-        { var loop=new EasyGameLoop(14);Assert.Throws<ArgumentException>(()=>loop.SelectDifficulty("unknown"));Assert.That(loop.SelectedDifficulty.Id,Is.EqualTo("easy")); }
-        [Test] public void WrongProfileInjectedSuccessCannotReachGameplay()
+
+        [Test] public void DuplicatePlayCommandsCannotSkipTutorialOrQueueTwoStarts()
         {
-            var loop=new EasyGameLoop(14,seed=>new SeededEasyPuzzleGenerator().Generate(DifficultyProfile.Easy,seed));
-            loop.SelectDifficulty("hard");Assert.That(loop.NewGame(),Is.False);Assert.That(loop.Session,Is.Null);
+            var seen = false;
+            var shell = PlayTestFactory.Shell(tutorialSeen: () => seen, markTutorialSeen: () => seen = true);
+            shell.StartPlaying(); var tutorial = shell.Tutorial; shell.StartPlaying();
+            Assert.That(shell.Tutorial, Is.SameAs(tutorial)); Assert.That(shell.Modal, Is.Null);
+            shell.ShowMenu(); shell.StartPlaying(); shell.StartPlaying();
+            Assert.That(shell.Modal, Is.EqualTo("loading")); Assert.That(shell.NewGameRequestId, Is.Zero);
+            Assert.That(shell.StartNewGame(), Is.True); Assert.That(shell.NewGameRequestId, Is.EqualTo(1));
+            Assert.That(shell.Loop.DifficultySelection.History.ConsecutiveStarts, Is.EqualTo(1));
         }
 
         // Issue #37: a real generated one-cat-arrow consequence remains a manual
@@ -101,11 +139,11 @@ namespace CatsAndArrows.Tests
         [Test]
         public void HardConsequencesStayVisibleAsEmptyInteractiveCellsUntilPlayerMarksThem()
         {
-            var loop = new EasyGameLoop(0);
-            loop.SelectDifficulty("hard");
+
             var consequenceCellsChecked = 0;
             for (var seed = 0; seed < 16; seed++)
             {
+                var loop = PlayTestFactory.Loop(seed, difficultySelection: PlayTestFactory.Selection("hard"));
                 Assert.That(loop.NewGame(), Is.True, "Hard seed=" + seed);
                 var session = loop.Session;
                 var puzzle = session.Puzzle;
@@ -136,12 +174,11 @@ namespace CatsAndArrows.Tests
         [TestCase("medium")]
         public void OtherModesRetainTheirOriginalHatchesAfterHardSelection(string id)
         {
-            var loop = new EasyGameLoop(0);
-            loop.SelectDifficulty("hard");
+
             var hatchesChecked = 0;
             for (var seed = 0; seed < 16; seed++)
             {
-                loop.SelectDifficulty(id);
+                var loop = PlayTestFactory.Loop(seed, difficultySelection: PlayTestFactory.Selection(id));
                 Assert.That(loop.NewGame(), Is.True);
                 var session = loop.Session;
                 var expected = ClueProtection.Derive(PuzzleClues.FromPuzzle(session.Puzzle));
@@ -157,13 +194,12 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void HardMenuChoiceAndReturnNeverReapplyConsequenceHatchesToLiveHardBoard()
+        public void HardMenuReturnNeverReappliesConsequenceHatchesToLiveHardBoard()
         {
-            var shell = new GameShellView(0, "en", tutorialSeen: () => true, markTutorialSeen: () => { });
-            shell.SelectDifficulty("hard");
+            var shell = PlayTestFactory.Shell(0, "en", PlayTestFactory.Loop(0, difficultySelection: PlayTestFactory.Selection("hard")));
             Assert.That(shell.StartNewGame(), Is.True);
             var hard = shell.ActiveSession;
-            shell.ShowMenu(); shell.SelectDifficulty("medium"); shell.SelectLanguage("es"); shell.BackToGame();
+            shell.ShowMenu(); shell.SelectLanguage("es"); shell.BackToGame();
             Assert.That(shell.ActiveSession, Is.SameAs(hard));
             Assert.That(hard.ProtectedCells, Is.Empty);
             Assert.That(shell.BoardView.Presentation.Cells.Any(c => c.Kind == BoardCellKind.Protected), Is.False);

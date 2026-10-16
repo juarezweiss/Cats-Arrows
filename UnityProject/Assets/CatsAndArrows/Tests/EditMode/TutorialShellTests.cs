@@ -30,7 +30,7 @@ namespace CatsAndArrows.Tests
         [Test] public void FirstStartRoutesOnceAndSavesSeenOnlyWhenPresented()
         {
             var seen = false; var writes = 0;
-            var shell = new GameShellView(14, "en", tutorialSeen: () => seen, markTutorialSeen: () => { seen = true; writes++; });
+            var shell = PlayTestFactory.Shell(14, "en", tutorialSeen: () => seen, markTutorialSeen: () => { seen = true; writes++; });
             Assert.That(writes, Is.Zero);
             Assert.That(shell.Q<Button>("menu-tutorial"), Is.Not.Null);
             shell.StartPlaying();
@@ -48,7 +48,7 @@ namespace CatsAndArrows.Tests
         [Test] public void ManualReplayIsFreshAndDoesNotConsumeRandomSeeds()
         {
             var seen = false;
-            var shell = new GameShellView(14, "en", tutorialSeen: () => seen, markTutorialSeen: () => seen = true);
+            var shell = PlayTestFactory.Shell(14, "en", tutorialSeen: () => seen, markTutorialSeen: () => seen = true);
             shell.StartTutorial(); var first = shell.Tutorial;
             while (first.CanContinue) shell.ContinueTutorial();
             first.Tap(new BoardCoordinate(0, 0)); first.EndGesture();
@@ -64,7 +64,7 @@ namespace CatsAndArrows.Tests
         [TestCase("en")][TestCase("pt-BR")][TestCase("es")]
         public void TutorialMessagesLocalizedAndMenuLanguageResumePreservesProgress(string locale)
         {
-            var shell = new GameShellView(14, locale, tutorialSeen: () => true, markTutorialSeen: () => { });
+            var shell = PlayTestFactory.Shell(14, locale, tutorialSeen: () => true, markTutorialSeen: () => { });
             shell.StartTutorial(); while (shell.Tutorial.CanContinue) shell.ContinueTutorial();
             var tutorial = shell.Tutorial; tutorial.Tap(new BoardCoordinate(0, 0)); tutorial.EndGesture();
             var marks = tutorial.Session.Marks.ToArray();
@@ -87,7 +87,7 @@ namespace CatsAndArrows.Tests
         }
         [Test] public void SequentialDemoSymbolsAreBoldReadOnlyAndFixedKindsAreSeparate()
         {
-            var shell = new GameShellView(14, "en", tutorialSeen: () => true, markTutorialSeen: () => { });
+            var shell = PlayTestFactory.Shell(14, "en", tutorialSeen: () => true, markTutorialSeen: () => { });
             shell.StartTutorial();
             Assert.That(shell.Q<Button>("action-continue").style.borderLeftWidth.value, Is.EqualTo(3));
             while (shell.Tutorial.Step != TutorialStep.EmptyState) shell.ContinueTutorial();
@@ -112,8 +112,8 @@ namespace CatsAndArrows.Tests
         {
             var seen = false; var attempts = 0;
             var generator = new SeededEasyPuzzleGenerator();
-            var loop = new EasyGameLoop(14, seed => ++attempts == 1 ? null : generator.Generate(DifficultyProfile.Easy, seed));
-            var shell = new GameShellView(14, "en", loop, tutorialSeen: () => seen, markTutorialSeen: () => seen = true);
+            var loop = PlayTestFactory.Loop(14, seed => ++attempts == 1 ? null : generator.Generate(DifficultyProfile.Easy, seed));
+            var shell = PlayTestFactory.Shell(14, "en", loop, tutorialSeen: () => seen, markTutorialSeen: () => seen = true);
             shell.StartPlaying(); shell.SkipTutorial();
             Assert.That(shell.Tutorial, Is.Null);
             Assert.That(shell.Modal, Is.EqualTo("loading"));
@@ -128,7 +128,7 @@ namespace CatsAndArrows.Tests
         [Test] public void RollbackDisablesAutomaticAndManualEntryWithoutWritingPreference()
         {
             var writes = 0;
-            var shell = new GameShellView(14, "en", enableTutorial: false, tutorialSeen: () => false, markTutorialSeen: () => writes++);
+            var shell = PlayTestFactory.Shell(14, "en", enableTutorial: false, tutorialSeen: () => false, markTutorialSeen: () => writes++);
             Assert.That(shell.Q<Button>("menu-tutorial"), Is.Null);
             shell.StartTutorial(); Assert.That(shell.Tutorial, Is.Null);
             shell.StartPlaying(); Assert.That(shell.Modal, Is.EqualTo("loading"));
@@ -139,7 +139,7 @@ namespace CatsAndArrows.Tests
             PlayerPrefs.DeleteKey(TutorialPreference.Key);
             Assert.That(TutorialPreference.HasSeen(), Is.False);
             var writes = 0;
-            var shell = new GameShellView(14, "en", markTutorialSeen: () => writes++);
+            var shell = PlayTestFactory.Shell(14, "en", markTutorialSeen: () => writes++);
             Assert.That(shell.StartNewGame(), Is.True);
             Assert.That(writes, Is.Zero);
             TutorialPreference.MarkSeen();

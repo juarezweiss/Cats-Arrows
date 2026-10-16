@@ -10,10 +10,12 @@ Android work is deferred. Local iPhone builds are available; a TestFlight build
 and distribution setup are still pending.
 
 ## Playable features
-- Easy 5×5, Medium 6×6 and Hard 7×7, selected from the menu. Hard starts without
+- Play chooses Easy 5×5, Medium 6×6 or Hard 7×7, with at most two consecutive
+  boards of one difficulty even across restarts. Hard starts without
   hatches so players make and mark their own deductions.
-- Fixed Easy tutorial, tap cycling (`Empty → X → Cat → Empty`), horizontal/vertical
-  drag marking, immediate one-fact Hint, Clear, Menu and New Game.
+- First Play opens the fixed Easy tutorial; subsequent Plays choose random boards.
+  Tap cycling (`Empty → X → Cat → Empty`), horizontal/vertical
+  drag marking, immediate one-fact Hint, Clear, Menu and Next board.
 - Exact-cat victory and read-only completed boards; portrait layout in English,
   Brazilian Portuguese and Spanish.
 - Deterministic seeded generation, with independent uniqueness verification and
@@ -23,12 +25,15 @@ See [game rules](docs/GAME_DESIGN.md) and the
 [puzzle solvability contract](docs/PUZZLE_SOLVABILITY.md) for the full guarantees.
 
 ## Validation
-As of 2026-10-15, Unity 6000.3.25f1 compilation and **303/303 EditMode tests**
-passed. The owner also passed the latest Hard hatch-fix smoke checks on iPhone 17,
+As of 2026-10-16, Unity 6000.3.25f1 compilation and **340/340 EditMode tests**
+passed for [Play selection #43](https://github.com/juarezweiss/Cats-Arrows/issues/43).
+Native desktop portrait checks cover English, Brazilian Portuguese and Spanish;
+physical-device validation of this flow is pending. See [Play test evidence](docs/TESTING.md#issue-43-persistent-play-selection).
+
+The owner previously passed the Hard hatch-fix smoke checks on iPhone 17,
 including manual marking, controls, completion locks and unchanged Easy/Medium
 behavior, and reported that Hard feels better. This is qualitative evidence on
-one device. See [test evidence](docs/TESTING.md#issue-37-hard-hatch-regression)
-and [#37](https://github.com/juarezweiss/Cats-Arrows/issues/37).
+one device. See [hatch-fix evidence](docs/TESTING.md#issue-37-hard-hatch-regression).
 
 ## Technology
 - Unity 6.3 LTS
