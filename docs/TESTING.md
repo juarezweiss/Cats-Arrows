@@ -73,8 +73,10 @@ English was restored and a fresh ordinary board was left running.
 [physical actions](evidence/issue44/iphone-actions-en.png),
 [same-board foreground return](evidence/issue44/iphone-resume-static-pt.png).
 These are historical Device Hub captures of a physical device. This automated
-exercise does **not** satisfy the owner's human physical iPhone review gate;
-**human review for #44 remains pending**. It is not calibrated timing/frame-rate
+exercise does **not** satisfy the owner's human physical iPhone review gate.
+The owner explicitly approved merging and closing #44/#52 on 2026-10-16;
+no detailed human pass/fail report was supplied, so no such result is claimed.
+It is not calibrated timing/frame-rate
 measurement or an owner-finger comfort report;
 the complete guided/independent lesson remains covered by the automated suite.
 No source code changed for this smoke run.
