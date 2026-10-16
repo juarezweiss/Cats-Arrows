@@ -1,5 +1,32 @@
 # Testing Strategy
 
+## Issue #43 persistent Play selection
+
+Pinned Unity 6000.3.25f1 compilation passed (`compile.SLmw3I`); native EditMode
+`editmode.1BTfgW` passed **340/340**, with successful editor exit and zero
+failed/skipped/inconclusive. Deterministic policy tests cover every eligible-mode
+boundary, long sequences with history reconstruction, a frozen cross-runtime
+seeded sequence, malformed/unsupported records, pending retries, duplicate starts
+and failed persistence without publishing a session. Preference tests restore
+pre-existing owner values and cover first Play across restarts, fresh manual
+Tutorial, legacy returning-user migration and history unaffected by tutorial/Menu.
+Existing generator goldens, fixed tutorial, input and completed-board tests pass.
+
+Native macOS mounted flows passed EN 320×568, pt-BR 390×844 and ES 430×932,
+including localized Play/Next board, absence of difficulty choices, mixed-profile
+starts, 20 Next board requests per flow, tap/drag, protected cells, Hint/Clear/Menu
+and completed-board locking. A separate EN 390×844 mounted tutorial flow passed
+first-Play routing, guided/independent lessons and subsequent ordinary Play.
+The [compact menu](evidence/issue43/menu-en320.png) uses the ordinary-flow
+diagnostic with Tutorial disabled; production retains Tutorial, verified by shell
+tests and the separate tutorial flow. The [Hard capture](evidence/issue43/hard-en320.png)
+shows the unchanged compact board with Next board.
+
+Independent persistence/interaction QA found no blockers. Repository validation
+passed. Logs and full captures remain under ignored `.unity-results/issue43/`.
+These are desktop portrait simulations; no physical-device smoke test was run
+for #43. Completion effects (#44) and PR #31 remain excluded.
+
 ## Issue #37 Hard hatch regression
 
 Pinned Unity 6000.3.25f1 compile passed (`compile.Uv7Gv7`); native EditMode

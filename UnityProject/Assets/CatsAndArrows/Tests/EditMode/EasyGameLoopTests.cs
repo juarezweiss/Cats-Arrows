@@ -16,7 +16,7 @@ namespace CatsAndArrows.Tests
         {
             var requested = new List<int>();
             var generator = new SeededEasyPuzzleGenerator();
-            var loop = new EasyGameLoop(initialSeed, seed =>
+            var loop = PlayTestFactory.Loop(initialSeed, seed =>
             {
                 requested.Add(seed);
                 return generator.Generate(DifficultyProfile.Easy, seed);
@@ -29,8 +29,8 @@ namespace CatsAndArrows.Tests
             Assert.That(loop.Session, Is.Not.SameAs(first));
             Assert.That(requested, Is.EqualTo(new[] { initialSeed, unchecked(initialSeed + 1) }));
             Assert.That(loop.Session.Puzzle.Seed, Is.EqualTo(unchecked(initialSeed + 1)));
-            Assert.That(loop.SelectedDifficulty.Id, Is.EqualTo("easy"));
-            Assert.That(loop.SelectedDifficulty.Size, Is.EqualTo(5));
+            Assert.That(loop.RequestedDifficulty.Id, Is.EqualTo("easy"));
+            Assert.That(loop.RequestedDifficulty.Size, Is.EqualTo(5));
             Assert.That(loop.Session.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
         }
 
@@ -40,7 +40,7 @@ namespace CatsAndArrows.Tests
         {
             var generator = new SeededEasyPuzzleGenerator();
             var attempts = 0;
-            var loop = new EasyGameLoop(14, seed => ++attempts == 2
+            var loop = PlayTestFactory.Loop(14, seed => ++attempts == 2
                 ? (returnNull ? null : generator.Generate(DifficultyProfile.Easy, seed, new GenerationOptions(maxAttempts: 0)))
                 : generator.Generate(DifficultyProfile.Easy, seed));
             Assert.That(loop.NewGame(), Is.True);
@@ -94,7 +94,7 @@ namespace CatsAndArrows.Tests
         [Test]
         public void ClearPreservesSeedCluesProtectionAndRestartsHintProofScan()
         {
-            var loop = new EasyGameLoop(14);
+            var loop = PlayTestFactory.Loop(14);
             Assert.That(loop.NewGame(), Is.True);
             var session = loop.Session;
             var puzzle = session.Puzzle;
@@ -168,7 +168,7 @@ namespace CatsAndArrows.Tests
         {
             for (var seed = 0; seed < 20; seed++)
             {
-                var loop = new EasyGameLoop(seed);
+                var loop = PlayTestFactory.Loop(seed);
                 Assert.That(loop.NewGame(), Is.True, "seed " + seed);
                 var session = loop.Session;
                 var proof = new HumanDeductionSolver().Solve(PuzzleClues.FromPuzzle(session.Puzzle));

@@ -16,6 +16,24 @@ cells, Hard 7–13/~27%) describe that earlier pilot, not per-board acceptance l
 or calibrated difficulty scores. No additional deductions are introduced. Easy
 generation and the fixed Easy tutorial are unchanged.
 
+## Play and difficulty selection — Issue #43
+
+The menu offers Play, Tutorial, How to Play and languages, with no difficulty
+choice. Ordinary Play and Next board choose uniformly from Easy/Medium/Hard, except
+that a difficulty is excluded after two consecutive successful starts in it.
+The last difficulty and run length persist across app restarts. Abandoning a
+successfully started board still counts; generation failure does not. Retry keeps
+its pending difficulty and advances only the puzzle seed. Menu, language changes,
+Clear and tutorial entry do not consume or reset this history.
+
+First-ever Play presents the fixed Easy tutorial. That first-use gate persists,
+so subsequent Plays request random ordinary boards even after a restart. Manual
+Tutorial remains available and does not consume a fresh installation's first
+Play. Existing tutorial-seen installations migrate once as returning users.
+Tutorial Skip/Play uses the same ordinary-board selector, without counting the
+tutorial fixture. This adds no board save/resume, generation rule or completion
+effect; the separately planned celebration is Issue #44.
+
 ## Solution cats
 - A normal cell contains at most one solution cat.
 - Arrow cells can never contain solution cats.
@@ -77,7 +95,7 @@ On victory:
 - do not automatically open a completion screen;
 - the completed board is read-only;
 - Hint and Clear are disabled;
-- New Game and Menu remain available.
+- Next board and Menu remain available.
 
 ## Open design questions
 - Broader automatic protection beyond the approved cardinal one-cat rule remains deferred.
@@ -131,9 +149,11 @@ quotas. It uses ordinary GameSession taps/drags and immediate cat-set victory.
 Only current targets accept guided input. Existing X intersections count; arrows
 and hatches never require X. No cleanup action follows the final cat.
 
-First ordinary Start presents the tutorial once; Skip starts a fresh random board
-at the menu-selected difficulty (Easy by default). A permanent Tutorial menu
-action always restarts the same fixed Easy board/flow, independent of that choice.
+First-ever Play presents the tutorial once across restarts; Skip starts a fresh
+ordinary board using Issue #43's persistent difficulty selector. A permanent
+Tutorial menu action always restarts the same fixed Easy board/flow, independent
+of ordinary difficulty history. Manual replay does not consume a fresh first-Play
+gate; already-seen installations migrate as returning users.
 The tutorial is an explicit exception to previously deferred tutorial frameworks;
 no generic framework or change to ordinary puzzle generation is included.
 

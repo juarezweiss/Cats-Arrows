@@ -20,6 +20,7 @@ namespace CatsAndArrows.UI
         private Button hintButton;
         private Button clearButton;
         private bool loading;
+        private int queuedRequest;
         private readonly bool enableTutorial;
         private readonly Func<bool> tutorialSeen;
         private readonly Action markTutorialSeen;
@@ -37,14 +38,16 @@ namespace CatsAndArrows.UI
         public int NewGameRequestId { get; private set; }
 
         public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true,
-            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null)
+            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null)
         {
             name = "game-shell";
             UseInlineHints = useInlineHints;
             this.enableTutorial = enableTutorial;
-            this.tutorialSeen = tutorialSeen ?? TutorialPreference.HasSeen;
-            this.markTutorialSeen = markTutorialSeen ?? TutorialPreference.MarkSeen;
-            Loop = loop ?? new EasyGameLoop(initialSeed);
+            if (tutorialSeen == null) FirstPlayPreference.Initialize();
+            this.tutorialSeen = tutorialSeen ?? FirstPlayPreference.HasPlayed;
+            this.markTutorialSeen = markTutorialSeen ?? FirstPlayPreference.MarkPlayed;
+            Loop = loop ?? new EasyGameLoop(initialSeed, difficultySelection:
+                DifficultySelection.CreateSeeded(initialSeed, difficultyHistory ?? new DifficultyHistoryPreference()));
             text = new LocalizationService(GameLocalization.CreateCatalog());
             text.SelectLanguage(locale ?? LanguagePreference.Load());
             style.flexGrow = 1; style.backgroundColor = PortraitBoardView.Background;
@@ -88,24 +91,7 @@ namespace CatsAndArrows.UI
             scroll.contentContainer.style.paddingBottom = 8; menu.Add(scroll);
             scroll.Add(Heading(text.GetText("board.title"), 26));
             scroll.Add(Paragraph(text.GetText("board.intro")));
-            scroll.Add(Paragraph(text.GetText("game.difficulty")));
-            var choices = ActionRow();
-            foreach (var id in new[] { "easy", "medium", "hard" })
-            {
-                var choice = MakeButton("menu-difficulty-" + id, "game.difficulty." + id, () => SelectDifficulty(id));
-                choice.style.flexGrow = 1; choice.style.flexBasis = 0;
-                var selected = id == Loop.SelectedDifficulty.Id;
-                choice.SetEnabled(!selected);
-                if (selected)
-                {
-                    choice.style.unityFontStyleAndWeight = FontStyle.Bold;
-                    choice.style.borderLeftWidth = choice.style.borderRightWidth = choice.style.borderTopWidth = choice.style.borderBottomWidth = 3;
-                }
-                choices.Add(choice);
-            }
-            scroll.Add(choices);
-            scroll.Add(Paragraph(text.GetText("board." + Loop.SelectedDifficulty.Id)));
-            scroll.Add(MakeButton("menu-start", Loop.SelectedDifficulty.Id == "easy" ? "game.start" : "game.start." + Loop.SelectedDifficulty.Id, StartPlaying));
+            scroll.Add(MakeButton("menu-start", "game.start", StartPlaying));
             if (ActiveSession != null) scroll.Add(MakeButton("menu-back", "game.back", BackToGame));
             if (enableTutorial) scroll.Add(MakeButton("menu-tutorial", "tutorial.title", StartTutorial));
             scroll.Add(MakeButton("menu-rules", "game.rules", ShowRules));
@@ -119,11 +105,6 @@ namespace CatsAndArrows.UI
             var button = new Button(() => SelectLanguage(locale)) { name = "language-" + locale, text = label };
             StyleButton(button); button.SetEnabled(locale != Locale); parent.Add(button);
         }
-        public void SelectDifficulty(string id)
-        {
-            if (loading || Screen != "menu" || Modal != null) return;
-            CancelInteraction(); Loop.SelectDifficulty(id); ShowMenu();
-        }
         public void SelectLanguage(string locale)
         {
             if (loading) return;
@@ -133,8 +114,12 @@ namespace CatsAndArrows.UI
         }
         public void StartPlaying()
         {
-            if (loading) return;
-            if (enableTutorial && !tutorialSeen()) StartTutorial();
+            if (loading || Screen != "menu" || Modal != null) return;
+            if (enableTutorial && !tutorialSeen())
+            {
+                StartTutorial();
+                markTutorialSeen();
+            }
             else QueueNewGame();
         }
         public void StartTutorial()
@@ -144,7 +129,6 @@ namespace CatsAndArrows.UI
             Tutorial = new TutorialController();
             BoardView.SetTutorial(Tutorial);
             BoardView.Bind(Tutorial.Session, Locale);
-            markTutorialSeen();
             BackToGame();
         }
         public void ContinueTutorial()
@@ -186,6 +170,9 @@ namespace CatsAndArrows.UI
         }
         public bool StartNewGame()
         {
+            // A direct diagnostic/test request can consume a queued command. Its
+            // scheduled callback must then become stale rather than start twice.
+            queuedRequest++;
             LeaveTutorial();
             completionHint = null; BoardView.SetCompletionFeedback(null);
             if (!loading) NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
@@ -195,7 +182,7 @@ namespace CatsAndArrows.UI
             {
                 Screen = "failure"; menu.style.display = controls.style.display = DisplayStyle.None;
                 BoardView.style.display = DisplayStyle.Flex;
-                BoardView.ShowGenerationFailure(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile, Locale, Loop.SelectedDifficulty);
+                BoardView.ShowGenerationFailure(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile, Locale, Loop.RequestedDifficulty);
                 ShowModal("failure", text.GetText("game.failure"),
                     new GenerationLocalizer(text).Format(Loop.LastGenerationStatus ?? GenerationStatus.InvalidProfile),
                     MakeButton("modal-retry", "game.retry", QueueNewGame), MakeButton("modal-menu", "game.menu", ShowMenu));
@@ -210,8 +197,10 @@ namespace CatsAndArrows.UI
             NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
             LeaveTutorial(); loading = true; BoardView.SetInteractionSuspended(true);
             ShowModal("loading", text.GetText("game.loading"), "");
-            // Give feedback a frame before the small synchronous Easy generation call.
-            schedule.Execute(() => StartNewGame()).StartingIn(1);
+            // Give feedback a frame before synchronous generation. One queued
+            // command owns one start, even if a duplicate button event arrives.
+            var request = ++queuedRequest;
+            schedule.Execute(() => { if (loading && request == queuedRequest) StartNewGame(); }).StartingIn(1);
         }
         public void BackToGame()
         {

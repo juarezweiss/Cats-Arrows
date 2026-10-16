@@ -1,7 +1,7 @@
 # UX and Accessibility
 
 ## Reference behavior
-The supplied demo establishes a useful portrait interaction model: difficulty menu, compact centered board, numeric clues outside the grid, arrows inside cells, bottom action controls, and visible completed-board review. Treat it as behavioral context, not final visual art.
+The supplied demo establishes a useful portrait interaction model: compact centered board, numeric clues outside the grid, arrows inside cells, bottom action controls, and visible completed-board review. Current menu behavior follows Issue #43 below. Treat the demo as behavioral context, not final visual art.
 
 ## Mobile-first requirements
 - Mobile play is locked to upright portrait.
@@ -24,23 +24,27 @@ The user specifically found low-contrast red/green states difficult in the proto
 
 ## Controls
 
-Issue #32 adds an initial-menu Easy / Medium / Hard choice (5×5 / 6×6 / 7×7),
-localized in English, pt-BR and Spanish. The selected choice is bold, outlined and
-disabled rather than identified by color alone. Start names the selected mode.
-Difficulty selection is session-local; restart defaults to Easy. Choosing another
-mode in Menu preserves the live board until Start/New Game; Back to the Game keeps
-its actual difficulty label. Clear preserves the active board and its profile.
-Failure/retry retains the selected mode. Tutorial always presents the same fixed
-Easy lesson; Skip/Play continues to the selected ordinary mode without changing
-the lesson. Default Easy behavior is preserved.
+Issue #43 replaces the menu difficulty controls with a localized Play action,
+alongside Tutorial, How to Play and languages. Play and Next board select
+Easy/Medium/Hard through one shared policy, with no more than two consecutive
+successful boards of one mode, even across restarts. Failure/retry retains its
+pending mode. Clear, Menu/back and language changes keep the live board and its
+actual difficulty label; they do not consume history.
 
-Review evidence: [localized menu](evidence/issue32/difficulty-menu-pt390.png),
+First-ever Play opens the fixed Easy tutorial; later Plays request ordinary
+random boards. This gate persists across restarts independently of the difficulty
+streak. Manual Tutorial stays available and does not consume first Play on fresh
+installations. Legacy tutorial-seen installations migrate as returning users;
+lesson steps and unfinished boards still are not saved. Tutorial Skip/Play enters
+the ordinary selector without counting the tutorial fixture or resetting the streak.
+
+Historical #32 evidence (the difficulty-choice menu is superseded): [localized menu](evidence/issue32/difficulty-menu-pt390.png),
 [Medium compact portrait](evidence/issue32/medium-en320.png),
 [Hard compact portrait](evidence/issue32/hard-en320.png). Mounted pointer checks
 pass; physical comfort on compact screens remains a device-review gate.
-In-game primary controls: `Hint`, `Clear`, `Menu`, `New Game`.
+In-game primary controls: `Hint`, `Clear`, `Menu`, `Next board`.
 
-After completion: `Hint` and `Clear` disabled; board read-only; `New Game` and `Menu` enabled; completion stays inline so the finished board remains visible.
+After completion: `Hint` and `Clear` disabled; board read-only; `Next board` and `Menu` enabled; completion stays inline so the finished board remains visible. Issue #44's celebration is not part of this change.
 
 
 ## Issue #7 initial gesture contract
