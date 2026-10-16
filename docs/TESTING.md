@@ -1,5 +1,73 @@
 # Testing Strategy
 
+## Issue #48 idle Hint attention
+
+The idle controller uses an injected clock: tests advance time directly, including
+5.999/6-second boundaries, reset cycles and active-press suppression. Shell tests
+exercise eligibility and lifecycle resets independently of successful mutations;
+the existing Hint, tap/drag, arrow hold, tutorial and completion suites remain
+regression gates. Timer advancement must never apply a Hint or mutate marks.
+
+The opt-in mounted player diagnostic `--hint-idle-check=1` advances the same fake
+clock and dispatches mouse/touch events through the board and Hint button. It
+checks non-marking arrow/protected presses, long presses, cancellation, the active
+arrow outline, Hint/Clear, Menu/modal/locale replacement and final-Hint completion.
+Captures compare unchanged button/grid bounds and localized labels with stable
+inverted Hint colors. Run compact, standard and tall portrait
+layouts in en/pt-BR/es. Native desktop checks do not establish physical-phone
+appearance; iPhone smoke remains a pre-merge gate.
+
+2026-10-16: pinned Unity **6000.3.25f1** compilation passed
+(`compile.iexUD0`); final EditMode **375/375 passed**, zero failures, skips or
+inconclusive results, with successful editor exit (`editmode.Hrc8QT`). This
+includes nine pure clock cases and seven headless `UIDocument` shell tests,
+covering fractional reset times, no-result Hint, all difficulties, modal/Menu,
+focus/pause, disabled/suspended play, rebind/detach, failure/retry, completion and
+both tutorial stages. No graphics errors are suppressed and no tests are skipped.
+
+Final macOS review build passed (`issue48-review-build.jzXvUI`). Mounted idle
+checks passed mouse/touch in **Hard EN 320×568**, **Easy pt-BR 390×844** and
+**Medium ES 430×932**. Checks include secondary-pointer/mouse duplication,
+hover, swept drag, no-op presses, a visible #47 arrow hold and stable Hint/Clear
+bounds, Hint content center, label and grid. Maximum measured geometry difference
+was **0.0000153 panel units** (float rounding; assertion tolerance 0.01).
+
+Existing mounted input and arrow-hold checks passed for mouse/touch; fixed guided
+and independent tutorial checks and the ordinary game loop (20 Next requests)
+also passed. Independent interaction QA found no blocking findings. Logs are
+under ignored `.unity-results/issue48/`.
+
+The captures below predate the inverted-color refinement and show the original
+border/font treatment on generated ordinary boards:
+[Hard compact](evidence/issue48/hint-idle-en320.png),
+[Easy Portuguese](evidence/issue48/hint-idle-pt390.png),
+[Medium Spanish tall](evidence/issue48/hint-idle-es430.png).
+These earlier captures were followed by the physical-iPhone review below.
+
+Styling refinement: attention swaps the normal Hint text/background colors with a
+native 200 ms fade-in; resets set transition duration to zero and restore normal
+colors immediately. Existing shell assertions cover both colors, unchanged
+border/font/padding, transition properties and duration, including a reset during
+fade-in. Timer, eligibility and interaction tests are unchanged.
+Pinned Unity 6000.3.25f1 focused EditMode validation passed **26/26**, zero
+failed/skipped/inconclusive, with successful editor exit (`hint-style48.CFa20C`):
+`HintAttentionShellTests`, `HintIdleAttentionTests` and `InlineHintTests`.
+Repository validation and whitespace checks passed. The styling refinement was
+not rebuilt for desktop captures.
+
+Physical iPhone review (2026-10-16): source `0cc755f54dc9c3171df13f21b1a8707875eb7aaf`
+exported with Unity 6000.3.25f1 and built with Xcode 27.0. Strict signature and
+device-profile checks, installation, launch and running-process checks passed on
+iPhone 17 Juca. Owner reported **pass** for the six-second color inversion and
+smooth fade without movement, immediate resets via Hint/board taps/holds/Clear,
+and suppression on Menu/tutorial/completion/backgrounding. This is a single-device
+owner smoke result, without calibrated timing or comfort measurements. Signed app,
+symbols and receipt are retained under ignored `Builds/Issue48Inverted`; native
+logs are under `.unity-results/issue48-inverted-iphone`.
+Pre-merge validation of the final styling revision: pinned compile passed
+(`compile.XBvefC`); complete EditMode **375/375 passed**, zero failed/skipped/
+inconclusive and successful editor exit (`editmode.VeLLUS`).
+
 ## Issue #47 arrow-path hold
 
 Threshold-only follow-up (2026-10-16): activation is now **350 ms**. Focused
