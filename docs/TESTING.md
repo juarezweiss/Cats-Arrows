@@ -1,5 +1,95 @@
 # Testing Strategy
 
+## Physical iPhone tests: human review required
+
+Owner policy for all future runs: physical iPhone interaction, appearance,
+lifecycle and comfort tests must be performed by a human. Do not automate these
+tests through Device Hub, screen mirroring, scripted touch, in-app diagnostic
+flows or another remote-input tool. If a device check cannot be completed by
+the agent without such automation, hand it to the owner/human reviewer.
+
+When authorized, agents may prepare the build, verify signing/profile/device
+compatibility, install, launch and check that the process runs. Then provide a
+short checklist for the changed behavior and request the human's results.
+Record the source/build, device/OS, reviewer, reported pass/fail, coverage and
+remaining gaps. Missing human feedback means **physical review pending**;
+build/install/launch success, captures and automated results cannot close it.
+Keep desktop/simulated input tests and Unity tests as separate evidence.
+
+Historical agent-driven physical-device exercises remain factual records but
+do not satisfy this human review gate. Do not repeat their automation workflow.
+
+## Issue #44 timed completion
+
+2026-10-16: pinned Unity **6000.3.25f1** compilation passed (`compile.d5Lj3z`);
+complete EditMode **466/466 passed**, zero failed/skipped/inconclusive and
+successful editor exit (`editmode.P5v8B4`). Repository and whitespace checks pass.
+`CompletionCelebrationTests` covers exact three-second confetti cutoff,
+250 ms sequential fades, four-second message fade-out, disabled early actions,
+duplicate wins, cancellation, time jumps and invalid/backwards clocks.
+`CompletionShellTests` covers final-Hint victory, same-board static return,
+Hint/Clear/tap/drag locks, unchanged history, duplicate notification, Menu/locale,
+focus/pause, detach, same/different-session rebind, stale ticks, both tutorial
+stages and lowercase localized resources. Existing interaction, tutorial,
+difficulty and domain suites pass. Independent QA found no blocking findings.
+
+The opt-in macOS review player `--completion-check=1` passed mounted mouse/touch
+and final-Hint flows in EN **320×568**, pt-BR **390×844** and ES **430×932**.
+Checks include panel picking for all three completion actions, static completed
+marks/lock, unchanged grid bounds, safe-area button bounds, existing controls,
+Next selection/anti-streak and Menu return without replay. Physical-pixel snapping
+is allowed in world-bound measurements; button minimum style height remains 48
+panel units. Simulated top/bottom insets were 20/0, 59/34 and 59/34 pixels.
+Logs and all nine captures are under ignored `.unity-results/issue44/`.
+
+| Portrait / locale | Celebration | Actions |
+| --- | --- | --- |
+| Compact EN | [message/confetti](evidence/issue44/celebration-en320.png) | [actions](evidence/issue44/actions-en320.png) |
+| Standard pt-BR | [message/confetti](evidence/issue44/celebration-pt390.png) | [actions](evidence/issue44/actions-pt390.png) |
+| Tall ES | [message/confetti](evidence/issue44/celebration-es430.png) | [actions](evidence/issue44/actions-es430.png) |
+
+Reproduce with the existing `BoardReviewBuild.Build` local review build, then run
+its executable with `--completion-check=1 --game-seed=14 --board-locale=<locale>
+--board-width=<width> --board-height=<height> --board-safe-top=<pixels>
+--board-safe-bottom=<pixels> --game-captures=<absolute-directory>`.
+The diagnostic uses an injected clock and isolated difficulty/first-Play stores;
+normal play uses realtime. Desktop captures do not establish device touch comfort
+or lifecycle behavior; physical-device evidence follows.
+
+Historical agent-driven Device Hub exercise (2026-10-16): source
+`9a1ead34102321fa5224fbafe5fe336b96c00da5` exported with pinned Unity
+6000.3.25f1 and built arm64 Release with Xcode 27.0. Strict signature/profile
+checks, install and launch passed on **iPhone 17 Juca, iOS 27.0.1**. Apple's
+Device Hub drove the physical screen/input with ordinary realtime and no review
+launch arguments. The automated exercise passed tap cycling, horizontal drag, arrow/protected
+cells, Clear, final-Hint and tap victories, EN/pt-BR/es celebration text, all three
+completion actions, identical locked static return, Menu/locale no replay and
+Next routing. Ordinary starts included Hard/Hard/Easy, respecting the anti-streak.
+Backgrounding during a tap celebration resumed the **same process** with the same
+static finished board and no replay. Tutorial entry/Continue/Skip also passed.
+English was restored and a fresh ordinary board was left running.
+
+[Physical celebration](evidence/issue44/iphone-celebration-en.png),
+[physical actions](evidence/issue44/iphone-actions-en.png),
+[same-board foreground return](evidence/issue44/iphone-resume-static-pt.png).
+These are historical Device Hub captures of a physical device. This automated
+exercise does **not** satisfy the owner's human physical iPhone review gate.
+The owner explicitly approved merging and closing #44/#52 on 2026-10-16;
+no detailed human pass/fail report was supplied, so no such result is claimed.
+It is not calibrated timing/frame-rate
+measurement or an owner-finger comfort report;
+the complete guided/independent lesson remains covered by the automated suite.
+No source code changed for this smoke run.
+
+Storage: initial free space was 1.68 GiB. Apple's supported
+`simctl runtime dyld_shared_cache remove --all` cleared rebuildable simulator
+caches while preserving runtimes and simulator data. One device build used no
+archive/IPA and no separate dSYM. The signed app, source receipt/hashes, small
+export metadata and evidence remain in ignored `Builds/Issue44iPhone/` and
+`.unity-results/issue44-iphone/`; temporary iOS export, task DerivedData and Bee
+cache were removed. The prior signed #48 app/symbols remain intact. Free space
+after cleanup was **8.35 GiB**.
+
 ## Issue #29 monetization design test plan
 
 2026-10-16 integration of PR #31 with current `develop` preserves #43 first-play,

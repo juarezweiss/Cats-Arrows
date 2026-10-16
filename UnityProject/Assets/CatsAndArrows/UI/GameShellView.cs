@@ -17,6 +17,12 @@ namespace CatsAndArrows.UI
         private readonly VisualElement menu = new VisualElement();
         private readonly VisualElement controls = new VisualElement();
         private readonly VisualElement overlay = new VisualElement();
+        private readonly VisualElement completionLayer = new VisualElement();
+        private readonly Label completionMessage = new Label();
+        private readonly VisualElement completionActions = new VisualElement();
+        private readonly CompletionConfettiElement completionConfetti = new CompletionConfettiElement();
+        private readonly CompletionCelebration celebration;
+        private GameSession celebratingSession;
         private readonly LocalizationService text;
         private Button hintButton;
         private readonly HintIdleAttention hintAttention;
@@ -45,12 +51,13 @@ namespace CatsAndArrows.UI
         public int NewGameRequestId { get; private set; }
 
         public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true,
-            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null, MonetizationCoordinator monetization = null)
+            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null, MonetizationCoordinator monetization = null, Func<double> completionClock = null)
         {
             name = "game-shell";
             this.monetization = monetization;
             var clock = idleClock ?? (() => Time.realtimeSinceStartupAsDouble);
             hintAttention = new HintIdleAttention(clock);
+            celebration = new CompletionCelebration(completionClock ?? (() => Time.realtimeSinceStartupAsDouble));
             UseInlineHints = useInlineHints;
             this.enableTutorial = enableTutorial;
             if (tutorialSeen == null) FirstPlayPreference.Initialize();
@@ -67,9 +74,12 @@ namespace CatsAndArrows.UI
             BoardView.StateChanged += OnBoardChanged;
             BoardView.ActivityChanged += OnBoardActivity;
             BoardView.InteractionEnded += OnTutorialGestureEnded;
+            BoardView.Rebound += CancelCompletion;
             safeFrame.name = "game-safe-frame"; safeFrame.style.position = Position.Absolute;
             safeFrame.pickingMode = PickingMode.Ignore; Add(safeFrame);
             menu.name = "game-menu"; Fill(menu); safeFrame.Add(menu);
+            BuildCompletionLayer();
+            safeFrame.Add(completionLayer);
             controls.name = "game-controls"; controls.style.position = Position.Absolute;
             controls.style.left = controls.style.right = controls.style.bottom = 0; controls.style.height = 108;
             safeFrame.Add(controls);
@@ -82,21 +92,23 @@ namespace CatsAndArrows.UI
                 monetization.HintDelivered += OnHintDelivered;
             }
             RegisterCallback<AttachToPanelEvent>(_ => { ResetHintAttention(); TickHintAttention(); });
-            RegisterCallback<DetachFromPanelEvent>(_ => { hintAttention.Update(false, false); ApplyHintAttention(); });
+            RegisterCallback<DetachFromPanelEvent>(_ => { hintAttention.Update(false, false); ApplyHintAttention(); CancelCompletion(); });
             schedule.Execute(TickHintAttention).Every(50);
+            // One view-owned tick; no per-win callbacks survive navigation or rebind.
+            schedule.Execute(TickCompletion).Every(16);
             ShowMenu();
         }
 
         public void SetApplicationFocus(bool focused)
         {
             applicationFocused = focused;
-            if (!focused) CancelInteraction();
+            if (!focused) { CancelInteraction(); CancelCompletion(); }
             TickHintAttention();
         }
         public void SetApplicationPaused(bool paused)
         {
             applicationPaused = paused;
-            if (paused) CancelInteraction();
+            if (paused) { CancelInteraction(); CancelCompletion(); }
             TickHintAttention();
         }
         // Manual ticking uses the same injected clock and lifecycle decisions as the scheduler.
@@ -131,6 +143,71 @@ namespace CatsAndArrows.UI
             hintButton.style.color = attention ? PortraitBoardView.Tile : BoardSymbolElement.Ink;
         }
 
+        private void BuildCompletionLayer()
+        {
+            completionLayer.name = "completion-layer";
+            completionLayer.pickingMode = PickingMode.Ignore;
+            completionLayer.style.position = Position.Absolute;
+            completionLayer.style.left = completionLayer.style.right = 0;
+            completionLayer.style.top = 108; completionLayer.style.bottom = 120;
+            completionLayer.style.alignItems = Align.Center;
+            completionLayer.style.justifyContent = Justify.Center;
+            completionLayer.style.display = DisplayStyle.None;
+            completionLayer.Add(completionConfetti);
+            completionMessage.name = "completion-message";
+            completionMessage.pickingMode = PickingMode.Ignore;
+            completionMessage.style.fontSize = 22;
+            completionMessage.style.whiteSpace = WhiteSpace.Normal;
+            completionMessage.style.unityTextAlign = TextAnchor.MiddleCenter;
+            completionMessage.style.backgroundColor = PortraitBoardView.Background;
+            completionMessage.style.paddingLeft = completionMessage.style.paddingRight = 12;
+            completionMessage.style.paddingTop = completionMessage.style.paddingBottom = 12;
+            completionMessage.style.width = Length.Percent(100); completionMessage.style.maxWidth = 340;
+            completionLayer.Add(completionMessage);
+            completionActions.name = "completion-actions";
+            completionActions.style.width = Length.Percent(100); completionActions.style.maxWidth = 300;
+            completionActions.Add(MakeButton("completion-next", "completion.next", () =>
+            { if (CanUseCompletionActions()) QueueNewGame(); }));
+            completionActions.Add(MakeButton("completion-back", "completion.back", BackToCompletedBoard));
+            completionActions.Add(MakeButton("completion-menu", "completion.menu", () =>
+            { if (CanUseCompletionActions()) ShowMenu(); }));
+            completionLayer.Add(completionActions);
+        }
+
+        public void TickCompletion()
+        {
+            if (!celebration.IsVisible) return;
+            if (!CanPresentCompletion()) { CancelCompletion(); return; }
+            celebration.Tick();
+            RenderCompletion();
+        }
+        private bool CanPresentCompletion() => panel != null && applicationFocused && !applicationPaused && !loading &&
+            !CommercialBusy && Screen == "play" && Modal == null && Tutorial == null &&
+            ActiveSession?.IsCompleted == true && ReferenceEquals(celebratingSession, ActiveSession) && BoardView.IsBoundTo(ActiveSession);
+        private bool CanUseCompletionActions() => celebration.ActionsEnabled && CanPresentCompletion();
+        public void BackToCompletedBoard()
+        {
+            if (!CanUseCompletionActions()) return;
+            CancelCompletion();
+        }
+        private void CancelCompletion()
+        {
+            celebration.Cancel();
+            RenderCompletion();
+        }
+        private void RenderCompletion()
+        {
+            var visible = celebration.IsVisible;
+            completionLayer.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            BoardView.SetCompletionOpacity(celebration.BoardOpacity);
+            completionMessage.style.display = visible && (int)celebration.Phase <= (int)CompletionPhase.MessageFadeOut ? DisplayStyle.Flex : DisplayStyle.None;
+            completionMessage.style.opacity = celebration.MessageOpacity;
+            completionActions.style.display = visible && (int)celebration.Phase >= (int)CompletionPhase.ActionsFadeIn ? DisplayStyle.Flex : DisplayStyle.None;
+            completionActions.style.opacity = celebration.ActionsOpacity;
+            completionActions.SetEnabled(celebration.ActionsEnabled && CanPresentCompletion());
+            completionConfetti.SetElapsed(celebration.HasConfetti ? celebration.Elapsed : -1);
+        }
+
         public void ApplySafeArea(Rect pixels, Vector2 screenPixels)
         {
             BoardView.ApplySafeArea(pixels, screenPixels);
@@ -145,6 +222,7 @@ namespace CatsAndArrows.UI
         public void ShowMenu()
         {
             if (loading || CommercialBusy) return;
+            CancelCompletion();
             BoardView.SetInteractionSuspended(true);
             BoardView.style.display = DisplayStyle.None;
             Screen = "menu"; Modal = null; overlay.style.display = DisplayStyle.None;
@@ -190,6 +268,7 @@ namespace CatsAndArrows.UI
         public void StartTutorial()
         {
             if (loading || CommercialBusy || !enableTutorial) return;
+            CancelCompletion();
             CancelInteraction(); completionHint = null;
             Tutorial = new TutorialController();
             monetization?.BindSession(Tutorial.Session, ordinary: false);
@@ -238,6 +317,7 @@ namespace CatsAndArrows.UI
         public bool StartNewGame()
         {
             if (nextBoardPending || CommercialBusy) return false;
+            CancelCompletion();
             // Consume any queued command before an asynchronous next-board transition.
             ResetHintAttention();
             queuedRequest++;
@@ -281,6 +361,7 @@ namespace CatsAndArrows.UI
         private void QueueNewGame()
         {
             if (loading || CommercialBusy) return;
+            CancelCompletion();
             NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
             if (Tutorial != null) LeaveTutorial();
             loading = true; BoardView.SetInteractionSuspended(true);
@@ -404,6 +485,19 @@ namespace CatsAndArrows.UI
             BoardView.SetInteractionSuspended(true);
             BoardView.SetCompletionFeedback(text.GetText("game.victory"), text.GetText("game.last-hint"),
                 UseInlineHints || completionHint == null ? null : (Action)ShowLastHint);
+            if (Tutorial == null)
+            {
+                celebratingSession = ActiveSession;
+                if (celebration.TryStart(ActiveSession))
+                {
+                    completionMessage.text = text.GetText("completion.message");
+                    completionActions.Q<Button>("completion-next").text = text.GetText("completion.next");
+                    completionActions.Q<Button>("completion-back").text = text.GetText("completion.back");
+                    completionActions.Q<Button>("completion-menu").text = text.GetText("completion.menu");
+                }
+                if (!CanPresentCompletion()) celebration.Cancel();
+                RenderCompletion();
+            }
         }
         public void ShowLastHint()
         {
@@ -484,6 +578,7 @@ namespace CatsAndArrows.UI
         }
         private void ShowModal(string kind, string heading, string body, params Button[] actions)
         {
+            CancelCompletion();
             BoardView.SetInteractionSuspended(true); Modal = kind; overlay.Clear(); overlay.style.display = DisplayStyle.Flex;
             TickHintAttention();
             overlay.style.paddingLeft = overlay.style.paddingRight = 8;

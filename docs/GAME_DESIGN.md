@@ -31,8 +31,7 @@ so subsequent Plays request random ordinary boards even after a restart. Manual
 Tutorial remains available and does not consume a fresh installation's first
 Play. Existing tutorial-seen installations migrate once as returning users.
 Tutorial Skip/Play uses the same ordinary-board selector, without counting the
-tutorial fixture. This adds no board save/resume, generation rule or completion
-effect; the separately planned celebration is Issue #44.
+tutorial fixture. This adds no board save/resume or generation rule.
 
 ## Solution cats
 - A normal cell contains at most one solution cat.
@@ -105,10 +104,20 @@ The state of every non-solution normal cell is irrelevant: it may be Empty or X.
 On victory:
 - show the localized “All cats found!” inline beneath the difficulty;
 - keep the completed board visible with a subtle grey treatment;
-- do not automatically open a completion screen;
 - the completed board is read-only;
 - Hint and Clear are disabled;
 - Next board and Menu remain available.
+
+Issue #44 adds an ordinary-board presentation sequence, including final-Hint
+wins. The grid becomes slightly transparent, bilateral confetti ends at three
+seconds and centered lowercase “you found all the cats” fades in. Its fade-out
+begins four seconds after victory; after it finishes, lowercase Next board,
+Back to completed board and Menu buttons fade in. The short fades take 250 ms
+each. Back restores the same static finished grid at full opacity, preserving
+marks and the completion lock. Next uses #43's persistent difficulty selector.
+Navigation, backgrounding and rebind dismiss the sequence without replaying it
+on return. Existing controls remain available. Neither tutorial stage uses this
+sequence, and completion still belongs to GameSession immediately at the last cat.
 
 ## Open design questions
 - Broader automatic protection beyond the approved cardinal one-cat rule remains deferred.

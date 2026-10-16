@@ -48,8 +48,9 @@ namespace CatsAndArrows.UI
 #endif
             var arrowHoldCheck = Argument("--arrow-hold-check=") == "1";
             var hintIdleCheck = Argument("--hint-idle-check=") == "1";
+            var completionCheck = Argument("--completion-check=") == "1";
             double holdReviewTime = 0;
-            if (hintIdleCheck || arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
+            if (completionCheck || hintIdleCheck || arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -96,7 +97,7 @@ namespace CatsAndArrows.UI
                         () => Time.realtimeSinceStartupAsDouble);
                 }
 #endif
-                var isolatedReview = hintIdleCheck || tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
+                var isolatedReview = completionCheck || hintIdleCheck || tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 isolatedReview |= monetizationCheck;
 #endif
@@ -105,7 +106,8 @@ namespace CatsAndArrows.UI
                     tutorialSeen: isolatedReview ? (Func<bool>)(() => reviewSeen) : null,
                     markTutorialSeen: isolatedReview ? (Action)(() => reviewSeen = true) : null,
                     difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null,
-                    idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null, monetization: monetization);
+                    idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null, monetization: monetization,
+                    completionClock: completionCheck ? (Func<double>)(() => holdReviewTime) : null);
                 root.Add(shell);
                 shell.SetApplicationFocus(applicationFocused);
                 shell.SetApplicationPaused(applicationPaused);
@@ -115,7 +117,8 @@ namespace CatsAndArrows.UI
                 StartCoroutine(MonetizationReviewChecks.Run(shell, Argument("--game-captures=")));
             else
 #endif
-            if (hintIdleCheck && shell != null) StartCoroutine(HintIdleReviewChecks.Run(shell, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
+            if (completionCheck && shell != null) StartCoroutine(CompletionReviewChecks.Run(shell, seconds => holdReviewTime += seconds, Argument("--game-captures=")));
+            else if (hintIdleCheck && shell != null) StartCoroutine(HintIdleReviewChecks.Run(shell, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
             else if (arrowHoldCheck && view != null) StartCoroutine(ArrowHoldReviewChecks.Run(view, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
             else if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));

@@ -19,7 +19,7 @@ The user specifically found low-contrast red/green states difficult in the proto
 ## Feedback
 - No punishment animation for a wrong intermediate mark.
 - Use subtle haptic/audio feedback for deliberate state changes if enabled.
-- Victory feedback stays inline beneath the difficulty label, with a subtle grey grid treatment and readable symbols.
+- Victory retains an inline status and subtle grey grid treatment; ordinary boards also use the Issue #44 sequence below.
 - Hint should explain a deduction where feasible.
 
 ## Controls
@@ -44,7 +44,24 @@ Historical #32 evidence (the difficulty-choice menu is superseded): [localized m
 pass; physical comfort on compact screens remains a device-review gate.
 In-game primary controls: `Hint`, `Clear`, `Menu`, `Next board`.
 
-After completion: `Hint` and `Clear` disabled; board read-only; `Next board` and `Menu` enabled; completion stays inline so the finished board remains visible. Issue #44's celebration is not part of this change.
+After completion: `Hint` and `Clear` disabled; board read-only; `Next board` and `Menu` enabled.
+
+## Issue #44 ordinary-board celebration
+
+The finished grid remains stationary at 82% opacity beneath a centered lowercase
+localized “you found all the cats” message. A bounded procedural burst from both
+sides ends at three seconds. The message fades in over 250 ms, begins fading out
+at four seconds, then three lowercase localized actions fade in over 250 ms:
+`next board`, `back to completed board`, `menu`. Actions become interactive only
+when fully visible. Text and buttons sit inside the safe area above the existing
+controls, with 48-unit minimum button heights. Confetti never captures input.
+
+Back restores the same finished static grid at full opacity. Next uses the
+ordinary persistent difficulty selector; Menu returns to the existing menu.
+Existing bottom controls retain their behavior throughout. Leaving play,
+backgrounding, detaching or rebinding dismisses the sequence; Menu/locale return
+cannot replay it. Final-Hint wins use the same sequence. The guided and
+independent tutorial stages keep their existing completion behavior.
 
 
 ## Issue #7 initial gesture contract
@@ -99,7 +116,7 @@ Center the tile grid itself within the safe board region; the numeric clue gutte
 follow the centered grid and remain within bounds. Arrow and protected/hatched
 cells share a subtly darker background while retaining distinct shapes/hatching.
 Completed boards remain visible with the localized “All cats found!” phrase below
-the difficulty, without an automatic overlay. A final Hint can be reviewed via an
+the difficulty. Issue #44 adds the ordinary-board sequence above. A final Hint can be reviewed via an
 optional “Last hint” action; opening its explanation is deliberate. New Game
 clears the completion treatment. Upright portrait is mandatory on mobile.
 
