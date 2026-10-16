@@ -42,6 +42,7 @@ namespace CatsAndArrows.UI
         private LocalizationService text;
         private bool interactionSuspended;
         public event Action StateChanged;
+        public event Action Rebound;
         public event Action InteractionEnded;
         // Includes protected-cell attempts; separate from successful mark changes.
         public event Action ActivityChanged;
@@ -150,6 +151,7 @@ namespace CatsAndArrows.UI
             completionHint.style.display = reviewHint == null ? DisplayStyle.None : DisplayStyle.Flex;
             reviewCompletionHint = reviewHint;
         }
+        public void SetCompletionOpacity(float opacity) => board.style.opacity = Mathf.Clamp01(opacity);
         public void SetTutorial(TutorialController controller)
         {
             CancelInteraction(); tutorial = controller; gesture = null;
@@ -188,6 +190,7 @@ namespace CatsAndArrows.UI
         public void Bind(GameSession newSession, string locale = "en")
         {
             if (newSession == null) throw new ArgumentNullException(nameof(newSession));
+            Rebound?.Invoke();
             CancelInteraction();
             gesture = null; arrowHold = null;
             hintHighlight = null; ++highlightVersion;

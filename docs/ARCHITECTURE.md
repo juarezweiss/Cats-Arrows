@@ -221,6 +221,20 @@ survives Menu and focus changes; board persistence remains deferred. A final Hin
 retains its structured proof for optional review, without opening an overlay. Diagnostic mounted flow and
 render timing remain opt-in review paths, not analytics or gameplay dependencies.
 
+## Issue #44 timed completion
+
+Issue #44 adds UI-local `CompletionCelebration`, a small clock-injected state
+machine separate from GameSession. It tracks the consumed ordinary session
+identity, sequential message/action fades and the three-second confetti cutoff.
+GameShellView starts it from the existing tap/final-Hint completion path and
+renders it through one view-owned scheduled tick. Navigation, focus/pause,
+detach and every board Bind consume the sequence, restoring full grid opacity;
+no per-victory delayed callbacks survive to style another board. A fixed-count
+procedural `CompletionConfettiElement` draws mirrored quads without input or
+random/gameplay state. Completion actions reuse existing Next/Menu routing;
+Back dismisses presentation only. Tutorial, ordinary difficulty history,
+generation, monetization and domain completion ownership are unchanged.
+
 ## Issue #19 calm board polish
 
 Completion remains domain-owned and immediate. Views apply a subtle completed

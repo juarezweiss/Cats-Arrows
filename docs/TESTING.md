@@ -1,5 +1,42 @@
 # Testing Strategy
 
+## Issue #44 timed completion
+
+2026-10-16: pinned Unity **6000.3.25f1** compilation passed (`compile.d5Lj3z`);
+complete EditMode **466/466 passed**, zero failed/skipped/inconclusive and
+successful editor exit (`editmode.P5v8B4`). Repository and whitespace checks pass.
+`CompletionCelebrationTests` covers exact three-second confetti cutoff,
+250 ms sequential fades, four-second message fade-out, disabled early actions,
+duplicate wins, cancellation, time jumps and invalid/backwards clocks.
+`CompletionShellTests` covers final-Hint victory, same-board static return,
+Hint/Clear/tap/drag locks, unchanged history, duplicate notification, Menu/locale,
+focus/pause, detach, same/different-session rebind, stale ticks, both tutorial
+stages and lowercase localized resources. Existing interaction, tutorial,
+difficulty and domain suites pass. Independent QA found no blocking findings.
+
+The opt-in macOS review player `--completion-check=1` passed mounted mouse/touch
+and final-Hint flows in EN **320×568**, pt-BR **390×844** and ES **430×932**.
+Checks include panel picking for all three completion actions, static completed
+marks/lock, unchanged grid bounds, safe-area button bounds, existing controls,
+Next selection/anti-streak and Menu return without replay. Physical-pixel snapping
+is allowed in world-bound measurements; button minimum style height remains 48
+panel units. Simulated top/bottom insets were 20/0, 59/34 and 59/34 pixels.
+Logs and all nine captures are under ignored `.unity-results/issue44/`.
+
+| Portrait / locale | Celebration | Actions |
+| --- | --- | --- |
+| Compact EN | [message/confetti](evidence/issue44/celebration-en320.png) | [actions](evidence/issue44/actions-en320.png) |
+| Standard pt-BR | [message/confetti](evidence/issue44/celebration-pt390.png) | [actions](evidence/issue44/actions-pt390.png) |
+| Tall ES | [message/confetti](evidence/issue44/celebration-es430.png) | [actions](evidence/issue44/actions-es430.png) |
+
+Reproduce with the existing `BoardReviewBuild.Build` local review build, then run
+its executable with `--completion-check=1 --game-seed=14 --board-locale=<locale>
+--board-width=<width> --board-height=<height> --board-safe-top=<pixels>
+--board-safe-bottom=<pixels> --game-captures=<absolute-directory>`.
+The diagnostic uses an injected clock and isolated difficulty/first-Play stores;
+normal play uses realtime. **Physical iPhone smoke remains pending before merge**;
+desktop captures do not establish device touch comfort or lifecycle behavior.
+
 ## Issue #29 monetization design test plan
 
 2026-10-16 integration of PR #31 with current `develop` preserves #43 first-play,
