@@ -12,8 +12,8 @@ The opt-in mounted player diagnostic `--hint-idle-check=1` advances the same fak
 clock and dispatches mouse/touch events through the board and Hint button. It
 checks non-marking arrow/protected presses, long presses, cancellation, the active
 arrow outline, Hint/Clear, Menu/modal/locale replacement and final-Hint completion.
-Captures compare unchanged button/grid bounds and localized labels with a stable
-heavier border and bold Hint label. Run compact, standard and tall portrait
+Captures compare unchanged button/grid bounds and localized labels with stable
+inverted Hint colors. Run compact, standard and tall portrait
 layouts in en/pt-BR/es. Native desktop checks do not establish physical-phone
 appearance; iPhone smoke remains a pre-merge gate.
 
@@ -37,12 +37,24 @@ and independent tutorial checks and the ordinary game loop (20 Next requests)
 also passed. Independent interaction QA found no blocking findings. Logs are
 under ignored `.unity-results/issue48/`.
 
-Verified captures use generated ordinary boards:
+The captures below predate the inverted-color refinement and show the original
+border/font treatment on generated ordinary boards:
 [Hard compact](evidence/issue48/hint-idle-en320.png),
 [Easy Portuguese](evidence/issue48/hint-idle-pt390.png),
 [Medium Spanish tall](evidence/issue48/hint-idle-es430.png).
 Physical iPhone appearance/comfort has not been tested for #48; no merge or device
 installation is included in this implementation task.
+
+Styling refinement: attention swaps the normal Hint text/background colors with a
+native 200 ms fade-in; resets set transition duration to zero and restore normal
+colors immediately. Existing shell assertions cover both colors, unchanged
+border/font/padding, transition properties and duration, including a reset during
+fade-in. Timer, eligibility and interaction tests are unchanged.
+Pinned Unity 6000.3.25f1 focused EditMode validation passed **26/26**, zero
+failed/skipped/inconclusive, with successful editor exit (`hint-style48.CFa20C`):
+`HintAttentionShellTests`, `HintIdleAttentionTests` and `InlineHintTests`.
+Repository validation and whitespace checks passed. The styling refinement has
+not been rebuilt for desktop captures or physical iPhone review.
 
 ## Issue #47 arrow-path hold
 

@@ -50,8 +50,14 @@ namespace CatsAndArrows.Tests
         private void Advance(double seconds) { now += seconds; view.TickHintAttention(); }
         private static void AssertAttention(Button button, bool expected)
         {
-            Assert.That(button.style.borderLeftWidth.value, Is.EqualTo(expected ? 2 : 1));
-            Assert.That(button.style.unityFontStyleAndWeight.value, Is.EqualTo(expected ? FontStyle.Bold : FontStyle.Normal));
+            Assert.That(button.style.backgroundColor.value, Is.EqualTo(expected ? BoardSymbolElement.Ink : PortraitBoardView.Tile));
+            Assert.That(button.style.color.value, Is.EqualTo(expected ? PortraitBoardView.Tile : BoardSymbolElement.Ink));
+            Assert.That(button.style.borderLeftWidth.value, Is.EqualTo(1));
+            Assert.That(button.style.unityFontStyleAndWeight.value, Is.EqualTo(FontStyle.Normal));
+            Assert.That(button.style.paddingLeft.keyword, Is.EqualTo(StyleKeyword.Null));
+            Assert.That(button.style.transitionProperty.value.Select(property => property.ToString()),
+                Is.EqualTo(new[] { "background-color", "color" }));
+            Assert.That(button.style.transitionDuration.value?.FirstOrDefault().value ?? 0, Is.EqualTo(expected ? .2f : 0));
         }
 
         [UnityTest]
@@ -76,9 +82,14 @@ namespace CatsAndArrows.Tests
         {
             yield return Mount();
             Advance(6); AssertAttention(Hint, true);
+            yield return null; // Let the fade start before exercising an immediate reset.
             var before = view.ActiveSession.Marks.ToDictionary(pair => pair.Key, pair => pair.Value);
             view.RequestHint(); AssertAttention(Hint, false);
             Assert.That(view.ActiveSession.Marks.Count(pair => before[pair.Key] != pair.Value), Is.EqualTo(1));
+            yield return null;
+            yield return null;
+            Assert.That(Hint.resolvedStyle.backgroundColor, Is.EqualTo(PortraitBoardView.Tile));
+            Assert.That(Hint.resolvedStyle.color, Is.EqualTo(BoardSymbolElement.Ink));
             Advance(5.999); AssertAttention(Hint, false);
             Advance(.002); AssertAttention(Hint, true);
             view.ClearBoard(); AssertAttention(Hint, false);

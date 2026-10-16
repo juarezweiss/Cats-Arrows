@@ -114,23 +114,11 @@ namespace CatsAndArrows.UI
         {
             if (hintButton == null) return;
             var attention = hintAttention.IsAttentionVisible;
-            if (attention == (hintButton.style.borderLeftWidth.value == 2)) return;
-            if (attention)
-            {
-                // Keep the same flex footprint and centered label as the border thickens.
-                hintButton.style.paddingLeft = Mathf.Max(0, hintButton.resolvedStyle.paddingLeft - 1);
-                hintButton.style.paddingRight = Mathf.Max(0, hintButton.resolvedStyle.paddingRight - 1);
-                hintButton.style.paddingTop = Mathf.Max(0, hintButton.resolvedStyle.paddingTop - 1);
-                hintButton.style.paddingBottom = Mathf.Max(0, hintButton.resolvedStyle.paddingBottom - 1);
-            }
-            else
-            {
-                hintButton.style.paddingLeft = hintButton.style.paddingRight =
-                    hintButton.style.paddingTop = hintButton.style.paddingBottom = StyleKeyword.Null;
-            }
-            hintButton.style.borderLeftWidth = hintButton.style.borderRightWidth =
-                hintButton.style.borderTopWidth = hintButton.style.borderBottomWidth = attention ? 2 : 1;
-            hintButton.style.unityFontStyleAndWeight = attention ? FontStyle.Bold : FontStyle.Normal;
+            if (attention == (hintButton.style.backgroundColor.value == BoardSymbolElement.Ink)) return;
+            // Native color transitions fade in only; every reset cancels the fade immediately.
+            hintButton.style.transitionDuration = new List<TimeValue> { new TimeValue(attention ? .2f : 0) };
+            hintButton.style.backgroundColor = attention ? BoardSymbolElement.Ink : PortraitBoardView.Tile;
+            hintButton.style.color = attention ? PortraitBoardView.Tile : BoardSymbolElement.Ink;
         }
 
         public void ApplySafeArea(Rect pixels, Vector2 screenPixels)
@@ -284,6 +272,7 @@ namespace CatsAndArrows.UI
             if (Tutorial != null) { BuildTutorialControls(); return; }
             var first = ActionRow(); var second = ActionRow();
             hintButton = MakeButton("action-hint", "game.hint", RequestHint);
+            hintButton.style.transitionProperty = new List<StylePropertyName> { "background-color", "color" };
             clearButton = MakeButton("action-clear", "game.clear", ClearBoard);
             hintButton.SetEnabled(!ActiveSession.IsCompleted); clearButton.SetEnabled(!ActiveSession.IsCompleted);
             first.Add(hintButton); first.Add(clearButton);

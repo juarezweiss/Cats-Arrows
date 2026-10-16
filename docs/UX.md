@@ -78,9 +78,10 @@ highlights. How to Play describes the gesture in English, pt-BR and Spanish.
 ## Issue #48 idle Hint attention
 
 During active ordinary play, six seconds without board interaction gives Hint a
-stable, slightly heavier border and bold label. It never flashes, moves the grid,
-or applies a hint automatically. The existing localized label and touch target
-remain unchanged.
+stable inversion of its normal text and background colors, fading in over 200 ms
+using native UI Toolkit color transitions. Resets restore normal colors immediately
+without a fade-out. It never flashes, moves the grid, or applies a hint automatically.
+The existing localized label, font weight, border and touch target remain unchanged.
 
 Any board press, including an arrow or protected-cell attempt, clears attention.
 While a pointer is held or dragging, attention stays off; release or cancellation

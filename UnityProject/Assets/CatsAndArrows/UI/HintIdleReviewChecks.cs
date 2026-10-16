@@ -30,7 +30,8 @@ namespace CatsAndArrows.UI
                 shell.TickHintAttention();
                 advance(5.999); shell.TickHintAttention(); Require(!Attention(shell), "no attention before six seconds");
                 advance(.001); shell.TickHintAttention(); Require(Attention(shell), "attention at six seconds");
-                Require(hint.style.unityFontStyleAndWeight.value == FontStyle.Bold, "non-color font emphasis");
+                Require(hint.style.color.value == PortraitBoardView.Tile && hint.style.borderLeftWidth.value == 1,
+                    "inverted text with unchanged border");
             })) yield break;
             for (var i = 0; i < 3; i++) yield return new WaitForEndOfFrame();
             if (!Check(() =>
@@ -136,7 +137,8 @@ namespace CatsAndArrows.UI
                 advance(5.999); shell.TickHintAttention(); Require(!Attention(shell), "no modal time accumulation");
                 advance(.002); shell.TickHintAttention(); Require(Attention(shell), "full post-modal interval");
                 shell.ShowMenu(); shell.SelectLanguage(locale); shell.BackToGame(); shell.TickHintAttention();
-                Require(!Attention(shell) && hint.style.borderLeftWidth.value == 1, "old button restored after locale rebuild");
+                Require(!Attention(shell) && hint.style.backgroundColor.value == PortraitBoardView.Tile &&
+                    hint.style.color.value == BoardSymbolElement.Ink, "old button restored after locale rebuild");
                 for (var i = 0; i < 80 && !shell.ActiveSession.IsCompleted; i++) shell.RequestHint();
                 Require(shell.ActiveSession.IsCompleted && !shell.Q<Button>("action-hint").enabledSelf, "final Hint completes and disables assistance");
                 advance(60); shell.TickHintAttention(); Require(!Attention(shell), "completed board never nudges");
@@ -146,7 +148,7 @@ namespace CatsAndArrows.UI
             Application.Quit(0);
         }
 
-        private static bool Attention(GameShellView shell) => shell.Q<Button>("action-hint")?.style.borderLeftWidth.value > 1;
+        private static bool Attention(GameShellView shell) => shell.Q<Button>("action-hint")?.style.backgroundColor.value == BoardSymbolElement.Ink;
         private static float Delta(Rect a, Rect b) => Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y),
             Mathf.Abs(a.width - b.width), Mathf.Abs(a.height - b.height));
         private static void Click(GameShellView shell, string name)
