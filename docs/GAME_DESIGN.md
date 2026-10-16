@@ -48,11 +48,18 @@ must contain a 3-cat row or column. These admission rules never act as hidden
 constraints inside the clue-only solver or uniqueness proof.
 
 ## Arrow clues
-An arrow occupies a grid cell and is non-interactive. The initial MVP supports eight directions: Up, Down, Left, Right, UpLeft, UpRight, DownLeft and DownRight (Issue #14).
+An arrow occupies a grid cell and cannot be marked. The initial MVP supports eight directions: Up, Down, Left, Right, UpLeft, UpRight, DownLeft and DownRight (Issue #14).
 
 Meaning: **at least one solution cat exists in the direction the arrow points.** For a horizontal arrow, consider cells in the same row beyond the arrow. For a vertical arrow, consider cells in the same column beyond the arrow. For a diagonal arrow, advance one row and one column per step along its exact 45-degree ray. All rays continue through other arrow cells to the edge without wrapping; those arrow cells are ineligible for cats. The origin never counts. Multiple arrows may share a cat; a ray may contain more than one cat. Diagonals introduce no diagonal count clues.
 
 Example: a row has total 2 and contains a Right arrow. At least one of the two solution cats is somewhere to the right of the arrow. The second cat may be on either side if all other constraints permit it.
+
+Issue #47 adds a presentation-only aid on active ordinary boards: hold an arrow
+for 350 ms to outline its full forward path, using the tutorial's outline
+style. The path includes intervening arrows and marked/protected cells, continuing
+to the edge; it reveals no hidden cat information. Release or cancellation removes
+the outline immediately. Arrow holds never mark cells or become drag marking.
+Tutorial and completed-board interaction remain unchanged.
 
 ## Player cell states
 Interactive normal cells cycle on a discrete tap:

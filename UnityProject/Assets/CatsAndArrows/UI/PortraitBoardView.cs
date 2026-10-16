@@ -30,6 +30,10 @@ namespace CatsAndArrows.UI
         private readonly Label completionStatus = new Label();
         private readonly Button completionHint;
         private int highlightVersion;
+        private BoardCoordinate? hintHighlight;
+        private ArrowHoldController arrowHold;
+        private readonly Func<double> holdClock;
+        private IVisualElementScheduledItem holdTick;
         private Action reviewCompletionHint;
         private readonly Label error = new Label();
         private GameSession session;
@@ -43,8 +47,9 @@ namespace CatsAndArrows.UI
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
 
-        public PortraitBoardView()
+        public PortraitBoardView(Func<double> holdClock = null)
         {
+            this.holdClock = holdClock ?? (() => Time.realtimeSinceStartupAsDouble);
             name = "portrait-board-view";
             style.flexGrow = 1;
             style.backgroundColor = Background;
@@ -161,23 +166,25 @@ namespace CatsAndArrows.UI
         }
         public void HighlightCell(BoardCoordinate coordinate, long durationMs = 0)
         {
+            var previous = hintHighlight;
+            hintHighlight = coordinate;
             var version = ++highlightVersion;
-            var tile = board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
-            if (tile == null) return;
-            tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 3;
-            tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = BoardSymbolElement.Ink;
+            if (previous.HasValue) RestoreCellOutline(previous.Value);
+            RestoreCellOutline(coordinate);
             if (durationMs > 0) schedule.Execute(() =>
             {
-                if (version != highlightVersion || !board.Contains(tile)) return;
-                tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 1;
-                tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = Border;
+                if (version != highlightVersion) return;
+                hintHighlight = null;
+                RestoreCellOutline(coordinate);
             }).StartingIn(durationMs);
         }
+
         public void Bind(GameSession newSession, string locale = "en")
         {
             if (newSession == null) throw new ArgumentNullException(nameof(newSession));
             CancelInteraction();
-            gesture = null;
+            gesture = null; arrowHold = null;
+            hintHighlight = null; ++highlightVersion;
             session = newSession;
             SetCompletionFeedback(null);
             SetLocale(locale);
@@ -188,6 +195,9 @@ namespace CatsAndArrows.UI
         public void Refresh()
         {
             if (session == null) return;
+            // Preserve the existing Hint lifecycle: rebuilding after a mark or
+            // Clear removes its feedback. Hold release itself never rebuilds.
+            hintHighlight = null; ++highlightVersion;
             if (session.IsCompleted) CancelInteraction();
             Presentation = BoardPresentation.FromSession(session);
             board.Clear();
@@ -232,11 +242,13 @@ namespace CatsAndArrows.UI
             }
             LayoutBoard();
             ApplyTutorialHighlights();
+            if (arrowHold?.IsHighlighted == true) ApplyArrowHighlights();
         }
         public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en", DifficultyProfile profile = null)
         {
             if (generationStatus == GenerationStatus.Success) throw new ArgumentException("A failure status is required.", nameof(generationStatus));
-            CancelInteraction(); gesture = null;
+            CancelInteraction(); gesture = null; arrowHold = null;
+            hintHighlight = null; ++highlightVersion;
             session = null; Presentation = null; board.Clear(); SetLocale(locale);
             difficulty.text = text.GetText("board." + (profile ?? DifficultyProfile.Easy).Id);
             board.style.display = DisplayStyle.None;
@@ -296,6 +308,7 @@ namespace CatsAndArrows.UI
                 Layout.Gap != nextLayout.Gap || Layout.ClueSize != nextLayout.ClueSize)
             {
                 CancelInteraction();
+                arrowHold = new ArrowHoldController(session, nextLayout, holdClock);
                 gesture = new BoardGestureController(session, nextLayout,
                     canInteract: coordinate => tutorial == null ? session.CanInteract(coordinate) : tutorial.CanInteract(coordinate),
                     tap: coordinate => tutorial == null ? session.Tap(coordinate) : tutorial.Tap(coordinate),
@@ -315,22 +328,66 @@ namespace CatsAndArrows.UI
         }
         public void CancelInteraction()
         {
-            if (gesture == null || !gesture.HasActivePointer) return;
-            var pointerId = gesture.ActivePointerId;
-            gesture.Cancel();
+            var pointerId = arrowHold?.HasActivePointer == true ? arrowHold.ActivePointerId :
+                gesture?.HasActivePointer == true ? gesture.ActivePointerId : -1;
+            gesture?.Cancel();
+            ClearArrowHold();
+            if (pointerId < 0) return;
             if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
             InteractionEnded?.Invoke();
         }
         private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (!InteractionEnabled || evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
+            if (!InteractionEnabled || !evt.isPrimary || evt.button != 0 || gesture == null ||
+                gesture.HasActivePointer || arrowHold?.HasActivePointer == true) return;
+            var position = BoardPosition(evt.position);
+            if (tutorial == null && arrowHold != null && arrowHold.Begin(evt.pointerId, position))
+            {
+                var controller = arrowHold;
+                var pointerId = evt.pointerId;
+                holdTick = schedule.Execute(() =>
+                {
+                    if (ReferenceEquals(controller, arrowHold) && controller.HasActivePointer && controller.ActivePointerId == pointerId)
+                        TickArrowHold();
+                }).Every(16);
+            }
+            else if (!gesture.Begin(evt.pointerId, position)) return;
             // Capture belongs to the stable board, never a tile replaced by Refresh.
             board.CapturePointer(evt.pointerId);
             evt.StopPropagation();
         }
+        private void TickArrowHold()
+        {
+            if (arrowHold?.HasActivePointer != true) return;
+            var origin = arrowHold.Origin;
+            var path = arrowHold.Path;
+            var pointerId = arrowHold.ActivePointerId;
+            if (arrowHold.Tick()) ApplyArrowHighlights();
+            if (!arrowHold.HasActivePointer)
+            {
+                RestoreArrowHighlights(origin, path);
+                holdTick?.Pause(); holdTick = null;
+                if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+                InteractionEnded?.Invoke();
+            }
+        }
         private void OnPointerMove(PointerMoveEvent evt)
         {
+            if (arrowHold?.HasActivePointer == true && arrowHold.ActivePointerId == evt.pointerId)
+            {
+                var origin = arrowHold.Origin;
+                var path = arrowHold.Path;
+                arrowHold.Move(evt.pointerId, BoardPosition(evt.position));
+                if (!arrowHold.HasActivePointer)
+                {
+                    RestoreArrowHighlights(origin, path);
+                    holdTick?.Pause(); holdTick = null;
+                    if (board.HasPointerCapture(evt.pointerId)) board.ReleasePointer(evt.pointerId);
+                    InteractionEnded?.Invoke();
+                }
+                evt.StopPropagation(); return;
+            }
             if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
             var changed = gesture.Move(evt.pointerId, BoardPosition(evt.position));
             FinishPointerEvent(evt.pointerId, changed);
@@ -339,24 +396,64 @@ namespace CatsAndArrows.UI
         }
         private void OnPointerUp(PointerUpEvent evt)
         {
-            if (evt.button != 0 || gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
+            if (evt.button != 0) return;
+            if (arrowHold?.HasActivePointer == true && arrowHold.ActivePointerId == evt.pointerId)
+            {
+                CancelInteraction(); evt.StopPropagation(); return;
+            }
+            if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
             var changed = gesture.End(evt.pointerId, BoardPosition(evt.position));
             FinishPointerEvent(evt.pointerId, changed);
             InteractionEnded?.Invoke();
             evt.StopPropagation();
         }
+        private bool OwnsPointer(int pointerId) =>
+            (arrowHold?.HasActivePointer == true && arrowHold.ActivePointerId == pointerId) ||
+            (gesture?.HasActivePointer == true && gesture.ActivePointerId == pointerId);
         private void OnPointerCancel(PointerCancelEvent evt)
         {
-            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) CancelInteraction();
+            if (OwnsPointer(evt.pointerId)) CancelInteraction();
         }
         private void OnPointerCaptureOut(PointerCaptureOutEvent evt)
         {
-            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) CancelInteraction();
+            if (OwnsPointer(evt.pointerId)) CancelInteraction();
         }
         private void FinishPointerEvent(int pointerId, bool changed)
         {
             if (!gesture.HasActivePointer && board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
             if (changed) { Refresh(); StateChanged?.Invoke(); }
+        }
+        private void ClearArrowHold()
+        {
+            holdTick?.Pause(); holdTick = null;
+            if (arrowHold == null) return;
+            var origin = arrowHold.Origin;
+            var path = arrowHold.Path;
+            arrowHold.Cancel();
+            RestoreArrowHighlights(origin, path);
+        }
+        private void ApplyArrowHighlights()
+        {
+            RestoreCellOutline(arrowHold.Origin);
+            foreach (var coordinate in arrowHold.Path) RestoreCellOutline(coordinate);
+        }
+        private void RestoreArrowHighlights(BoardCoordinate origin, IReadOnlyList<BoardCoordinate> path)
+        {
+            RestoreCellOutline(origin);
+            foreach (var coordinate in path) RestoreCellOutline(coordinate);
+        }
+        private void RestoreCellOutline(BoardCoordinate coordinate)
+        {
+            var tile = board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
+            if (tile == null) return;
+            var outlined = (hintHighlight.HasValue && hintHighlight.Value.Equals(coordinate)) ||
+                (tutorial != null && System.Linq.Enumerable.Contains(tutorial.HighlightedCells, coordinate)) ||
+                (arrowHold?.IsHighlighted == true && (arrowHold.Origin.Equals(coordinate) ||
+                    System.Linq.Enumerable.Contains(arrowHold.Path, coordinate)));
+            if (outlined) { Outline(tile, 3); return; }
+            tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 1;
+            tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = Border;
+            tile.style.borderTopLeftRadius = tile.style.borderTopRightRadius = tile.style.borderBottomLeftRadius = tile.style.borderBottomRightRadius = 7;
         }
         private void ApplyTutorialHighlights()
         {

@@ -173,6 +173,18 @@ also cancel. Later Clear controls must cancel before clearing; New Game uses Bin
 The explicit review scene offers opt-in mounted-panel synthetic input checks;
 these complement rather than replace physical-device verification.
 
+Issue #47 adds an adjacent `ArrowHoldController` for presentation-only arrow
+presses. It uses an injected monotonic clock, the existing eight-direction ray
+geometry and the same 8-panel-unit movement tolerance. The view assigns a single
+pointer to either ordinary marking or an arrow hold; neither can hand its active
+press to the other. A view-owned scheduled tick checks the 350 ms threshold.
+Existing cancel/suspension/rebind/focus/layout seams cancel pending and visible
+holds. The hold outline layers over tutorial/Hint emphasis and restores the
+currently valid underlying border when removed, including Hint expiry during a
+hold. No hold code changes puzzle truth or sends marking intents.
+Mark/Clear refreshes still clear Hint emphasis as before; only hold cleanup
+restores a still-valid underlying Hint outline without rebuilding the board.
+
 
 ## Issue #8 Easy game shell
 

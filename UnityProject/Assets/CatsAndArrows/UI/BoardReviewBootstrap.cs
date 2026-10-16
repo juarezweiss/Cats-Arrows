@@ -36,7 +36,9 @@ namespace CatsAndArrows.UI
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
             var tutorialCheck = Argument("--tutorial-check=") == "1";
-            if (tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
+            var arrowHoldCheck = Argument("--arrow-hold-check=") == "1";
+            double holdReviewTime = 0;
+            if (arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -46,9 +48,9 @@ namespace CatsAndArrows.UI
                 int.TryParse(Argument("--board-height="), out var height) && width > 0 && height > 0)
                 Screen.SetResolution(width, height, FullScreenMode.Windowed);
             if (Argument("--board-gallery=") == "1") root.Add(new BoardSymbolGalleryView(locale));
-            else if (!string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1")
+            else if (arrowHoldCheck || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1")
             {
-                view = new PortraitBoardView(); root.Add(view);
+                view = new PortraitBoardView(arrowHoldCheck ? (Func<double>)(() => holdReviewTime) : null); root.Add(view);
                 var result = new SeededEasyPuzzleGenerator().Generate(DifficultyProfile.Easy, seed);
                 if (result.IsSuccess) view.Bind(new GameSession(result.Puzzle), locale);
                 else view.ShowGenerationFailure(result.Status, locale);
@@ -71,7 +73,8 @@ namespace CatsAndArrows.UI
                     difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null);
                 root.Add(shell);
             }
-            if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
+            if (arrowHoldCheck && view != null) StartCoroutine(ArrowHoldReviewChecks.Run(view, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
+            else if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
             else if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));

@@ -1,5 +1,48 @@
 # Testing Strategy
 
+## Issue #47 arrow-path hold
+
+Threshold-only follow-up (2026-10-16): activation is now **350 ms**. Focused
+`ArrowHoldControllerTests` passed **17/17**, zero failed/skipped/inconclusive,
+with successful editor exit (`arrowhold350.wyaLQZ`). The boundary test checks
+349 ms versus 350 ms; hold duration, release/cancel and movement remain unchanged.
+QA and repository checks passed. No player/device build or full suite was rerun;
+the 1.0-second implementation evidence below is historical, and the installed
+iPhone build still uses that earlier threshold.
+
+Pinned Unity 6000.3.25f1 compilation passed (`compile.jdXwdO`); native EditMode
+`editmode.muSyXZ` passed **359/359**, with successful editor exit and zero
+failed/skipped/inconclusive. Clock-injected controller cases cover the one-second
+boundary, early release, cancellation, repeated presses, one-pointer ownership,
+jitter/movement, completion, invalid coordinates/time and non-arrow eligibility.
+All eight directions on 5×5/6×6/7×7 use independently calculated expected rays;
+mixed rays include arrows, protection, X and Cat without mutating marks. Two
+Hint regressions retain Clear's outline removal in both inline and legacy modes.
+Existing input, fixed tutorial, generator/goldens and completion-lock tests pass.
+
+Final native macOS mounted hold checks passed for synthetic mouse and touch in
+EN 320×568, pt-BR 390×844 and ES 430×932. They cover full diagonal outlines,
+one-second eligibility, release, capture-out/pointer cancellation, movement,
+suspension/rebind/completion, unchanged marks and Hint outline coexistence/expiry.
+The harness advances a fake hold clock and synchronizes with the panel scheduler;
+pending capture changes are flushed through normal pointer post-dispatch. A
+bounded scheduler timeout aborts rather than reporting a pass.
+
+Existing mounted input checks passed for mouse/touch; ordinary game flows passed
+in all three locales (20 Next board requests each), and the EN 390×844 guided and
+independent tutorial flow passed. Independent interaction QA found no blockers.
+Repository validation and whitespace checks passed. Logs and full captures are
+under ignored `.unity-results/issue47/verified/`; final player build log is
+`.unity-results/issue47/review-build-dispatch.log`.
+
+The [compact outline](evidence/issue47/arrow-path-en320.png) and
+[Spanish tall capture](evidence/issue47/arrow-path-es430.png) use a deliberate
+7×7 input fixture containing arrows/protection/player marks, not a generated Hard
+puzzle. They demonstrate presentation and pointer behavior, not generator rules.
+Physical iPhone smoke of the new hold gesture remains a pre-merge validation
+step; desktop checks do not establish touch comfort. No #48 idle-Hint behavior,
+#44 completion effect or PR #31 integration is included.
+
 ## Issue #43 persistent Play selection
 
 Pinned Unity 6000.3.25f1 compilation passed (`compile.SLmw3I`); native EditMode
