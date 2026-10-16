@@ -75,6 +75,23 @@ changes and rebind remove pending or active hold feedback. The aid does not run
 in the fixed tutorial or on completed boards, and does not alter their existing
 highlights. How to Play describes the gesture in English, pt-BR and Spanish.
 
+## Issue #48 idle Hint attention
+
+During active ordinary play, six seconds without board interaction gives Hint a
+stable, slightly heavier border and bold label. It never flashes, moves the grid,
+or applies a hint automatically. The existing localized label and touch target
+remain unchanged.
+
+Any board press, including an arrow or protected-cell attempt, clears attention.
+While a pointer is held or dragging, attention stays off; release or cancellation
+starts a fresh six-second interval. Hint (even with no applicable deduction),
+Clear and a new board also reset the interval. Hover does not count as activity.
+
+Menu, either tutorial stage, completed/missing/loading/failed boards, blocking
+overlays, disabled Hint, detached views and background/unfocused play suppress
+attention and discard elapsed idle time. Returning to eligible play or rebuilding
+localized controls starts a fresh interval.
+
 ## Issue #19 owner visual feedback
 
 Center the tile grid itself within the safe board region; the numeric clue gutters

@@ -1,5 +1,49 @@
 # Testing Strategy
 
+## Issue #48 idle Hint attention
+
+The idle controller uses an injected clock: tests advance time directly, including
+5.999/6-second boundaries, reset cycles and active-press suppression. Shell tests
+exercise eligibility and lifecycle resets independently of successful mutations;
+the existing Hint, tap/drag, arrow hold, tutorial and completion suites remain
+regression gates. Timer advancement must never apply a Hint or mutate marks.
+
+The opt-in mounted player diagnostic `--hint-idle-check=1` advances the same fake
+clock and dispatches mouse/touch events through the board and Hint button. It
+checks non-marking arrow/protected presses, long presses, cancellation, the active
+arrow outline, Hint/Clear, Menu/modal/locale replacement and final-Hint completion.
+Captures compare unchanged button/grid bounds and localized labels with a stable
+heavier border and bold Hint label. Run compact, standard and tall portrait
+layouts in en/pt-BR/es. Native desktop checks do not establish physical-phone
+appearance; iPhone smoke remains a pre-merge gate.
+
+2026-10-16: pinned Unity **6000.3.25f1** compilation passed
+(`compile.iexUD0`); final EditMode **375/375 passed**, zero failures, skips or
+inconclusive results, with successful editor exit (`editmode.Hrc8QT`). This
+includes nine pure clock cases and seven headless `UIDocument` shell tests,
+covering fractional reset times, no-result Hint, all difficulties, modal/Menu,
+focus/pause, disabled/suspended play, rebind/detach, failure/retry, completion and
+both tutorial stages. No graphics errors are suppressed and no tests are skipped.
+
+Final macOS review build passed (`issue48-review-build.jzXvUI`). Mounted idle
+checks passed mouse/touch in **Hard EN 320×568**, **Easy pt-BR 390×844** and
+**Medium ES 430×932**. Checks include secondary-pointer/mouse duplication,
+hover, swept drag, no-op presses, a visible #47 arrow hold and stable Hint/Clear
+bounds, Hint content center, label and grid. Maximum measured geometry difference
+was **0.0000153 panel units** (float rounding; assertion tolerance 0.01).
+
+Existing mounted input and arrow-hold checks passed for mouse/touch; fixed guided
+and independent tutorial checks and the ordinary game loop (20 Next requests)
+also passed. Independent interaction QA found no blocking findings. Logs are
+under ignored `.unity-results/issue48/`.
+
+Verified captures use generated ordinary boards:
+[Hard compact](evidence/issue48/hint-idle-en320.png),
+[Easy Portuguese](evidence/issue48/hint-idle-pt390.png),
+[Medium Spanish tall](evidence/issue48/hint-idle-es430.png).
+Physical iPhone appearance/comfort has not been tested for #48; no merge or device
+installation is included in this implementation task.
+
 ## Issue #47 arrow-path hold
 
 Threshold-only follow-up (2026-10-16): activation is now **350 ms**. Focused

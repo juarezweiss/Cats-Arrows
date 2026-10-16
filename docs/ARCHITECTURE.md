@@ -220,6 +220,14 @@ mobile orientation to upright portrait; no solver/generator changes are involved
 
 ## Issue #23 immediate hints
 
+Issue #48 adds presentation-only idle attention beside this immediate Hint flow.
+A small clock-injected controller owns the six-second eligibility/activity state;
+the shell owns scheduling and button styling. Board activity is reported apart
+from mark changes so protected-cell attempts and arrow holds reset attention too.
+Active presses suppress attention until they end or cancel. Shell navigation,
+modal/loading/completion, app focus/pause, detach and control/session replacement
+discard elapsed time. No timer applies deductions or changes gameplay state.
+
 The default shell applies the domain's HintResult directly and briefly highlights
 its target without opening a modal or retaining a presentation explanation.
 The existing useInlineHints configuration selects immediate presentation; false

@@ -18,6 +18,9 @@ namespace CatsAndArrows.UI
         private readonly VisualElement overlay = new VisualElement();
         private readonly LocalizationService text;
         private Button hintButton;
+        private readonly HintIdleAttention hintAttention;
+        private bool applicationFocused = true;
+        private bool applicationPaused;
         private Button clearButton;
         private bool loading;
         private int queuedRequest;
@@ -38,9 +41,11 @@ namespace CatsAndArrows.UI
         public int NewGameRequestId { get; private set; }
 
         public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true,
-            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null)
+            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null)
         {
             name = "game-shell";
+            var clock = idleClock ?? (() => Time.realtimeSinceStartupAsDouble);
+            hintAttention = new HintIdleAttention(clock);
             UseInlineHints = useInlineHints;
             this.enableTutorial = enableTutorial;
             if (tutorialSeen == null) FirstPlayPreference.Initialize();
@@ -53,8 +58,9 @@ namespace CatsAndArrows.UI
             style.flexGrow = 1; style.backgroundColor = PortraitBoardView.Background;
             style.color = BoardSymbolElement.Ink;
             style.unityFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            BoardView = new PortraitBoardView(); BoardView.SetPlayLayout(); Add(BoardView);
+            BoardView = new PortraitBoardView(clock); BoardView.SetPlayLayout(); Add(BoardView);
             BoardView.StateChanged += OnBoardChanged;
+            BoardView.ActivityChanged += OnBoardActivity;
             BoardView.InteractionEnded += OnTutorialGestureEnded;
             safeFrame.name = "game-safe-frame"; safeFrame.style.position = Position.Absolute;
             safeFrame.pickingMode = PickingMode.Ignore; Add(safeFrame);
@@ -65,7 +71,66 @@ namespace CatsAndArrows.UI
             overlay.name = "game-overlay"; Fill(overlay); overlay.style.backgroundColor = PortraitBoardView.Background;
             safeFrame.Add(overlay);
             RegisterCallback<GeometryChangedEvent>(_ => UpdateSafeArea());
+            RegisterCallback<AttachToPanelEvent>(_ => { ResetHintAttention(); TickHintAttention(); });
+            RegisterCallback<DetachFromPanelEvent>(_ => { hintAttention.Update(false, false); ApplyHintAttention(); });
+            schedule.Execute(TickHintAttention).Every(50);
             ShowMenu();
+        }
+
+        public void SetApplicationFocus(bool focused)
+        {
+            applicationFocused = focused;
+            if (!focused) CancelInteraction();
+            TickHintAttention();
+        }
+        public void SetApplicationPaused(bool paused)
+        {
+            applicationPaused = paused;
+            if (paused) CancelInteraction();
+            TickHintAttention();
+        }
+        // Manual ticking uses the same injected clock and lifecycle decisions as the scheduler.
+        public void TickHintAttention()
+        {
+            var eligible = panel != null && applicationFocused && !applicationPaused && !loading &&
+                Screen == "play" && Modal == null && Tutorial == null && ActiveSession != null &&
+                !ActiveSession.IsCompleted && BoardView.IsBoundTo(ActiveSession) && BoardView.InteractionEnabled &&
+                BoardView.style.display.value != DisplayStyle.None && controls.style.display.value != DisplayStyle.None &&
+                hintButton != null && hintButton.enabledInHierarchy;
+            hintAttention.Update(eligible, BoardView.HasActiveInteraction);
+            ApplyHintAttention();
+        }
+        private void OnBoardActivity()
+        {
+            ResetHintAttention();
+            TickHintAttention();
+        }
+        private void ResetHintAttention()
+        {
+            hintAttention.Reset();
+            ApplyHintAttention();
+        }
+        private void ApplyHintAttention()
+        {
+            if (hintButton == null) return;
+            var attention = hintAttention.IsAttentionVisible;
+            if (attention == (hintButton.style.borderLeftWidth.value == 2)) return;
+            if (attention)
+            {
+                // Keep the same flex footprint and centered label as the border thickens.
+                hintButton.style.paddingLeft = Mathf.Max(0, hintButton.resolvedStyle.paddingLeft - 1);
+                hintButton.style.paddingRight = Mathf.Max(0, hintButton.resolvedStyle.paddingRight - 1);
+                hintButton.style.paddingTop = Mathf.Max(0, hintButton.resolvedStyle.paddingTop - 1);
+                hintButton.style.paddingBottom = Mathf.Max(0, hintButton.resolvedStyle.paddingBottom - 1);
+            }
+            else
+            {
+                hintButton.style.paddingLeft = hintButton.style.paddingRight =
+                    hintButton.style.paddingTop = hintButton.style.paddingBottom = StyleKeyword.Null;
+            }
+            hintButton.style.borderLeftWidth = hintButton.style.borderRightWidth =
+                hintButton.style.borderTopWidth = hintButton.style.borderBottomWidth = attention ? 2 : 1;
+            hintButton.style.unityFontStyleAndWeight = attention ? FontStyle.Bold : FontStyle.Normal;
         }
 
         public void ApplySafeArea(Rect pixels, Vector2 screenPixels)
@@ -86,6 +151,7 @@ namespace CatsAndArrows.UI
             BoardView.style.display = DisplayStyle.None;
             Screen = "menu"; Modal = null; overlay.style.display = DisplayStyle.None;
             controls.style.display = DisplayStyle.None; menu.style.display = DisplayStyle.Flex;
+            TickHintAttention();
             menu.Clear();
             var scroll = new ScrollView(ScrollViewMode.Vertical); scroll.style.flexGrow = 1;
             scroll.contentContainer.style.paddingBottom = 8; menu.Add(scroll);
@@ -172,6 +238,7 @@ namespace CatsAndArrows.UI
         {
             // A direct diagnostic/test request can consume a queued command. Its
             // scheduled callback must then become stale rather than start twice.
+            ResetHintAttention();
             queuedRequest++;
             LeaveTutorial();
             completionHint = null; BoardView.SetCompletionFeedback(null);
@@ -212,6 +279,7 @@ namespace CatsAndArrows.UI
         }
         private void BuildControls()
         {
+            ResetHintAttention();
             controls.Clear();
             if (Tutorial != null) { BuildTutorialControls(); return; }
             var first = ActionRow(); var second = ActionRow();
@@ -224,6 +292,7 @@ namespace CatsAndArrows.UI
             foreach (var row in new[] { first, second })
                 foreach (var child in row.Children()) { child.style.flexGrow = 1; child.style.flexBasis = 0; }
             controls.Add(first); controls.Add(second);
+            TickHintAttention();
         }
         private void BuildTutorialControls()
         {
@@ -249,12 +318,14 @@ namespace CatsAndArrows.UI
         public void ClearBoard()
         {
             if (Tutorial != null || loading || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
-            CancelInteraction(); ActiveSession.Clear(); BoardView.Refresh();
+            ResetHintAttention(); CancelInteraction(); ActiveSession.Clear(); BoardView.Refresh();
+            TickHintAttention();
         }
         public void RequestHint()
         {
             if (Tutorial != null || loading || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
-            CancelInteraction(); var result = ActiveSession.ApplyHint(); BoardView.Refresh();
+            ResetHintAttention(); CancelInteraction(); var result = ActiveSession.ApplyHint(); BoardView.Refresh();
+            TickHintAttention();
             if (result.Assignment.HasValue) BoardView.HighlightCell(result.Assignment.Value.Coordinate, UseInlineHints ? 700 : 0);
             if (UseInlineHints)
             {
@@ -283,12 +354,14 @@ namespace CatsAndArrows.UI
         }
         private void OnBoardChanged()
         {
+            TickHintAttention();
             if (Tutorial == null && ActiveSession?.IsCompleted == true) UpdateCompletionFeedback();
         }
         private void UpdateCompletionFeedback()
         {
             if (ActiveSession?.IsCompleted != true) { BoardView.SetCompletionFeedback(null); return; }
             hintButton?.SetEnabled(false); clearButton?.SetEnabled(false);
+            TickHintAttention();
             BoardView.SetInteractionSuspended(true);
             BoardView.SetCompletionFeedback(text.GetText("game.victory"), text.GetText("game.last-hint"),
                 UseInlineHints || completionHint == null ? null : (Action)ShowLastHint);
@@ -309,6 +382,7 @@ namespace CatsAndArrows.UI
         private void ShowModal(string kind, string heading, string body, params Button[] actions)
         {
             BoardView.SetInteractionSuspended(true); Modal = kind; overlay.Clear(); overlay.style.display = DisplayStyle.Flex;
+            TickHintAttention();
             overlay.style.paddingLeft = overlay.style.paddingRight = 8;
             overlay.style.paddingTop = overlay.style.paddingBottom = 8;
             overlay.Add(Heading(heading, 23));

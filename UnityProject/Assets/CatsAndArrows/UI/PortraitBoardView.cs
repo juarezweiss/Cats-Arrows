@@ -43,7 +43,12 @@ namespace CatsAndArrows.UI
         private bool interactionSuspended;
         public event Action StateChanged;
         public event Action InteractionEnded;
-        public bool InteractionEnabled => !interactionSuspended && session?.IsCompleted != true;
+        // Includes protected-cell attempts; separate from successful mark changes.
+        public event Action ActivityChanged;
+        private int activityPointerId = -1;
+        public bool HasActiveInteraction => activityPointerId >= 0;
+        public bool InteractionEnabled => !interactionSuspended && session != null && !session.IsCompleted;
+        public bool IsBoundTo(GameSession candidate) => session != null && ReferenceEquals(session, candidate);
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
 
@@ -163,6 +168,7 @@ namespace CatsAndArrows.UI
         {
             CancelInteraction();
             interactionSuspended = suspended;
+            ActivityChanged?.Invoke();
         }
         public void HighlightCell(BoardCoordinate coordinate, long durationMs = 0)
         {
@@ -191,6 +197,7 @@ namespace CatsAndArrows.UI
             error.style.display = DisplayStyle.None;
             board.style.display = DisplayStyle.Flex;
             Refresh();
+            ActivityChanged?.Invoke();
         }
         public void Refresh()
         {
@@ -254,6 +261,7 @@ namespace CatsAndArrows.UI
             board.style.display = DisplayStyle.None;
             error.style.display = DisplayStyle.Flex;
             error.text = new GenerationLocalizer(text).Format(generationStatus);
+            ActivityChanged?.Invoke();
         }
         public void ApplySafeArea(Rect pixelSafeArea, Vector2 screenPixels)
         {
@@ -328,20 +336,25 @@ namespace CatsAndArrows.UI
         }
         public void CancelInteraction()
         {
-            var pointerId = arrowHold?.HasActivePointer == true ? arrowHold.ActivePointerId :
-                gesture?.HasActivePointer == true ? gesture.ActivePointerId : -1;
+            var pointerId = activityPointerId;
+            var endedGesture = gesture?.HasActivePointer == true || arrowHold?.HasActivePointer == true;
+            activityPointerId = -1;
             gesture?.Cancel();
             ClearArrowHold();
             if (pointerId < 0) return;
+            ActivityChanged?.Invoke();
             if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
-            InteractionEnded?.Invoke();
+            if (endedGesture) InteractionEnded?.Invoke();
         }
         private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
         private void OnPointerDown(PointerDownEvent evt)
         {
             if (!InteractionEnabled || !evt.isPrimary || evt.button != 0 || gesture == null ||
-                gesture.HasActivePointer || arrowHold?.HasActivePointer == true) return;
+                HasActiveInteraction) return;
             var position = BoardPosition(evt.position);
+            if (!gesture.TryGetCell(position, out _)) return;
+            activityPointerId = evt.pointerId;
+            ActivityChanged?.Invoke();
             if (tutorial == null && arrowHold != null && arrowHold.Begin(evt.pointerId, position))
             {
                 var controller = arrowHold;
@@ -352,7 +365,7 @@ namespace CatsAndArrows.UI
                         TickArrowHold();
                 }).Every(16);
             }
-            else if (!gesture.Begin(evt.pointerId, position)) return;
+            else gesture.Begin(evt.pointerId, position);
             // Capture belongs to the stable board, never a tile replaced by Refresh.
             board.CapturePointer(evt.pointerId);
             evt.StopPropagation();
@@ -368,7 +381,7 @@ namespace CatsAndArrows.UI
             {
                 RestoreArrowHighlights(origin, path);
                 holdTick?.Pause(); holdTick = null;
-                if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+                EndActivity(pointerId);
                 InteractionEnded?.Invoke();
             }
         }
@@ -383,7 +396,7 @@ namespace CatsAndArrows.UI
                 {
                     RestoreArrowHighlights(origin, path);
                     holdTick?.Pause(); holdTick = null;
-                    if (board.HasPointerCapture(evt.pointerId)) board.ReleasePointer(evt.pointerId);
+                    EndActivity(evt.pointerId);
                     InteractionEnded?.Invoke();
                 }
                 evt.StopPropagation(); return;
@@ -391,7 +404,7 @@ namespace CatsAndArrows.UI
             if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
             var changed = gesture.Move(evt.pointerId, BoardPosition(evt.position));
             FinishPointerEvent(evt.pointerId, changed);
-            if (!gesture.HasActivePointer) InteractionEnded?.Invoke();
+            if (!gesture.HasActivePointer && HasActiveInteraction) { EndActivity(evt.pointerId); InteractionEnded?.Invoke(); }
             evt.StopPropagation();
         }
         private void OnPointerUp(PointerUpEvent evt)
@@ -401,15 +414,22 @@ namespace CatsAndArrows.UI
             {
                 CancelInteraction(); evt.StopPropagation(); return;
             }
-            if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
+            if (activityPointerId != evt.pointerId) return;
+            if (gesture == null || !gesture.HasActivePointer) { EndActivity(evt.pointerId); evt.StopPropagation(); return; }
             var changed = gesture.End(evt.pointerId, BoardPosition(evt.position));
+            EndActivity(evt.pointerId);
             FinishPointerEvent(evt.pointerId, changed);
             InteractionEnded?.Invoke();
             evt.StopPropagation();
         }
-        private bool OwnsPointer(int pointerId) =>
-            (arrowHold?.HasActivePointer == true && arrowHold.ActivePointerId == pointerId) ||
-            (gesture?.HasActivePointer == true && gesture.ActivePointerId == pointerId);
+        private void EndActivity(int pointerId)
+        {
+            if (activityPointerId != pointerId) return;
+            activityPointerId = -1;
+            ActivityChanged?.Invoke();
+            if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+        }
+        private bool OwnsPointer(int pointerId) => activityPointerId == pointerId;
         private void OnPointerCancel(PointerCancelEvent evt)
         {
             if (OwnsPointer(evt.pointerId)) CancelInteraction();
@@ -420,7 +440,6 @@ namespace CatsAndArrows.UI
         }
         private void FinishPointerEvent(int pointerId, bool changed)
         {
-            if (!gesture.HasActivePointer && board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
             if (changed) { Refresh(); StateChanged?.Invoke(); }
         }
         private void ClearArrowHold()

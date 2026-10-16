@@ -21,6 +21,8 @@ namespace CatsAndArrows.UI
         private float safeTop;
         private float safeBottom;
         private bool simulateSafeArea;
+        private bool applicationFocused = true;
+        private bool applicationPaused;
         private void Start()
         {
             var document = GetComponent<UIDocument>();
@@ -37,8 +39,9 @@ namespace CatsAndArrows.UI
             var capture = Argument("--board-capture=");
             var tutorialCheck = Argument("--tutorial-check=") == "1";
             var arrowHoldCheck = Argument("--arrow-hold-check=") == "1";
+            var hintIdleCheck = Argument("--hint-idle-check=") == "1";
             double holdReviewTime = 0;
-            if (arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
+            if (hintIdleCheck || arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -65,15 +68,19 @@ namespace CatsAndArrows.UI
                 var useInlineHints = Argument("--hint-flow=") == "legacy" ? false : inlineHints;
 #endif
                 var reviewSeen = false;
-                var isolatedReview = tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
+                var isolatedReview = hintIdleCheck || tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
                 shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints,
-                    enableTutorial: tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
+                    enableTutorial: hintIdleCheck || tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
                     tutorialSeen: isolatedReview ? (Func<bool>)(() => reviewSeen) : null,
                     markTutorialSeen: isolatedReview ? (Action)(() => reviewSeen = true) : null,
-                    difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null);
+                    difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null,
+                    idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null);
                 root.Add(shell);
+                shell.SetApplicationFocus(applicationFocused);
+                shell.SetApplicationPaused(applicationPaused);
             }
-            if (arrowHoldCheck && view != null) StartCoroutine(ArrowHoldReviewChecks.Run(view, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
+            if (hintIdleCheck && shell != null) StartCoroutine(HintIdleReviewChecks.Run(shell, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
+            else if (arrowHoldCheck && view != null) StartCoroutine(ArrowHoldReviewChecks.Run(view, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
             else if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
@@ -94,11 +101,15 @@ namespace CatsAndArrows.UI
         }
         private void OnApplicationFocus(bool focused)
         {
-            if (!focused) { view?.CancelInteraction(); shell?.CancelInteraction(); }
+            applicationFocused = focused;
+            if (!focused) view?.CancelInteraction();
+            shell?.SetApplicationFocus(focused);
         }
         private void OnApplicationPause(bool paused)
         {
-            if (paused) { view?.CancelInteraction(); shell?.CancelInteraction(); }
+            applicationPaused = paused;
+            if (paused) view?.CancelInteraction();
+            shell?.SetApplicationPaused(paused);
         }
         private IEnumerator Capture(string path)
         {
