@@ -25,6 +25,8 @@ namespace CatsAndArrows.UI
         private float safeTop;
         private float safeBottom;
         private bool simulateSafeArea;
+        private bool applicationFocused = true;
+        private bool applicationPaused;
         private void Start()
         {
             var document = GetComponent<UIDocument>();
@@ -44,7 +46,10 @@ namespace CatsAndArrows.UI
             var monetizationCheck = Argument("--monetization-check=") == "1";
             if (monetizationCheck) Application.runInBackground = true;
 #endif
-            if (tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
+            var arrowHoldCheck = Argument("--arrow-hold-check=") == "1";
+            var hintIdleCheck = Argument("--hint-idle-check=") == "1";
+            double holdReviewTime = 0;
+            if (hintIdleCheck || arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -54,9 +59,9 @@ namespace CatsAndArrows.UI
                 int.TryParse(Argument("--board-height="), out var height) && width > 0 && height > 0)
                 Screen.SetResolution(width, height, FullScreenMode.Windowed);
             if (Argument("--board-gallery=") == "1") root.Add(new BoardSymbolGalleryView(locale));
-            else if (!string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1")
+            else if (arrowHoldCheck || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1")
             {
-                view = new PortraitBoardView(); root.Add(view);
+                view = new PortraitBoardView(arrowHoldCheck ? (Func<double>)(() => holdReviewTime) : null); root.Add(view);
                 var result = new SeededEasyPuzzleGenerator().Generate(DifficultyProfile.Easy, seed);
                 if (result.IsSuccess) view.Bind(new GameSession(result.Puzzle), locale);
                 else view.ShowGenerationFailure(result.Status, locale);
@@ -91,18 +96,28 @@ namespace CatsAndArrows.UI
                         () => Time.realtimeSinceStartupAsDouble);
                 }
 #endif
+                var isolatedReview = hintIdleCheck || tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                isolatedReview |= monetizationCheck;
+#endif
                 shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints,
-                    enableTutorial: tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
-                    tutorialSeen: tutorialCheck ? (Func<bool>)(() => reviewSeen) : null,
-                    markTutorialSeen: tutorialCheck ? (Action)(() => reviewSeen = true) : null, monetization: monetization);
+                    enableTutorial: hintIdleCheck || tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
+                    tutorialSeen: isolatedReview ? (Func<bool>)(() => reviewSeen) : null,
+                    markTutorialSeen: isolatedReview ? (Action)(() => reviewSeen = true) : null,
+                    difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null,
+                    idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null, monetization: monetization);
                 root.Add(shell);
+                shell.SetApplicationFocus(applicationFocused);
+                shell.SetApplicationPaused(applicationPaused);
             }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (monetizationCheck && shell != null)
                 StartCoroutine(MonetizationReviewChecks.Run(shell, Argument("--game-captures=")));
             else
 #endif
-            if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
+            if (hintIdleCheck && shell != null) StartCoroutine(HintIdleReviewChecks.Run(shell, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
+            else if (arrowHoldCheck && view != null) StartCoroutine(ArrowHoldReviewChecks.Run(view, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
+            else if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
             else if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));
@@ -126,12 +141,18 @@ namespace CatsAndArrows.UI
         }
         private void OnApplicationFocus(bool focused)
         {
-            if (!focused) { view?.CancelInteraction(); shell?.SuspendMonetizationDelivery(); }
+            applicationFocused = focused;
+            if (!focused) view?.CancelInteraction();
+            shell?.SetApplicationFocus(focused);
+            if (!focused) shell?.SuspendMonetizationDelivery();
             else shell?.RefreshMonetization();
         }
         private void OnApplicationPause(bool paused)
         {
-            if (paused) { view?.CancelInteraction(); shell?.SuspendMonetizationDelivery(); }
+            applicationPaused = paused;
+            if (paused) view?.CancelInteraction();
+            shell?.SetApplicationPaused(paused);
+            if (paused) shell?.SuspendMonetizationDelivery();
             else shell?.RefreshMonetization();
         }
         private void OnDestroy() => shell?.DisposeMonetization();

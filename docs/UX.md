@@ -1,7 +1,7 @@
 # UX and Accessibility
 
 ## Reference behavior
-The supplied demo establishes a useful portrait interaction model: difficulty menu, compact centered board, numeric clues outside the grid, arrows inside cells, bottom action controls, and visible completed-board review. Treat it as behavioral context, not final visual art.
+The supplied demo establishes a useful portrait interaction model: compact centered board, numeric clues outside the grid, arrows inside cells, bottom action controls, and visible completed-board review. Current menu behavior follows Issue #43 below. Treat the demo as behavioral context, not final visual art.
 
 ## Mobile-first requirements
 - Mobile play is locked to upright portrait.
@@ -23,9 +23,28 @@ The user specifically found low-contrast red/green states difficult in the proto
 - Hint should explain a deduction where feasible.
 
 ## Controls
-In-game primary controls: `Hint`, `Clear`, `Menu`, `New Game`.
 
-After completion: `Hint` and `Clear` disabled; board read-only; `New Game` and `Menu` enabled; completion stays inline so the finished board remains visible.
+Issue #43 replaces the menu difficulty controls with a localized Play action,
+alongside Tutorial, How to Play and languages. Play and Next board select
+Easy/Medium/Hard through one shared policy, with no more than two consecutive
+successful boards of one mode, even across restarts. Failure/retry retains its
+pending mode. Clear, Menu/back and language changes keep the live board and its
+actual difficulty label; they do not consume history.
+
+First-ever Play opens the fixed Easy tutorial; later Plays request ordinary
+random boards. This gate persists across restarts independently of the difficulty
+streak. Manual Tutorial stays available and does not consume first Play on fresh
+installations. Legacy tutorial-seen installations migrate as returning users;
+lesson steps and unfinished boards still are not saved. Tutorial Skip/Play enters
+the ordinary selector without counting the tutorial fixture or resetting the streak.
+
+Historical #32 evidence (the difficulty-choice menu is superseded): [localized menu](evidence/issue32/difficulty-menu-pt390.png),
+[Medium compact portrait](evidence/issue32/medium-en320.png),
+[Hard compact portrait](evidence/issue32/hard-en320.png). Mounted pointer checks
+pass; physical comfort on compact screens remains a device-review gate.
+In-game primary controls: `Hint`, `Clear`, `Menu`, `Next board`.
+
+After completion: `Hint` and `Clear` disabled; board read-only; `Next board` and `Menu` enabled; completion stays inline so the finished board remains visible. Issue #44's celebration is not part of this change.
 
 
 ## Issue #7 initial gesture contract
@@ -41,6 +60,38 @@ A second finger cannot take over or finish the first finger's gesture.
 
 This threshold is an initial value for phone testing, not a physical comfort
 claim. Rebind, focus loss and layout changes cancel pending interactions.
+
+## Issue #47 arrow-path hold
+
+On an active ordinary board, holding an arrow for 350 ms outlines its entire
+forward cardinal or diagonal ray until release. This reuses the tutorial's dark
+cell outlines, preserving symbol contrast and touch geometry without relying on
+color. Arrows remain non-markable. A short press does nothing; movement beyond
+the existing small jitter tolerance or off the origin cancels the hold without
+starting a drag. A second pointer cannot take ownership.
+
+Release, capture/cancel, focus loss/background, navigation, suspension, geometry
+changes and rebind remove pending or active hold feedback. The aid does not run
+in the fixed tutorial or on completed boards, and does not alter their existing
+highlights. How to Play describes the gesture in English, pt-BR and Spanish.
+
+## Issue #48 idle Hint attention
+
+During active ordinary play, six seconds without board interaction gives Hint a
+stable inversion of its normal text and background colors, fading in over 200 ms
+using native UI Toolkit color transitions. Resets restore normal colors immediately
+without a fade-out. It never flashes, moves the grid, or applies a hint automatically.
+The existing localized label, font weight, border and touch target remain unchanged.
+
+Any board press, including an arrow or protected-cell attempt, clears attention.
+While a pointer is held or dragging, attention stays off; release or cancellation
+starts a fresh six-second interval. Hint (even with no applicable deduction),
+Clear and a new board also reset the interval. Hover does not count as activity.
+
+Menu, either tutorial stage, completed/missing/loading/failed boards, blocking
+overlays, disabled Hint, detached views and background/unfocused play suppress
+attention and discard elapsed idle time. Returning to eligible play or rebuilding
+localized controls starts a fresh interval.
 
 ## Issue #19 owner visual feedback
 

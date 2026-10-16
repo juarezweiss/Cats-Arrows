@@ -30,6 +30,10 @@ namespace CatsAndArrows.UI
         private readonly Label completionStatus = new Label();
         private readonly Button completionHint;
         private int highlightVersion;
+        private BoardCoordinate? hintHighlight;
+        private ArrowHoldController arrowHold;
+        private readonly Func<double> holdClock;
+        private IVisualElementScheduledItem holdTick;
         private Action reviewCompletionHint;
         private readonly Label error = new Label();
         private GameSession session;
@@ -39,12 +43,18 @@ namespace CatsAndArrows.UI
         private bool interactionSuspended;
         public event Action StateChanged;
         public event Action InteractionEnded;
-        public bool InteractionEnabled => !interactionSuspended && session?.IsCompleted != true;
+        // Includes protected-cell attempts; separate from successful mark changes.
+        public event Action ActivityChanged;
+        private int activityPointerId = -1;
+        public bool HasActiveInteraction => activityPointerId >= 0;
+        public bool InteractionEnabled => !interactionSuspended && session != null && !session.IsCompleted;
+        public bool IsBoundTo(GameSession candidate) => session != null && ReferenceEquals(session, candidate);
         public BoardPresentation Presentation { get; private set; }
         public BoardLayout Layout { get; private set; }
 
-        public PortraitBoardView()
+        public PortraitBoardView(Func<double> holdClock = null)
         {
+            this.holdClock = holdClock ?? (() => Time.realtimeSinceStartupAsDouble);
             name = "portrait-board-view";
             style.flexGrow = 1;
             style.backgroundColor = Background;
@@ -57,6 +67,7 @@ namespace CatsAndArrows.UI
             Absolute(header, new Rect(0, 0, 0, 104)); header.style.right = 0; header.style.width = StyleKeyword.Auto;
             header.style.alignItems = Align.Center;
             title.style.fontSize = 26; title.style.unityFontStyleAndWeight = FontStyle.Bold;
+            difficulty.name = "board-difficulty";
             difficulty.style.fontSize = 16; difficulty.style.marginTop = 8;
             intro.style.fontSize = 15; intro.style.marginTop = 6; intro.style.color = Secondary;
             intro.name = "board-status";
@@ -157,36 +168,43 @@ namespace CatsAndArrows.UI
         {
             CancelInteraction();
             interactionSuspended = suspended;
+            ActivityChanged?.Invoke();
         }
         public void HighlightCell(BoardCoordinate coordinate, long durationMs = 0)
         {
+            var previous = hintHighlight;
+            hintHighlight = coordinate;
             var version = ++highlightVersion;
-            var tile = board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
-            if (tile == null) return;
-            tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 3;
-            tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = BoardSymbolElement.Ink;
+            if (previous.HasValue) RestoreCellOutline(previous.Value);
+            RestoreCellOutline(coordinate);
             if (durationMs > 0) schedule.Execute(() =>
             {
-                if (version != highlightVersion || !board.Contains(tile)) return;
-                tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 1;
-                tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = Border;
+                if (version != highlightVersion) return;
+                hintHighlight = null;
+                RestoreCellOutline(coordinate);
             }).StartingIn(durationMs);
         }
+
         public void Bind(GameSession newSession, string locale = "en")
         {
             if (newSession == null) throw new ArgumentNullException(nameof(newSession));
             CancelInteraction();
-            gesture = null;
+            gesture = null; arrowHold = null;
+            hintHighlight = null; ++highlightVersion;
             session = newSession;
             SetCompletionFeedback(null);
             SetLocale(locale);
             error.style.display = DisplayStyle.None;
             board.style.display = DisplayStyle.Flex;
             Refresh();
+            ActivityChanged?.Invoke();
         }
         public void Refresh()
         {
             if (session == null) return;
+            // Preserve the existing Hint lifecycle: rebuilding after a mark or
+            // Clear removes its feedback. Hold release itself never rebuilds.
+            hintHighlight = null; ++highlightVersion;
             if (session.IsCompleted) CancelInteraction();
             Presentation = BoardPresentation.FromSession(session);
             board.Clear();
@@ -231,15 +249,19 @@ namespace CatsAndArrows.UI
             }
             LayoutBoard();
             ApplyTutorialHighlights();
+            if (arrowHold?.IsHighlighted == true) ApplyArrowHighlights();
         }
-        public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en")
+        public void ShowGenerationFailure(GenerationStatus generationStatus, string locale = "en", DifficultyProfile profile = null)
         {
             if (generationStatus == GenerationStatus.Success) throw new ArgumentException("A failure status is required.", nameof(generationStatus));
-            CancelInteraction(); gesture = null;
+            CancelInteraction(); gesture = null; arrowHold = null;
+            hintHighlight = null; ++highlightVersion;
             session = null; Presentation = null; board.Clear(); SetLocale(locale);
+            difficulty.text = text.GetText("board." + (profile ?? DifficultyProfile.Easy).Id);
             board.style.display = DisplayStyle.None;
             error.style.display = DisplayStyle.Flex;
             error.text = new GenerationLocalizer(text).Format(generationStatus);
+            ActivityChanged?.Invoke();
         }
         public void ApplySafeArea(Rect pixelSafeArea, Vector2 screenPixels)
         {
@@ -257,7 +279,11 @@ namespace CatsAndArrows.UI
         {
             text = new LocalizationService(BoardLocalization.CreateCatalog(), CultureInfo.GetCultureInfo("en"));
             text.SelectLanguage(locale);
-            title.text = text.GetText("board.title"); difficulty.text = text.GetText("board.easy"); intro.text = text.GetText("board.intro");
+            var difficultyKey = session?.Puzzle.Size switch
+            {
+                6 => "board.medium", 7 => "board.hard", _ => "board.easy"
+            };
+            title.text = text.GetText("board.title"); difficulty.text = text.GetText(difficultyKey); intro.text = text.GetText("board.intro");
             BuildLegend();
         }
         private void BuildLegend()
@@ -290,6 +316,7 @@ namespace CatsAndArrows.UI
                 Layout.Gap != nextLayout.Gap || Layout.ClueSize != nextLayout.ClueSize)
             {
                 CancelInteraction();
+                arrowHold = new ArrowHoldController(session, nextLayout, holdClock);
                 gesture = new BoardGestureController(session, nextLayout,
                     canInteract: coordinate => tutorial == null ? session.CanInteract(coordinate) : tutorial.CanInteract(coordinate),
                     tap: coordinate => tutorial == null ? session.Tap(coordinate) : tutorial.Tap(coordinate),
@@ -309,48 +336,143 @@ namespace CatsAndArrows.UI
         }
         public void CancelInteraction()
         {
-            if (gesture == null || !gesture.HasActivePointer) return;
-            var pointerId = gesture.ActivePointerId;
-            gesture.Cancel();
+            var pointerId = activityPointerId;
+            var endedGesture = gesture?.HasActivePointer == true || arrowHold?.HasActivePointer == true;
+            activityPointerId = -1;
+            gesture?.Cancel();
+            ClearArrowHold();
+            if (pointerId < 0) return;
+            ActivityChanged?.Invoke();
             if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
-            InteractionEnded?.Invoke();
+            if (endedGesture) InteractionEnded?.Invoke();
         }
         private Vector2 BoardPosition(Vector3 position) => board.WorldToLocal(new Vector2(position.x, position.y));
         private void OnPointerDown(PointerDownEvent evt)
         {
-            if (!InteractionEnabled || evt.button != 0 || gesture == null || !gesture.Begin(evt.pointerId, BoardPosition(evt.position))) return;
+            if (!InteractionEnabled || !evt.isPrimary || evt.button != 0 || gesture == null ||
+                HasActiveInteraction) return;
+            var position = BoardPosition(evt.position);
+            if (!gesture.TryGetCell(position, out _)) return;
+            activityPointerId = evt.pointerId;
+            ActivityChanged?.Invoke();
+            if (tutorial == null && arrowHold != null && arrowHold.Begin(evt.pointerId, position))
+            {
+                var controller = arrowHold;
+                var pointerId = evt.pointerId;
+                holdTick = schedule.Execute(() =>
+                {
+                    if (ReferenceEquals(controller, arrowHold) && controller.HasActivePointer && controller.ActivePointerId == pointerId)
+                        TickArrowHold();
+                }).Every(16);
+            }
+            else gesture.Begin(evt.pointerId, position);
             // Capture belongs to the stable board, never a tile replaced by Refresh.
             board.CapturePointer(evt.pointerId);
             evt.StopPropagation();
         }
+        private void TickArrowHold()
+        {
+            if (arrowHold?.HasActivePointer != true) return;
+            var origin = arrowHold.Origin;
+            var path = arrowHold.Path;
+            var pointerId = arrowHold.ActivePointerId;
+            if (arrowHold.Tick()) ApplyArrowHighlights();
+            if (!arrowHold.HasActivePointer)
+            {
+                RestoreArrowHighlights(origin, path);
+                holdTick?.Pause(); holdTick = null;
+                EndActivity(pointerId);
+                InteractionEnded?.Invoke();
+            }
+        }
         private void OnPointerMove(PointerMoveEvent evt)
         {
+            if (arrowHold?.HasActivePointer == true && arrowHold.ActivePointerId == evt.pointerId)
+            {
+                var origin = arrowHold.Origin;
+                var path = arrowHold.Path;
+                arrowHold.Move(evt.pointerId, BoardPosition(evt.position));
+                if (!arrowHold.HasActivePointer)
+                {
+                    RestoreArrowHighlights(origin, path);
+                    holdTick?.Pause(); holdTick = null;
+                    EndActivity(evt.pointerId);
+                    InteractionEnded?.Invoke();
+                }
+                evt.StopPropagation(); return;
+            }
             if (gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
             var changed = gesture.Move(evt.pointerId, BoardPosition(evt.position));
             FinishPointerEvent(evt.pointerId, changed);
-            if (!gesture.HasActivePointer) InteractionEnded?.Invoke();
+            if (!gesture.HasActivePointer && HasActiveInteraction) { EndActivity(evt.pointerId); InteractionEnded?.Invoke(); }
             evt.StopPropagation();
         }
         private void OnPointerUp(PointerUpEvent evt)
         {
-            if (evt.button != 0 || gesture == null || !gesture.HasActivePointer || gesture.ActivePointerId != evt.pointerId) return;
+            if (evt.button != 0) return;
+            if (arrowHold?.HasActivePointer == true && arrowHold.ActivePointerId == evt.pointerId)
+            {
+                CancelInteraction(); evt.StopPropagation(); return;
+            }
+            if (activityPointerId != evt.pointerId) return;
+            if (gesture == null || !gesture.HasActivePointer) { EndActivity(evt.pointerId); evt.StopPropagation(); return; }
             var changed = gesture.End(evt.pointerId, BoardPosition(evt.position));
+            EndActivity(evt.pointerId);
             FinishPointerEvent(evt.pointerId, changed);
             InteractionEnded?.Invoke();
             evt.StopPropagation();
         }
+        private void EndActivity(int pointerId)
+        {
+            if (activityPointerId != pointerId) return;
+            activityPointerId = -1;
+            ActivityChanged?.Invoke();
+            if (board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
+        }
+        private bool OwnsPointer(int pointerId) => activityPointerId == pointerId;
         private void OnPointerCancel(PointerCancelEvent evt)
         {
-            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) CancelInteraction();
+            if (OwnsPointer(evt.pointerId)) CancelInteraction();
         }
         private void OnPointerCaptureOut(PointerCaptureOutEvent evt)
         {
-            if (gesture != null && gesture.HasActivePointer && gesture.ActivePointerId == evt.pointerId) CancelInteraction();
+            if (OwnsPointer(evt.pointerId)) CancelInteraction();
         }
         private void FinishPointerEvent(int pointerId, bool changed)
         {
-            if (!gesture.HasActivePointer && board.HasPointerCapture(pointerId)) board.ReleasePointer(pointerId);
             if (changed) { Refresh(); StateChanged?.Invoke(); }
+        }
+        private void ClearArrowHold()
+        {
+            holdTick?.Pause(); holdTick = null;
+            if (arrowHold == null) return;
+            var origin = arrowHold.Origin;
+            var path = arrowHold.Path;
+            arrowHold.Cancel();
+            RestoreArrowHighlights(origin, path);
+        }
+        private void ApplyArrowHighlights()
+        {
+            RestoreCellOutline(arrowHold.Origin);
+            foreach (var coordinate in arrowHold.Path) RestoreCellOutline(coordinate);
+        }
+        private void RestoreArrowHighlights(BoardCoordinate origin, IReadOnlyList<BoardCoordinate> path)
+        {
+            RestoreCellOutline(origin);
+            foreach (var coordinate in path) RestoreCellOutline(coordinate);
+        }
+        private void RestoreCellOutline(BoardCoordinate coordinate)
+        {
+            var tile = board.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column);
+            if (tile == null) return;
+            var outlined = (hintHighlight.HasValue && hintHighlight.Value.Equals(coordinate)) ||
+                (tutorial != null && System.Linq.Enumerable.Contains(tutorial.HighlightedCells, coordinate)) ||
+                (arrowHold?.IsHighlighted == true && (arrowHold.Origin.Equals(coordinate) ||
+                    System.Linq.Enumerable.Contains(arrowHold.Path, coordinate)));
+            if (outlined) { Outline(tile, 3); return; }
+            tile.style.borderLeftWidth = tile.style.borderRightWidth = tile.style.borderTopWidth = tile.style.borderBottomWidth = 1;
+            tile.style.borderLeftColor = tile.style.borderRightColor = tile.style.borderTopColor = tile.style.borderBottomColor = Border;
+            tile.style.borderTopLeftRadius = tile.style.borderTopRightRadius = tile.style.borderBottomLeftRadius = tile.style.borderBottomRightRadius = 7;
         }
         private void ApplyTutorialHighlights()
         {

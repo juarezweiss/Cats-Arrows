@@ -23,6 +23,9 @@ namespace CatsAndArrows.Benchmarks.Editor
             var group = BuildPipeline.GetBuildTargetGroup(target);
             if (!BuildPipeline.IsBuildTargetSupported(group, target))
                 throw new InvalidOperationException("Pinned editor lacks build support for " + target + ". Install through Unity Hub separately.");
+            var profile = Environment.GetEnvironmentVariable("CATS_ARROWS_BENCHMARK_PROFILE") ?? "easy";
+            if (profile != "easy" && profile != "medium" && profile != "hard")
+                throw new ArgumentException("Benchmark profile must be easy, medium or hard.");
 
             var setup = EditorSceneManager.GetSceneManagerSetup();
             var scenePath = "Assets/__CatsArrowsBenchmark_" + Guid.NewGuid().ToString("N") + ".unity";
@@ -32,8 +35,9 @@ namespace CatsAndArrows.Benchmarks.Editor
             try
             {
                 var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-                new GameObject("Issue4GenerationBenchmark").AddComponent<GenerationBenchmark>().SourceRevision =
-                    Environment.GetEnvironmentVariable("CATS_ARROWS_BENCHMARK_REVISION") ?? "unspecified";
+                var benchmark = new GameObject("Issue4GenerationBenchmark").AddComponent<GenerationBenchmark>();
+                benchmark.SourceRevision = Environment.GetEnvironmentVariable("CATS_ARROWS_BENCHMARK_REVISION") ?? "unspecified";
+                benchmark.ProfileId = profile;
                 var camera = new GameObject("BenchmarkCamera").AddComponent<Camera>();
                 camera.backgroundColor = new Color(.08f, .1f, .12f);
                 camera.clearFlags = CameraClearFlags.SolidColor;

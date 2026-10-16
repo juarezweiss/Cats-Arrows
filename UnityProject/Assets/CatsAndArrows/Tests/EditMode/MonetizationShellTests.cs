@@ -1,16 +1,108 @@
 using System;
+using System.Collections;
 using System.Linq;
 using CatsAndArrows.Core;
 using CatsAndArrows.Gameplay;
 using CatsAndArrows.Monetization;
 using CatsAndArrows.UI;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
 namespace CatsAndArrows.Tests
 {
     public sealed class MonetizationShellTests
     {
+        private GameObject host;
+        private PanelSettings panelSettings;
+        private GameShellView mountedShell;
+        private double now;
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (host != null) UnityEngine.Object.DestroyImmediate(host);
+            if (panelSettings != null) UnityEngine.Object.DestroyImmediate(panelSettings);
+        }
+
+        private IEnumerator Mount(MonetizationCoordinator coordinator)
+        {
+            now = 0;
+            panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
+            panelSettings.hideFlags = HideFlags.HideAndDontSave;
+            host = new GameObject("issue30-idle-integration", typeof(UIDocument));
+            host.hideFlags = HideFlags.HideAndDontSave;
+            var document = host.GetComponent<UIDocument>();
+            document.panelSettings = panelSettings;
+            document.rootVisualElement.style.width = 390;
+            document.rootVisualElement.style.height = 844;
+            mountedShell = new GameShellView(14, "en", PlayTestFactory.Loop(), enableTutorial: false,
+                idleClock: () => now, monetization: coordinator);
+            document.rootVisualElement.Add(mountedShell);
+            Assert.That(mountedShell.StartNewGame(), Is.True);
+            yield return null;
+            yield return null;
+            mountedShell.TickHintAttention();
+        }
+        private Button MountedHint => mountedShell.Q<Button>("action-hint");
+        private void Advance(double seconds) { now += seconds; mountedShell.TickHintAttention(); }
+        private void AssertAttention(bool expected)
+        {
+            Assert.That(MountedHint.style.backgroundColor.value, Is.EqualTo(expected ? BoardSymbolElement.Ink : PortraitBoardView.Tile));
+            Assert.That(MountedHint.style.color.value, Is.EqualTo(expected ? PortraitBoardView.Tile : BoardSymbolElement.Ink));
+            Assert.That(MountedHint.style.transitionDuration.value?.FirstOrDefault().value ?? 0, Is.EqualTo(expected ? .2f : 0));
+        }
+
+        [UnityTest]
+        public IEnumerator RewardWaitSuppressesAttentionAndCloseStartsFreshInterval()
+        {
+            foreach (var rewarded in new[] { false, true })
+            {
+                var ads = new Ads();
+                using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, new Purchases());
+                yield return Mount(coordinator);
+                Advance(6); AssertAttention(true);
+                var oldHint = MountedHint;
+                mountedShell.RequestHint(); AssertAttention(false);
+                Assert.That(oldHint.style.backgroundColor.value, Is.EqualTo(PortraitBoardView.Tile));
+                Assert.That(oldHint.style.transitionDuration.value[0].value, Is.Zero);
+                Assert.That(MountedHint.enabledInHierarchy, Is.False);
+                Advance(60); AssertAttention(false);
+                ads.Close(rewarded); AssertAttention(false);
+                Assert.That(MountedHint.enabledInHierarchy, Is.True);
+                Assert.That(mountedShell.ActiveSession.Marks.Values.Count(mark => mark != PlayerMark.Empty), Is.EqualTo(rewarded ? 1 : 0));
+                Advance(5.999); AssertAttention(false);
+                Advance(.002); AssertAttention(true);
+                TearDown(); host = null; panelSettings = null;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator BackgroundRewardWaitsForExplicitHintAndAttentionResumesAfterFullInterval()
+        {
+            var ads = new Ads();
+            using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, new Purchases());
+            yield return Mount(coordinator);
+            Advance(6); AssertAttention(true);
+            mountedShell.RequestHint(); AssertAttention(false);
+            mountedShell.SetApplicationFocus(false); mountedShell.SuspendMonetizationDelivery();
+            mountedShell.SetApplicationPaused(true); mountedShell.SuspendMonetizationDelivery();
+            ads.Close(true); Advance(60); AssertAttention(false);
+            Assert.That(coordinator.HasEarnedHint, Is.True);
+            Assert.That(mountedShell.ActiveSession.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
+            mountedShell.SetApplicationFocus(true); mountedShell.RefreshMonetization();
+            Advance(60); AssertAttention(false);
+            mountedShell.SetApplicationPaused(false); mountedShell.RefreshMonetization(); AssertAttention(false);
+            Advance(5.999); AssertAttention(false);
+            Advance(.002); AssertAttention(true);
+            Assert.That(mountedShell.ActiveSession.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
+            mountedShell.RequestHint(); AssertAttention(false);
+            Assert.That(ads.HintShows, Is.EqualTo(1));
+            Assert.That(coordinator.HasEarnedHint, Is.False);
+            Assert.That(mountedShell.ActiveSession.Marks.Values.Count(mark => mark != PlayerMark.Empty), Is.EqualTo(1));
+        }
+
         private sealed class Ads : IAdService
         {
             private Action<AdSignal> receive;
@@ -47,9 +139,10 @@ namespace CatsAndArrows.Tests
                 evidenceReference: Owned ? "verified" : "", transactionReference: Owned ? "purchase-1" : null);
         }
 
-        private static GameShellView Started(MonetizationCoordinator coordinator, string locale = "en")
+        private static GameShellView Started(MonetizationCoordinator coordinator, string locale = "en", string difficulty = "easy")
         {
-            var shell = new GameShellView(14, locale, enableTutorial: false, monetization: coordinator);
+            var shell = new GameShellView(14, locale, PlayTestFactory.Loop(difficultySelection: PlayTestFactory.Selection(difficulty)),
+                enableTutorial: false, monetization: coordinator);
             Assert.That(shell.StartNewGame(), Is.True);
             return shell;
         }
@@ -141,13 +234,16 @@ namespace CatsAndArrows.Tests
             Assert.That(coordinator.HasEarnedHint, Is.False);
         }
 
-        [Test]
-        public void FinalRewardOnFourthWinWaitsForExplicitFreshBoardBeforeProgression()
+        [TestCase("easy")]
+        [TestCase("medium")]
+        [TestCase("hard")]
+        public void FinalRewardOnFourthWinWaitsForExplicitFreshBoardBeforeProgression(string difficulty)
         {
             var ads = new Ads();
             using var coordinator = new MonetizationCoordinator(true, StoreWithCount(3), ads, new Purchases());
-            var shell = Started(coordinator);
-            for (var i = 0; i < 30 && !shell.ActiveSession.IsCompleted; i++) { shell.RequestHint(); ads.Close(true); }
+            var shell = Started(coordinator, difficulty: difficulty);
+            var cellCount = shell.ActiveSession.Puzzle.Size * shell.ActiveSession.Puzzle.Size;
+            for (var i = 0; i < cellCount && !shell.ActiveSession.IsCompleted; i++) { shell.RequestHint(); ads.Close(true); }
             var completed = shell.ActiveSession;
             Assert.That(completed.IsCompleted, Is.True);
             Assert.That(coordinator.Snapshot.OrdinaryBoardsCompleted, Is.EqualTo(4));
@@ -173,7 +269,8 @@ namespace CatsAndArrows.Tests
         {
             var ads = new Ads { Availability = AdAvailability.Offline };
             using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, new Purchases());
-            var shell = new GameShellView(14, "en", tutorialSeen: () => true, markTutorialSeen: () => { }, monetization: coordinator);
+            var shell = new GameShellView(14, "en", PlayTestFactory.Loop(), tutorialSeen: () => true,
+                markTutorialSeen: () => { }, monetization: coordinator);
             shell.StartTutorial();
             foreach (var cat in shell.ActiveSession.Puzzle.SolutionCats) { shell.ActiveSession.Tap(cat); shell.ActiveSession.Tap(cat); }
             coordinator.RecordCompletion(); shell.RequestHint();

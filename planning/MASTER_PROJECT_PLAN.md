@@ -408,3 +408,34 @@ The owner subsequently authorized SDK-free implementation, persistence/tests and
 a PR to develop on 2026-10-14, tracked as #30. Default free-trial behavior remains
 unchanged; success mocks are opt-in Editor/development review only. No real
 ad/IAP SDK, purchase, store configuration or production activation is authorized.
+
+## Delivery sequencing confirmation — 2026-10-09 (#21)
+
+The owner explicitly chose to continue iOS delivery and return to Android later.
+Android development/physical acceptance (#7) stays deferred, with no unsupported
+claim of Android readiness. The next active milestone is small iOS tester trial
+preparation. Owner reports no paid Apple Developer membership yet; enrollment and
+every related purchase remain subject to separate explicit approval.
+
+## Approved difficulty extension — 2026-10-14 (#32)
+
+The owner explicitly authorized Medium/Hard generation and an initial-menu choice,
+superseding their earlier deferral for this tracked implementation. Easy and the
+fixed Easy tutorial remain unchanged. Medium is 6×6 and permits zero/three-cat
+lines; Hard is 7×7, has no zero-cat rows/columns and always has a row or column with
+exactly three cats. Existing Medium max3/Hard max4 caps and Medium's at-most-one
+zero row/column remain; no extra difficulty rules or solver families are approved.
+All difficulties retain seeded determinism, independent uniqueness and complete
+human-style derivation. Scope includes focused tests/docs and PR to develop only;
+no merge, spending, production release or unrelated integration is authorized.
+
+## Approved difficulty pruning pilot — 2026-10-15 (#35)
+
+The owner approved Hard 7×7 with 1–3 cats per row/column, no zero lines and at
+least one exactly-3 row or column, superseding #32's Hard max4. Medium remains
+6×6/max3/at-most-one zero row and column. Both tuned profiles use bounded,
+deterministic clue pruning with unchanged human deduction rules and independent
+unique-solution proof. Keep the 24-arrow search ceiling; density bands are soft
+research targets, not new rejection rules. Preserve Easy and the fixed tutorial.
+Implementation, focused tests/benchmarks and a review-ready PR to develop are
+within this pilot; integration and production actions retain their approval gates.

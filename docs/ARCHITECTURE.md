@@ -85,10 +85,50 @@ retains puzzle truth and protected eligibility; completed sessions reject Clear,
 tap, and drag intents.
 
 ## Randomness
+
+Issue #32 adds a profile-dispatching SeededPuzzleGenerator. Easy delegates to the
+existing SeededEasyPuzzleGenerator with unchanged seed mapping, options and replay
+identity. Medium/Hard use a separate bounded, versioned path and the same human
+deduction/independent uniqueness engines. Profile admission enforces size, quotas,
+zero limits and Hard's required 3-cat line; these are not hidden solving premises.
+
+The existing EasyGameLoop name is retained for caller compatibility. Issue #43
+adds pure C# `DifficultySelection` with injected seeded randomness and an
+`IDifficultyHistoryStore` boundary. The policy chooses uniformly among eligible
+profiles, excluding the last after two starts. A pending selection survives
+generation failure; retry advances only the puzzle seed. Successful admission
+commits the last-profile/run-length record before exposing the new session;
+`SessionDifficulty` describes that admitted board. Menu/locale/Clear and tutorial
+entry neither advance nor reset this history. The generator and its replay
+receipts remain independent of the selection policy.
+
+The shell supplies a Unity preference adapter; tests inject memory storage.
+The tutorial owns its fixed Easy session separately and consumes no generation
+seed. A separate durable first-Play gate routes the first Play to this lesson.
+It migrates existing tutorial-seen state once, before manual Tutorial can affect
+a fresh first-Play gate. Later Plays use the ordinary selector across restarts.
+
+Issue #35 versions the Medium/Hard generator/profile and larger-board options.
+Its optional two-order arrow-pruning phase shares the original solver work
+ceilings and keeps only fully admitted variants. Exhaustion retains the best
+proved board; cancellation returns none. Core `ClueProtectionRules` derives the
+existing cardinal one-cat hatches from an already accepted human proof, allowing
+pruning to count actual non-interactive cells without depending on Gameplay or
+running an unmetered solver. Gameplay's existing protection facade delegates to
+that same rule. Issue #37 adds `ClueProtectionRules.ForProfile`: Hard returns an
+empty protection set without consulting a proof; other modes retain `Derive`.
+Session creation uses the selected/admitted profile and skips the presentation
+solver for Hard. Core pruning and benchmark counts use the same profile policy:
+Hard scores arrows only, while Medium keeps its existing combined occupancy.
+Hard alone uses `hard-generator-v3` / `hard-profile-v3`; Medium's v2 receipt and
+Easy/tutorial truth/interaction contracts remain unchanged.
 Use explicit seeds. Avoid `UnityEngine.Random` inside core generation. A seed must reproduce the same logical board for a fixed generator version.
 
 ## Persistence
-The approved MVP persists local preferences. Board save/resume and statistics
+The approved MVP persists local preferences. Issue #43 adds a versioned
+last-difficulty/run-length record and a separate first-Play gate. Neither stores
+board progress; invalid/missing history starts from an empty valid record.
+Legacy tutorial-seen data is retained for compatibility. Board save/resume and statistics
 remain deferred until feedback justifies them. The puzzle seed is sufficient to resume/recreate an active board once save/resume is implemented.
 
 ## Services
@@ -145,6 +185,18 @@ also cancel. Later Clear controls must cancel before clearing; New Game uses Bin
 The explicit review scene offers opt-in mounted-panel synthetic input checks;
 these complement rather than replace physical-device verification.
 
+Issue #47 adds an adjacent `ArrowHoldController` for presentation-only arrow
+presses. It uses an injected monotonic clock, the existing eight-direction ray
+geometry and the same 8-panel-unit movement tolerance. The view assigns a single
+pointer to either ordinary marking or an arrow hold; neither can hand its active
+press to the other. A view-owned scheduled tick checks the 350 ms threshold.
+Existing cancel/suspension/rebind/focus/layout seams cancel pending and visible
+holds. The hold outline layers over tutorial/Hint emphasis and restores the
+currently valid underlying border when removed, including Hint expiry during a
+hold. No hold code changes puzzle truth or sends marking intents.
+Mark/Clear refreshes still clear Hint emphasis as before; only hold cleanup
+restores a still-valid underlying Hint outline without rebuilding the board.
+
 
 ## Issue #8 Easy game shell
 
@@ -163,7 +215,8 @@ clues/protection or require a persistent hint cursor.
 `GameShellView` manages Menu/Play/Failure and blocking Rules/Hint overlays and inline completion.
 It sends gameplay intents and listens for board state changes. The compact play
 layout replaces the persistent legend with a 2×2 control group; scrollable help
-explains the symbols. Language preference alone uses PlayerPrefs. A live session
+explains the symbols. Local preferences now also include the Issue #43 difficulty
+history and first-Play gate, alongside language/tutorial-seen data. A live session
 survives Menu and focus changes; board persistence remains deferred. A final Hint
 retains its structured proof for optional review, without opening an overlay. Diagnostic mounted flow and
 render timing remain opt-in review paths, not analytics or gameplay dependencies.
@@ -178,6 +231,14 @@ mapping continues to use shared BoardLayout coordinates. PlayerSettings locks
 mobile orientation to upright portrait; no solver/generator changes are involved.
 
 ## Issue #23 immediate hints
+
+Issue #48 adds presentation-only idle attention beside this immediate Hint flow.
+A small clock-injected controller owns the six-second eligibility/activity state;
+the shell owns scheduling and button styling. Board activity is reported apart
+from mark changes so protected-cell attempts and arrow holds reset attention too.
+Active presses suppress attention until they end or cancel. Shell navigation,
+modal/loading/completion, app focus/pause, detach and control/session replacement
+discard elapsed time. No timer applies deductions or changes gameplay state.
 
 The default shell applies the domain's HintResult directly and briefly highlights
 its target without opening a modal or retaining a presentation explanation.

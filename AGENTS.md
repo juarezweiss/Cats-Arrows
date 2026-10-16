@@ -169,7 +169,7 @@ Omit empty fields. Return evidence or detail only when it materially affects the
 
 ## Game-specific invariants
 - A cell cannot be both an arrow cell and a solution cat cell.
-- Arrow cells are non-interactive.
+- Arrow cells are non-markable; the presentation-only hold-to-highlight aid (#47) must never mutate board marks.
 - Each arrow means at least one solution cat exists in the arrow's pointing direction within the relevant line/path defined by game rules.
 - Row/column clue totals must exactly match the solution.
 - Player cells cycle `Empty -> X -> Cat -> Empty` on discrete tap unless the completed-board state disables interaction.

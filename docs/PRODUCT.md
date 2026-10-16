@@ -30,7 +30,13 @@ Mobile puzzle players who enjoy Picross/Nonograms, Minesweeper-like deduction, a
 [Master Project Plan](../planning/MASTER_PROJECT_PLAN.md), approved 2026-10-08, governs scope, acceptance and budget. Every purchase or subscription needs separate explicit owner approval.
 
 ## MVP
-- Easy-only 5x5, iOS-first; owner playtest and small TestFlight trial before public release.
+- iOS-first; owner playtest and small tester trial before public release. TestFlight
+  enrollment and distribution retain their separate approval gates.
+- Easy 5x5, Medium 6x6 and Hard 7x7 selection, per the approved #32 extension.
+  Every generated board retains independent uniqueness and no-guess derivation;
+  these labels do not imply calibrated difficulty scores.
+- Fixed Easy first-play tutorial and menu replay, independent of the selected
+  difficulty; Skip/Play continues at the selected ordinary difficulty (#26/#32).
 - Procedural seeded board generation.
 - Row and column cat-count clues.
 - Eight-direction arrow clues embedded in cells, including exact 45-degree diagonals.
@@ -42,6 +48,14 @@ Mobile puzzle players who enjoy Picross/Nonograms, Minesweeper-like deduction, a
 - English, Brazilian Portuguese and Spanish; language preference and shape-based readability.
 - Simple replaceable icons and brief rules help; unlimited clue-derived hints.
 
+Start the first tester session with Easy; Medium and Hard are available for
+optional follow-up play. The approved #32 amendment supersedes their earlier
+deferral. The approved #35 pilot limits Hard lines to 1–3 cats and prunes redundant
+Medium/Hard arrows with both solvability proofs intact; density ranges remain
+soft targets. Current profile rules live in [GAME_DESIGN.md](GAME_DESIGN.md); validation
+and physical-device evidence live in [TESTING.md](TESTING.md). Keep the first trial
+focused on player understanding, comfortable input and concrete feedback.
+
 ## Not MVP
 - Accounts/cloud save.
 - Multiplayer.
@@ -49,4 +63,5 @@ Mobile puzzle players who enjoy Picross/Nonograms, Minesweeper-like deduction, a
 - Live ops backend.
 - Production advertising.
 - Paid user acquisition.
-- Medium/Hard, persistent board resume, analytics SDKs and extensive polish before player feedback.
+- Calibrated difficulty scoring, persistent board resume, analytics SDKs and
+  extensive polish before player feedback.

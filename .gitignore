@@ -39,3 +39,4 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+original_material.md

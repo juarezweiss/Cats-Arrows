@@ -1,15 +1,21 @@
-# Current Sprint — Calm board polish (#19)
+# Current Sprint — iOS tester trial preparation (#21)
 
-Follow the approved Master Project Plan and its owner presentation amendment.
-Issue #8 is integrated via PR #18. The owner played the Easy loop on iPhone and
-confirmed smooth controls and correct logic.
+Follow the approved Master Project Plan. The playable loop and calm board polish
+are integrated in develop (PRs #18/#20). PR #33 adds Medium/Hard selection (#32);
+develop baseline 2ca1e14 passed native compile and 285/285 tests. Owner physical
+iPhone checks passed for Easy and the Medium 6×6 / Hard 7×7 smoke tests, plus all
+three languages (iPhone 17, 2026-10-14). Smaller phones and measured Medium/Hard
+latency remain unverified. No further game feature is required to begin trial preparation.
 
-Issue #19 applies the resulting visual feedback: darker fixed tiles, centered
-tile grid, upright portrait lock and inline completion with a visible solved
-board. Keep domain logic unchanged and validate narrow/standard/tall layouts,
-three locales, final-Hint review, readonly completion and New Game reset.
+Prepare a versioned, reproducible clean iOS game build and a small 5–8 tester
+feedback loop (#22 collects responses and visual preferences). Confirm durable app identity, build numbering, diagnostic exclusion,
+beta metadata and actual SDK/data behavior. See docs/IOS_TRIAL_PREPARATION.md.
 
-Native 219/219 tests and three locale flows passed. Owner iPhone visual/rotation
-review passed; commit and push are approved. No merge before further approval.
-Android physical input/rotation verification remains pending. Every purchase or
-subscription needs separate approval; no production release is authorized.
+Owner confirmed no paid Apple Developer Program membership yet. Local iPhone
+installed-build tests may continue; TestFlight requires enrollment. No purchase,
+subscription, upload, invitation, production merge or release is authorized.
+Every purchase requires separate explicit approval. The owner authorized tracking
+and committing these preparation documents; distribution remains a separate gate.
+
+Android development and physical-device checks (#7) are explicitly deferred by
+owner on 2026-10-09 and do not block the iOS trial preparation.

@@ -2,6 +2,26 @@
 
 ## Issue #29 monetization design test plan
 
+2026-10-16 integration of PR #31 with current `develop` preserves #43 first-play,
+difficulty/history and queued-command safeguards and #47/#48 holds/idle styling.
+The existing idle clock, six-second boundary and immediate reset are retained
+around asynchronous rewarded-Hint delivery. New mounted-panel tests cover reward
+and no-reward closes, busy suppression, a fresh post-close interval, focus/pause
+suppression and explicit recovery of an earned reward. Fourth-win progression
+tests now cover Easy, Medium and Hard with isolated difficulty fixtures.
+Pinned compilation passed (`compile.2lkgP6`); complete EditMode **450/450 passed**,
+zero failed/skipped/inconclusive and successful editor exit (`editmode.tlafB7`).
+Independent integration QA found no blockers. Default runtime still constructs no
+monetization coordinator/providers; successful mocks require the existing isolated
+Editor/development opt-in. Real-provider/device/store validation remains deferred.
+The merged development player passed mounted mock flows at EN 320×568, pt-BR
+390×844 and ES 430×932. Default ad-free idle checks passed mouse/touch at EN
+320×568 with **zero** geometry delta; the ordinary pt-BR 390×844 game loop passed
+20 Next requests, and guided/independent tutorial checks passed EN 390×844.
+Logs/captures are under ignored `.unity-results/integration31`. The temporary
+desktop player and generated build cache are disposable; the owner-tested #48
+signed iPhone artifact remains tied to its original source commit.
+
 Implementation #30 adds `MonetizationTests`, `MonetizationStateStoreTests`,
 `MonetizationShellTests` and `HintPreparationTests`. These exercise the pure state
 machine, actual disk restart/checksum/backup/future-schema/revision/lock behavior,
@@ -46,7 +66,267 @@ Android follows its own deferred platform task. No live charge or production SDK
 is needed for design validation. Documentation changes use scripts/validate.sh
 and git diff --check; native compile/EditMode runs apply when code is implemented.
 
-## Local Unity validation (existing tooling)
+## Issue #48 idle Hint attention
+
+The idle controller uses an injected clock: tests advance time directly, including
+5.999/6-second boundaries, reset cycles and active-press suppression. Shell tests
+exercise eligibility and lifecycle resets independently of successful mutations;
+the existing Hint, tap/drag, arrow hold, tutorial and completion suites remain
+regression gates. Timer advancement must never apply a Hint or mutate marks.
+
+The opt-in mounted player diagnostic `--hint-idle-check=1` advances the same fake
+clock and dispatches mouse/touch events through the board and Hint button. It
+checks non-marking arrow/protected presses, long presses, cancellation, the active
+arrow outline, Hint/Clear, Menu/modal/locale replacement and final-Hint completion.
+Captures compare unchanged button/grid bounds and localized labels with stable
+inverted Hint colors. Run compact, standard and tall portrait
+layouts in en/pt-BR/es. Native desktop checks do not establish physical-phone
+appearance; iPhone smoke remains a pre-merge gate.
+
+2026-10-16: pinned Unity **6000.3.25f1** compilation passed
+(`compile.iexUD0`); final EditMode **375/375 passed**, zero failures, skips or
+inconclusive results, with successful editor exit (`editmode.Hrc8QT`). This
+includes nine pure clock cases and seven headless `UIDocument` shell tests,
+covering fractional reset times, no-result Hint, all difficulties, modal/Menu,
+focus/pause, disabled/suspended play, rebind/detach, failure/retry, completion and
+both tutorial stages. No graphics errors are suppressed and no tests are skipped.
+
+Final macOS review build passed (`issue48-review-build.jzXvUI`). Mounted idle
+checks passed mouse/touch in **Hard EN 320×568**, **Easy pt-BR 390×844** and
+**Medium ES 430×932**. Checks include secondary-pointer/mouse duplication,
+hover, swept drag, no-op presses, a visible #47 arrow hold and stable Hint/Clear
+bounds, Hint content center, label and grid. Maximum measured geometry difference
+was **0.0000153 panel units** (float rounding; assertion tolerance 0.01).
+
+Existing mounted input and arrow-hold checks passed for mouse/touch; fixed guided
+and independent tutorial checks and the ordinary game loop (20 Next requests)
+also passed. Independent interaction QA found no blocking findings. Logs are
+under ignored `.unity-results/issue48/`.
+
+The captures below predate the inverted-color refinement and show the original
+border/font treatment on generated ordinary boards:
+[Hard compact](evidence/issue48/hint-idle-en320.png),
+[Easy Portuguese](evidence/issue48/hint-idle-pt390.png),
+[Medium Spanish tall](evidence/issue48/hint-idle-es430.png).
+These earlier captures were followed by the physical-iPhone review below.
+
+Styling refinement: attention swaps the normal Hint text/background colors with a
+native 200 ms fade-in; resets set transition duration to zero and restore normal
+colors immediately. Existing shell assertions cover both colors, unchanged
+border/font/padding, transition properties and duration, including a reset during
+fade-in. Timer, eligibility and interaction tests are unchanged.
+Pinned Unity 6000.3.25f1 focused EditMode validation passed **26/26**, zero
+failed/skipped/inconclusive, with successful editor exit (`hint-style48.CFa20C`):
+`HintAttentionShellTests`, `HintIdleAttentionTests` and `InlineHintTests`.
+Repository validation and whitespace checks passed. The styling refinement was
+not rebuilt for desktop captures.
+
+Physical iPhone review (2026-10-16): source `0cc755f54dc9c3171df13f21b1a8707875eb7aaf`
+exported with Unity 6000.3.25f1 and built with Xcode 27.0. Strict signature and
+device-profile checks, installation, launch and running-process checks passed on
+iPhone 17 Juca. Owner reported **pass** for the six-second color inversion and
+smooth fade without movement, immediate resets via Hint/board taps/holds/Clear,
+and suppression on Menu/tutorial/completion/backgrounding. This is a single-device
+owner smoke result, without calibrated timing or comfort measurements. Signed app,
+symbols and receipt are retained under ignored `Builds/Issue48Inverted`; native
+logs are under `.unity-results/issue48-inverted-iphone`.
+Pre-merge validation of the final styling revision: pinned compile passed
+(`compile.XBvefC`); complete EditMode **375/375 passed**, zero failed/skipped/
+inconclusive and successful editor exit (`editmode.VeLLUS`).
+
+## Issue #47 arrow-path hold
+
+Threshold-only follow-up (2026-10-16): activation is now **350 ms**. Focused
+`ArrowHoldControllerTests` passed **17/17**, zero failed/skipped/inconclusive,
+with successful editor exit (`arrowhold350.wyaLQZ`). The boundary test checks
+349 ms versus 350 ms; hold duration, release/cancel and movement remain unchanged.
+QA and repository checks passed. No player/device build or full suite was rerun;
+the 1.0-second implementation evidence below is historical, and the installed
+iPhone build still uses that earlier threshold.
+
+Pinned Unity 6000.3.25f1 compilation passed (`compile.jdXwdO`); native EditMode
+`editmode.muSyXZ` passed **359/359**, with successful editor exit and zero
+failed/skipped/inconclusive. Clock-injected controller cases cover the one-second
+boundary, early release, cancellation, repeated presses, one-pointer ownership,
+jitter/movement, completion, invalid coordinates/time and non-arrow eligibility.
+All eight directions on 5×5/6×6/7×7 use independently calculated expected rays;
+mixed rays include arrows, protection, X and Cat without mutating marks. Two
+Hint regressions retain Clear's outline removal in both inline and legacy modes.
+Existing input, fixed tutorial, generator/goldens and completion-lock tests pass.
+
+Final native macOS mounted hold checks passed for synthetic mouse and touch in
+EN 320×568, pt-BR 390×844 and ES 430×932. They cover full diagonal outlines,
+one-second eligibility, release, capture-out/pointer cancellation, movement,
+suspension/rebind/completion, unchanged marks and Hint outline coexistence/expiry.
+The harness advances a fake hold clock and synchronizes with the panel scheduler;
+pending capture changes are flushed through normal pointer post-dispatch. A
+bounded scheduler timeout aborts rather than reporting a pass.
+
+Existing mounted input checks passed for mouse/touch; ordinary game flows passed
+in all three locales (20 Next board requests each), and the EN 390×844 guided and
+independent tutorial flow passed. Independent interaction QA found no blockers.
+Repository validation and whitespace checks passed. Logs and full captures are
+under ignored `.unity-results/issue47/verified/`; final player build log is
+`.unity-results/issue47/review-build-dispatch.log`.
+
+The [compact outline](evidence/issue47/arrow-path-en320.png) and
+[Spanish tall capture](evidence/issue47/arrow-path-es430.png) use a deliberate
+7×7 input fixture containing arrows/protection/player marks, not a generated Hard
+puzzle. They demonstrate presentation and pointer behavior, not generator rules.
+Physical iPhone smoke of the new hold gesture remains a pre-merge validation
+step; desktop checks do not establish touch comfort. No #48 idle-Hint behavior,
+#44 completion effect or PR #31 integration is included.
+
+## Issue #43 persistent Play selection
+
+Pinned Unity 6000.3.25f1 compilation passed (`compile.SLmw3I`); native EditMode
+`editmode.1BTfgW` passed **340/340**, with successful editor exit and zero
+failed/skipped/inconclusive. Deterministic policy tests cover every eligible-mode
+boundary, long sequences with history reconstruction, a frozen cross-runtime
+seeded sequence, malformed/unsupported records, pending retries, duplicate starts
+and failed persistence without publishing a session. Preference tests restore
+pre-existing owner values and cover first Play across restarts, fresh manual
+Tutorial, legacy returning-user migration and history unaffected by tutorial/Menu.
+Existing generator goldens, fixed tutorial, input and completed-board tests pass.
+
+Native macOS mounted flows passed EN 320×568, pt-BR 390×844 and ES 430×932,
+including localized Play/Next board, absence of difficulty choices, mixed-profile
+starts, 20 Next board requests per flow, tap/drag, protected cells, Hint/Clear/Menu
+and completed-board locking. A separate EN 390×844 mounted tutorial flow passed
+first-Play routing, guided/independent lessons and subsequent ordinary Play.
+The [compact menu](evidence/issue43/menu-en320.png) uses the ordinary-flow
+diagnostic with Tutorial disabled; production retains Tutorial, verified by shell
+tests and the separate tutorial flow. The [Hard capture](evidence/issue43/hard-en320.png)
+shows the unchanged compact board with Next board.
+
+Independent persistence/interaction QA found no blockers. Repository validation
+passed. Logs and full captures remain under ignored `.unity-results/issue43/`.
+These are desktop portrait simulations; no physical-device smoke test was run
+for #43. Completion effects (#44) and PR #31 remain excluded.
+
+## Issue #37 Hard hatch regression
+
+Pinned Unity 6000.3.25f1 compile passed (`compile.Uv7Gv7`); native EditMode
+`editmode.imRrEn` passed **303/303**, successful editor exit and zero
+failed/skipped/inconclusive. Hard policy tests require no solver proof and return
+no initial hatches even on boards with cardinal one-cat NotCat consequences.
+Generated-session/UI snapshots verify former hatch cells start Empty, accept
+manual X via tap/drag, reset on Clear, and stay unhatched across Menu, language
+and optional Hint. Arrow protection and completion locks retain existing tests.
+The fixed Easy tutorial's exact hatch set remains unchanged after Hard selection.
+
+Medium's 131 full receipts (seeds 0–127, -1, int.MinValue, int.MaxValue) match
+the original revision exactly, including board/solution hashes, versions and work
+counters. Existing Easy goldens, signed Hard v3 replay, 128-seed/profile independent
+human/uniqueness proofs, independent pruning reference and tight-budget/cancellation
+coverage pass. Hard's int.MaxValue golden intentionally changes because pruning
+now scores actual arrows alone; Medium's frozen goldens remain unchanged.
+Core focused checks passed 34/34. QA found no blockers. Logs/corpus comparison
+are under ignored `.unity-results/issue37/`. This is not new physical-device or
+perceived-difficulty evidence; the #35 phone numbers below refer to Hard v2.
+
+Mounted native macOS flows passed Hard EN 320×568, Hard ES 390×844 and Medium
+pt-BR 390×844: actual menu/button and board pointer events, tap cycle, protected
+arrows, Hint/Clear/Menu, 20 New Games per flow, centered grids and completed locks.
+The [compact Hard capture](evidence/issue37/hard-en-320x568.png) shows normal
+interactive cells instead of derived hatches. Logs and all 18 captures remain
+under `.unity-results/issue37/`; portrait simulation does not prove phone comfort.
+
+Physical iPhone 17, 2026-10-15, playable develop `2131cc9`: the owner confirmed all
+requested hatch-fix checks passed. Multiple Hard boards had no initial hatches;
+former one-cat-arrow consequence cells accepted manual X by tap/drag. Hint,
+Clear, Menu/back, repeated New Game and completed-board lock passed; brief
+Easy/Medium hatch regression checks also passed. The owner reported “hard feels
+better.” Build/export, native signing verification, install and launch passed;
+the existing 303/303 test evidence applies to identical merged code. This is
+qualitative evidence on one device, not measured touch-to-ready latency,
+calibrated difficulty or smaller-device coverage. Signed app/symbols and receipt
+are under ignored `Builds/Issue37Playtest/`, with logs/duplicate receipt under
+`.unity-results/issue37-playtest*`. See [#37](https://github.com/juarezweiss/Cats-Arrows/issues/37).
+
+## Issue #35 clue-pruning pilot
+
+Pinned Unity 6000.3.25f1 compile passed (`compile.KyrwU0`); native EditMode
+`editmode.ejNSDX` passed **294/294**, with successful editor exit and zero
+failed/skipped/inconclusive. This includes unchanged Easy goldens/tutorial/shell
+regressions, new signed Medium/Hard v2 receipts, paired 128-seed/profile
+occupancy/proof checks, independent two-order reference selection, and zero/tiny
+phase/shared-budget retention of only previously admitted boards. Default cases
+complete both orders; all proof work is accounted for in phase and shared limits.
+
+The fresh seeds 1000–1999 accepted 1,000/1,000 per tuned profile and matched every
+research-selected fingerprint. Each result was independently re-assessed and
+work-checked. Combined arrow/hatch occupancy averaged 20.9% Medium and 26.7% Hard;
+arrow p10/median/p90 was 3/5/9 and 7/10/13. Median waves to the last cat, counting
+the UI's existing hatches as already known facts, were 5 and 7. No tuned request
+exhausted pruning in this corpus. Peak shared human/verifier work was
+16,475/113 and 49,351/419, below the unchanged aggregate ceilings. Raw reports
+and the measurement-only wave harness are under ignored `.unity-results/issue35/`.
+These are corpus observations, not universal yield or perceived-difficulty proof.
+
+The opt-in native macOS/Mono benchmark completed 1,000/1,000 successful samples
+for each Easy/Medium/Hard profile with schema-v2 clue/version/work fields populated.
+Warm Generate p95 was 11.14/28.36/66.63 ms respectively. These are desktop
+generation-only measurements, not phone/New Game input latency. Reports and
+build logs remain under `.unity-results/issue35/benchmark-*`; new per-board clue
+metrics are calculated outside the timed Generate/allocation scope.
+
+Physical iPhone 17 / iOS 27.0.1, source `e9b19ca`, Xcode 27.0 Release/IL2CPP:
+three fresh Hard benchmark launches each accepted seeds 0–999 (3,000 successes,
+1,000 distinct seeds). Warm p95 was 35.44/37.24/37.30 ms; pooled p95 36.95 ms,
+maximum 53.52 ms. First invocation was 67.37–69.05 ms, excluding app startup.
+Every fingerprint matched the native macOS Hard report; reported proof/pruning
+work stayed within all ceilings with no pruning exhaustion. Full reports,
+logs and checksums are retained under `.unity-results/issue35/`, and the signed
+diagnostic/symbols under `Builds/Issue35Pruning/`. The prior playable review app
+was restored after measurement. These are generation-only measurements on one
+device, not New Game touch-to-ready latency, Medium phone timing or perceived
+challenge/playtest evidence for the tuned boards.
+
+The earlier #32 phone smoke evidence below covers the original generator/profile.
+It does not establish the tuned pilot's player comfort or subjective challenge.
+
+## Issue #32 difficulty coverage
+
+Pinned Unity 6000.3.25f1 compile passed; EditMode `editmode.dIeNZn` passed 285/285
+with successful editor exit, zero failed/skipped/inconclusive. Difficulty tests
+cover 128 fixed seeds per profile with independent human/uniqueness reassessment,
+truthful arrows, quotas/zeros/required 3, frozen signed-seed receipts, explicit
+budgets/cancellation/invalid profiles and concurrent/interleaved replay. Easy
+goldens and the existing tutorial tests pass; new shell regressions check the
+unchanged tutorial fingerprint after Medium/Hard selection, localized choices,
+actual/live-vs-next labels, retry, protected input and completed-board invariants.
+Separate pure-C# seed 0–999 corpora accepted 1,000/1,000 for each new profile.
+
+Mounted macOS checks passed Easy/Medium/Hard EN 320×568, Medium pt-BR 390×844,
+Hard ES 430×932: actual menu pointer selection, Hint/Clear/Menu/NewGame, protected
+cells, pointer tap cycle/completion/readonly state, centered grid and 20 new-game
+transitions per run. Thirty captures and logs are retained in ignored
+`.unity-results/issue32-captures/`; representative images are in
+`docs/evidence/issue32/`. These are desktop portrait simulations, not physical
+phone comfort/latency evidence. QA found no blocking source defects. No new solver
+rules or difficulty-score thresholds were used.
+
+Physical iPhone 17 / iOS 27.0.1, 2026-10-14: the owner confirmed all requested
+Medium 6×6 and Hard 7×7 smoke checks passed: edge/rapid/held taps and the tap cycle,
+horizontal/vertical drags, Hint/Clear/Menu/back, repeated New Game, hints-to-win
+and completed-board lock, background/reopen and portrait lock. No missed/extra
+marks, cramped targets, unreadable clues, visible pauses or layout problems were
+reported. The owner also confirmed all three languages (English, pt-BR and
+Spanish) passed. This is qualitative acceptance on one device; smaller physical
+phones and measured Medium/Hard p95 latency are not established by this run.
+
+The Release/IL2CPP arm64 review build used source d3452ba (gameplay identical to
+develop 2ca1e14), Unity 6000.3.25f1 and Xcode 27.0 (27A266a). Export, final Xcode
+build, signature verification, install and launch passed. Logs/receipt remain in
+ignored `.unity-results/issue32-ios-export.log`, `issue32-ios-xcode-final.log`,
+`issue32-iphone-install-final.json`, `issue32-iphone-flow-final.log` and
+`issue32-device-build.json`. Signed app/symbols remain in
+`Builds/Issue32Difficulty/Playable/` and `Symbols/`; generated Xcode intermediates
+were removed after preservation. Managed launch arguments did not enable the
+diagnostic flow, so no fresh automated phone timing result is claimed.
+
+## Local Unity validation
 
 Bootstrap tooling is tracked by GitHub Issue #1. Use a local Codex task opened on
 this checkout to run the Unity editor installed on your machine. Running the Codex

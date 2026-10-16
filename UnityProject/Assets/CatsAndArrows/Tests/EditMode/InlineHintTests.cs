@@ -43,6 +43,23 @@ namespace CatsAndArrows.Tests
             AssertNoExplanation(view);
         }
 
+        [TestCase(true)]
+        [TestCase(false)]
+        public void ClearRemovesPriorHintOutlineInBothPresentationModes(bool inline)
+        {
+            var view = PlayTestFactory.Shell(14, "en", useInlineHints: inline);
+            Assert.That(view.StartNewGame(), Is.True);
+            view.RequestHint();
+            var target = view.ActiveSession.Marks.Keys.Single(coordinate =>
+                view.BoardView.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column)
+                    .style.borderLeftWidth.value == 3);
+            if (!inline) view.BackToGame();
+            view.ClearBoard();
+            Assert.That(view.ActiveSession.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
+            Assert.That(view.BoardView.Q<VisualElement>("cell-" + target.Row + "-" + target.Column)
+                .style.borderLeftWidth.value, Is.EqualTo(1));
+        }
+
         [Test]
         public void HintCorrectsAnIncorrectMarkWithoutOpeningAnExplanation()
         {
@@ -141,8 +158,8 @@ namespace CatsAndArrows.Tests
         {
             var generator = new SeededEasyPuzzleGenerator();
             var attempts = 0;
-            var loop = new EasyGameLoop(14, seed => ++attempts == 2 ? null : generator.Generate(DifficultyProfile.Easy, seed));
-            var view = new GameShellView(14, "en", loop);
+            var loop = PlayTestFactory.Loop(14, seed => ++attempts == 2 ? null : generator.Generate(DifficultyProfile.Easy, seed));
+            var view = PlayTestFactory.Shell(14, "en", loop);
             Assert.That(view.StartNewGame(), Is.True);
             view.RequestHint();
             Assert.That(view.StartNewGame(), Is.False);
@@ -162,7 +179,7 @@ namespace CatsAndArrows.Tests
 
         private static GameShellView Started(string locale)
         {
-            var view = new GameShellView(14, locale);
+            var view = PlayTestFactory.Shell(14, locale);
             Assert.That(view.StartNewGame(), Is.True);
             return view;
         }

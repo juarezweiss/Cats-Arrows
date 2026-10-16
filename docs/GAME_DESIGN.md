@@ -3,10 +3,36 @@
 ## Board
 A rectangular square grid. Current target sizes:
 - Easy: 5x5, maximum 2 solution cats per row/column.
-- Medium: 7x7, maximum 3 solution cats per row/column.
-- Hard: 10x10, maximum 4 solution cats per row/column.
+- Medium: 6x6, maximum 3 solution cats per row/column; zero-cat lines are permitted.
+- Hard: 7x7, 1–3 solution cats per row/column; no zero-cat lines and at least
+  one row or column with exactly 3 solution cats on every generated board.
 
-Difficulty values are initial design targets, not a substitute for solver-derived difficulty scoring.
+Issue #35's approved pilot supersedes #32's original Hard max4 cap with max3.
+Medium's counts and both sizes remain unchanged. Medium/Hard remove redundant
+arrows only after complete no-guess/unique proof. Medium favors fewer combined
+arrow and derived-hatched cells. Issue #37 removes initial hatches in Hard, so
+Hard favors fewer arrows only. Indicative #35 bands (Medium 3–9 arrows/~21% fixed
+cells, Hard 7–13/~27%) describe that earlier pilot, not per-board acceptance limits
+or calibrated difficulty scores. No additional deductions are introduced. Easy
+generation and the fixed Easy tutorial are unchanged.
+
+## Play and difficulty selection — Issue #43
+
+The menu offers Play, Tutorial, How to Play and languages, with no difficulty
+choice. Ordinary Play and Next board choose uniformly from Easy/Medium/Hard, except
+that a difficulty is excluded after two consecutive successful starts in it.
+The last difficulty and run length persist across app restarts. Abandoning a
+successfully started board still counts; generation failure does not. Retry keeps
+its pending difficulty and advances only the puzzle seed. Menu, language changes,
+Clear and tutorial entry do not consume or reset this history.
+
+First-ever Play presents the fixed Easy tutorial. That first-use gate persists,
+so subsequent Plays request random ordinary boards even after a restart. Manual
+Tutorial remains available and does not consume a fresh installation's first
+Play. Existing tutorial-seen installations migrate once as returning users.
+Tutorial Skip/Play uses the same ordinary-board selector, without counting the
+tutorial fixture. This adds no board save/resume, generation rule or completion
+effect; the separately planned celebration is Issue #44.
 
 ## Solution cats
 - A normal cell contains at most one solution cat.
@@ -16,14 +42,24 @@ Difficulty values are initial design targets, not a substitute for solver-derive
 ## Row and column totals
 Every row and column displays the exact number of solution cats in that line. Column totals are centered over their columns; row totals are centered beside their rows.
 
-Generation should allow at most one zero-cat row and at most one zero-cat column, unless a later difficulty design changes this rule.
+Easy and Medium permit at most one zero-cat row and at most one zero-cat column.
+Hard permits none. Medium may include 3-cat lines but need not contain one; Hard
+must contain a 3-cat row or column. These admission rules never act as hidden
+constraints inside the clue-only solver or uniqueness proof.
 
 ## Arrow clues
-An arrow occupies a grid cell and is non-interactive. The initial MVP supports eight directions: Up, Down, Left, Right, UpLeft, UpRight, DownLeft and DownRight (Issue #14).
+An arrow occupies a grid cell and cannot be marked. The initial MVP supports eight directions: Up, Down, Left, Right, UpLeft, UpRight, DownLeft and DownRight (Issue #14).
 
 Meaning: **at least one solution cat exists in the direction the arrow points.** For a horizontal arrow, consider cells in the same row beyond the arrow. For a vertical arrow, consider cells in the same column beyond the arrow. For a diagonal arrow, advance one row and one column per step along its exact 45-degree ray. All rays continue through other arrow cells to the edge without wrapping; those arrow cells are ineligible for cats. The origin never counts. Multiple arrows may share a cat; a ray may contain more than one cat. Diagonals introduce no diagonal count clues.
 
 Example: a row has total 2 and contains a Right arrow. At least one of the two solution cats is somewhere to the right of the arrow. The second cat may be on either side if all other constraints permit it.
+
+Issue #47 adds a presentation-only aid on active ordinary boards: hold an arrow
+for 350 ms to outline its full forward path, using the tutorial's outline
+style. The path includes intervening arrows and marked/protected cells, continuing
+to the edge; it reveals no hidden cat information. Release or cancellation removes
+the outline immediately. Arrow holds never mark cells or become drag marking.
+Tutorial and completed-board interaction remain unchanged.
 
 ## Player cell states
 Interactive normal cells cycle on a discrete tap:
@@ -39,7 +75,14 @@ Direction locks to horizontal or vertical once movement clearly establishes the 
 ## Useless/protected cells
 Some clue combinations can prove cells impossible before player interaction. Initial rule carried from the prototype: when a line has exactly one solution cat and a cardinal arrow in that line guarantees the cat lies in the pointed direction, cells on the opposite side of that arrow can be represented as protected/impossible cells.
 
-This cardinal-only rule must not be applied to diagonal arrows, which cross different rows and columns. This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
+This cardinal-only rule applies to Easy, Medium and the fixed Easy tutorial; it must not be applied to diagonal arrows, which cross different rows and columns. This is a derived presentation aid, not a replacement for the general solver. The solver is the source of truth for whether a cell is logically impossible.
+
+Hard has no initial hatches (Issue #37). Even a provable NotCat cell behind a
+cardinal arrow in a one-cat line remains Empty and interactive until the player
+marks it or requests an optional Hint. No solver consequences become automatic
+protection. Hatches are optional, so this fix introduces no independent hatch
+count or selection rule. An empty hatch set is deterministic for every seed;
+the existing clue-only uniqueness and no-guess proofs require no hatch premises.
 
 Protected cells are non-interactive and must have a non-color visual treatment.
 
@@ -65,7 +108,7 @@ On victory:
 - do not automatically open a completion screen;
 - the completed board is read-only;
 - Hint and Clear are disabled;
-- New Game and Menu remain available.
+- Next board and Menu remain available.
 
 ## Open design questions
 - Broader automatic protection beyond the approved cardinal one-cat rule remains deferred.
@@ -119,8 +162,11 @@ quotas. It uses ordinary GameSession taps/drags and immediate cat-set victory.
 Only current targets accept guided input. Existing X intersections count; arrows
 and hatches never require X. No cleanup action follows the final cat.
 
-First ordinary Start presents the tutorial once; Skip starts a fresh random Easy
-board. A permanent Tutorial menu action always restarts the same board/flow.
+First-ever Play presents the tutorial once across restarts; Skip starts a fresh
+ordinary board using Issue #43's persistent difficulty selector. A permanent
+Tutorial menu action always restarts the same fixed Easy board/flow, independent
+of ordinary difficulty history. Manual replay does not consume a fresh first-Play
+gate; already-seen installations migrate as returning users.
 The tutorial is an explicit exception to previously deferred tutorial frameworks;
 no generic framework or change to ordinary puzzle generation is included.
 
