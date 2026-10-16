@@ -70,6 +70,9 @@ Do not load all review documents to establish general project context.
 Read an ADR only when the task touches the decision it governs. Current known ADR:
 
 - `0001-unity-and-project-structure.md` — Unity/project structure and related repository architecture.
+- `0002-provider-agnostic-monetization.md` — future ad/IAP boundaries, completed-board
+  cadence, rewarded hints, persistence/restore and disabled-mode rollback; load
+  with `docs/MONETIZATION.md` for monetization work.
 
 If a new architectural decision is approved, add the ADR here or extend this routing section.
 

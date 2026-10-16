@@ -47,6 +47,7 @@ namespace CatsAndArrows.UI
                 var messages = new Dictionary<string, string>(board.GetResource(locale).Messages);
                 foreach (var entry in extra) messages.Add(entry.Key, entry.Value[index]);
                 TutorialLocalization.AddMessages(messages, index);
+                MonetizationLocalization.AddMessages(messages, index);
                 return new LocaleResource(locale, messages);
             }));
         }

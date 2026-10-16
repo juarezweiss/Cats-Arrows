@@ -85,7 +85,9 @@ namespace CatsAndArrows.UI.Editor
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath }, target = target, targetGroup = group,
-                locationPathName = output, options = BuildOptions.None,
+                locationPathName = output,
+                options = Environment.GetEnvironmentVariable("CATS_ARROWS_MONETIZATION_REVIEW") == "1"
+                    ? BuildOptions.Development : BuildOptions.None,
                 // Per-build diagnostic opt-in; never persist this in PlayerSettings.
                 extraScriptingDefines = defines.ToArray()
             });

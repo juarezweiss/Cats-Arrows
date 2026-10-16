@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using CatsAndArrows.Core;
 using CatsAndArrows.Gameplay;
+using CatsAndArrows.Monetization;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,9 @@ namespace CatsAndArrows.UI
         [SerializeField] private bool tutorialEnabled = true;
         private PortraitBoardView view;
         private GameShellView shell;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private ReviewAdService reviewAds;
+#endif
         private float safeTop;
         private float safeBottom;
         private bool simulateSafeArea;
@@ -38,6 +42,10 @@ namespace CatsAndArrows.UI
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
             var tutorialCheck = Argument("--tutorial-check=") == "1";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            var monetizationCheck = Argument("--monetization-check=") == "1";
+            if (monetizationCheck) Application.runInBackground = true;
+#endif
             var arrowHoldCheck = Argument("--arrow-hold-check=") == "1";
             var hintIdleCheck = Argument("--hint-idle-check=") == "1";
             double holdReviewTime = 0;
@@ -68,17 +76,45 @@ namespace CatsAndArrows.UI
                 var useInlineHints = Argument("--hint-flow=") == "legacy" ? false : inlineHints;
 #endif
                 var reviewSeen = false;
+                MonetizationCoordinator monetization = null;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                if (Argument("--monetization-mock=") == "1")
+                {
+                    var reviewDirectory = Path.Combine(Application.persistentDataPath, "monetization-mock-review");
+                    if (monetizationCheck)
+                    {
+                        var captures = Argument("--game-captures=");
+                        if (string.IsNullOrEmpty(captures) || !Path.IsPathRooted(captures))
+                            throw new ArgumentException("Monetization check captures must be absolute.");
+                        // Each mounted check is isolated from manually reviewed ownership.
+                        reviewDirectory = Path.Combine(captures, "state-" + Guid.NewGuid().ToString("N"));
+                    }
+                    reviewAds = new ReviewAdService(() => Time.realtimeSinceStartupAsDouble);
+                    monetization = new MonetizationCoordinator(true,
+                        new FileMonetizationStateStore(Path.Combine(reviewDirectory, "state.bin")), reviewAds,
+                        new ReviewPurchaseService(Path.Combine(reviewDirectory, "mock-store.txt")),
+                        () => Time.realtimeSinceStartupAsDouble);
+                }
+#endif
                 var isolatedReview = hintIdleCheck || tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                isolatedReview |= monetizationCheck;
+#endif
                 shell = new GameShellView(initialSeed, autoReview ? "en" : Argument("--board-locale="), useInlineHints: useInlineHints,
                     enableTutorial: hintIdleCheck || tutorialCheck || (tutorialEnabled && Argument("--tutorial=") != "off" && !autoReview && Argument("--game-loop-check=") != "1"),
                     tutorialSeen: isolatedReview ? (Func<bool>)(() => reviewSeen) : null,
                     markTutorialSeen: isolatedReview ? (Action)(() => reviewSeen = true) : null,
                     difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null,
-                    idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null);
+                    idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null, monetization: monetization);
                 root.Add(shell);
                 shell.SetApplicationFocus(applicationFocused);
                 shell.SetApplicationPaused(applicationPaused);
             }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (monetizationCheck && shell != null)
+                StartCoroutine(MonetizationReviewChecks.Run(shell, Argument("--game-captures=")));
+            else
+#endif
             if (hintIdleCheck && shell != null) StartCoroutine(HintIdleReviewChecks.Run(shell, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
             else if (arrowHoldCheck && view != null) StartCoroutine(ArrowHoldReviewChecks.Run(view, seconds => holdReviewTime += seconds, locale, Argument("--game-captures=")));
             else if (tutorialCheck && shell != null) StartCoroutine(TutorialReviewChecks.Run(shell, Argument("--game-captures=")));
@@ -88,6 +124,10 @@ namespace CatsAndArrows.UI
         }
         private void Update()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            reviewAds?.Tick();
+#endif
+            shell?.TickMonetization();
             if (shell != null)
             {
                 if (simulateSafeArea) shell.ApplySafeArea(new Rect(0, safeBottom, Screen.width, Mathf.Max(0, Screen.height - safeTop - safeBottom)), new Vector2(Screen.width, Screen.height));
@@ -104,13 +144,18 @@ namespace CatsAndArrows.UI
             applicationFocused = focused;
             if (!focused) view?.CancelInteraction();
             shell?.SetApplicationFocus(focused);
+            if (!focused) shell?.SuspendMonetizationDelivery();
+            else shell?.RefreshMonetization();
         }
         private void OnApplicationPause(bool paused)
         {
             applicationPaused = paused;
             if (paused) view?.CancelInteraction();
             shell?.SetApplicationPaused(paused);
+            if (paused) shell?.SuspendMonetizationDelivery();
+            else shell?.RefreshMonetization();
         }
+        private void OnDestroy() => shell?.DisposeMonetization();
         private IEnumerator Capture(string path)
         {
             if (!Path.IsPathRooted(path)) throw new ArgumentException("Review capture path must be absolute.");

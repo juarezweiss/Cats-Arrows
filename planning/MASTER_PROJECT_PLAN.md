@@ -391,6 +391,24 @@ to an automatic victory modal/Back to the Game completion action; menu resume is
 retained. Final-hint explanation is available on request. Exact-cat completion,
 Hint/Clear locks, Menu/New Game, scope and purchase approval rules are unchanged.
 
+## Future monetization architecture — 2026-10-14 (#29)
+
+The owner explicitly requested design of fourth-completed-board progression ads,
+rewarded hints and a one-time Remove All Ads purchase removing both gates, with
+durable cadence and restorable ownership. See [MONETIZATION.md](../docs/MONETIZATION.md)
+and [ADR 0002](../docs/decisions/0002-provider-agnostic-monetization.md). This is a
+design authorization for future enabled policy, superseding the earlier future
+enhanced-hint/supporter-only preference; current free/unlimited-hint trial scope
+and #21 sequencing remain unchanged. Tutorial completions are excluded; immediate
+win and hint-free solvability remain invariant. No provider, implementation, SDK,
+store configuration, price, spend, production activation or release is authorized.
+Existing budget and separate purchase/production approval boundaries remain.
+
+The owner subsequently authorized SDK-free implementation, persistence/tests and
+a PR to develop on 2026-10-14, tracked as #30. Default free-trial behavior remains
+unchanged; success mocks are opt-in Editor/development review only. No real
+ad/IAP SDK, purchase, store configuration or production activation is authorized.
+
 ## Delivery sequencing confirmation — 2026-10-09 (#21)
 
 The owner explicitly chose to continue iOS delivery and return to Android later.
