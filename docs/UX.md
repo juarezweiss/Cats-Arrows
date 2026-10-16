@@ -61,6 +61,20 @@ A second finger cannot take over or finish the first finger's gesture.
 This threshold is an initial value for phone testing, not a physical comfort
 claim. Rebind, focus loss and layout changes cancel pending interactions.
 
+## Issue #47 arrow-path hold
+
+On an active ordinary board, holding an arrow for one second outlines its entire
+forward cardinal or diagonal ray until release. This reuses the tutorial's dark
+cell outlines, preserving symbol contrast and touch geometry without relying on
+color. Arrows remain non-markable. A short press does nothing; movement beyond
+the existing small jitter tolerance or off the origin cancels the hold without
+starting a drag. A second pointer cannot take ownership.
+
+Release, capture/cancel, focus loss/background, navigation, suspension, geometry
+changes and rebind remove pending or active hold feedback. The aid does not run
+in the fixed tutorial or on completed boards, and does not alter their existing
+highlights. How to Play describes the gesture in English, pt-BR and Spanish.
+
 ## Issue #19 owner visual feedback
 
 Center the tile grid itself within the safe board region; the numeric clue gutters
