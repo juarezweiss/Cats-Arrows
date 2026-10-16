@@ -2,6 +2,14 @@
 
 ## Issue #47 arrow-path hold
 
+Threshold-only follow-up (2026-10-16): activation is now **350 ms**. Focused
+`ArrowHoldControllerTests` passed **17/17**, zero failed/skipped/inconclusive,
+with successful editor exit (`arrowhold350.wyaLQZ`). The boundary test checks
+349 ms versus 350 ms; hold duration, release/cancel and movement remain unchanged.
+QA and repository checks passed. No player/device build or full suite was rerun;
+the 1.0-second implementation evidence below is historical, and the installed
+iPhone build still uses that earlier threshold.
+
 Pinned Unity 6000.3.25f1 compilation passed (`compile.jdXwdO`); native EditMode
 `editmode.muSyXZ` passed **359/359**, with successful editor exit and zero
 failed/skipped/inconclusive. Clock-injected controller cases cover the one-second

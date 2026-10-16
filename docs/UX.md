@@ -63,7 +63,7 @@ claim. Rebind, focus loss and layout changes cancel pending interactions.
 
 ## Issue #47 arrow-path hold
 
-On an active ordinary board, holding an arrow for one second outlines its entire
+On an active ordinary board, holding an arrow for 350 ms outlines its entire
 forward cardinal or diagonal ray until release. This reuses the tutorial's dark
 cell outlines, preserving symbol contrast and touch geometry without relying on
 color. Arrows remain non-markable. A short press does nothing; movement beyond

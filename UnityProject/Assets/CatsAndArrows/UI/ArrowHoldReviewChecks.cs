@@ -27,13 +27,13 @@ namespace CatsAndArrows.UI
                     view.Bind(session, locale);
                     Require(grid.panel != null && view.Layout.CellSize > 0, "mounted geometry");
                     Send(grid, Center(view, grid, origin), touch, TouchPhase.Began);
-                    advance(.999);
+                    advance(.349);
                 }
                 catch (Exception exception) { Fail(exception); yield break; }
                 yield return PanelTurn(view);
                 try
                 {
-                    Require(Width(view, target) == 1, "no highlight before 1 second");
+                    Require(Width(view, target) == 1, "no highlight before 350 ms");
                     Send(grid, Center(view, grid, origin), touch, TouchPhase.Ended);
                     Require(!grid.HasPointerCapture(pointerId), "short release frees capture");
                     view.HighlightCell(target);

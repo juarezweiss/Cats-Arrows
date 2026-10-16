@@ -29,14 +29,15 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void OneSecondBoundaryActivatesOnceAndNeverMutatesMarks()
+        public void HoldActivatesAt350MillisecondsOnceWithoutMutatingMarks()
         {
             var before = session.Marks.ToArray();
+            now = 0;
             Assert.That(hold.Begin(17, Center(origin)), Is.True);
-            now += .999;
+            now = .349;
             Assert.That(hold.Tick(), Is.False);
             Assert.That(hold.IsHighlighted, Is.False);
-            now = 13;
+            now = .350;
             Assert.That(hold.Tick(), Is.True);
             now = 100;
             Assert.That(hold.Tick(), Is.False);
@@ -54,7 +55,7 @@ namespace CatsAndArrows.Tests
         public void CancelBeforeOrAfterActivationPreventsLateCallbacksAndRelease(bool activate)
         {
             hold.Begin(1, Center(origin));
-            now += activate ? 1 : .5;
+            now += activate ? 1 : .349;
             hold.Tick();
             hold.Cancel();
             now += 20;
@@ -69,9 +70,9 @@ namespace CatsAndArrows.Tests
         [Test]
         public void EarlyReleaseAndAlternatingPressesRestartTheTimer()
         {
-            hold.Begin(1, Center(origin)); now += .99; hold.End(1);
+            hold.Begin(1, Center(origin)); now += .349; hold.End(1);
             now += 10; Assert.That(hold.Tick(), Is.False);
-            hold.Begin(2, Center(origin)); now += .99;
+            hold.Begin(2, Center(origin)); now += .349;
             Assert.That(hold.Tick(), Is.False);
             hold.End(2);
             hold.Begin(3, Center(origin)); now += 1;

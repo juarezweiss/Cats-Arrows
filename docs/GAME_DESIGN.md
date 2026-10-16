@@ -55,7 +55,7 @@ Meaning: **at least one solution cat exists in the direction the arrow points.**
 Example: a row has total 2 and contains a Right arrow. At least one of the two solution cats is somewhere to the right of the arrow. The second cat may be on either side if all other constraints permit it.
 
 Issue #47 adds a presentation-only aid on active ordinary boards: hold an arrow
-for one second to outline its full forward path, using the tutorial's outline
+for 350 ms to outline its full forward path, using the tutorial's outline
 style. The path includes intervening arrows and marked/protected cells, continuing
 to the edge; it reveals no hidden cat information. Release or cancellation removes
 the outline immediately. Arrow holds never mark cells or become drag marking.

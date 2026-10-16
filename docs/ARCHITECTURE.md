@@ -177,7 +177,7 @@ Issue #47 adds an adjacent `ArrowHoldController` for presentation-only arrow
 presses. It uses an injected monotonic clock, the existing eight-direction ray
 geometry and the same 8-panel-unit movement tolerance. The view assigns a single
 pointer to either ordinary marking or an arrow hold; neither can hand its active
-press to the other. A view-owned scheduled tick checks the one-second threshold.
+press to the other. A view-owned scheduled tick checks the 350 ms threshold.
 Existing cancel/suspension/rebind/focus/layout seams cancel pending and visible
 holds. The hold outline layers over tutorial/Hint emphasis and restores the
 currently valid underlying border when removed, including Hint expiry during a

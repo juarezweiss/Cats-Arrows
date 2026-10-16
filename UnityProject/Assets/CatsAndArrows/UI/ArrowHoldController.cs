@@ -10,7 +10,7 @@ namespace CatsAndArrows.UI
     // Issue #47: presentation-only recognition. This controller never sends mark intents.
     public sealed class ArrowHoldController
     {
-        public const double HoldSeconds = 1;
+        public const double HoldSeconds = .35;
         private readonly GameSession session;
         private readonly BoardLayout layout;
         private readonly Func<double> clock;
