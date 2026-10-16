@@ -42,8 +42,7 @@ border/font treatment on generated ordinary boards:
 [Hard compact](evidence/issue48/hint-idle-en320.png),
 [Easy Portuguese](evidence/issue48/hint-idle-pt390.png),
 [Medium Spanish tall](evidence/issue48/hint-idle-es430.png).
-Physical iPhone appearance/comfort has not been tested for #48; no merge or device
-installation is included in this implementation task.
+These earlier captures were followed by the physical-iPhone review below.
 
 Styling refinement: attention swaps the normal Hint text/background colors with a
 native 200 ms fade-in; resets set transition duration to zero and restore normal
@@ -53,8 +52,21 @@ fade-in. Timer, eligibility and interaction tests are unchanged.
 Pinned Unity 6000.3.25f1 focused EditMode validation passed **26/26**, zero
 failed/skipped/inconclusive, with successful editor exit (`hint-style48.CFa20C`):
 `HintAttentionShellTests`, `HintIdleAttentionTests` and `InlineHintTests`.
-Repository validation and whitespace checks passed. The styling refinement has
-not been rebuilt for desktop captures or physical iPhone review.
+Repository validation and whitespace checks passed. The styling refinement was
+not rebuilt for desktop captures.
+
+Physical iPhone review (2026-10-16): source `0cc755f54dc9c3171df13f21b1a8707875eb7aaf`
+exported with Unity 6000.3.25f1 and built with Xcode 27.0. Strict signature and
+device-profile checks, installation, launch and running-process checks passed on
+iPhone 17 Juca. Owner reported **pass** for the six-second color inversion and
+smooth fade without movement, immediate resets via Hint/board taps/holds/Clear,
+and suppression on Menu/tutorial/completion/backgrounding. This is a single-device
+owner smoke result, without calibrated timing or comfort measurements. Signed app,
+symbols and receipt are retained under ignored `Builds/Issue48Inverted`; native
+logs are under `.unity-results/issue48-inverted-iphone`.
+Pre-merge validation of the final styling revision: pinned compile passed
+(`compile.XBvefC`); complete EditMode **375/375 passed**, zero failed/skipped/
+inconclusive and successful editor exit (`editmode.VeLLUS`).
 
 ## Issue #47 arrow-path hold
 
