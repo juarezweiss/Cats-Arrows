@@ -194,6 +194,13 @@ Run `scripts/validate.sh` before declaring a task complete. If Unity is unavaila
 
 Do not run unrelated expensive test suites by default when a narrower reliable validation exists. Use the smallest test scope that provides adequate confidence, then run broader required gates before merge/release as defined by `docs/TESTING.md`.
 
+### Physical iPhone review — owner policy
+- Physical iPhone interaction, appearance, lifecycle and comfort tests require human review.
+- Do not automate these tests through Device Hub, screen mirroring, remote input, or an alternative device-control tool. Fall back to the owner/human reviewer instead.
+- When authorized, agents may build, sign, install, launch and verify technical device readiness. These preparation checks do not satisfy the physical iPhone review gate.
+- Hand off the ready build with a short task-specific checklist, then record the human's explicit pass/fail report and its scope. Until that report arrives, report physical review as pending; do not infer a pass from launch success, screenshots or automated checks.
+- Desktop/simulated input and automated Unity tests remain separate validation evidence. See `docs/TESTING.md` for the review workflow.
+
 ## Local Unity validation (bootstrap #1)
 - Use the existing checkout. Do not create a Git worktree unless the user requests one.
 - In a local macOS Codex task, run `bash scripts/unity.sh` to discover the exact editor pinned in `UnityProject/ProjectSettings/ProjectVersion.txt`.

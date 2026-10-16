@@ -1,5 +1,24 @@
 # Testing Strategy
 
+## Physical iPhone tests: human review required
+
+Owner policy for all future runs: physical iPhone interaction, appearance,
+lifecycle and comfort tests must be performed by a human. Do not automate these
+tests through Device Hub, screen mirroring, scripted touch, in-app diagnostic
+flows or another remote-input tool. If a device check cannot be completed by
+the agent without such automation, hand it to the owner/human reviewer.
+
+When authorized, agents may prepare the build, verify signing/profile/device
+compatibility, install, launch and check that the process runs. Then provide a
+short checklist for the changed behavior and request the human's results.
+Record the source/build, device/OS, reviewer, reported pass/fail, coverage and
+remaining gaps. Missing human feedback means **physical review pending**;
+build/install/launch success, captures and automated results cannot close it.
+Keep desktop/simulated input tests and Unity tests as separate evidence.
+
+Historical agent-driven physical-device exercises remain factual records but
+do not satisfy this human review gate. Do not repeat their automation workflow.
+
 ## Issue #44 timed completion
 
 2026-10-16: pinned Unity **6000.3.25f1** compilation passed (`compile.d5Lj3z`);
@@ -37,12 +56,12 @@ The diagnostic uses an injected clock and isolated difficulty/first-Play stores;
 normal play uses realtime. Desktop captures do not establish device touch comfort
 or lifecycle behavior; physical-device evidence follows.
 
-Physical iPhone smoke (2026-10-16): source
+Historical agent-driven Device Hub exercise (2026-10-16): source
 `9a1ead34102321fa5224fbafe5fe336b96c00da5` exported with pinned Unity
 6000.3.25f1 and built arm64 Release with Xcode 27.0. Strict signature/profile
 checks, install and launch passed on **iPhone 17 Juca, iOS 27.0.1**. Apple's
 Device Hub drove the physical screen/input with ordinary realtime and no review
-launch arguments. The smoke passed tap cycling, horizontal drag, arrow/protected
+launch arguments. The automated exercise passed tap cycling, horizontal drag, arrow/protected
 cells, Clear, final-Hint and tap victories, EN/pt-BR/es celebration text, all three
 completion actions, identical locked static return, Menu/locale no replay and
 Next routing. Ordinary starts included Hard/Hard/Easy, respecting the anti-streak.
@@ -53,8 +72,10 @@ English was restored and a fresh ordinary board was left running.
 [Physical celebration](evidence/issue44/iphone-celebration-en.png),
 [physical actions](evidence/issue44/iphone-actions-en.png),
 [same-board foreground return](evidence/issue44/iphone-resume-static-pt.png).
-These are Device Hub captures of a physical device. This is a single-device smoke,
-not calibrated timing/frame-rate measurement or an owner-finger comfort report;
+These are historical Device Hub captures of a physical device. This automated
+exercise does **not** satisfy the owner's human physical iPhone review gate;
+**human review for #44 remains pending**. It is not calibrated timing/frame-rate
+measurement or an owner-finger comfort report;
 the complete guided/independent lesson remains covered by the automated suite.
 No source code changed for this smoke run.
 
