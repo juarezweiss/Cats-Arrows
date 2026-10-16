@@ -34,8 +34,38 @@ its executable with `--completion-check=1 --game-seed=14 --board-locale=<locale>
 --board-width=<width> --board-height=<height> --board-safe-top=<pixels>
 --board-safe-bottom=<pixels> --game-captures=<absolute-directory>`.
 The diagnostic uses an injected clock and isolated difficulty/first-Play stores;
-normal play uses realtime. **Physical iPhone smoke remains pending before merge**;
-desktop captures do not establish device touch comfort or lifecycle behavior.
+normal play uses realtime. Desktop captures do not establish device touch comfort
+or lifecycle behavior; physical-device evidence follows.
+
+Physical iPhone smoke (2026-10-16): source
+`9a1ead34102321fa5224fbafe5fe336b96c00da5` exported with pinned Unity
+6000.3.25f1 and built arm64 Release with Xcode 27.0. Strict signature/profile
+checks, install and launch passed on **iPhone 17 Juca, iOS 27.0.1**. Apple's
+Device Hub drove the physical screen/input with ordinary realtime and no review
+launch arguments. The smoke passed tap cycling, horizontal drag, arrow/protected
+cells, Clear, final-Hint and tap victories, EN/pt-BR/es celebration text, all three
+completion actions, identical locked static return, Menu/locale no replay and
+Next routing. Ordinary starts included Hard/Hard/Easy, respecting the anti-streak.
+Backgrounding during a tap celebration resumed the **same process** with the same
+static finished board and no replay. Tutorial entry/Continue/Skip also passed.
+English was restored and a fresh ordinary board was left running.
+
+[Physical celebration](evidence/issue44/iphone-celebration-en.png),
+[physical actions](evidence/issue44/iphone-actions-en.png),
+[same-board foreground return](evidence/issue44/iphone-resume-static-pt.png).
+These are Device Hub captures of a physical device. This is a single-device smoke,
+not calibrated timing/frame-rate measurement or an owner-finger comfort report;
+the complete guided/independent lesson remains covered by the automated suite.
+No source code changed for this smoke run.
+
+Storage: initial free space was 1.68 GiB. Apple's supported
+`simctl runtime dyld_shared_cache remove --all` cleared rebuildable simulator
+caches while preserving runtimes and simulator data. One device build used no
+archive/IPA and no separate dSYM. The signed app, source receipt/hashes, small
+export metadata and evidence remain in ignored `Builds/Issue44iPhone/` and
+`.unity-results/issue44-iphone/`; temporary iOS export, task DerivedData and Bee
+cache were removed. The prior signed #48 app/symbols remain intact. Free space
+after cleanup was **8.35 GiB**.
 
 ## Issue #29 monetization design test plan
 
