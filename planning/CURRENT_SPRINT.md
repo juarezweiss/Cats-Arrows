@@ -1,21 +1,48 @@
-# Current Sprint — iOS tester trial preparation (#21)
+# Current Sprint — iOS tester readiness and first trial
 
-Follow the approved Master Project Plan. The playable loop and calm board polish
-are integrated in develop (PRs #18/#20). PR #33 adds Medium/Hard selection (#32);
-develop baseline 2ca1e14 passed native compile and 285/285 tests. Owner physical
-iPhone checks passed for Easy and the Medium 6×6 / Hard 7×7 smoke tests, plus all
-three languages (iPhone 17, 2026-10-14). Smaller phones and measured Medium/Hard
-latency remain unverified. No further game feature is required to begin trial preparation.
+**Primary work:** [#21](https://github.com/juarezweiss/Paws/issues/21) and
+[#22](https://github.com/juarezweiss/Paws/issues/22)
 
-Prepare a versioned, reproducible clean iOS game build and a small 5–8 tester
-feedback loop (#22 collects responses and visual preferences). Confirm durable app identity, build numbering, diagnostic exclusion,
-beta metadata and actual SDK/data behavior. See docs/IOS_TRIAL_PREPARATION.md.
+**Source baseline:** `develop` at `5b9e06b` (2026-10-19)
 
-Owner confirmed no paid Apple Developer Program membership yet. Local iPhone
-installed-build tests may continue; TestFlight requires enrollment. No purchase,
-subscription, upload, invitation, production merge or release is authorized.
-Every purchase requires separate explicit approval. The owner authorized tracking
-and committing these preparation documents; distribution remains a separate gate.
+**Status:** playable Paws feature work is integrated; distribution and broader
+trial evidence remain pending.
 
-Android development and physical-device checks (#7) are explicitly deferred by
-owner on 2026-10-09 and do not block the iOS trial preparation.
+## Current product baseline
+
+- Paws is a portrait iOS-first logic game with Easy 5×5, Medium 6×6 and Hard 7×7
+  procedural boards. `Play`/`Next board` choose among the three modes with a
+  persistent two-repeat limit; first-ever Play uses the fixed Easy tutorial.
+- The complete loop includes tap/drag marking, Clear/Menu, immediate unlimited
+  Hint, arrow-path hold, idle Hint attention, exact-paw completion, celebration
+  and return to the locked completed board in English, pt-BR and Spanish.
+- SDK-free monetization architecture and persistence are merged, but normal
+  composition is disabled and ad-free. Only explicit Editor/development mock
+  review flows exist; no real provider or store configuration is present.
+- The latest behavior-changing baseline passed pinned compilation and 473/473
+  EditMode tests in PR #56. Later PRs #58/#60 were documentation-only.
+
+## Sprint outcomes still required
+
+- [ ] Confirm durable bundle identifier, semantic version/build number and a
+  reproducible clean iOS tester build containing only the intended game path.
+- [ ] Reinspect the final archive's SDKs, capabilities and data behavior; prepare
+  accurate beta metadata and privacy/export answers without inventing contacts.
+- [ ] Hand the current Paws build to the owner for human physical-iPhone review,
+  including paw readability, localized fit, touch comfort, lifecycle and the
+  completion sequence. Smaller-phone comfort and measured Medium/Hard latency
+  remain unverified.
+- [ ] Present the exact enrollment/distribution step for explicit approval before
+  any purchase, upload or invitation.
+- [ ] Collect additional versioned friend-trial responses in #22, summarize only
+  repeated evidence and open focused follow-ups after owner prioritization.
+
+## Boundaries
+
+- No Apple Developer Program purchase, subscription, TestFlight upload, tester
+  invitation, production merge, tag, store submission or release is authorized.
+- Android physical validation remains deferred in #28 and does not block this sprint.
+- Real ads/IAP, analytics SDKs, board save/resume, difficulty recalibration and
+  speculative feature work are outside this sprint.
+- The first recorded friend session is useful qualitative evidence, not proof of
+  release readiness, visual direction or calibrated difficulty.
