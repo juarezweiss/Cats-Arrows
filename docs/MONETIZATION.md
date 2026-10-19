@@ -1,6 +1,6 @@
 # Monetization architecture
 
-Design task: [#29](https://github.com/juarezweiss/Cats-Arrows/issues/29), owner
+Design task: [#29](https://github.com/juarezweiss/Paws/issues/29), owner
 requirements dated 2026-10-14. Decision:
 [ADR 0002](decisions/0002-provider-agnostic-monetization.md).
 
@@ -8,7 +8,7 @@ requirements dated 2026-10-14. Decision:
 
 Architecture and documented policy approved by the owner on 2026-10-14 after
 review of #29. The owner subsequently authorized SDK-free implementation and a
-PR to develop in [#30](https://github.com/juarezweiss/Cats-Arrows/issues/30).
+PR to develop in [#30](https://github.com/juarezweiss/Paws/issues/30).
 Current default remains free with direct unlimited hints, no monetization SDK
 and no change to #21 sequencing. Real integration and activation require separate
 tracked work. No provider, price, purchase, store configuration, SDK, production

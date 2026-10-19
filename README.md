@@ -48,7 +48,7 @@ For the detailed rules and guarantees, see [Game Design](docs/GAME_DESIGN.md) an
 
 ## Development workflow
 
-Work starts from a [GitHub Issue](https://github.com/juarezweiss/Cats-Arrows/issues)
+Work starts from a [GitHub Issue](https://github.com/juarezweiss/Paws/issues)
 and a short-lived issue branch. Codex loads only the task-relevant repository
 context, makes focused changes, runs the required checks, and prepares a pull
 request into `develop`. The `main` branch remains human-controlled release
