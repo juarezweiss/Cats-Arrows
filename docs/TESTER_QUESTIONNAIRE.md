@@ -1,6 +1,6 @@
 # Cats & Arrows — First iOS friend trial (#21)
 
-GitHub collection tracker: [Issue #22](https://github.com/juarezweiss/Cats-Arrows/issues/22).
+GitHub collection tracker: [Issue #22](https://github.com/juarezweiss/Paws/issues/22).
 Use one response comment per tester/session and maintain its linked triage ledger.
 
 Draft for owner review. This does not authorize invitations, purchases or app

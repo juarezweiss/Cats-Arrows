@@ -332,7 +332,7 @@ the existing 303/303 test evidence applies to identical merged code. This is
 qualitative evidence on one device, not measured touch-to-ready latency,
 calibrated difficulty or smaller-device coverage. Signed app/symbols and receipt
 are under ignored `Builds/Issue37Playtest/`, with logs/duplicate receipt under
-`.unity-results/issue37-playtest*`. See [#37](https://github.com/juarezweiss/Cats-Arrows/issues/37).
+`.unity-results/issue37-playtest*`. See [#37](https://github.com/juarezweiss/Paws/issues/37).
 
 ## Issue #35 clue-pruning pilot
 

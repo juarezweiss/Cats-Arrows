@@ -2,7 +2,7 @@
 
 Status: Owner-approved architecture; SDK-free implementation in #30; activation deferred
 Date: 2026-10-14
-Task: [#29](https://github.com/juarezweiss/Cats-Arrows/issues/29)
+Task: [#29](https://github.com/juarezweiss/Paws/issues/29)
 
 Owner approval: 2026-10-14, explicit “approved” following the completed design.
 Approval covers the documented architecture and policy decisions. Implementation,

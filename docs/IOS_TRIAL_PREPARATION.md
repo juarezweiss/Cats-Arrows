@@ -76,7 +76,7 @@ Apple references checked on 2026-10-09:
 
 The trial questionnaire and contrasting visual references are in
 [TESTER_QUESTIONNAIRE.md](TESTER_QUESTIONNAIRE.md). GitHub feedback collection
-and triage live in [Issue #22](https://github.com/juarezweiss/Cats-Arrows/issues/22);
+and triage live in [Issue #22](https://github.com/juarezweiss/Paws/issues/22);
 keep build/distribution preparation in #21.
 
 ## Trial instructions draft
