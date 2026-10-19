@@ -185,7 +185,7 @@ namespace CatsAndArrows.Tests
                     for (var tap = 0; tap < 3; tap++) tutorial.Tap(tutorial.Targets[0]);
                 else foreach (var target in tutorial.Targets)
                 {
-                    var expected = tutorial.Session.Puzzle.IsSolutionCat(target) ? PlayerMark.Cat : PlayerMark.X;
+                    var expected = tutorial.Session.Puzzle.IsSolutionPaw(target) ? PlayerMark.Paw : PlayerMark.X;
                     for (var tap = 0; tap < 3 && tutorial.Session.GetMark(target) != expected; tap++)
                         Assert.That(tutorial.Tap(target), Is.True);
                     Assert.That(tutorial.Session.GetMark(target), Is.EqualTo(expected));

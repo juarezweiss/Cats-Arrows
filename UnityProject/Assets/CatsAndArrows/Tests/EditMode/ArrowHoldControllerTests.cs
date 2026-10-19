@@ -143,7 +143,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void RayIncludesInterveningArrowProtectionXCatAndContinuesPastAllOfThem()
+        public void RayIncludesInterveningArrowProtectionXPawAndContinuesPastAllOfThem()
         {
             var arrows = new[] { new ArrowClue(new BoardCoordinate(0, 0), Direction.Right),
                 new ArrowClue(new BoardCoordinate(0, 1), Direction.Down) };
@@ -181,7 +181,7 @@ namespace CatsAndArrows.Tests
             Assert.That(hold.Begin(1, Center(new BoardCoordinate(0, 0))), Is.False);
             Assert.That(hold.Begin(1, new Vector2(float.NaN, 0)), Is.False);
             Assert.That(hold.Begin(1, Vector2.zero), Is.False);
-            foreach (var cat in session.Puzzle.SolutionCats) { session.Tap(cat); session.Tap(cat); }
+            foreach (var paw in session.Puzzle.SolutionPaws) { session.Tap(paw); session.Tap(paw); }
             Assert.That(hold.Begin(1, Center(origin)), Is.False);
         }
 
@@ -189,7 +189,7 @@ namespace CatsAndArrows.Tests
         public void CompletionOrInvalidClockDuringPendingHoldCancelsIt()
         {
             hold.Begin(1, Center(origin));
-            foreach (var cat in session.Puzzle.SolutionCats) { session.Tap(cat); session.Tap(cat); }
+            foreach (var paw in session.Puzzle.SolutionPaws) { session.Tap(paw); session.Tap(paw); }
             now += 2; Assert.That(hold.Tick(), Is.False);
             Assert.That(hold.HasActivePointer, Is.False);
             session = MakeSession(5, origin, Direction.DownRight);

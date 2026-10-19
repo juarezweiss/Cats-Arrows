@@ -56,11 +56,11 @@ namespace CatsAndArrows.Tests
         [TestCase(Direction.Right, 1, 2, 1, 0)]
         [TestCase(Direction.Up, 0, 1, 2, 1)]
         [TestCase(Direction.Down, 2, 1, 0, 1)]
-        public void OriginalSingleCatCardinalLineProtectsOnlyItsOppositeNormalCell(
-            Direction direction, int catRow, int catColumn, int protectedRow, int protectedColumn)
+        public void OriginalSinglePawCardinalLineProtectsOnlyItsOppositeNormalCell(
+            Direction direction, int pawRow, int pawColumn, int protectedRow, int protectedColumn)
         {
             var puzzle = new PuzzleDefinition(3, 8, "issue8-fixture",
-                new[] { new BoardCoordinate(catRow, catColumn) },
+                new[] { new BoardCoordinate(pawRow, pawColumn) },
                 new[] { new ArrowClue(new BoardCoordinate(1, 1), direction) });
             var protection = ClueProtection.Derive(PuzzleClues.FromPuzzle(puzzle));
             Assert.That(protection, Is.EquivalentTo(new[] { new BoardCoordinate(protectedRow, protectedColumn) }));
@@ -81,7 +81,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void OriginalTwoCatLineNeverProtectsOppositeSideEvenWhenSolverResolvesIt()
+        public void OriginalTwoPawLineNeverProtectsOppositeSideEvenWhenSolverResolvesIt()
         {
             var puzzle = new PuzzleDefinition(3, 8, "issue8-fixture",
                 new[] { new BoardCoordinate(1, 0), new BoardCoordinate(1, 2) },
@@ -111,14 +111,14 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void HintUsesClueProofDespiteIncorrectPlayerCatsAndCorrectsOnlyOneFact()
+        public void HintUsesClueProofDespiteIncorrectPlayerPawsAndCorrectsOnlyOneFact()
         {
-            var puzzle = OneCatPuzzle();
+            var puzzle = OnePawPuzzle();
             var session = new GameSession(puzzle);
             var proof = new HumanDeductionSolver().Solve(PuzzleClues.FromPuzzle(puzzle));
             var first = proof.Steps.SelectMany(step => step.Conclusions).First();
-            Assert.That(first.State, Is.EqualTo(CellKnowledge.NotCat));
-            PlaceCat(session, first.Coordinate);
+            Assert.That(first.State, Is.EqualTo(CellKnowledge.NotPaw));
+            PlacePaw(session, first.Coordinate);
             var before = session.Marks.ToDictionary(pair => pair.Key, pair => pair.Value);
             var hint = session.ApplyHint();
             Assert.That(hint.Status, Is.EqualTo(HintStatus.Applied));
@@ -127,21 +127,21 @@ namespace CatsAndArrows.Tests
             Assert.That(session.GetMark(first.Coordinate), Is.EqualTo(PlayerMark.X));
             Assert.That(session.Marks.Count(pair => before[pair.Key] != pair.Value), Is.EqualTo(1));
             Assert.That(hint.Step.Conclusions.Any(assignment => assignment.Coordinate.Equals(first.Coordinate)
-                && assignment.State == CellKnowledge.NotCat), Is.True);
+                && assignment.State == CellKnowledge.NotPaw), Is.True);
         }
 
         [Test]
-        public void HintCorrectsWrongXOnCatAndCompletesImmediatelyThenBecomesReadOnly()
+        public void HintCorrectsWrongXOnPawAndCompletesImmediatelyThenBecomesReadOnly()
         {
-            var session = new GameSession(OneCatPuzzle());
-            var cat = new BoardCoordinate(1, 1);
-            Assert.That(session.Tap(cat), Is.True);
+            var session = new GameSession(OnePawPuzzle());
+            var paw = new BoardCoordinate(1, 1);
+            Assert.That(session.Tap(paw), Is.True);
             HintResult hint = null;
             for (var request = 0; request < 9 && !session.IsCompleted; request++) hint = session.ApplyHint();
             Assert.That(session.IsCompleted, Is.True);
-            Assert.That(hint.Assignment.Value.Coordinate, Is.EqualTo(cat));
+            Assert.That(hint.Assignment.Value.Coordinate, Is.EqualTo(paw));
             Assert.That(hint.Corrected, Is.True);
-            Assert.That(session.GetMark(cat), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(session.GetMark(paw), Is.EqualTo(PlayerMark.Paw));
             var completed = session.Marks.ToArray();
             Assert.That(session.ApplyHint().Status, Is.EqualTo(HintStatus.Completed));
             Assert.That(session.Clear(), Is.False);
@@ -177,7 +177,7 @@ namespace CatsAndArrows.Tests
                 {
                     Assert.That(session.Puzzle.IsArrow(protectedCell), Is.False);
                     Assert.That(proof.Assignments.Any(a => a.Coordinate.Equals(protectedCell)
-                        && a.State == CellKnowledge.NotCat), Is.True);
+                        && a.State == CellKnowledge.NotPaw), Is.True);
                 }
                 for (var request = 0; request < 25 && !session.IsCompleted; request++)
                 {
@@ -195,10 +195,10 @@ namespace CatsAndArrows.Tests
             }
         }
 
-        private static PuzzleDefinition OneCatPuzzle() => new PuzzleDefinition(3, 1, "issue8-fixture",
+        private static PuzzleDefinition OnePawPuzzle() => new PuzzleDefinition(3, 1, "issue8-fixture",
             new[] { new BoardCoordinate(1, 1) }, Array.Empty<ArrowClue>());
 
-        private static void PlaceCat(GameSession session, BoardCoordinate cell)
+        private static void PlacePaw(GameSession session, BoardCoordinate cell)
         {
             Assert.That(session.Tap(cell), Is.True);
             Assert.That(session.Tap(cell), Is.True);

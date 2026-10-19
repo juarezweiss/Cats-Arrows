@@ -34,38 +34,38 @@ namespace CatsAndArrows.Core
                 {
                     if (evaluations >= options.MaxHumanConstraintEvaluations) return Result(HumanSolverStatus.BudgetExceeded);
                     evaluations++;
-                    var cats = constraint.Cells.Count(i => states[i] == CellKnowledge.Cat);
+                    var paws = constraint.Cells.Count(i => states[i] == CellKnowledge.Paw);
                     var unknown = constraint.Cells.Where(i => states[i] == CellKnowledge.Unknown).ToArray();
-                    var remaining = constraint.RequiredCats - cats;
+                    var remaining = constraint.RequiredPaws - paws;
                     if ((constraint.IsExact && (remaining < 0 || remaining > unknown.Length)) ||
-                        (!constraint.IsExact && cats == 0 && unknown.Length == 0))
+                        (!constraint.IsExact && paws == 0 && unknown.Length == 0))
                         return Result(HumanSolverStatus.Contradiction, "A visible clue has no feasible completion.");
 
                     string ruleId = null;
                     var kind = DeductionKind.ConstraintPropagation;
-                    var conclusionState = CellKnowledge.NotCat;
+                    var conclusionState = CellKnowledge.NotPaw;
                     var affected = Array.Empty<int>();
                     var sources = new[] { constraint };
                     if (constraint.IsExact && unknown.Length > 0)
                     {
                         if (remaining == 0)
                         {
-                            ruleId = constraint.RequiredCats == 0 ? DeductionRules.ZeroLine : DeductionRules.LineSatisfied;
-                            kind = constraint.RequiredCats == 0 ? DeductionKind.ZeroLine : DeductionKind.LineSatisfied;
+                            ruleId = constraint.RequiredPaws == 0 ? DeductionRules.ZeroLine : DeductionRules.LineSatisfied;
+                            kind = constraint.RequiredPaws == 0 ? DeductionKind.ZeroLine : DeductionKind.LineSatisfied;
                             affected = unknown;
                         }
                         else if (remaining == unknown.Length)
                         {
                             ruleId = DeductionRules.FillRemainingLine; kind = DeductionKind.FillRemainingLine;
-                            affected = unknown; conclusionState = CellKnowledge.Cat;
+                            affected = unknown; conclusionState = CellKnowledge.Paw;
                         }
                     }
-                    else if (!constraint.IsExact && cats == 0)
+                    else if (!constraint.IsExact && paws == 0)
                     {
                         if (unknown.Length == 1)
                         {
                             ruleId = DeductionRules.ArrowSingleton; kind = DeductionKind.ArrowSegment;
-                            affected = unknown; conclusionState = CellKnowledge.Cat;
+                            affected = unknown; conclusionState = CellKnowledge.Paw;
                         }
                         else if (DirectionGeometry.IsCardinal(constraint.Source.Direction))
                         {
@@ -74,8 +74,8 @@ namespace CatsAndArrows.Core
                             var arrow = constraint.Source;
                             var line = arrow.Direction == Direction.Left || arrow.Direction == Direction.Right
                                 ? constraints.Rows[arrow.Coordinate.Row] : constraints.Columns[arrow.Coordinate.Column];
-                            var lineCats = line.Cells.Count(i => states[i] == CellKnowledge.Cat);
-                            if (line.RequiredCats - lineCats == 1)
+                            var linePaws = line.Cells.Count(i => states[i] == CellKnowledge.Paw);
+                            if (line.RequiredPaws - linePaws == 1)
                             {
                                 affected = line.Cells.Where(i => states[i] == CellKnowledge.Unknown && !constraint.Cells.Contains(i)).ToArray();
                                 if (affected.Length > 0)
@@ -87,7 +87,7 @@ namespace CatsAndArrows.Core
                         }
                     }
                     if (ruleId == null) continue;
-                    var premises = sources.Select(source => new DeductionPremise(source.Source, source.RequiredCats,
+                    var premises = sources.Select(source => new DeductionPremise(source.Source, source.RequiredPaws,
                         source.Cells.Select(i => new CellAssignment(constraints.Coordinate(i), states[i])))).ToArray();
                     var dependencies = sources.SelectMany(s => s.Cells).Select(i => originStep[i]).Where(i => i >= 0);
                     var conclusions = affected.Select(i => new CellAssignment(constraints.Coordinate(i), conclusionState)).ToArray();

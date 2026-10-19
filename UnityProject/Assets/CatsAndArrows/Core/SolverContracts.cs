@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CatsAndArrows.Core
 {
-    public enum CellKnowledge { Unknown, Cat, NotCat }
+    public enum CellKnowledge { Unknown = 0, Paw = 1, NotPaw = 2 }
     public enum ConstraintKind { Row, Column, Arrow }
     public enum HumanSolverStatus { Solved, Stalled, Contradiction, InvalidInput, BudgetExceeded }
     public enum UniquenessStatus { Unique, Multiple, NoSolution, InvalidInput, Incomplete }
@@ -49,12 +49,12 @@ namespace CatsAndArrows.Core
     {
         public ConstraintReference Source { get; }
         // Arrow requirements are lower bounds; row/column totals are exact.
-        public int RequiredCats { get; }
+        public int RequiredPaws { get; }
         public IReadOnlyList<CellAssignment> Cells { get; }
-        public int KnownCatCount => Cells.Count(c => c.State == CellKnowledge.Cat);
+        public int KnownPawCount => Cells.Count(c => c.State == CellKnowledge.Paw);
         public int UnknownCount => Cells.Count(c => c.State == CellKnowledge.Unknown);
-        public DeductionPremise(ConstraintReference source, int requiredCats, IEnumerable<CellAssignment> cells)
-        { Source = source; RequiredCats = requiredCats; Cells = Array.AsReadOnly(cells.ToArray()); }
+        public DeductionPremise(ConstraintReference source, int requiredPaws, IEnumerable<CellAssignment> cells)
+        { Source = source; RequiredPaws = requiredPaws; Cells = Array.AsReadOnly(cells.ToArray()); }
     }
 
     public sealed class DeductionStep
@@ -99,8 +99,8 @@ namespace CatsAndArrows.Core
         public int StepCount { get; }
         public IReadOnlyDictionary<string, int> RuleCounts { get; }
         public string HardestRuleId { get; }
-        public int CatsResolved { get; }
-        public int NotCatsResolved { get; }
+        public int PawsResolved { get; }
+        public int NotPawsResolved { get; }
         public int MaximumDependencyDepth { get; }
         public int MaximumUnresolvedCandidatesPerLine { get; }
         public double InitialArrowDensity { get; }
@@ -115,8 +115,8 @@ namespace CatsAndArrows.Core
             var rank = new[] { DeductionRules.ZeroLine, DeductionRules.LineSatisfied, DeductionRules.FillRemainingLine,
                 DeductionRules.ArrowSingleton, DeductionRules.ArrowLineExclusion };
             HardestRuleId = steps.Count == 0 ? null : steps.OrderByDescending(s => Array.IndexOf(rank, s.RuleId)).First().RuleId;
-            CatsResolved = steps.Sum(s => s.Conclusions.Count(c => c.State == CellKnowledge.Cat));
-            NotCatsResolved = steps.Sum(s => s.Conclusions.Count(c => c.State == CellKnowledge.NotCat));
+            PawsResolved = steps.Sum(s => s.Conclusions.Count(c => c.State == CellKnowledge.Paw));
+            NotPawsResolved = steps.Sum(s => s.Conclusions.Count(c => c.State == CellKnowledge.NotPaw));
             var depths = new int[steps.Count];
             foreach (var step in steps)
                 depths[step.Index] = 1 + (step.DependencyStepIds.Count == 0 ? 0 : step.DependencyStepIds.Max(i => depths[i]));
@@ -126,7 +126,7 @@ namespace CatsAndArrows.Core
             InitialArrowDensity = boardCells <= 0 ? 0 : arrowCount / boardCells;
             var normalCells = boardCells - arrowCount;
             ImmediateEliminationProportion = steps.Count == 0 || normalCells <= 0 ? 0 :
-                steps[0].Conclusions.Count(c => c.State == CellKnowledge.NotCat) / normalCells;
+                steps[0].Conclusions.Count(c => c.State == CellKnowledge.NotPaw) / normalCells;
         }
     }
 

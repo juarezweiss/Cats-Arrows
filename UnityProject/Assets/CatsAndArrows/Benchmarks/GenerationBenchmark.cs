@@ -139,11 +139,11 @@ namespace CatsAndArrows.Benchmarks
                         result.Assessment.Solver.Human).Count;
                     sample.fixedCellFraction = (double)(sample.arrows + sample.hatches) /
                         (result.Puzzle.Size * result.Puzzle.Size);
-                    sample.cats = result.Puzzle.SolutionCats.Count;
+                    sample.cats = result.Puzzle.SolutionPaws.Count;
                     sample.deductionSteps = result.Assessment.Solver.Human.Metrics.StepCount;
                     sample.dependencyDepth = result.Assessment.Solver.Human.Metrics.MaximumDependencyDepth;
                     sample.stepsToLastCat = result.Assessment.Solver.Human.Steps
-                        .Where(step => step.Conclusions.Any(a => a.State == CellKnowledge.Cat))
+                        .Where(step => step.Conclusions.Any(a => a.State == CellKnowledge.Paw))
                         .Select(step => step.Index + 1).DefaultIfEmpty(0).Max();
                 }
                 return true;
@@ -232,6 +232,7 @@ namespace CatsAndArrows.Benchmarks
         private sealed class Sample
         {
             public int seed, attempts, humanEvaluations, verifierNodes;
+            // Legacy field names are part of the generation-benchmark-v2 JSON schema.
             public int arrows = -1, cats = -1, deductionSteps = -1, dependencyDepth = -1, stepsToLastCat = -1;
             public int hatches = -1, pruningTrials, pruningDeletionsRetained, pruningHumanEvaluations, pruningVerifierNodes;
             public bool pruningBudgetExhausted;

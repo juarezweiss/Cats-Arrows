@@ -6,7 +6,7 @@ using CatsAndArrows.Gameplay;
 
 namespace CatsAndArrows.UI
 {
-    public enum BoardCellKind { Empty, X, Cat, Arrow, Protected }
+    public enum BoardCellKind { Empty = 0, X = 1, Paw = 2, Arrow = 3, Protected = 4 }
 
     public sealed class BoardCellPresentation
     {
@@ -44,7 +44,7 @@ namespace CatsAndArrows.UI
                 if (arrows.TryGetValue(coordinate, out var arrow)) { kind = BoardCellKind.Arrow; direction = arrow; }
                 else if (protectedCells.Contains(coordinate)) kind = BoardCellKind.Protected;
                 else if (session.GetMark(coordinate) == PlayerMark.X) kind = BoardCellKind.X;
-                else if (session.GetMark(coordinate) == PlayerMark.Cat) kind = BoardCellKind.Cat;
+                else if (session.GetMark(coordinate) == PlayerMark.Paw) kind = BoardCellKind.Paw;
                 cells.Add(new BoardCellPresentation(coordinate, kind, direction, session.CanInteract(coordinate)));
             }
             Cells = cells.AsReadOnly();

@@ -33,7 +33,7 @@ namespace CatsAndArrows.UI
                     {
                         Require(shell.ActiveSession.Marks.Values.All(mark => mark == PlayerMark.Empty), "demo leaves all player marks Empty");
                         var expected = shell.Tutorial.DemoMark.Value == PlayerMark.X ? BoardCellKind.X
-                            : shell.Tutorial.DemoMark.Value == PlayerMark.Cat ? BoardCellKind.Cat : BoardCellKind.Empty;
+                            : shell.Tutorial.DemoMark.Value == PlayerMark.Paw ? BoardCellKind.Paw : BoardCellKind.Empty;
                         Require(shell.BoardView.Q<VisualElement>("cell-" + shell.Tutorial.DemoCoordinate.Value.Row + "-" + shell.Tutorial.DemoCoordinate.Value.Column).Q<BoardSymbolElement>().Kind == expected, "demo symbol matches lesson");
                         Require(shell.BoardView.Q<Label>("completion-status").text.Contains("<b>"), "state keyword bold");
                     }
@@ -64,20 +64,20 @@ namespace CatsAndArrows.UI
                 Require(shell.ActiveSession.GetMark(new BoardCoordinate(0, 1)) == PlayerMark.Empty, "no next-step spill");
             })) yield break;
             yield return Capture(shell, captures, "zero-row");
-            if (!Check(() => { Drag(shell, 0, 1, 0, 4); Require(shell.Tutorial.Step == TutorialStep.FirstCat, "zero row skips fixed/intersection"); })) yield break;
-            yield return Capture(shell, captures, "first-cat");
-            if (!Check(() => { Tap(shell, 1, 4); Tap(shell, 1, 4); Require(shell.Tutorial.Step == TutorialStep.FirstColumnX, "first cat"); })) yield break;
+            if (!Check(() => { Drag(shell, 0, 1, 0, 4); Require(shell.Tutorial.Step == TutorialStep.FirstPaw, "zero row skips fixed/intersection"); })) yield break;
+            yield return Capture(shell, captures, "first-paw");
+            if (!Check(() => { Tap(shell, 1, 4); Tap(shell, 1, 4); Require(shell.Tutorial.Step == TutorialStep.FirstColumnX, "first paw"); })) yield break;
             yield return Capture(shell, captures, "column-x");
-            if (!Check(() => { Drag(shell, 2, 4, 4, 4); Require(shell.Tutorial.Step == TutorialStep.SecondCat, "column quota"); })) yield break;
-            yield return Capture(shell, captures, "second-cat");
-            if (!Check(() => { Tap(shell, 4, 2); Tap(shell, 4, 2); Require(shell.Tutorial.Step == TutorialStep.SecondRowX, "second cat"); })) yield break;
+            if (!Check(() => { Drag(shell, 2, 4, 4, 4); Require(shell.Tutorial.Step == TutorialStep.SecondPaw, "column quota"); })) yield break;
+            yield return Capture(shell, captures, "second-paw");
+            if (!Check(() => { Tap(shell, 4, 2); Tap(shell, 4, 2); Require(shell.Tutorial.Step == TutorialStep.SecondRowX, "second paw"); })) yield break;
             yield return Capture(shell, captures, "row-x");
-            if (!Check(() => { Drag(shell, 4, 1, 4, 3); Require(shell.Tutorial.Step == TutorialStep.DiagonalCat, "swipe across cat"); Require(shell.ActiveSession.GetMark(new BoardCoordinate(4, 2)) == PlayerMark.Cat, "existing cat preserved"); })) yield break;
+            if (!Check(() => { Drag(shell, 4, 1, 4, 3); Require(shell.Tutorial.Step == TutorialStep.DiagonalPaw, "swipe across paw"); Require(shell.ActiveSession.GetMark(new BoardCoordinate(4, 2)) == PlayerMark.Paw, "existing paw preserved"); })) yield break;
             yield return Capture(shell, captures, "diagonal");
-            if (!Check(() => { Tap(shell, 2, 1); Tap(shell, 2, 1); Require(shell.Tutorial.Step == TutorialStep.FourthCat, "diagonal cat"); })) yield break;
-            yield return Capture(shell, captures, "two-cat-row");
-            if (!Check(() => { Tap(shell, 2, 3); Tap(shell, 2, 3); Require(shell.Tutorial.Step == TutorialStep.SingleX, "two cat row"); Tap(shell, 3, 3); Require(shell.Tutorial.Step == TutorialStep.FinalCat, "single X cleanup"); })) yield break;
-            yield return Capture(shell, captures, "last-cat");
+            if (!Check(() => { Tap(shell, 2, 1); Tap(shell, 2, 1); Require(shell.Tutorial.Step == TutorialStep.FourthPaw, "diagonal paw"); })) yield break;
+            yield return Capture(shell, captures, "two-paw-row");
+            if (!Check(() => { Tap(shell, 2, 3); Tap(shell, 2, 3); Require(shell.Tutorial.Step == TutorialStep.SingleX, "two paw row"); Tap(shell, 3, 3); Require(shell.Tutorial.Step == TutorialStep.FinalPaw, "single X cleanup"); })) yield break;
+            yield return Capture(shell, captures, "last-paw");
             if (!Check(() =>
             {
                 Tap(shell, 3, 1); Tap(shell, 3, 1);
@@ -108,12 +108,12 @@ namespace CatsAndArrows.UI
             yield return new WaitForEndOfFrame();
             if (!Check(() =>
             {
-                Tap(shell, 0, 1); Tap(shell, 0, 1); // A wrong extra cat must prevent completion.
+                Tap(shell, 0, 1); Tap(shell, 0, 1); // A wrong extra paw must prevent completion.
                 Drag(shell, 0, 0, 4, 0); // Free input supports the same ordinary swipe rules.
-                foreach (var cat in shell.ActiveSession.Puzzle.SolutionCats.ToArray())
-                { Tap(shell, cat.Row, cat.Column); Tap(shell, cat.Row, cat.Column); }
-                Require(shell.Tutorial.Step == TutorialStep.Independent && !shell.ActiveSession.IsCompleted, "wrong extra cat prevents victory");
-                Tap(shell, 0, 1); // Correct the hypothesis; non-cat cells may remain Empty.
+                foreach (var paw in shell.ActiveSession.Puzzle.SolutionPaws.ToArray())
+                { Tap(shell, paw.Row, paw.Column); Tap(shell, paw.Row, paw.Column); }
+                Require(shell.Tutorial.Step == TutorialStep.Independent && !shell.ActiveSession.IsCompleted, "wrong extra paw prevents victory");
+                Tap(shell, 0, 1); // Correct the hypothesis; non-paw cells may remain Empty.
                 Require(shell.Tutorial.IsComplete && shell.ActiveSession.IsCompleted, "independent solve completes tutorial");
                 var marks = shell.ActiveSession.Marks.ToArray(); Tap(shell, 3, 1);
                 Require(shell.ActiveSession.Marks.SequenceEqual(marks) && !shell.BoardView.InteractionEnabled, "completed board locked");

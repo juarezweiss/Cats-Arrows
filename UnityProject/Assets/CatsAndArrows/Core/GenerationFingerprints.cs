@@ -11,21 +11,21 @@ namespace CatsAndArrows.Core
         public static string ForSolution(PuzzleDefinition puzzle)
         {
             if (puzzle == null) throw new ArgumentNullException(nameof(puzzle));
-            return Hash("cats-arrows-solution-v1\n" + Number(puzzle.Size) + "\n" + Cats(puzzle) + "\n");
+            return Hash("cats-arrows-solution-v1\n" + Number(puzzle.Size) + "\n" + Paws(puzzle) + "\n");
         }
 
         // Logical contents only: metadata/seed/version live alongside this hash.
         public static string ForBoard(PuzzleDefinition puzzle)
         {
             if (puzzle == null) throw new ArgumentNullException(nameof(puzzle));
-            var rows = string.Join(",", Enumerable.Range(0, puzzle.Size).Select(i => Number(puzzle.GetRowCatCount(i))));
-            var columns = string.Join(",", Enumerable.Range(0, puzzle.Size).Select(i => Number(puzzle.GetColumnCatCount(i))));
+            var rows = string.Join(",", Enumerable.Range(0, puzzle.Size).Select(i => Number(puzzle.GetRowPawCount(i))));
+            var columns = string.Join(",", Enumerable.Range(0, puzzle.Size).Select(i => Number(puzzle.GetColumnPawCount(i))));
             var arrows = string.Join(";", puzzle.Arrows.OrderBy(a => a.Key.Row).ThenBy(a => a.Key.Column)
                 .Select(a => Number(a.Key.Row) + "," + Number(a.Key.Column) + "," + Number((int)a.Value)));
-            return Hash("cats-arrows-board-v1\n" + Number(puzzle.Size) + "\n" + rows + "\n" + columns + "\n" + Cats(puzzle) + "\n" + arrows + "\n");
+            return Hash("cats-arrows-board-v1\n" + Number(puzzle.Size) + "\n" + rows + "\n" + columns + "\n" + Paws(puzzle) + "\n" + arrows + "\n");
         }
 
-        private static string Cats(PuzzleDefinition puzzle) => string.Join(";", puzzle.SolutionCats.OrderBy(c => c.Row).ThenBy(c => c.Column)
+        private static string Paws(PuzzleDefinition puzzle) => string.Join(";", puzzle.SolutionPaws.OrderBy(c => c.Row).ThenBy(c => c.Column)
             .Select(c => Number(c.Row) + "," + Number(c.Column)));
         private static string Number(int value) => value.ToString(CultureInfo.InvariantCulture);
         private static string Hash(string contents)

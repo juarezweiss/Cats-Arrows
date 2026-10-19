@@ -42,7 +42,7 @@ namespace CatsAndArrows.UI
                 "<b>X</b>: esta célula não contém uma pata.",
                 "<b>X</b>: esta celda no contiene una pata."
             } },
-            { "tutorial.cat-state", new[] {
+            { "tutorial.paw-state", new[] {
                 "<b>Paw</b>: this cell contains a paw.",
                 "<b>Pata</b>: esta célula contém uma pata.",
                 "<b>Pata</b>: esta celda contiene una pata."
@@ -72,7 +72,7 @@ namespace CatsAndArrows.UI
                 "Esta linha tem 0 patas. Arraste pelas células vazias para marcar X.",
                 "Esta fila tiene 0 patas. Desliza por las celdas vacías para marcar X."
             } },
-            { "tutorial.first-cat", new[] {
+            { "tutorial.first-paw", new[] {
                 "This arrow’s only space must be a paw. Tap it twice.",
                 "Só há uma célula à frente da seta. Toque 2 vezes para uma pata.",
                 "Solo hay una celda delante de la flecha. Toca 2 veces para una pata."
@@ -82,7 +82,7 @@ namespace CatsAndArrows.UI
                 "A coluna já tem sua única pata. Arraste pelas vazias para X.",
                 "La columna ya tiene su pata. Desliza por las vacías para marcar X."
             } },
-            { "tutorial.second-cat", new[] {
+            { "tutorial.second-paw", new[] {
                 "This arrow also has just one space ahead. Tap it twice for a paw.",
                 "Outra seta com só uma célula à frente. Toque 2 vezes para uma pata.",
                 "Otra flecha con una sola celda delante. Toca 2 veces para una pata."
@@ -92,12 +92,12 @@ namespace CatsAndArrows.UI
                 "Esta linha já tem sua única pata. Arraste pelas vazias para X; a pata fica.",
                 "La fila ya tiene su pata. Desliza por las vacías para X; la pata queda."
             } },
-            { "tutorial.diagonal-cat", new[] {
+            { "tutorial.diagonal-paw", new[] {
                 "Follow the 45° arrow. Only this cell can have a paw. Tap twice.",
                 "Siga a seta a 45°. Só esta célula pode ter pata. Toque 2 vezes.",
                 "Sigue la flecha a 45°. Solo esta celda puede tener pata. Toca 2 veces."
             } },
-            { "tutorial.fourth-cat", new[] {
+            { "tutorial.fourth-paw", new[] {
                 "This row needs 2 paws. One is found; only this cell remains. Tap twice.",
                 "Esta linha pede 2 patas. Já há uma; só resta esta célula. Toque 2 vezes.",
                 "Esta fila pide 2 patas. Ya hay una; solo queda esta celda. Toca 2 veces."
@@ -107,7 +107,7 @@ namespace CatsAndArrows.UI
                 "Esta coluna já tem sua única pata. Toque uma vez na vazia restante para X.",
                 "Esta columna ya tiene su pata. Toca la última vacía una vez para X."
             } },
-            { "tutorial.final-cat", new[] {
+            { "tutorial.final-paw", new[] {
                 "This column needs 2 paws. One is found. Tap twice for the last paw.",
                 "Esta coluna pede 2 patas. Já há uma. Toque 2 vezes para a última.",
                 "Esta columna pide 2 patas. Ya hay una. Toca 2 veces para la última."

@@ -490,10 +490,22 @@ inconclusive NUnit results make the test command fail. Compilation alone does no
 prove the tests ran.
 
 The bootstrap has eight original EditMode tests. Issue #5 corrects the ordering in
-`ExtraCatPreventsVictory`: the extra cat is placed before completing the solution.
-The test checks that each mark was applied, that the extra cat prevents victory,
+`ExtraPawPreventsVictory`: the extra paw is placed before completing the solution.
+The test checks that each mark was applied, that the extra paw prevents victory,
 and that removing it immediately wins. Gameplay keeps immediate victory and the
 completed-board lock; the correction changes only the fixture.
+
+## Issue #55 internal Paw terminology compatibility
+
+Gameplay/domain APIs, tests, localization keys, and current source-of-truth docs
+use Paw terminology. Renamed enum members retain their previous numeric values:
+`CellKnowledge.Paw = 1`, `CellKnowledge.NotPaw = 2`, `PlayerMark.Paw = 2`, and
+`BoardCellKind.Paw = 2`; tutorial step values are also explicit and unchanged.
+Board progress and solver state are not persisted. Existing preference keys,
+generator/ruleset versions, fingerprint prefixes and canonical coordinate input
+remain unchanged, so prior reproduction receipts keep identical hashes. The
+`generation-benchmark-v2` JSON fields `cats` and `stepsToLastCat` are retained as
+legacy schema names.
 
 The runner contracts themselves can be checked without Unity:
 
@@ -539,16 +551,16 @@ UI to exercise yet.
 
 ## Issue #5 session regression coverage
 
-`GameSessionTests` covers the tap cycle, extra-cat victory regression, mixed
+`GameSessionTests` covers the tap cycle, extra-paw victory regression, mixed
 Empty/X non-solution marks at victory, completed-state tap/drag/Clear rejection,
 and Clear preserving puzzle identity and protected eligibility. Mixed drags
-include Empty, X, Cat, arrow, protected, duplicate, and outside-board coordinates.
+include Empty, X, Paw, arrow, protected, duplicate, and outside-board coordinates.
 All four board edges, null/empty drag, null puzzle, copied protected input,
-duplicate/arrow normalization, and invalid protected coordinates/cats are tested.
+duplicate/arrow normalization, and invalid protected coordinates/paws are tested.
 
 Collection mutation attempts before and after victory must throw, while the live
 read-only marks view must continue to reflect legitimate session transitions.
-A generic zero-cat fixture starts completed; this does not alter generated Easy
+A generic zero-paw fixture starts completed; this does not alter generated Easy
 policy. Gesture axis locking and release-event suppression belong to Issue #7
 and are not claimed as tested by these pure session tests.
 
@@ -615,9 +627,9 @@ loading animation duration or background scheduling policy.
 3. Device smoke tests: iOS + Android touch, safe-area, performance, lifecycle.
 
 ## Mandatory puzzle tests
-- arrow cell can never be solution cat;
+- arrow cell can never be solution paw;
 - row/column totals equal solution;
-- maximum cat counts by profile;
+- maximum paw counts by profile;
 - zero-row/zero-column cap;
 - arrow truth for every generated arrow;
 - generated puzzle unique;
@@ -626,12 +638,12 @@ loading animation duration or background scheduling policy.
 - invalid candidates rejected.
 
 ## Mandatory session tests
-- tap: Empty -> X -> Cat -> Empty;
+- tap: Empty -> X -> Paw -> Empty;
 - drag affects Empty only;
 - drag never modifies arrow/protected/completed cells;
 - drag processes each cell once;
 - exact solution triggers win immediately;
-- extra player cat prevents win;
+- extra player paw prevents win;
 - Empty and X are both acceptable outside solution;
 - Clear resets player marks only;
 - New Game replaces puzzle but preserves selected difficulty;

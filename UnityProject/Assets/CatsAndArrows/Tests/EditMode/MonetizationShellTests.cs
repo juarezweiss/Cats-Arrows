@@ -272,7 +272,7 @@ namespace CatsAndArrows.Tests
             var shell = new GameShellView(14, "en", PlayTestFactory.Loop(), tutorialSeen: () => true,
                 markTutorialSeen: () => { }, monetization: coordinator);
             shell.StartTutorial();
-            foreach (var cat in shell.ActiveSession.Puzzle.SolutionCats) { shell.ActiveSession.Tap(cat); shell.ActiveSession.Tap(cat); }
+            foreach (var paw in shell.ActiveSession.Puzzle.SolutionPaws) { shell.ActiveSession.Tap(paw); shell.ActiveSession.Tap(paw); }
             coordinator.RecordCompletion(); shell.RequestHint();
             Assert.That(coordinator.Snapshot.OrdinaryBoardsCompleted, Is.Zero);
             Assert.That(coordinator.Snapshot.NextBoardInstance, Is.EqualTo(1));

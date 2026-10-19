@@ -13,23 +13,35 @@ namespace CatsAndArrows.Tests
         private static BoardCoordinate C(int row, int column) => new BoardCoordinate(row, column);
 
         [Test]
-        public void FixtureHasExactApprovedCountsArrowsCatsAndDerivedProtection()
+        public void PawTutorialStepsKeepLegacyNumericValues()
+        {
+            Assert.That((int)TutorialStep.PawState, Is.EqualTo(6));
+            Assert.That((int)TutorialStep.FirstPaw, Is.EqualTo(12));
+            Assert.That((int)TutorialStep.SecondPaw, Is.EqualTo(14));
+            Assert.That((int)TutorialStep.DiagonalPaw, Is.EqualTo(16));
+            Assert.That((int)TutorialStep.FourthPaw, Is.EqualTo(17));
+            Assert.That((int)TutorialStep.FinalPaw, Is.EqualTo(19));
+            Assert.That((int)TutorialStep.Complete, Is.EqualTo(21));
+        }
+
+        [Test]
+        public void FixtureHasExactApprovedCountsArrowsPawsAndDerivedProtection()
         {
             var puzzle = TutorialFixture.CreatePuzzle();
             Assert.That(puzzle.Size, Is.EqualTo(5));
             Assert.That(puzzle.Seed, Is.EqualTo(26));
             Assert.That(puzzle.GeneratorVersion, Is.EqualTo("tutorial-v1"));
-            Assert.That(Enumerable.Range(0, 5).Select(puzzle.GetRowCatCount), Is.EqualTo(new[] { 0, 1, 2, 1, 1 }));
-            Assert.That(Enumerable.Range(0, 5).Select(puzzle.GetColumnCatCount), Is.EqualTo(new[] { 0, 2, 1, 1, 1 }));
-            Assert.That(puzzle.SolutionCats, Is.EquivalentTo(new[] { C(1, 4), C(4, 2), C(2, 1), C(2, 3), C(3, 1) }));
+            Assert.That(Enumerable.Range(0, 5).Select(puzzle.GetRowPawCount), Is.EqualTo(new[] { 0, 1, 2, 1, 1 }));
+            Assert.That(Enumerable.Range(0, 5).Select(puzzle.GetColumnPawCount), Is.EqualTo(new[] { 0, 2, 1, 1, 1 }));
+            Assert.That(puzzle.SolutionPaws, Is.EquivalentTo(new[] { C(1, 4), C(4, 2), C(2, 1), C(2, 3), C(3, 1) }));
             Assert.That(puzzle.Arrows.Count, Is.EqualTo(3));
             Assert.That(puzzle.Arrows[C(1, 3)], Is.EqualTo(Direction.Right));
             Assert.That(puzzle.Arrows[C(3, 2)], Is.EqualTo(Direction.Down));
             Assert.That(puzzle.Arrows[C(0, 3)], Is.EqualTo(Direction.DownLeft));
             foreach (var arrow in puzzle.Arrows)
             {
-                Assert.That(puzzle.IsSolutionCat(arrow.Key), Is.False);
-                Assert.That(puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionCat), Is.True);
+                Assert.That(puzzle.IsSolutionPaw(arrow.Key), Is.False);
+                Assert.That(puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionPaw), Is.True);
             }
             Assert.That(TutorialFixture.CreateSession().ProtectedCells,
                 Is.EquivalentTo(new[] { C(0, 2), C(1, 0), C(1, 1), C(1, 2), C(2, 2) }));
@@ -47,9 +59,9 @@ namespace CatsAndArrows.Tests
             Assert.That(human.Status, Is.EqualTo(HumanSolverStatus.Solved));
             Assert.That(unique.Status, Is.EqualTo(UniquenessStatus.Unique));
             Assert.That(unique.Solutions.Count, Is.EqualTo(1));
-            Assert.That(unique.Solutions[0], Is.EquivalentTo(puzzle.SolutionCats));
-            Assert.That(human.Assignments.Where(a => a.State == CellKnowledge.Cat).Select(a => a.Coordinate),
-                Is.EquivalentTo(puzzle.SolutionCats));
+            Assert.That(unique.Solutions[0], Is.EquivalentTo(puzzle.SolutionPaws));
+            Assert.That(human.Assignments.Where(a => a.State == CellKnowledge.Paw).Select(a => a.Coordinate),
+                Is.EquivalentTo(puzzle.SolutionPaws));
         }
 
         [Test]
@@ -62,7 +74,7 @@ namespace CatsAndArrows.Tests
             Assert.That(second.Session, Is.Not.SameAs(first.Session));
             Assert.That(second.Session.Puzzle, Is.Not.SameAs(first.Session.Puzzle));
             Assert.That(second.Session.Puzzle.Seed, Is.EqualTo(first.Session.Puzzle.Seed));
-            Assert.That(second.Session.Puzzle.SolutionCats, Is.EqualTo(first.Session.Puzzle.SolutionCats));
+            Assert.That(second.Session.Puzzle.SolutionPaws, Is.EqualTo(first.Session.Puzzle.SolutionPaws));
             Assert.That(second.Session.Puzzle.Arrows, Is.EquivalentTo(first.Session.Puzzle.Arrows));
             Assert.That(second.Step, Is.EqualTo(TutorialStep.Welcome));
             Assert.That(second.Session.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
@@ -74,7 +86,7 @@ namespace CatsAndArrows.Tests
         public void InformationalStepsRejectInputAndOnlyContinueAdvances()
         {
             var controller = new TutorialController();
-            foreach (var expected in new[] { TutorialStep.Welcome, TutorialStep.Goal, TutorialStep.Begin, TutorialStep.StatesIntro, TutorialStep.EmptyState, TutorialStep.XState, TutorialStep.CatState, TutorialStep.HatchedCells, TutorialStep.Arrows })
+            foreach (var expected in new[] { TutorialStep.Welcome, TutorialStep.Goal, TutorialStep.Begin, TutorialStep.StatesIntro, TutorialStep.EmptyState, TutorialStep.XState, TutorialStep.PawState, TutorialStep.HatchedCells, TutorialStep.Arrows })
             {
                 Assert.That(controller.Step, Is.EqualTo(expected));
                 Assert.That(controller.CanContinue, Is.True);
@@ -103,7 +115,7 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.Session.GetMark(C(0, 0)), Is.EqualTo(PlayerMark.X));
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Tap(C(0, 0)), Is.True);
-            Assert.That(controller.Session.GetMark(C(0, 0)), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(controller.Session.GetMark(C(0, 0)), Is.EqualTo(PlayerMark.Paw));
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Tap(C(0, 0)), Is.True);
             Assert.That(controller.Session.GetMark(C(0, 0)), Is.EqualTo(PlayerMark.Empty));
@@ -128,7 +140,7 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.EndGesture(), Is.False, "One end/cancel cannot consume the next instruction.");
             Assert.That(controller.ApplyDrag(new[] { C(0, 0), C(0, 1), C(0, 2), C(0, 3), C(0, 4) }), Is.EqualTo(2));
             Assert.That(controller.EndGesture(), Is.True);
-            Assert.That(controller.Step, Is.EqualTo(TutorialStep.FirstCat));
+            Assert.That(controller.Step, Is.EqualTo(TutorialStep.FirstPaw));
             Assert.That(controller.Session.Marks.ContainsKey(C(0, 2)), Is.False);
             Assert.That(controller.Session.Marks.ContainsKey(C(0, 3)), Is.False);
         }
@@ -149,16 +161,16 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void CatLessonUsesOrdinaryTwoTapsAndCanRecoverFromAnExtraTapBeforeRelease()
+        public void PawLessonUsesOrdinaryTwoTapsAndCanRecoverFromAnExtraTapBeforeRelease()
         {
             var controller = new TutorialController();
-            ReachFirstCat(controller);
+            ReachFirstPaw(controller);
             Assert.That(controller.ApplyDrag(new[] { C(1, 4) }), Is.Zero);
             Assert.That(controller.Tap(C(2, 1)), Is.False);
             Assert.That(controller.Tap(C(1, 4)), Is.True);
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Tap(C(1, 4)), Is.True);
-            Assert.That(controller.Tap(C(1, 4)), Is.True); // Cat -> Empty before release.
+            Assert.That(controller.Tap(C(1, 4)), Is.True); // Paw -> Empty before release.
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Tap(C(1, 4)), Is.True);
             Assert.That(controller.Tap(C(1, 4)), Is.True);
@@ -176,7 +188,7 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.Session.IsCompleted, Is.False);
             Assert.That(controller.IsComplete, Is.False);
             Assert.That(controller.Session.Puzzle.Seed, Is.EqualTo(guided.Puzzle.Seed));
-            Assert.That(controller.Session.Puzzle.SolutionCats, Is.EqualTo(guided.Puzzle.SolutionCats));
+            Assert.That(controller.Session.Puzzle.SolutionPaws, Is.EqualTo(guided.Puzzle.SolutionPaws));
             Assert.That(controller.Session.Puzzle.Arrows, Is.EquivalentTo(guided.Puzzle.Arrows));
             Assert.That(controller.Session.ProtectedCells, Is.EqualTo(guided.ProtectedCells));
             Assert.That(controller.Session.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
@@ -187,7 +199,7 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.DemoCoordinate, Is.Null);
             Assert.That(controller.DemoMark, Is.Null);
             Assert.That(controller.EndGesture(), Is.False);
-            foreach (var cell in controller.Session.Puzzle.SolutionCats)
+            foreach (var cell in controller.Session.Puzzle.SolutionPaws)
             {
                 Assert.That(controller.CanInteract(cell), Is.True);
                 Assert.That(controller.CanDrag(cell), Is.True);
@@ -204,15 +216,15 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void IndependentBoardAllowsOrdinaryDragAndWrongCatsBlockCompletionUntilCorrected()
+        public void IndependentBoardAllowsOrdinaryDragAndWrongPawsBlockCompletionUntilCorrected()
         {
             var controller = new TutorialController();
             ReachIndependent(controller);
             var extra = C(0, 0);
             Assert.That(controller.ApplyDrag(new[] { extra, extra, C(1, 0), C(0, 3), C(-1, 0) }), Is.EqualTo(1));
             Assert.That(controller.EndGesture(), Is.False);
-            Assert.That(controller.Tap(extra), Is.True); // X -> extra Cat.
-            foreach (var cell in controller.Session.Puzzle.SolutionCats)
+            Assert.That(controller.Tap(extra), Is.True); // X -> extra Paw.
+            foreach (var cell in controller.Session.Puzzle.SolutionPaws)
             {
                 Assert.That(controller.Tap(cell), Is.True);
                 Assert.That(controller.Tap(cell), Is.True);
@@ -220,7 +232,7 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.Session.IsCompleted, Is.False);
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Step, Is.EqualTo(TutorialStep.Independent));
-            Assert.That(controller.Tap(extra), Is.True); // Cat -> Empty restores exact cat set.
+            Assert.That(controller.Tap(extra), Is.True); // Paw -> Empty restores exact paw set.
             Assert.That(controller.Session.IsCompleted, Is.True);
             Assert.That(controller.EndGesture(), Is.True);
             AssertCompletedReadOnly(controller);
@@ -234,14 +246,14 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.Step, Is.EqualTo(TutorialStep.StatesIntro));
             Assert.That(controller.DemoMark, Is.Null);
             Assert.That(controller.Continue(), Is.True);
-            foreach (var expected in new[] { PlayerMark.Empty, PlayerMark.X, PlayerMark.Cat })
+            foreach (var expected in new[] { PlayerMark.Empty, PlayerMark.X, PlayerMark.Paw })
             {
-                var coordinate = expected == PlayerMark.Cat ? C(2, 1) : C(0, 0);
+                var coordinate = expected == PlayerMark.Paw ? C(2, 1) : C(0, 0);
                 Assert.That(controller.DemoCoordinate, Is.EqualTo(coordinate));
                 Assert.That(controller.DemoMark, Is.EqualTo(expected));
                 Assert.That(controller.HighlightedCells, Is.EqualTo(new[] { coordinate }));
                 if (expected != PlayerMark.Empty)
-                    Assert.That(controller.Session.Puzzle.IsSolutionCat(coordinate), Is.EqualTo(expected == PlayerMark.Cat));
+                    Assert.That(controller.Session.Puzzle.IsSolutionPaw(coordinate), Is.EqualTo(expected == PlayerMark.Paw));
                 Assert.That(controller.Session.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
                 Assert.That(controller.Session.IsCompleted, Is.False);
                 Assert.That(controller.CanInteract(C(0, 0)), Is.False);
@@ -283,23 +295,23 @@ namespace CatsAndArrows.Tests
 
         private static GameSession ReachIndependent(TutorialController controller)
         {
-            ReachFirstCat(controller);
-            PlaceCat(controller, C(1, 4), TutorialStep.FirstCat, TutorialStep.FirstColumnX);
-            Drag(controller, new[] { C(0, 4), C(1, 4), C(2, 4), C(3, 4), C(4, 4) }, 3, TutorialStep.SecondCat);
-            PlaceCat(controller, C(4, 2), TutorialStep.SecondCat, TutorialStep.SecondRowX);
-            Drag(controller, new[] { C(4, 0), C(4, 1), C(4, 2), C(4, 3), C(4, 4) }, 2, TutorialStep.DiagonalCat);
-            Assert.That(controller.Session.GetMark(C(4, 2)), Is.EqualTo(PlayerMark.Cat), "Swipe must preserve the cat it crosses.");
+            ReachFirstPaw(controller);
+            PlacePaw(controller, C(1, 4), TutorialStep.FirstPaw, TutorialStep.FirstColumnX);
+            Drag(controller, new[] { C(0, 4), C(1, 4), C(2, 4), C(3, 4), C(4, 4) }, 3, TutorialStep.SecondPaw);
+            PlacePaw(controller, C(4, 2), TutorialStep.SecondPaw, TutorialStep.SecondRowX);
+            Drag(controller, new[] { C(4, 0), C(4, 1), C(4, 2), C(4, 3), C(4, 4) }, 2, TutorialStep.DiagonalPaw);
+            Assert.That(controller.Session.GetMark(C(4, 2)), Is.EqualTo(PlayerMark.Paw), "Swipe must preserve the paw it crosses.");
             Assert.That(controller.HighlightedCells, Is.EquivalentTo(new[] { C(0, 3), C(1, 2), C(2, 1), C(3, 0) }));
-            PlaceCat(controller, C(2, 1), TutorialStep.DiagonalCat, TutorialStep.FourthCat);
-            PlaceCat(controller, C(2, 3), TutorialStep.FourthCat, TutorialStep.SingleX);
+            PlacePaw(controller, C(2, 1), TutorialStep.DiagonalPaw, TutorialStep.FourthPaw);
+            PlacePaw(controller, C(2, 3), TutorialStep.FourthPaw, TutorialStep.SingleX);
             Assert.That(controller.Tap(C(3, 3)), Is.True);
             Assert.That(controller.EndGesture(), Is.True);
-            Assert.That(controller.Step, Is.EqualTo(TutorialStep.FinalCat));
+            Assert.That(controller.Step, Is.EqualTo(TutorialStep.FinalPaw));
             Assert.That(controller.Tap(C(3, 1)), Is.True);
             Assert.That(controller.Session.IsCompleted, Is.False);
             Assert.That(controller.Tap(C(3, 1)), Is.True);
-            Assert.That(controller.Session.IsCompleted, Is.True, "Guided exact cats must also win immediately before release.");
-            Assert.That(controller.Step, Is.EqualTo(TutorialStep.FinalCat));
+            Assert.That(controller.Session.IsCompleted, Is.True, "Guided exact paws must also win immediately before release.");
+            Assert.That(controller.Step, Is.EqualTo(TutorialStep.FinalPaw));
             var guided = controller.Session;
             Assert.That(controller.CanInteract(C(3, 1)), Is.False);
             Assert.That(controller.EndGesture(), Is.True);
@@ -319,8 +331,8 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Continue(), Is.False);
             Assert.That(controller.Session.Marks, Is.EquivalentTo(marks));
-            Assert.That(controller.Session.Marks.Where(p => p.Value == PlayerMark.Cat).Select(p => p.Key),
-                Is.EquivalentTo(controller.Session.Puzzle.SolutionCats));
+            Assert.That(controller.Session.Marks.Where(p => p.Value == PlayerMark.Paw).Select(p => p.Key),
+                Is.EquivalentTo(controller.Session.Puzzle.SolutionPaws));
         }
 
         private static void ReachPractice(TutorialController controller)
@@ -344,11 +356,11 @@ namespace CatsAndArrows.Tests
             ReachZeroColumnFromPractice(controller);
         }
 
-        private static void ReachFirstCat(TutorialController controller)
+        private static void ReachFirstPaw(TutorialController controller)
         {
             ReachZeroColumn(controller);
             Drag(controller, new[] { C(0, 0), C(1, 0), C(2, 0), C(3, 0), C(4, 0) }, 4, TutorialStep.ZeroRow);
-            Drag(controller, new[] { C(0, 0), C(0, 1), C(0, 2), C(0, 3), C(0, 4) }, 2, TutorialStep.FirstCat);
+            Drag(controller, new[] { C(0, 0), C(0, 1), C(0, 2), C(0, 3), C(0, 4) }, 2, TutorialStep.FirstPaw);
         }
 
         private static void Drag(TutorialController controller, BoardCoordinate[] cells, int expectedChanges, TutorialStep next)
@@ -361,14 +373,14 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.Session.IsCompleted, Is.False);
         }
 
-        private static void PlaceCat(TutorialController controller, BoardCoordinate cell, TutorialStep current, TutorialStep next)
+        private static void PlacePaw(TutorialController controller, BoardCoordinate cell, TutorialStep current, TutorialStep next)
         {
             Assert.That(controller.Step, Is.EqualTo(current));
             Assert.That(controller.Tap(cell), Is.True);
             Assert.That(controller.Session.GetMark(cell), Is.EqualTo(PlayerMark.X));
             Assert.That(controller.EndGesture(), Is.False);
             Assert.That(controller.Tap(cell), Is.True);
-            Assert.That(controller.Session.GetMark(cell), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(controller.Session.GetMark(cell), Is.EqualTo(PlayerMark.Paw));
             Assert.That(controller.Session.IsCompleted, Is.False);
             Assert.That(controller.Step, Is.EqualTo(current));
             Assert.That(controller.EndGesture(), Is.True);

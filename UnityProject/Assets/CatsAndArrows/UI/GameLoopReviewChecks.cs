@@ -138,9 +138,9 @@ namespace CatsAndArrows.UI
             // Separate from generation timing: exercise the actual board adapter
             // through mounted pointer events so completion is not only hint-tested.
             var tappedSession = shell.Loop.Session;
-            foreach (var cat in tappedSession.Puzzle.SolutionCats)
+            foreach (var paw in tappedSession.Puzzle.SolutionPaws)
             {
-                if (!Check(() => { TapCell(shell, cat); TapCell(shell, cat); })) yield break;
+                if (!Check(() => { TapCell(shell, paw); TapCell(shell, paw); })) yield break;
                 yield return new WaitForEndOfFrame();
             }
             if (!Check(() =>
@@ -150,7 +150,7 @@ namespace CatsAndArrows.UI
                 Require(shell.Q<Button>("completion-hint").resolvedStyle.display == DisplayStyle.None, "pointer completion has no final-hint action");
                 if (shell.UseInlineHints) CheckNoHintExplanation(shell);
                 var before = tappedSession.Marks.ToArray();
-                TapCell(shell, tappedSession.Puzzle.SolutionCats.First());
+                TapCell(shell, tappedSession.Puzzle.SolutionPaws.First());
                 Require(tappedSession.Marks.SequenceEqual(before), "completed pointer tap has no effect");
                 Require(!shell.Q<Button>("action-hint").enabledSelf && !shell.Q<Button>("action-clear").enabledSelf, "pointer completion disables Hint/Clear");
             })) yield break;

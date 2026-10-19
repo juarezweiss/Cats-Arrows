@@ -16,10 +16,10 @@ namespace CatsAndArrows.Core
             if (puzzle.Size != profile.Size)
                 errors.Add($"Puzzle size {puzzle.Size} does not match profile size {profile.Size}.");
 
-            foreach (var cat in puzzle.SolutionCats)
+            foreach (var paw in puzzle.SolutionPaws)
             {
-                if (!puzzle.IsInside(cat)) errors.Add($"Solution cat {cat} is outside the board.");
-                if (puzzle.IsArrow(cat)) errors.Add($"Cell {cat} cannot be both an arrow and a solution cat.");
+                if (!puzzle.IsInside(paw)) errors.Add($"Solution paw {paw} is outside the board.");
+                if (puzzle.IsArrow(paw)) errors.Add($"Cell {paw} cannot be both an arrow and a solution paw.");
             }
 
             foreach (var arrow in puzzle.Arrows)
@@ -30,30 +30,30 @@ namespace CatsAndArrows.Core
                     continue;
                 }
 
-                var segmentHasCat = puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionCat);
-                if (!segmentHasCat)
-                    errors.Add($"Arrow at {arrow.Key} pointing {arrow.Value} has no solution cat in its pointed segment.");
+                var segmentHasPaw = puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionPaw);
+                if (!segmentHasPaw)
+                    errors.Add($"Arrow at {arrow.Key} pointing {arrow.Value} has no solution paw in its pointed segment.");
             }
 
             var zeroRows = 0;
             var zeroColumns = 0;
-            var hasRequiredLine = !profile.RequiredCatCountInSomeLine.HasValue;
+            var hasRequiredLine = !profile.RequiredPawCountInSomeLine.HasValue;
             for (var i = 0; i < puzzle.Size; i++)
             {
-                var rowCount = puzzle.GetRowCatCount(i);
-                var columnCount = puzzle.GetColumnCatCount(i);
+                var rowCount = puzzle.GetRowPawCount(i);
+                var columnCount = puzzle.GetColumnPawCount(i);
                 if (rowCount == 0) zeroRows++;
                 if (columnCount == 0) zeroColumns++;
-                if (rowCount == profile.RequiredCatCountInSomeLine || columnCount == profile.RequiredCatCountInSomeLine)
+                if (rowCount == profile.RequiredPawCountInSomeLine || columnCount == profile.RequiredPawCountInSomeLine)
                     hasRequiredLine = true;
-                if (rowCount > profile.MaxCatsPerLine) errors.Add($"Row {i} has {rowCount} cats; max is {profile.MaxCatsPerLine}.");
-                if (columnCount > profile.MaxCatsPerLine) errors.Add($"Column {i} has {columnCount} cats; max is {profile.MaxCatsPerLine}.");
+                if (rowCount > profile.MaxPawsPerLine) errors.Add($"Row {i} has {rowCount} paws; max is {profile.MaxPawsPerLine}.");
+                if (columnCount > profile.MaxPawsPerLine) errors.Add($"Column {i} has {columnCount} paws; max is {profile.MaxPawsPerLine}.");
             }
 
-            if (zeroRows > profile.MaxZeroRows) errors.Add($"Puzzle has {zeroRows} zero-cat rows; max is {profile.MaxZeroRows}.");
-            if (zeroColumns > profile.MaxZeroColumns) errors.Add($"Puzzle has {zeroColumns} zero-cat columns; max is {profile.MaxZeroColumns}.");
+            if (zeroRows > profile.MaxZeroRows) errors.Add($"Puzzle has {zeroRows} zero-paw rows; max is {profile.MaxZeroRows}.");
+            if (zeroColumns > profile.MaxZeroColumns) errors.Add($"Puzzle has {zeroColumns} zero-paw columns; max is {profile.MaxZeroColumns}.");
 
-            if (!hasRequiredLine) errors.Add($"Puzzle requires a row or column with exactly {profile.RequiredCatCountInSomeLine} cats.");
+            if (!hasRequiredLine) errors.Add($"Puzzle requires a row or column with exactly {profile.RequiredPawCountInSomeLine} paws.");
 
             return new PuzzleValidationResult(errors);
         }

@@ -30,8 +30,8 @@ namespace CatsAndArrows.UI
                 {
                     if (touch)
                     {
-                        foreach (var cat in session.Puzzle.SolutionCats)
-                        { Tap(shell, cat, true); Tap(shell, cat, true); }
+                        foreach (var paw in session.Puzzle.SolutionPaws)
+                        { Tap(shell, paw, true); Tap(shell, paw, true); }
                     }
                     else for (var hint = 0; hint < 100 && !session.IsCompleted; hint++) Click(shell, "action-hint");
                     Require(session.IsCompleted && !shell.BoardView.InteractionEnabled, "tap/final-Hint domain lock");

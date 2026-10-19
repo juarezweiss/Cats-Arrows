@@ -73,13 +73,13 @@ Unity presentation only:
 Issue #5 exposes player marks through a live read-only view and protected cells
 through a copied read-only collection. Callers cannot bypass the session's
 transition or completion checks by mutating those collections. Protected input
-is copied, deduplicated, and checked: outside-board coordinates and solution cats
+is copied, deduplicated, and checked: outside-board coordinates and solution paws
 are rejected. Arrow coordinates are omitted from the protected set because arrows
 already have their own non-interactive kind. This does not automatically derive
 protected cells; that remains a solver/presentation integration concern.
 
 Completion is checked during construction as well as after marking. A generic
-zero-cat puzzle therefore starts completed and read-only. This edge-case contract
+zero-paw puzzle therefore starts completed and read-only. This edge-case contract
 does not change the Easy generation profile. Clear changes only player marks and
 retains puzzle truth and protected eligibility; completed sessions reject Clear,
 tap, and drag intents.
@@ -90,7 +90,7 @@ Issue #32 adds a profile-dispatching SeededPuzzleGenerator. Easy delegates to th
 existing SeededEasyPuzzleGenerator with unchanged seed mapping, options and replay
 identity. Medium/Hard use a separate bounded, versioned path and the same human
 deduction/independent uniqueness engines. Profile admission enforces size, quotas,
-zero limits and Hard's required 3-cat line; these are not hidden solving premises.
+zero limits and Hard's required 3-paw line; these are not hidden solving premises.
 
 The existing EasyGameLoop name is retained for caller compatibility. Issue #43
 adds pure C# `DifficultySelection` with injected seeded randomness and an
@@ -112,7 +112,7 @@ Issue #35 versions the Medium/Hard generator/profile and larger-board options.
 Its optional two-order arrow-pruning phase shares the original solver work
 ceilings and keeps only fully admitted variants. Exhaustion retains the best
 proved board; cancellation returns none. Core `ClueProtectionRules` derives the
-existing cardinal one-cat hatches from an already accepted human proof, allowing
+existing cardinal one-paw hatches from an already accepted human proof, allowing
 pruning to count actual non-interactive cells without depending on Gameplay or
 running an unmetered solver. Gameplay's existing protection facade delegates to
 that same rule. Issue #37 adds `ClueProtectionRules.ForProfile`: Hard returns an
@@ -130,6 +130,13 @@ last-difficulty/run-length record and a separate first-Play gate. Neither stores
 board progress; invalid/missing history starts from an empty valid record.
 Legacy tutorial-seen data is retained for compatibility. Board save/resume and statistics
 remain deferred until feedback justifies them. The puzzle seed is sufficient to resume/recreate an active board once save/resume is implemented.
+
+Issue #55 renames in-memory gameplay/domain terminology from Cat to Paw. Existing
+preference keys and monetization records do not contain board marks or solver
+states. Renamed enum members keep their prior numeric values, while generator,
+ruleset, verifier and fingerprint format versions remain unchanged so existing
+reproduction receipts retain identical identities. Legacy benchmark-v2 JSON
+field names remain stable at its serialization boundary.
 
 ## Services
 Analytics, ads, IAP, remote config, and attribution must sit behind interfaces/adapters. Core gameplay cannot require a vendor SDK to compile or run.
@@ -174,7 +181,7 @@ capture owner. No independent mouse-click or legacy touch polling mutates cells.
 
 An eligible press remains pending until release. An 8-panel-unit movement distance
 starts a drag only from Empty, with the dominant component locking horizontal or
-vertical (ties horizontal). X/Cat still support tap cycling; deliberate movement
+vertical (ties horizontal). X/Paw still support tap cycling; deliberate movement
 from them cancels the pending tap. Swept intervals bridge missed movement samples
 and internal gutters; each coordinate is processed once. Arrows, protected cells,
 existing marks and completed sessions remain guarded by the session.
@@ -203,11 +210,11 @@ restores a still-valid underlying Hint outline without rebuilding the board.
 `EasyGameLoop` creates only admitted generated sessions and advances the requested
 seed for every attempt. Normal boot selects a fresh initial seed; diagnostic
 arguments can fix it for reproduction. `ClueProtection` derives the narrow
-original-total-one cardinal-arrow aid from visible clues and verifies NotCat
+original-total-one cardinal-arrow aid from visible clues and verifies NotPaw
 assignments with the human solver. No answer-based automatic elimination exists.
 
 `GameSession.ApplyHint` caches a complete clue-only proof and rescans for the
-first mismatching interactive conclusion. It applies one Cat/X directly within
+first mismatching interactive conclusion. It applies one Paw/X directly within
 the session, returns the proof and correction flag, and immediately checks
 completion. Player marks never become solver premises. Clear does not alter
 clues/protection or require a persistent hint cursor.
@@ -275,7 +282,7 @@ next lesson. A local seen preference is separate from language and board data;
 manual replays create fresh sessions and counters. Tutorial instructions are
 locale resources; no persistence/backend or reusable tutorial framework is added.
 
-The refined tutorial projects read-only Empty/X/Cat samples into the view without
+The refined tutorial projects read-only Empty/X/Paw samples into the view without
 mutating GameSession or BoardPresentation. Guided completion creates a fresh
 GameSession for the same fixture; the shell rebinds input and re-enables the view
-for independent play. Only a real independent cat-set win completes onboarding.
+for independent play. Only a real independent paw-set win completes onboarding.

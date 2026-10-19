@@ -25,7 +25,7 @@ namespace CatsAndArrows.Core
             if (proof.Status != HumanSolverStatus.Solved) return Array.Empty<BoardCoordinate>();
 
             var provenEmpty = new HashSet<BoardCoordinate>(proof.Assignments
-                .Where(assignment => assignment.State == CellKnowledge.NotCat)
+                .Where(assignment => assignment.State == CellKnowledge.NotPaw)
                 .Select(assignment => assignment.Coordinate));
             var arrows = new HashSet<BoardCoordinate>(clues.Arrows.Select(arrow => arrow.Coordinate));
             var protectedCells = new HashSet<BoardCoordinate>();

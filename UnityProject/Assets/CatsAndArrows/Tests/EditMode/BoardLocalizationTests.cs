@@ -15,17 +15,17 @@ namespace CatsAndArrows.Tests
         [TestCase("en", "Paw", "No paw", "paws")]
         [TestCase("pt-BR", "Pata", "Sem pata", "patas")]
         [TestCase("es", "Pata", "Sin pata", "patas")]
-        public void Issue53PlayerFacingCatalogUsesPawsWithExistingKeysAndLocales(
+        public void Issue55InternalPawKeysPreservePlayerFacingLocales(
             string locale, string paw, string noPaw, string paws)
         {
             var catalog = GameLocalization.CreateCatalog();
             var messages = catalog.GetResource(locale).Messages;
             Assert.That(catalog.AvailableLocales, Is.EquivalentTo(new[] { "en", "pt-BR", "es" }));
             Assert.That(messages["board.title"], Is.EqualTo("Paws"));
-            Assert.That(messages["board.cat"], Is.EqualTo(paw));
+            Assert.That(messages["board.paw"], Is.EqualTo(paw));
             Assert.That(messages["board.x"], Is.EqualTo(noPaw));
             Assert.That(messages["tutorial.welcome"], Does.Contain("Paws"));
-            Assert.That(messages["tutorial.cat-state"], Does.Contain("<b>" + paw + "</b>"));
+            Assert.That(messages["tutorial.paw-state"], Does.Contain("<b>" + paw + "</b>"));
             Assert.That(messages["tutorial.practice"], Does.Contain("→ X → " + paw + " →"));
             Assert.That(messages["monetization.rules-body"], Does.Contain(messages["monetization.rules"]));
             Assert.That(messages["monetization.rules-body"], Does.Not.Contain(locale == "en" ? "unlimited" : "ilimitadas"));
@@ -40,7 +40,7 @@ namespace CatsAndArrows.Tests
             }
             var text = new LocalizationService(catalog, CultureInfo.GetCultureInfo(locale));
             var tooltip = text.Format("board.cell-description", new Dictionary<string, object>
-                { { "row", 2 }, { "column", 3 }, { "state", text.GetText("board.cat") } });
+                { { "row", 2 }, { "column", 3 }, { "state", text.GetText("board.paw") } });
             Assert.That(tooltip, Does.Contain(paw).And.Contain("2").And.Contain("3"));
         }
 
@@ -112,9 +112,9 @@ namespace CatsAndArrows.Tests
         public void FuturePartialLocaleCanFallBackToEnglishBoardResources()
         {
             var english = BoardLocalization.CreateCatalog().GetResource("en");
-            var future = new LocaleResource("fr", new Dictionary<string, string> { { "board.cat", "Chat" } });
+            var future = new LocaleResource("fr", new Dictionary<string, string> { { "board.paw", "Chat" } });
             var text = new LocalizationService(new LocalizationCatalog(new[] { english, future }), CultureInfo.GetCultureInfo("fr-CA"));
-            Assert.That(text.GetText("board.cat"), Is.EqualTo("Chat"));
+            Assert.That(text.GetText("board.paw"), Is.EqualTo("Chat"));
             Assert.That(text.GetText("board.protected"), Is.EqualTo(english.Messages["board.protected"]));
             Assert.That(text.GetText("direction.downright"), Is.EqualTo(english.Messages["direction.downright"]));
         }

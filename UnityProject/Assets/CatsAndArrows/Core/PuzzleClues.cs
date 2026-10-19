@@ -27,8 +27,8 @@ namespace CatsAndArrows.Core
         {
             if (puzzle == null) throw new ArgumentNullException(nameof(puzzle));
             return new PuzzleClues(puzzle.Size, puzzle.Seed, puzzle.GeneratorVersion,
-                Enumerable.Range(0, puzzle.Size).Select(puzzle.GetRowCatCount),
-                Enumerable.Range(0, puzzle.Size).Select(puzzle.GetColumnCatCount),
+                Enumerable.Range(0, puzzle.Size).Select(puzzle.GetRowPawCount),
+                Enumerable.Range(0, puzzle.Size).Select(puzzle.GetColumnPawCount),
                 puzzle.Arrows.Select(a => new ArrowClue(a.Key, a.Value)));
         }
 

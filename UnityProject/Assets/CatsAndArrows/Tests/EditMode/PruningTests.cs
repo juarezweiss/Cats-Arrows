@@ -21,7 +21,7 @@ namespace CatsAndArrows.Tests
                 var baseline = generator.Generate(profile, seed, GenerationOptions.ForLargeBoard(maxPruningTrials: 0));
                 var tuned = generator.Generate(profile, seed);
                 Assert.That(baseline.IsSuccess && tuned.IsSuccess, Is.True, id + " seed=" + seed);
-                CollectionAssert.AreEquivalent(baseline.Puzzle.SolutionCats, tuned.Puzzle.SolutionCats);
+                CollectionAssert.AreEquivalent(baseline.Puzzle.SolutionPaws, tuned.Puzzle.SolutionPaws);
                 Assert.That(tuned.Metadata.AcceptedAttempt, Is.EqualTo(baseline.Metadata.AcceptedAttempt));
                 Assert.That(tuned.Puzzle.Arrows.All(a => baseline.Puzzle.Arrows.TryGetValue(a.Key, out var direction) && direction == a.Value), Is.True);
                 var before = FixedCount(baseline); var after = FixedCount(tuned);
@@ -44,7 +44,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(proof.Solver.Uniqueness.Status, Is.EqualTo(UniquenessStatus.Unique));
                 var restored = baseline.Puzzle.Arrows.Keys.Except(tuned.Puzzle.Arrows.Keys).ToArray();
                 foreach (var cell in restored)
-                    Assert.That(proof.Solver.Human.Assignments.Single(a => a.Coordinate == cell).State, Is.EqualTo(CellKnowledge.NotCat));
+                    Assert.That(proof.Solver.Human.Assignments.Single(a => a.Coordinate == cell).State, Is.EqualTo(CellKnowledge.NotPaw));
                 var low = id == "medium" ? 3 : 7; var high = id == "medium" ? 9 : 13;
                 sawOutsideSoftBand |= tuned.Puzzle.Arrows.Count < low || tuned.Puzzle.Arrows.Count > high;
                 fixedBefore += before; fixedAfter += after;
@@ -71,7 +71,7 @@ namespace CatsAndArrows.Tests
                 foreach (var coordinate in order)
                 {
                     var candidate = new PuzzleDefinition(current.Size, current.Seed, current.GeneratorVersion,
-                        current.SolutionCats, current.Arrows.Where(a => a.Key != coordinate).Select(a => new ArrowClue(a.Key, a.Value)));
+                        current.SolutionPaws, current.Arrows.Where(a => a.Key != coordinate).Select(a => new ArrowClue(a.Key, a.Value)));
                     if (PuzzleSolvabilityAssessment.Assess(candidate, profile).IsAccepted) current = candidate;
                 }
                 var currentFixed = FixedCount(current, profile); var bestFixed = FixedCount(best, profile);
@@ -102,7 +102,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(result.IsSuccess, Is.True);
                 Assert.That(result.Diagnostics.PruningBudgetExhausted, Is.True);
                 Assert.That(PuzzleSolvabilityAssessment.Assess(result.Puzzle, profile).IsAccepted, Is.True);
-                CollectionAssert.AreEquivalent(result.Puzzle.SolutionCats, baseline.Puzzle.SolutionCats);
+                CollectionAssert.AreEquivalent(result.Puzzle.SolutionPaws, baseline.Puzzle.SolutionPaws);
                 Assert.That(FixedCount(result), Is.LessThanOrEqualTo(FixedCount(baseline)));
                 Assert.That(result.Diagnostics.HumanConstraintEvaluations, Is.LessThanOrEqualTo(options.MaxHumanConstraintEvaluations));
                 Assert.That(result.Diagnostics.VerifierNodesVisited, Is.LessThanOrEqualTo(options.MaxVerifierNodes));

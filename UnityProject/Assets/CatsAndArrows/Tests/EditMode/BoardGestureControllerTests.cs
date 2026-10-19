@@ -26,10 +26,10 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void ThreeDiscreteReleasesCycleEmptyXCatEmptyExactlyOnceEach()
+        public void ThreeDiscreteReleasesCycleEmptyXPawEmptyExactlyOnceEach()
         {
             var point = Center(0, 0);
-            foreach (var expected in new[] { PlayerMark.X, PlayerMark.Cat, PlayerMark.Empty })
+            foreach (var expected in new[] { PlayerMark.X, PlayerMark.Paw, PlayerMark.Empty })
             {
                 Assert.That(_gesture.Begin(1, point), Is.True);
                 Assert.That(_session.GetMark(Cell(0, 0)), Is.Not.EqualTo(expected));
@@ -129,7 +129,7 @@ namespace CatsAndArrows.Tests
             _gesture.Begin(1, Center(0, 0));
             Assert.That(_gesture.End(1, Center(0, 4)), Is.True);
             Assert.That(_session.Marks.Count(pair => pair.Value == PlayerMark.X), Is.EqualTo(5));
-            Assert.That(_session.Marks.Values.Contains(PlayerMark.Cat), Is.False);
+            Assert.That(_session.Marks.Values.Contains(PlayerMark.Paw), Is.False);
             Assert.That(_gesture.HasActivePointer, Is.False);
         }
 
@@ -142,7 +142,7 @@ namespace CatsAndArrows.Tests
             Assert.That(_gesture.Move(1, Center(0, 4)), Is.False);
             Assert.That(_gesture.End(1, Center(0, 2)), Is.False);
             Assert.That(_session.Marks.Count(pair => pair.Value == PlayerMark.X), Is.EqualTo(5));
-            Assert.That(_session.Marks.Values.Contains(PlayerMark.Cat), Is.False);
+            Assert.That(_session.Marks.Values.Contains(PlayerMark.Paw), Is.False);
         }
 
         [Test]
@@ -178,11 +178,11 @@ namespace CatsAndArrows.Tests
         }
 
         [TestCase(PlayerMark.X)]
-        [TestCase(PlayerMark.Cat)]
+        [TestCase(PlayerMark.Paw)]
         public void DragFromAnExistingMarkCancelsWithoutChangingAnyCell(PlayerMark originMark)
         {
             _session.Tap(Cell(0, 0));
-            if (originMark == PlayerMark.Cat) _session.Tap(Cell(0, 0));
+            if (originMark == PlayerMark.Paw) _session.Tap(Cell(0, 0));
             var before = _session.Marks.ToArray();
             Assert.That(_gesture.Begin(1, Center(0, 0)), Is.True);
             Assert.That(_gesture.Move(1, Center(0, 4)), Is.False);
@@ -202,7 +202,7 @@ namespace CatsAndArrows.Tests
             _gesture.Move(1, Center(1, 0));
             Assert.That(_session.GetMark(Cell(1, 1)), Is.EqualTo(PlayerMark.X));
             Assert.That(_session.GetMark(Cell(1, 3)), Is.EqualTo(PlayerMark.X));
-            Assert.That(_session.GetMark(Cell(1, 4)), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(_session.GetMark(Cell(1, 4)), Is.EqualTo(PlayerMark.Paw));
             Assert.That(_session.Marks.ContainsKey(Cell(1, 0)), Is.False);
             Assert.That(_session.Marks.ContainsKey(Cell(1, 2)), Is.False);
             Assert.That(_session.Marks.Count(pair => pair.Value == PlayerMark.X), Is.EqualTo(2));
@@ -275,7 +275,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void FinalCatTapCompletesSessionAndBlocksAllLaterInput()
+        public void FinalPawTapCompletesSessionAndBlocksAllLaterInput()
         {
             _session.Tap(Cell(4, 3));
             _session.Tap(Cell(4, 3));
@@ -294,7 +294,7 @@ namespace CatsAndArrows.Tests
         public void SessionCompletingDuringHeldPointerPreventsItsDeferredTap()
         {
             _gesture.Begin(1, Center(0, 0));
-            foreach (var cat in _session.Puzzle.SolutionCats) { _session.Tap(cat); _session.Tap(cat); }
+            foreach (var paw in _session.Puzzle.SolutionPaws) { _session.Tap(paw); _session.Tap(paw); }
             Assert.That(_gesture.End(1, Center(0, 0)), Is.False);
             Assert.That(_session.GetMark(Cell(0, 0)), Is.EqualTo(PlayerMark.Empty));
             Assert.That(_gesture.HasActivePointer, Is.False);

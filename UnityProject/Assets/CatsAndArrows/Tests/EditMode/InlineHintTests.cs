@@ -69,10 +69,10 @@ namespace CatsAndArrows.Tests
             var next = proof.Steps.SelectMany(step => step.Conclusions)
                 .First(assignment => session.Marks.ContainsKey(assignment.Coordinate));
             session.Tap(next.Coordinate);
-            if (next.State == CellKnowledge.NotCat) session.Tap(next.Coordinate);
+            if (next.State == CellKnowledge.NotPaw) session.Tap(next.Coordinate);
             var before = session.Marks.ToDictionary(pair => pair.Key, pair => pair.Value);
             view.RequestHint();
-            Assert.That(session.GetMark(next.Coordinate), Is.EqualTo(next.State == CellKnowledge.Cat ? PlayerMark.Cat : PlayerMark.X));
+            Assert.That(session.GetMark(next.Coordinate), Is.EqualTo(next.State == CellKnowledge.Paw ? PlayerMark.Paw : PlayerMark.X));
             Assert.That(session.Marks.Count(pair => before[pair.Key] != pair.Value), Is.EqualTo(1));
             Assert.That(view.Modal, Is.Null);
             AssertNoExplanation(view);

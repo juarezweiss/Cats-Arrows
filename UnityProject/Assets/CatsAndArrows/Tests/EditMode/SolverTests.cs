@@ -16,6 +16,14 @@ namespace CatsAndArrows.Tests
             new PuzzleClues(rows.Length, 3, "issue-3-fixture", rows, columns, arrows);
 
         [Test]
+        public void PawKnowledgeKeepsLegacyNumericValues()
+        {
+            Assert.That((int)CellKnowledge.Unknown, Is.Zero);
+            Assert.That((int)CellKnowledge.Paw, Is.EqualTo(1));
+            Assert.That((int)CellKnowledge.NotPaw, Is.EqualTo(2));
+        }
+
+        [Test]
         public void FiveByFiveTargetCompletesAndTraceReplaysWithoutGuessing()
         {
             var clues = Clues(new[] { 1, 1, 1, 1, 1 }, new[] { 1, 1, 1, 1, 1 },
@@ -24,7 +32,7 @@ namespace CatsAndArrows.Tests
             var human = new HumanDeductionSolver().Solve(clues);
             Assert.That(human.Status, Is.EqualTo(HumanSolverStatus.Solved));
             var expected = Enumerable.Range(0, 5).Select(i => C(i, i)).ToArray();
-            CollectionAssert.AreEquivalent(expected, human.Assignments.Where(a => a.State == CellKnowledge.Cat).Select(a => a.Coordinate));
+            CollectionAssert.AreEquivalent(expected, human.Assignments.Where(a => a.State == CellKnowledge.Paw).Select(a => a.Coordinate));
             var unique = new UniquenessVerifier().Verify(clues);
             Assert.That(unique.Status, Is.EqualTo(UniquenessStatus.Unique));
             CollectionAssert.AreEquivalent(expected, unique.Solutions.Single());
@@ -86,16 +94,16 @@ namespace CatsAndArrows.Tests
         [TestCase(Direction.Down)]
         [TestCase(Direction.Left)]
         [TestCase(Direction.Up)]
-        public void RaysContinueThroughArrowsAndOverlappingArrowsShareOneCat(Direction direction)
+        public void RaysContinueThroughArrowsAndOverlappingArrowsShareOnePaw(Direction direction)
         {
             var coordinates = new[] { C(0, 0), C(0, 1), C(0, 3) };
             Func<BoardCoordinate, BoardCoordinate> rotate = p => p;
             if (direction == Direction.Down) rotate = p => C(p.Column, 3 - p.Row);
             if (direction == Direction.Left) rotate = p => C(3 - p.Row, 3 - p.Column);
             if (direction == Direction.Up) rotate = p => C(3 - p.Column, p.Row);
-            var cat = rotate(coordinates[2]);
+            var paw = rotate(coordinates[2]);
             var rows = new int[4]; var cols = new int[4];
-            rows[cat.Row] = 1; cols[cat.Column] = 1;
+            rows[paw.Row] = 1; cols[paw.Column] = 1;
             var arrows = coordinates.Take(2).Select(p => new ArrowClue(rotate(p), direction)).ToArray();
             var clues = Clues(rows, cols, arrows);
             var result = new HumanDeductionSolver().Solve(clues);
@@ -105,12 +113,12 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void AtLeastOneArrowAllowsTwoCatsAndAlreadySatisfiedArrowDoesNotForceAnother()
+        public void AtLeastOneArrowAllowsTwoPawsAndAlreadySatisfiedArrowDoesNotForceAnother()
         {
             var clues = Clues(new[] { 2, 0, 0 }, new[] { 0, 1, 1 }, A(0, 0, Direction.Right));
             var result = new HumanDeductionSolver().Solve(clues);
             Assert.That(result.Status, Is.EqualTo(HumanSolverStatus.Solved));
-            Assert.That(result.Assignments.Count(a => a.State == CellKnowledge.Cat), Is.EqualTo(2));
+            Assert.That(result.Assignments.Count(a => a.State == CellKnowledge.Paw), Is.EqualTo(2));
             Assert.That(result.Steps.Any(s => s.RuleId == "arrow-singleton"), Is.False);
             AssertTraceSound(clues, result, EnumerateSolutions(clues));
         }
@@ -121,7 +129,7 @@ namespace CatsAndArrows.Tests
             var clues = Clues(new[] { 2, 2, 1, 1 }, new[] { 1, 0, 4, 1 }, A(0, 1, Direction.Right));
             var result = new HumanDeductionSolver().Solve(clues);
             Assert.That(result.Status, Is.EqualTo(HumanSolverStatus.Stalled));
-            Assert.That(result.Assignments.Single(a => a.Coordinate == C(0, 2)).State, Is.EqualTo(CellKnowledge.Cat));
+            Assert.That(result.Assignments.Single(a => a.Coordinate == C(0, 2)).State, Is.EqualTo(CellKnowledge.Paw));
             Assert.That(result.Assignments.Single(a => a.Coordinate == C(0, 3)).State, Is.EqualTo(CellKnowledge.Unknown));
             Assert.That(new UniquenessVerifier().Verify(clues).Status, Is.EqualTo(UniquenessStatus.Multiple));
             AssertTraceSound(clues, result, EnumerateSolutions(clues));
@@ -265,10 +273,10 @@ namespace CatsAndArrows.Tests
         [Test]
         public void CandidateAssessmentAcceptsOnlyHumanCompleteProvenUniqueProfileValidAnswer()
         {
-            var cats = Enumerable.Range(0, 5).Select(i => C(i, i)).ToArray();
+            var paws = Enumerable.Range(0, 5).Select(i => C(i, i)).ToArray();
             var arrows = new[] { A(0, 1, Direction.Left), A(1, 2, Direction.Left),
                 A(2, 3, Direction.Left), A(3, 4, Direction.Left), A(4, 3, Direction.Right) };
-            var target = new PuzzleDefinition(5, 3, "issue-3-fixture", cats, arrows);
+            var target = new PuzzleDefinition(5, 3, "issue-3-fixture", paws, arrows);
             var accepted = PuzzleSolvabilityAssessment.Assess(target, DifficultyProfile.Easy);
             Assert.That(accepted.Status, Is.EqualTo(PuzzleAssessmentStatus.Accepted));
             Assert.That(accepted.IsAccepted, Is.True);
@@ -280,15 +288,15 @@ namespace CatsAndArrows.Tests
                 new SolverOptions(maxVerifierNodes: 0)).Status, Is.EqualTo(PuzzleAssessmentStatus.UniquenessRejected));
             Assert.That(PuzzleSolvabilityAssessment.Assess(target, DifficultyProfile.Easy,
                 new SolverOptions(maxHumanConstraintEvaluations: 0)).Status, Is.EqualTo(PuzzleAssessmentStatus.HumanRejected));
-            var ambiguous = new PuzzleDefinition(5, 3, "issue-3-fixture", cats, Array.Empty<ArrowClue>());
+            var ambiguous = new PuzzleDefinition(5, 3, "issue-3-fixture", paws, Array.Empty<ArrowClue>());
             var rejected = PuzzleSolvabilityAssessment.Assess(ambiguous, DifficultyProfile.Easy);
             Assert.That(rejected.Status, Is.EqualTo(PuzzleAssessmentStatus.HumanRejected));
             Assert.That(rejected.Solver.Human.Status, Is.EqualTo(HumanSolverStatus.Stalled));
             Assert.That(rejected.Solver.Uniqueness.Status, Is.EqualTo(UniquenessStatus.Multiple));
-            var falseArrow = new PuzzleDefinition(5, 3, "issue-3-fixture", cats, new[] { A(0, 3, Direction.Right) });
+            var falseArrow = new PuzzleDefinition(5, 3, "issue-3-fixture", paws, new[] { A(0, 3, Direction.Right) });
             Assert.That(PuzzleSolvabilityAssessment.Assess(falseArrow, DifficultyProfile.Easy).Status,
                 Is.EqualTo(PuzzleAssessmentStatus.InvalidCandidate));
-            var overlap = new PuzzleDefinition(5, 3, "issue-3-fixture", cats, new[] { A(0, 0, Direction.Down) });
+            var overlap = new PuzzleDefinition(5, 3, "issue-3-fixture", paws, new[] { A(0, 0, Direction.Down) });
             Assert.That(PuzzleSolvabilityAssessment.Assess(overlap, DifficultyProfile.Easy).Status,
                 Is.EqualTo(PuzzleAssessmentStatus.InvalidCandidate));
         }
@@ -305,7 +313,7 @@ namespace CatsAndArrows.Tests
             for (var c = 0; c < clues.Size; c++)
             {
                 var p = C(r, c);
-                state[p] = clues.Arrows.Any(a => a.Coordinate == p) ? CellKnowledge.NotCat : CellKnowledge.Unknown;
+                state[p] = clues.Arrows.Any(a => a.Coordinate == p) ? CellKnowledge.NotPaw : CellKnowledge.Unknown;
             }
             var nextIndex = 0;
             foreach (var step in result.Steps)
@@ -324,7 +332,7 @@ namespace CatsAndArrows.Tests
                         source.Kind == ConstraintKind.Column ? p.Column == source.Index :
                         PointsAt(source.Coordinate, source.Direction, p)).ToArray();
                     CollectionAssert.AreEquivalent(expectedCells, premise.Cells.Select(a => a.Coordinate));
-                    Assert.That(premise.RequiredCats, Is.EqualTo(source.Kind == ConstraintKind.Row ? clues.RowTotals[source.Index] :
+                    Assert.That(premise.RequiredPaws, Is.EqualTo(source.Kind == ConstraintKind.Row ? clues.RowTotals[source.Index] :
                         source.Kind == ConstraintKind.Column ? clues.ColumnTotals[source.Index] : 1));
                     foreach (var cell in premise.Cells)
                         Assert.That(state[cell.Coordinate], Is.EqualTo(cell.State));
@@ -334,7 +342,7 @@ namespace CatsAndArrows.Tests
                     Assert.That(state[conclusion.Coordinate], Is.EqualTo(CellKnowledge.Unknown), "Each cell must change only once.");
                     Assert.That(conclusion.State, Is.Not.EqualTo(CellKnowledge.Unknown));
                     foreach (var completion in oracle)
-                        Assert.That(completion.Contains(conclusion.Coordinate), Is.EqualTo(conclusion.State == CellKnowledge.Cat), step.RuleId);
+                        Assert.That(completion.Contains(conclusion.Coordinate), Is.EqualTo(conclusion.State == CellKnowledge.Paw), step.RuleId);
                     state[conclusion.Coordinate] = conclusion.State;
                 }
             }

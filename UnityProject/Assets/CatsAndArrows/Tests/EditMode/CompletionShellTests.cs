@@ -158,7 +158,7 @@ namespace CatsAndArrows.Tests
                     for (var tap = 0; tap < 3; tap++) tutorial.Tap(tutorial.Targets[0]);
                 else foreach (var target in tutorial.Targets)
                 {
-                    var expected = tutorial.Session.Puzzle.IsSolutionCat(target) ? PlayerMark.Cat : PlayerMark.X;
+                    var expected = tutorial.Session.Puzzle.IsSolutionPaw(target) ? PlayerMark.Paw : PlayerMark.X;
                     for (var tap = 0; tap < 3 && tutorial.Session.GetMark(target) != expected; tap++) tutorial.Tap(target);
                 }
                 Assert.That(tutorial.EndGesture(), Is.True);
@@ -166,7 +166,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(Actions.style.display.value, Is.EqualTo(DisplayStyle.None));
             }
             Assert.That(tutorial.Step, Is.EqualTo(TutorialStep.Independent));
-            foreach (var cat in tutorial.Session.Puzzle.SolutionCats) { tutorial.Tap(cat); tutorial.Tap(cat); }
+            foreach (var paw in tutorial.Session.Puzzle.SolutionPaws) { tutorial.Tap(paw); tutorial.Tap(paw); }
             tutorial.EndGesture(); shell.BackToGame(); Tick(now + 10);
             Assert.That(tutorial.IsComplete, Is.True);
             Assert.That(Message.style.display.value, Is.EqualTo(DisplayStyle.None));

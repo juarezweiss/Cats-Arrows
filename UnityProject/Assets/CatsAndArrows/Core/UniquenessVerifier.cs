@@ -31,20 +31,20 @@ namespace CatsAndArrows.Core
                 {
                     // Recheck every full assignment independently of propagation and the human solver.
                     if (constraints.All.All(c => c.IsExact
-                        ? c.Cells.Count(i => states[i] == CellKnowledge.Cat) == c.RequiredCats
-                        : c.Cells.Any(i => states[i] == CellKnowledge.Cat)))
+                        ? c.Cells.Count(i => states[i] == CellKnowledge.Paw) == c.RequiredPaws
+                        : c.Cells.Any(i => states[i] == CellKnowledge.Paw)))
                         solutions.Add(Array.AsReadOnly(states.Select((state, i) => new { state, i })
-                            .Where(p => p.state == CellKnowledge.Cat).Select(p => constraints.Coordinate(p.i)).ToArray()));
+                            .Where(p => p.state == CellKnowledge.Paw).Select(p => constraints.Coordinate(p.i)).ToArray()));
                     return;
                 }
-                // Deterministic row-major variable order, Cat branch before NotCat.
-                var catBranch = (CellKnowledge[])states.Clone();
-                catBranch[next] = CellKnowledge.Cat;
-                Search(catBranch);
+                // Deterministic row-major variable order, Paw branch before NotPaw.
+                var pawBranch = (CellKnowledge[])states.Clone();
+                pawBranch[next] = CellKnowledge.Paw;
+                Search(pawBranch);
                 if (solutions.Count >= 2 || incomplete) return;
-                var notCatBranch = (CellKnowledge[])states.Clone();
-                notCatBranch[next] = CellKnowledge.NotCat;
-                Search(notCatBranch);
+                var notPawBranch = (CellKnowledge[])states.Clone();
+                notPawBranch[next] = CellKnowledge.NotPaw;
+                Search(notPawBranch);
             }
 
             Search(constraints.InitialStates());
@@ -63,19 +63,19 @@ namespace CatsAndArrows.Core
                 changed = false;
                 foreach (var constraint in constraints.All)
                 {
-                    var cats = constraint.Cells.Count(i => states[i] == CellKnowledge.Cat);
+                    var paws = constraint.Cells.Count(i => states[i] == CellKnowledge.Paw);
                     var unknown = constraint.Cells.Where(i => states[i] == CellKnowledge.Unknown).ToArray();
                     CellKnowledge? forced = null;
                     if (constraint.IsExact)
                     {
-                        if (cats > constraint.RequiredCats || cats + unknown.Length < constraint.RequiredCats) return false;
-                        if (cats == constraint.RequiredCats) forced = CellKnowledge.NotCat;
-                        else if (cats + unknown.Length == constraint.RequiredCats) forced = CellKnowledge.Cat;
+                        if (paws > constraint.RequiredPaws || paws + unknown.Length < constraint.RequiredPaws) return false;
+                        if (paws == constraint.RequiredPaws) forced = CellKnowledge.NotPaw;
+                        else if (paws + unknown.Length == constraint.RequiredPaws) forced = CellKnowledge.Paw;
                     }
-                    else if (cats == 0)
+                    else if (paws == 0)
                     {
                         if (unknown.Length == 0) return false;
-                        if (unknown.Length == 1) forced = CellKnowledge.Cat;
+                        if (unknown.Length == 1) forced = CellKnowledge.Paw;
                     }
                     if (!forced.HasValue) continue;
                     foreach (var i in unknown) { states[i] = forced.Value; changed = true; }

@@ -463,7 +463,7 @@ namespace CatsAndArrows.UI
                 var assignment = result.Assignment.Value;
                 explanation = new DeductionLocalizer(text).Format(result.Step) + "\n\n" + text.Format("game.hint-target",
                     new Dictionary<string, object> { { "row", assignment.Coordinate.Row + 1 }, { "column", assignment.Coordinate.Column + 1 },
-                    { "state", text.GetText(assignment.State == CellKnowledge.Cat ? "board.cat" : "board.x") } });
+                    { "state", text.GetText(assignment.State == CellKnowledge.Paw ? "board.paw" : "board.x") } });
                 if (result.Corrected) explanation += "\n\n" + text.GetText("game.hint-correction");
             }
             return explanation;

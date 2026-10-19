@@ -42,15 +42,15 @@ namespace CatsAndArrows.Tests
         [TestCase(Direction.DownLeft, 0, 3, 1, 2, 3, 0)]
         [TestCase(Direction.UpRight, 3, 0, 2, 1, 0, 3)]
         [TestCase(Direction.UpLeft, 3, 3, 2, 2, 0, 0)]
-        public void DiagonalRaysPassThroughArrowsAndShareOneCat(Direction direction,
-            int r0, int c0, int r1, int c1, int catRow, int catColumn)
+        public void DiagonalRaysPassThroughArrowsAndShareOnePaw(Direction direction,
+            int r0, int c0, int r1, int c1, int pawRow, int pawColumn)
         {
             var rows = new int[4]; var columns = new int[4];
-            rows[catRow] = 1; columns[catColumn] = 1;
+            rows[pawRow] = 1; columns[pawColumn] = 1;
             var arrows = new[] { A(r0, c0, direction), A(r1, c1, direction) };
             var clues = Clues(rows, columns, arrows);
-            AssertSoundAndUnique(clues, C(catRow, catColumn));
-            var puzzle = new PuzzleDefinition(4, 14, "fixture", new[] { C(catRow, catColumn) }, arrows);
+            AssertSoundAndUnique(clues, C(pawRow, pawColumn));
+            var puzzle = new PuzzleDefinition(4, 14, "fixture", new[] { C(pawRow, pawColumn) }, arrows);
             Assert.That(PuzzleValidator.Validate(puzzle, new DifficultyProfile("fixture", 4, 4, 4, 4)).IsValid, Is.True);
         }
 
@@ -75,7 +75,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void DiagonalAtLeastOneAllowsMultipleCatsWithoutExactlyOneDeduction()
+        public void DiagonalAtLeastOneAllowsMultiplePawsWithoutExactlyOneDeduction()
         {
             var clues = Clues(new[] { 0, 2, 1, 0 }, new[] { 0, 1, 2, 0 }, A(0, 0, Direction.DownRight));
             AssertSoundAndUnique(clues, C(1, 1), C(1, 2), C(2, 2));
@@ -89,7 +89,7 @@ namespace CatsAndArrows.Tests
             var result = new HumanDeductionSolver().Solve(clues);
             Assert.That(result.Status, Is.EqualTo(HumanSolverStatus.Solved));
             Assert.That(result.Steps.Any(s => s.RuleId == DeductionRules.ArrowSingleton &&
-                s.Conclusions.Any(a => a.Coordinate == C(1, 1) && a.State == CellKnowledge.Cat)), Is.True);
+                s.Conclusions.Any(a => a.Coordinate == C(1, 1) && a.State == CellKnowledge.Paw)), Is.True);
             AssertSoundAndUnique(clues, C(1, 1), C(2, 0));
         }
 
@@ -102,7 +102,7 @@ namespace CatsAndArrows.Tests
             Assert.That(oracle.Count, Is.GreaterThan(1));
             var result = new HumanDeductionSolver().Solve(clues);
             Assert.That(result.Status, Is.EqualTo(HumanSolverStatus.Stalled));
-            Assert.That(result.Assignments.Single(a => a.Coordinate == C(1, 2)).State, Is.EqualTo(CellKnowledge.Cat));
+            Assert.That(result.Assignments.Single(a => a.Coordinate == C(1, 2)).State, Is.EqualTo(CellKnowledge.Paw));
             Assert.That(result.Assignments.Single(a => a.Coordinate == C(2, 3)).State, Is.EqualTo(CellKnowledge.Unknown));
             SolverTests.AssertTraceSound(clues, result, oracle);
         }
@@ -110,9 +110,9 @@ namespace CatsAndArrows.Tests
         [Test]
         public void DiagonalNeverUsesTheUnsoundCardinalLineExclusionRule()
         {
-            // A diagonal cat can satisfy the arrow while a cat outside that ray
+            // A diagonal paw can satisfy the arrow while a paw outside that ray
             // occupies the same row as another ray cell. Cardinal line exclusion
-            // would incorrectly remove (2,0), one of the legal solution cats.
+            // would incorrectly remove (2,0), one of the legal solution paws.
             var clues = Clues(new[] { 0, 1, 1, 1 }, new[] { 1, 1, 1, 0 }, A(0, 0, Direction.DownRight));
             var oracle = SolverTests.EnumerateSolutions(clues);
             Assert.That(oracle.Any(s => s.SetEquals(new[] { C(1, 1), C(2, 0), C(3, 2) })), Is.True);
