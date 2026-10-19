@@ -33,13 +33,13 @@ namespace CatsAndArrows.Core
                 return new PuzzleAssessmentResult(PuzzleAssessmentStatus.InvalidCandidate, solver, solver.Human.Errors);
 
             var candidateErrors = new List<string>();
-            foreach (var cat in puzzle.SolutionCats)
+            foreach (var paw in puzzle.SolutionPaws)
             {
-                if (!puzzle.IsInside(cat)) candidateErrors.Add("Intended cat is outside the board.");
-                if (puzzle.IsArrow(cat)) candidateErrors.Add("An arrow cannot be an intended cat.");
+                if (!puzzle.IsInside(paw)) candidateErrors.Add("Intended paw is outside the board.");
+                if (puzzle.IsArrow(paw)) candidateErrors.Add("An arrow cannot be an intended paw.");
             }
             foreach (var arrow in puzzle.Arrows)
-                if (!puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionCat))
+                if (!puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionPaw))
                     candidateErrors.Add("An arrow is false for the intended answer.");
             if (candidateErrors.Count > 0)
                 return new PuzzleAssessmentResult(PuzzleAssessmentStatus.InvalidCandidate, solver, candidateErrors);
@@ -54,10 +54,10 @@ namespace CatsAndArrows.Core
             if (!solver.HasUniqueSolution)
                 return new PuzzleAssessmentResult(PuzzleAssessmentStatus.UniquenessRejected, solver, new[] { "Exactly one solution has not been proven." });
 
-            var humanCats = solver.Human.Assignments.Where(a => a.State == CellKnowledge.Cat).Select(a => a.Coordinate);
-            var verifiedCats = solver.Uniqueness.Solutions[0];
-            var intended = new HashSet<BoardCoordinate>(puzzle.SolutionCats);
-            if (!intended.SetEquals(humanCats) || !intended.SetEquals(verifiedCats))
+            var humanPaws = solver.Human.Assignments.Where(a => a.State == CellKnowledge.Paw).Select(a => a.Coordinate);
+            var verifiedPaws = solver.Uniqueness.Solutions[0];
+            var intended = new HashSet<BoardCoordinate>(puzzle.SolutionPaws);
+            if (!intended.SetEquals(humanPaws) || !intended.SetEquals(verifiedPaws))
                 return new PuzzleAssessmentResult(PuzzleAssessmentStatus.IntendedSolutionMismatch, solver, new[] { "Derived answers differ from the intended answer." });
             return new PuzzleAssessmentResult(PuzzleAssessmentStatus.Accepted, solver, Array.Empty<string>());
         }

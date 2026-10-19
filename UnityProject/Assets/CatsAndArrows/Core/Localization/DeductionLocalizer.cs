@@ -59,8 +59,8 @@ namespace CatsAndArrows.Core.Localization
             foreach (var premise in step.Premises)
             {
                 if (premise.Source.Kind == ConstraintKind.Arrow) continue;
-                values["total"] = premise.RequiredCats;
-                values["count"] = premise.RequiredCats - premise.KnownCatCount;
+                values["total"] = premise.RequiredPaws;
+                values["count"] = premise.RequiredPaws - premise.KnownPawCount;
             }
             return text.Format("deduction." + step.RuleId, values);
         }

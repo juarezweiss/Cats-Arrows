@@ -46,14 +46,14 @@ namespace CatsAndArrows.Tests
             Assert.That(session.Puzzle.Size, Is.EqualTo(size));
             Assert.That(shell.Q<Label>("board-difficulty").text, Does.Contain(size + " × " + size));
             var normal = session.Marks.Keys.First();
-            foreach (var state in new[] { PlayerMark.X, PlayerMark.Cat, PlayerMark.Empty })
+            foreach (var state in new[] { PlayerMark.X, PlayerMark.Paw, PlayerMark.Empty })
             { Assert.That(session.Tap(normal), Is.True); Assert.That(session.GetMark(normal), Is.EqualTo(state)); }
             var row = session.Marks.Keys.Where(c => c.Row == normal.Row).ToArray();
             Assert.That(session.ApplyDrag(row), Is.EqualTo(row.Length));
             foreach (var arrow in session.Puzzle.Arrows.Keys) Assert.That(session.Tap(arrow), Is.False);
             foreach (var cell in session.ProtectedCells) Assert.That(session.Tap(cell), Is.False);
             shell.ClearBoard(); Assert.That(session.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
-            foreach (var cat in session.Puzzle.SolutionCats) { session.Tap(cat); session.Tap(cat); }
+            foreach (var paw in session.Puzzle.SolutionPaws) { session.Tap(paw); session.Tap(paw); }
             Assert.That(session.IsCompleted, Is.True);
             Assert.That(session.Tap(normal), Is.False); Assert.That(session.Clear(), Is.False);
             Assert.That(shell.StartNewGame(), Is.True);
@@ -134,7 +134,7 @@ namespace CatsAndArrows.Tests
             Assert.That(shell.Loop.DifficultySelection.History.ConsecutiveStarts, Is.EqualTo(1));
         }
 
-        // Issue #37: a real generated one-cat-arrow consequence remains a manual
+        // Issue #37: a real generated one-paw-arrow consequence remains a manual
         // player deduction, including the cells formerly hatched behind arrows.
         [Test]
         public void HardConsequencesStayVisibleAsEmptyInteractiveCellsUntilPlayerMarksThem()

@@ -119,7 +119,7 @@ namespace CatsAndArrows.Tests
             var arrow = new ConstraintReference(ConstraintKind.Arrow, -1, new BoardCoordinate(2, 3), Direction.Left);
             var linePremise = new DeductionPremise(row, 2, new[]
             {
-                new CellAssignment(new BoardCoordinate(2, 0), CellKnowledge.Cat),
+                new CellAssignment(new BoardCoordinate(2, 0), CellKnowledge.Paw),
                 new CellAssignment(new BoardCoordinate(2, 1), CellKnowledge.Unknown)
             });
             var arrowPremise = new DeductionPremise(arrow, 1, new[]
@@ -204,7 +204,7 @@ namespace CatsAndArrows.Tests
                     var premise = new DeductionPremise(reference, 1, new[] {
                         new CellAssignment(new BoardCoordinate(1, 2), CellKnowledge.Unknown) });
                     var step = new DeductionStep(0, DeductionRules.ArrowSingleton, DeductionKind.ConstraintPropagation,
-                        new[] { premise }, new[] { new CellAssignment(new BoardCoordinate(1, 2), CellKnowledge.Cat) });
+                        new[] { premise }, new[] { new CellAssignment(new BoardCoordinate(1, 2), CellKnowledge.Paw) });
                     var message = presenter.Format(step);
                     Assert.That(message, Does.Contain(name).And.Contain("3").And.Contain("4"));
                     Assert.That(message, Does.Not.Contain("{"));

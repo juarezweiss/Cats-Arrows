@@ -67,11 +67,11 @@ namespace CatsAndArrows.Tests
         [Test]
         public void CanonicalLogicalFingerprintsMatchIndependentlyCalculatedHashes()
         {
-            var cats = new[] { new BoardCoordinate(0, 0), new BoardCoordinate(1, 1) };
+            var paws = new[] { new BoardCoordinate(0, 0), new BoardCoordinate(1, 1) };
             var arrows = new[] { new ArrowClue(new BoardCoordinate(0, 1), Direction.Down),
                 new ArrowClue(new BoardCoordinate(1, 0), Direction.Right) };
-            var puzzle = new PuzzleDefinition(2, 10, "fixture-a", cats, arrows);
-            var reversed = new PuzzleDefinition(2, -1, "fixture-b", cats.Reverse(), arrows.Reverse());
+            var puzzle = new PuzzleDefinition(2, 10, "fixture-a", paws, arrows);
+            var reversed = new PuzzleDefinition(2, -1, "fixture-b", paws.Reverse(), arrows.Reverse());
             const string solution = "58dd44527dccd2ecfe6f8aad575c0cfa30c902343cb97aed87521ec1c15702f7";
             const string board = "b2ee0f5bdb32ffa9d4062c44045fe229a7afb98fece0aae263d091b8074d91fc";
             Assert.That(GenerationFingerprints.ForSolution(puzzle), Is.EqualTo(solution));
@@ -261,10 +261,10 @@ namespace CatsAndArrows.Tests
             var result = new SeededEasyPuzzleGenerator().Generate(DifficultyProfile.Easy, 0);
             Assert.That(result.IsSuccess, Is.True);
             var fingerprint = ResultFingerprint(result);
-            var cats = result.Puzzle.SolutionCats as ICollection<BoardCoordinate>;
-            Assert.That(cats, Is.Not.Null);
-            Assert.That(cats.IsReadOnly, Is.True);
-            Assert.Throws<NotSupportedException>(() => cats.Clear());
+            var paws = result.Puzzle.SolutionPaws as ICollection<BoardCoordinate>;
+            Assert.That(paws, Is.Not.Null);
+            Assert.That(paws.IsReadOnly, Is.True);
+            Assert.Throws<NotSupportedException>(() => paws.Clear());
             var arrows = result.Puzzle.Arrows as IDictionary<BoardCoordinate, Direction>;
             Assert.That(arrows, Is.Not.Null);
             Assert.That(arrows.IsReadOnly, Is.True);
@@ -283,7 +283,7 @@ namespace CatsAndArrows.Tests
             var options = new GenerationOptions();
             var attempts = new List<double>(); var layouts = new List<double>(); var humans = new List<double>();
             var verifiers = new List<double>(); var draws = new List<double>(); var elapsed = new List<double>();
-            var arrows = new List<double>(); var cats = new List<double>(); var allocations = new List<double>();
+            var arrows = new List<double>(); var paws = new List<double>(); var allocations = new List<double>();
             var readAllocation = DetectAllocationCounter();
             generator.Generate(DifficultyProfile.Easy, -123456789, options); // Warm editor/JIT outside the measured corpus.
             var logicalBoards = new HashSet<string>(); var solutionLayouts = new HashSet<string>();
@@ -317,7 +317,7 @@ namespace CatsAndArrows.Tests
                 AssertAccepted(result, DifficultyProfile.Easy, seed);
                 logicalBoards.Add(LogicalBoard(result.Puzzle));
                 solutionLayouts.Add(SolutionLayout(result.Puzzle));
-                arrows.Add(result.Puzzle.Arrows.Count); cats.Add(result.Puzzle.SolutionCats.Count);
+                arrows.Add(result.Puzzle.Arrows.Count); paws.Add(result.Puzzle.SolutionPaws.Count);
             }
             TestContext.Out.WriteLine("GENERATION_CORPUS " + "{" +
                 "\"profile\":\"easy\",\"seedFirst\":0,\"seedLast\":999,\"runs\":1000," +
@@ -327,7 +327,7 @@ namespace CatsAndArrows.Tests
                 ",\"attempts\":" + DistributionJson(attempts) + ",\"layoutNodes\":" + DistributionJson(layouts) +
                 ",\"humanEvaluations\":" + DistributionJson(humans) + ",\"verifierNodes\":" + DistributionJson(verifiers) +
                 ",\"randomDraws\":" + DistributionJson(draws) + ",\"arrows\":" + DistributionJson(arrows) +
-                ",\"cats\":" + DistributionJson(cats) + ",\"timingContext\":\"warm-editor-generation-only\"" +
+                ",\"cats\":" + DistributionJson(paws) + ",\"timingContext\":\"warm-editor-generation-only\"" +
                 ",\"elapsedMsInformational\":" + DistributionJson(elapsed) +
                 ",\"allocationCounterAvailable\":" + (readAllocation == null ? "false" : "true") +
                 ",\"allocatedBytesInformational\":" + DistributionJson(allocations) + "}");
@@ -369,7 +369,7 @@ namespace CatsAndArrows.Tests
             Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo("easy-generator-v2"));
             Assert.That(puzzle.GeneratorVersion, Is.EqualTo(result.Metadata.GeneratorVersion));
             Assert.That(puzzle.Arrows.Count, Is.LessThanOrEqualTo(result.Metadata.Options.MaxArrows));
-            Assert.That(puzzle.Size * puzzle.Size - puzzle.SolutionCats.Count - puzzle.Arrows.Count, Is.GreaterThanOrEqualTo(5));
+            Assert.That(puzzle.Size * puzzle.Size - puzzle.SolutionPaws.Count - puzzle.Arrows.Count, Is.GreaterThanOrEqualTo(5));
             Assert.That(result.Metadata.ProfileVersion, Is.EqualTo("easy-profile-v1"));
             Assert.That(result.Metadata.RandomVersion, Is.EqualTo("splitmix64-v1"));
             Assert.That(result.Metadata.RulesetVersion, Is.EqualTo("human-v2"));
@@ -379,23 +379,23 @@ namespace CatsAndArrows.Tests
             Assert.That(result.Metadata.AcceptedAttempt, Is.InRange(0, result.Diagnostics.Attempts - 1));
             Assert.That(result.Metadata.BoardFingerprint, Is.EqualTo(GenerationFingerprints.ForBoard(puzzle)));
             Assert.That(result.Metadata.SolutionFingerprint, Is.EqualTo(GenerationFingerprints.ForSolution(puzzle)));
-            var solution = new HashSet<BoardCoordinate>(puzzle.SolutionCats);
-            foreach (var cat in solution)
+            var solution = new HashSet<BoardCoordinate>(puzzle.SolutionPaws);
+            foreach (var paw in solution)
             {
-                Assert.That(cat.Row, Is.InRange(0, profile.Size - 1)); Assert.That(cat.Column, Is.InRange(0, profile.Size - 1));
-                Assert.That(puzzle.Arrows.ContainsKey(cat), Is.False);
+                Assert.That(paw.Row, Is.InRange(0, profile.Size - 1)); Assert.That(paw.Column, Is.InRange(0, profile.Size - 1));
+                Assert.That(puzzle.Arrows.ContainsKey(paw), Is.False);
             }
             var rowCounts = Enumerable.Range(0, profile.Size).Select(r => solution.Count(c => c.Row == r)).ToArray();
             var colCounts = Enumerable.Range(0, profile.Size).Select(c => solution.Count(p => p.Column == c)).ToArray();
-            Assert.That(rowCounts.All(c => c <= profile.MaxCatsPerLine), Is.True);
-            Assert.That(colCounts.All(c => c <= profile.MaxCatsPerLine), Is.True);
+            Assert.That(rowCounts.All(c => c <= profile.MaxPawsPerLine), Is.True);
+            Assert.That(colCounts.All(c => c <= profile.MaxPawsPerLine), Is.True);
             Assert.That(rowCounts.Count(c => c == 0), Is.LessThanOrEqualTo(profile.MaxZeroRows));
             Assert.That(colCounts.Count(c => c == 0), Is.LessThanOrEqualTo(profile.MaxZeroColumns));
             foreach (var arrow in puzzle.Arrows)
             {
                 Assert.That(arrow.Key.Row, Is.InRange(0, profile.Size - 1)); Assert.That(arrow.Key.Column, Is.InRange(0, profile.Size - 1));
                 Assert.That(Enum.IsDefined(typeof(Direction), arrow.Value), Is.True);
-                Assert.That(solution.Any(cat => PointsAt(arrow.Key, arrow.Value, cat)), Is.True, "Every arrow must be true from coordinates alone.");
+                Assert.That(solution.Any(paw => PointsAt(arrow.Key, arrow.Value, paw)), Is.True, "Every arrow must be true from coordinates alone.");
             }
             var clues = PuzzleClues.FromPuzzle(puzzle);
             CollectionAssert.AreEqual(rowCounts, clues.RowTotals); CollectionAssert.AreEqual(colCounts, clues.ColumnTotals);
@@ -404,7 +404,7 @@ namespace CatsAndArrows.Tests
             Assert.That(independentAssessment.Solver.Human.Status, Is.EqualTo(HumanSolverStatus.Solved));
             Assert.That(independentAssessment.Solver.Uniqueness.Status, Is.EqualTo(UniquenessStatus.Unique));
             CollectionAssert.AreEquivalent(solution, independentAssessment.Solver.Uniqueness.Solutions.Single());
-            CollectionAssert.AreEquivalent(solution, independentAssessment.Solver.Human.Assignments.Where(c => c.State == CellKnowledge.Cat).Select(c => c.Coordinate));
+            CollectionAssert.AreEquivalent(solution, independentAssessment.Solver.Human.Assignments.Where(c => c.State == CellKnowledge.Paw).Select(c => c.Coordinate));
         }
 
         private static void AssertNoPuzzle(GenerationResult result)
@@ -425,17 +425,17 @@ namespace CatsAndArrows.Tests
             Assert.That(result.Diagnostics.ArrowTrials, Is.InRange(0L, (long)result.Diagnostics.Attempts * options.MaxArrows * options.ArrowTrialsPerStage));
         }
 
-        private static bool PointsAt(BoardCoordinate origin, Direction direction, BoardCoordinate cat) =>
-            direction == Direction.Up && cat.Column == origin.Column && cat.Row < origin.Row ||
-            direction == Direction.Down && cat.Column == origin.Column && cat.Row > origin.Row ||
-            direction == Direction.Left && cat.Row == origin.Row && cat.Column < origin.Column ||
-            direction == Direction.Right && cat.Row == origin.Row && cat.Column > origin.Column ||
-            direction == Direction.UpLeft && cat.Row < origin.Row && cat.Column < origin.Column && origin.Row - cat.Row == origin.Column - cat.Column ||
-            direction == Direction.UpRight && cat.Row < origin.Row && cat.Column > origin.Column && origin.Row - cat.Row == cat.Column - origin.Column ||
-            direction == Direction.DownLeft && cat.Row > origin.Row && cat.Column < origin.Column && cat.Row - origin.Row == origin.Column - cat.Column ||
-            direction == Direction.DownRight && cat.Row > origin.Row && cat.Column > origin.Column && cat.Row - origin.Row == cat.Column - origin.Column;
+        private static bool PointsAt(BoardCoordinate origin, Direction direction, BoardCoordinate paw) =>
+            direction == Direction.Up && paw.Column == origin.Column && paw.Row < origin.Row ||
+            direction == Direction.Down && paw.Column == origin.Column && paw.Row > origin.Row ||
+            direction == Direction.Left && paw.Row == origin.Row && paw.Column < origin.Column ||
+            direction == Direction.Right && paw.Row == origin.Row && paw.Column > origin.Column ||
+            direction == Direction.UpLeft && paw.Row < origin.Row && paw.Column < origin.Column && origin.Row - paw.Row == origin.Column - paw.Column ||
+            direction == Direction.UpRight && paw.Row < origin.Row && paw.Column > origin.Column && origin.Row - paw.Row == paw.Column - origin.Column ||
+            direction == Direction.DownLeft && paw.Row > origin.Row && paw.Column < origin.Column && paw.Row - origin.Row == origin.Column - paw.Column ||
+            direction == Direction.DownRight && paw.Row > origin.Row && paw.Column > origin.Column && paw.Row - origin.Row == paw.Column - origin.Column;
 
-        private static string SolutionLayout(PuzzleDefinition puzzle) => string.Join(";", puzzle.SolutionCats.OrderBy(c => c.Row).ThenBy(c => c.Column).Select(c => c.Row + "," + c.Column));
+        private static string SolutionLayout(PuzzleDefinition puzzle) => string.Join(";", puzzle.SolutionPaws.OrderBy(c => c.Row).ThenBy(c => c.Column).Select(c => c.Row + "," + c.Column));
         private static string LogicalBoard(PuzzleDefinition puzzle) => puzzle.Size + ":" + SolutionLayout(puzzle) + ":" +
             string.Join(";", puzzle.Arrows.OrderBy(a => a.Key.Row).ThenBy(a => a.Key.Column).Select(a => a.Key.Row + "," + a.Key.Column + "," + (int)a.Value));
         private static string ResultFingerprint(GenerationResult result) => result.Status + ":" + result.Metadata.BoardFingerprint + ":" +

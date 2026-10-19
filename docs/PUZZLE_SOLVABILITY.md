@@ -3,7 +3,7 @@
 ## Core guarantee
 No puzzle enters gameplay unless an automated solver proves the intended solution is uniquely derivable under the game's allowed deduction rules without consuming Hint.
 
-The old prototype placed cats/arrows randomly under local constraints. That is insufficient: a locally valid board can still require guessing. The Unity implementation must generate and validate as a pair.
+The old prototype placed paws/arrows randomly under local constraints. That is insufficient: a locally valid board can still require guessing. The Unity implementation must generate and validate as a pair.
 
 ## Architecture
 1. Generate a candidate solution layout from a seed.
@@ -17,13 +17,13 @@ The old prototype placed cats/arrows randomly under local constraints. That is i
 The solver should maintain candidate states for every non-arrow cell and repeatedly apply deductions until no progress is possible.
 
 Initial deduction families:
-- zero line => all eligible cells in line are not cats;
-- line remaining count is zero => remaining unknown cells are not cats;
-- line remaining count equals unknown candidates => all candidates are cats;
+- zero line => all eligible cells in line are not paws;
+- line remaining count is zero => remaining unknown cells are not paws;
+- line remaining count equals unknown candidates => all candidates are paws;
 - arrow directional existence => at least one candidate remains in its pointed segment;
-- arrow segment reduced to one candidate => that cell is a cat;
+- arrow segment reduced to one candidate => that cell is a paw;
 - line/arrow constraint interaction that removes candidates impossible under totals;
-- propagation after each solved Cat/NotCat.
+- propagation after each solved Paw/NotPaw.
 
 Do not silently add solver-only rules that players cannot reasonably infer from the visible rules. New deduction families should be documented and tested.
 
@@ -35,19 +35,19 @@ A board is valid only if the constraints admit exactly one complete solution. A 
 Both engines consume an immutable snapshot of visible clues, never the stored
 solution, player hypotheses, or presentation-protected cells. Rows and columns
 are exact counts; each arrow is an at-least-one constraint. Rays continue to the
-board edge through other arrows, whose cells remain ineligible for cats. Several
-arrows may be satisfied by one cat.
+board edge through other arrows, whose cells remain ineligible for paws. Several
+arrows may be satisfied by one paw.
 
 The initial human rule set is deliberately bounded: zero/satisfied lines,
 fill-remaining lines, unsatisfied arrow singletons, and elimination outside an
-unsatisfied cardinal arrow segment when its row/column needs exactly one more cat.
+unsatisfied cardinal arrow segment when its row/column needs exactly one more paw.
 Diagonal arrows use exact 45-degree rays but never this cardinal line-exclusion rule. Repeat these
 rules deterministically to a fixed point. Disjoint-arrow reservations, hypothetical
 placements, and broader subset reasoning are deferred. A unique board that needs
 unsupported reasoning is stalled and must be rejected.
 
 Human completion classifies every normal cell and validates every clue. This does
-not change the player's cat-set-only victory condition. Invalid input,
+not change the player's paw-set-only victory condition. Invalid input,
 contradiction, stall, and work-budget exhaustion are distinct outcomes.
 
 The verifier searches normal-cell assignments independently, checks complete
@@ -61,31 +61,31 @@ result matching the intended solution and valid generation profile. It does not
 automatically integrate generation or gameplay in Issue #3.
 
 Deduction records contain stable rule IDs, source clues, premises, and explicit
-Cat/NotCat conclusions. Explanation text belongs to localization presentation;
+Paw/NotPaw conclusions. Explanation text belongs to localization presentation;
 solving and metrics must be identical across locales. Record the solver ruleset
 version with reproducibility data. Verifier effort is separate from human
 difficulty metrics.
 
 V1 metric definitions: immediate-elimination proportion is the first deduction's
-NotCat conclusions divided by the initial non-arrow cell count. Maximum unresolved
+NotPaw conclusions divided by the initial non-arrow cell count. Maximum unresolved
 candidates per line is the initial maximum eligible row/column cell count, because
 unknown counts only decrease. Neither metric measures verifier branching effort.
 
 ## Issue #4 generation contract
 
-The first generator supports Easy 5x5 only: at most two cats per row/column and at
-most one zero row/column. Feasible total cat counts are four through ten. Sample
+The first generator supports Easy 5x5 only: at most two paws per row/column and at
+most one zero row/column. Feasible total paw counts are four through ten. Sample
 quota patterns and bounded randomized layouts instead of relying on manually
 authored board templates. The distribution is not promised to be uniform.
 
-Enumerate truthful eight-direction arrow options on non-cat cells. Trial additions use
+Enumerate truthful eight-direction arrow options on non-paw cells. Trial additions use
 the existing human solver and prefer progress on other cells normal in both the
 current and trial board. The newly occupied arrow cell does not count as progress.
 Seeded ordering resolves ties; a zero-immediate-gain addition is permitted because
 later clues can unlock a chain. Never retry a zero-gain stage without a bound.
 
 Stop at the first complete human derivation, then assess the exact frozen board
-against all invariants, exhaustive uniqueness, and the intended cat set. No
+against all invariants, exhaustive uniqueness, and the intended paw set. No
 partial or unproved board may be returned on failure. Do not mutate clues after
 proof. Issue #35 adds bounded clue removal for Medium/Hard only; Easy retains
 this original first-complete-board behavior. Extra deduction rules and calibrated
@@ -103,7 +103,7 @@ iteration. Unbiased bounded sampling consumes the raw-draw budget even on reject
 draws. Effective options and profile/ruleset versions are part of replay identity.
 
 The initial clue ceiling is ten arrows, leaving at least fifteen normal cells and
-five normal non-cat cells even with ten cats. This is a configurable generation
+five normal non-paw cells even with ten paws. This is a configurable generation
 policy, not a new gameplay rule or calibrated Easy score. Measure acceptance,
 duplicates, clue/solution distributions, allocations/work, and latency before
 changing the versioned defaults. Desktop timings do not establish mobile waits.
@@ -135,7 +135,7 @@ Medium max 3/at-most-one zero row and column, Hard max 4/no zero row or column;
 Hard admission additionally requires some row or column total exactly 3. Medium
 permits but does not require a 3-total line. These checks use the frozen solution
 for admission; the human solver and independent verifier still receive clues only.
-Both proofs must complete and agree with the intended cat set before success.
+Both proofs must complete and agree with the intended paw set before success.
 
 The larger path uses bounded quota/layout search and truthful eight-direction
 arrow growth with the same documented deductions. Its cached quota arrays are
@@ -173,7 +173,7 @@ preflight rejects stalled deletions; every retained deletion then requires full
 human/independent-uniqueness assessment and intended-answer agreement. Compare
 proved variants by combined arrows plus derived hatches, then arrow count; retain
 the deterministic first candidate on ties. Hatches come from the same existing
-cardinal one-cat rule and accepted proof used by gameplay, never additional solver
+cardinal one-paw rule and accepted proof used by gameplay, never additional solver
 premises. No new deductions, difficulty scores or density rejection rules apply.
 
 `generation-options-large-v2` retains the 24-arrow search ceiling and original
@@ -198,7 +198,7 @@ implementation validation is recorded separately in TESTING.md.
 ## Issue #37 Hard hatch policy
 
 Hard uses `hard-generator-v3` / `hard-profile-v3`: no initial protected/hatch cells
-are derived or displayed, including NotCat cells behind one-cat cardinal arrows.
+are derived or displayed, including NotPaw cells behind one-paw cardinal arrows.
 The player may mark these cells with X. Optional Hint remains a single requested
 deduction, with no automatic protection. No independent hatches are selected in
 this minimal fix; the empty set is deterministic and needs no new random draws.

@@ -9,9 +9,19 @@ using UnityEngine.UIElements;
 
 namespace CatsAndArrows.Tests
 {
-    // Issue #6: presentation must expose visible clues and marks, never hidden cats.
+    // Issue #6: presentation must expose visible clues and marks, never hidden paws.
     public sealed class BoardPresentationTests
     {
+        [Test]
+        public void PawCellKindKeepsLegacyNumericValue()
+        {
+            Assert.That((int)BoardCellKind.Empty, Is.Zero);
+            Assert.That((int)BoardCellKind.X, Is.EqualTo(1));
+            Assert.That((int)BoardCellKind.Paw, Is.EqualTo(2));
+            Assert.That((int)BoardCellKind.Arrow, Is.EqualTo(3));
+            Assert.That((int)BoardCellKind.Protected, Is.EqualTo(4));
+        }
+
         [Test]
         public void ImmovableTilesRemainDarkerAndSymbolsFullyVisibleAfterCompletionAndNewGame()
         {
@@ -26,10 +36,10 @@ namespace CatsAndArrows.Tests
             var fixedFill = Cell(view, protectedCell).style.backgroundColor.value;
             Assert.That(Cell(view, arrow).style.backgroundColor.value, Is.EqualTo(fixedFill));
             Assert.That(Luminance(fixedFill), Is.LessThan(Luminance(normalFill)));
-            foreach (var cat in session.Puzzle.SolutionCats)
+            foreach (var paw in session.Puzzle.SolutionPaws)
             {
-                session.Tap(cat);
-                session.Tap(cat);
+                session.Tap(paw);
+                session.Tap(paw);
             }
             view.Refresh();
             var completedNormal = Cell(view, normal).style.backgroundColor.value;
@@ -63,8 +73,8 @@ namespace CatsAndArrows.Tests
             Assert.That(presentation.Seed, Is.EqualTo(6));
             Assert.That(presentation.Cells.Count, Is.EqualTo(25));
             Assert.That(presentation.Cells.Select(cell => cell.Coordinate).Distinct().Count(), Is.EqualTo(25));
-            Assert.That(presentation.Cells.Count(cell => cell.Kind == BoardCellKind.Cat), Is.Zero);
-            foreach (var coordinate in session.Puzzle.SolutionCats)
+            Assert.That(presentation.Cells.Count(cell => cell.Kind == BoardCellKind.Paw), Is.Zero);
+            foreach (var coordinate in session.Puzzle.SolutionPaws)
             {
                 Assert.That(presentation.GetCell(coordinate).Kind, Is.EqualTo(BoardCellKind.Empty));
                 Assert.That(presentation.GetCell(coordinate).IsInteractive, Is.True);
@@ -96,11 +106,11 @@ namespace CatsAndArrows.Tests
         {
             var protectedCell = new BoardCoordinate(3, 1);
             var xCell = new BoardCoordinate(1, 2);
-            var wrongCat = new BoardCoordinate(3, 3);
+            var wrongPaw = new BoardCoordinate(3, 3);
             var session = new GameSession(MakePuzzle(), new[] { protectedCell });
             session.Tap(xCell);
-            session.Tap(wrongCat);
-            session.Tap(wrongCat);
+            session.Tap(wrongPaw);
+            session.Tap(wrongPaw);
             var marksBefore = session.Marks.ToArray();
             var protectedBefore = session.ProtectedCells.ToArray();
             var arrowsBefore = session.Puzzle.Arrows.ToArray();
@@ -109,8 +119,8 @@ namespace CatsAndArrows.Tests
             Assert.That(presentation.GetCell(protectedCell).Kind, Is.EqualTo(BoardCellKind.Protected));
             Assert.That(presentation.GetCell(protectedCell).IsInteractive, Is.False);
             Assert.That(presentation.GetCell(xCell).Kind, Is.EqualTo(BoardCellKind.X));
-            Assert.That(presentation.GetCell(wrongCat).Kind, Is.EqualTo(BoardCellKind.Cat));
-            Assert.That(presentation.GetCell(wrongCat).IsInteractive, Is.True);
+            Assert.That(presentation.GetCell(wrongPaw).Kind, Is.EqualTo(BoardCellKind.Paw));
+            Assert.That(presentation.GetCell(wrongPaw).IsInteractive, Is.True);
             Assert.That(presentation.IsCompleted, Is.False);
             Assert.That(session.Marks, Is.EquivalentTo(marksBefore));
             Assert.That(session.ProtectedCells, Is.EquivalentTo(protectedBefore));
@@ -128,21 +138,21 @@ namespace CatsAndArrows.Tests
             var marked = BoardPresentation.FromSession(session);
             session.Clear();
             var cleared = BoardPresentation.FromSession(session);
-            foreach (var cat in session.Puzzle.SolutionCats)
+            foreach (var paw in session.Puzzle.SolutionPaws)
             {
-                session.Tap(cat);
-                session.Tap(cat);
+                session.Tap(paw);
+                session.Tap(paw);
             }
             var completed = BoardPresentation.FromSession(session);
 
             Assert.That(before.GetCell(coordinate).Kind, Is.EqualTo(BoardCellKind.Empty));
             Assert.That(marked.GetCell(coordinate).Kind, Is.EqualTo(BoardCellKind.X));
             Assert.That(cleared.GetCell(coordinate).Kind, Is.EqualTo(BoardCellKind.Empty));
-            Assert.That(completed.GetCell(coordinate).Kind, Is.EqualTo(BoardCellKind.Cat));
+            Assert.That(completed.GetCell(coordinate).Kind, Is.EqualTo(BoardCellKind.Paw));
             Assert.That(before.IsCompleted, Is.False);
             Assert.That(completed.IsCompleted, Is.True);
             Assert.That(completed.Cells.All(cell => !cell.IsInteractive), Is.True);
-            Assert.That(completed.Cells.Count(cell => cell.Kind == BoardCellKind.Cat), Is.EqualTo(2));
+            Assert.That(completed.Cells.Count(cell => cell.Kind == BoardCellKind.Paw), Is.EqualTo(2));
         }
 
         [TestCase(-1, 0)]
@@ -199,10 +209,10 @@ namespace CatsAndArrows.Tests
             var view = new PortraitBoardView();
             var session = new GameSession(MakePuzzle());
             view.Bind(session, "en");
-            foreach (var cat in session.Puzzle.SolutionCats)
+            foreach (var paw in session.Puzzle.SolutionPaws)
             {
-                session.Tap(cat);
-                session.Tap(cat);
+                session.Tap(paw);
+                session.Tap(paw);
             }
             view.Refresh();
             var catalog = BoardLocalization.CreateCatalog();

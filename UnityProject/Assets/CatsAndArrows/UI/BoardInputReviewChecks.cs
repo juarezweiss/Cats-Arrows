@@ -28,9 +28,9 @@ namespace CatsAndArrows.UI
                     Tap(grid, Center(view, grid, tap), touch);
                     Require(session.GetMark(tap) == PlayerMark.X, "tap Empty -> X");
                     Tap(grid, Center(view, grid, tap), touch);
-                    Require(session.GetMark(tap) == PlayerMark.Cat, "tap X -> Cat");
+                    Require(session.GetMark(tap) == PlayerMark.Paw, "tap X -> Paw");
                     Tap(grid, Center(view, grid, tap), touch);
-                    Require(session.GetMark(tap) == PlayerMark.Empty, "tap Cat -> Empty");
+                    Require(session.GetMark(tap) == PlayerMark.Empty, "tap Paw -> Empty");
                     var start = Center(view, grid, new BoardCoordinate(2, 0));
                     var end = Center(view, grid, new BoardCoordinate(2, 4));
                     var pointerId = touch ? PointerId.touchPointerIdBase : PointerId.mousePointerId;

@@ -134,7 +134,7 @@ namespace CatsAndArrows.UI
         public void SetPlayLayout()
         {
             // Reserve the same space before and after completion so the grid never
-            // moves when the player places the final cat.
+            // moves when the player places the final paw.
             header.style.height = 100;
             title.style.fontSize = 20;
             difficulty.style.fontSize = 14; difficulty.style.marginTop = 2;
@@ -223,13 +223,13 @@ namespace CatsAndArrows.UI
             }
             foreach (var actualCell in Presentation.Cells)
             {
-                // Intro examples are presentation-only. No cat/X intent is sent
+                // Intro examples are presentation-only. No paw/X intent is sent
                 // to the session, so lesson demonstrations cannot win the board.
                 var cell = actualCell;
                 if (tutorial?.DemoCoordinate is BoardCoordinate demonstration && demonstration.Equals(actualCell.Coordinate) &&
                     tutorial.DemoMark is PlayerMark mark)
                     cell = new BoardCellPresentation(actualCell.Coordinate,
-                        mark == PlayerMark.Cat ? BoardCellKind.Cat : mark == PlayerMark.X ? BoardCellKind.X : BoardCellKind.Empty,
+                        mark == PlayerMark.Paw ? BoardCellKind.Paw : mark == PlayerMark.X ? BoardCellKind.X : BoardCellKind.Empty,
                         actualCell.Direction, false);
                 var tile = new VisualElement { name = "cell-" + cell.Coordinate.Row + "-" + cell.Coordinate.Column };
                 tile.style.position = Position.Absolute;

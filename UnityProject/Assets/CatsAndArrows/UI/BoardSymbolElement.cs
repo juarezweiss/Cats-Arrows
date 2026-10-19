@@ -61,7 +61,7 @@ namespace CatsAndArrows.UI
                     Line(tip - vector * size * .16f + side * size * .15f, tip);
                     Line(tip, tip - vector * size * .16f - side * size * .15f);
                     break;
-                case BoardCellKind.Cat:
+                case BoardCellKind.Paw:
                     // Issue #53: a lighter paw, about one third smaller and centered in the cell.
                     size *= .69f;
                     center.y += size * .0225f;

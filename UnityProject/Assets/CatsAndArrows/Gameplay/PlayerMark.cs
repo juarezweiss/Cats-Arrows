@@ -2,8 +2,8 @@ namespace CatsAndArrows.Gameplay
 {
     public enum PlayerMark
     {
-        Empty,
-        X,
-        Cat
+        Empty = 0,
+        X = 1,
+        Paw = 2
     }
 }

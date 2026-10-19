@@ -51,8 +51,8 @@ namespace CatsAndArrows.Tests
             }
             var text = new LocalizationService(catalog, CultureInfo.GetCultureInfo(locale));
             var target = text.Format("game.hint-target", new Dictionary<string, object>
-                { { "row", 3 }, { "column", 4 }, { "state", text.GetText("board.cat") } });
-            Assert.That(target, Does.Contain("3").And.Contain("4").And.Contain(text.GetText("board.cat")));
+                { { "row", 3 }, { "column", 4 }, { "state", text.GetText("board.paw") } });
+            Assert.That(target, Does.Contain("3").And.Contain("4").And.Contain(text.GetText("board.paw")));
             Assert.That(target, Does.Not.Contain("{"));
             Assert.That(text.GetText("game.rules-body"), Does.Contain("45°"));
         }

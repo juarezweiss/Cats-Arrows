@@ -83,7 +83,7 @@ namespace CatsAndArrows.Tests
             var keys = catalog.GetResource("en").Messages.Keys.Where(key => key.StartsWith("tutorial.")).ToArray();
             Assert.That(keys.Length, Is.GreaterThanOrEqualTo(22));
             foreach (var key in keys) Assert.That(resource[key], Is.Not.Empty, key);
-            Assert.That(resource["tutorial.diagonal-cat"], Does.Contain("45°"));
+            Assert.That(resource["tutorial.diagonal-paw"], Does.Contain("45°"));
         }
         [Test] public void SequentialDemoSymbolsAreBoldReadOnlyAndFixedKindsAreSeparate()
         {
@@ -91,7 +91,7 @@ namespace CatsAndArrows.Tests
             shell.StartTutorial();
             Assert.That(shell.Q<Button>("action-continue").style.borderLeftWidth.value, Is.EqualTo(3));
             while (shell.Tutorial.Step != TutorialStep.EmptyState) shell.ContinueTutorial();
-            foreach (var kind in new[] { BoardCellKind.Empty, BoardCellKind.X, BoardCellKind.Cat })
+            foreach (var kind in new[] { BoardCellKind.Empty, BoardCellKind.X, BoardCellKind.Paw })
             {
                 Assert.That(shell.BoardView.Q<VisualElement>("cell-" + shell.Tutorial.DemoCoordinate.Value.Row + "-" + shell.Tutorial.DemoCoordinate.Value.Column).Q<BoardSymbolElement>().Kind, Is.EqualTo(kind));
                 Assert.That(shell.ActiveSession.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));

@@ -28,8 +28,8 @@ namespace CatsAndArrows.Gameplay
             {
                 if (!puzzle.IsInside(coordinate))
                     throw new ArgumentException("Protected cells must be inside the board.", nameof(protectedCells));
-                if (puzzle.IsSolutionCat(coordinate))
-                    throw new ArgumentException("Solution cat cells cannot be protected.", nameof(protectedCells));
+                if (puzzle.IsSolutionPaw(coordinate))
+                    throw new ArgumentException("Solution paw cells cannot be protected.", nameof(protectedCells));
             }
             // Arrows already have their own non-interactive cell kind.
             _protectedCells.RemoveWhere(puzzle.IsArrow);
@@ -58,8 +58,8 @@ namespace CatsAndArrows.Gameplay
             _marks[coordinate] = _marks[coordinate] switch
             {
                 PlayerMark.Empty => PlayerMark.X,
-                PlayerMark.X => PlayerMark.Cat,
-                PlayerMark.Cat => PlayerMark.Empty,
+                PlayerMark.X => PlayerMark.Paw,
+                PlayerMark.Paw => PlayerMark.Empty,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -117,7 +117,7 @@ namespace CatsAndArrows.Gameplay
             {
                 if (!_marks.TryGetValue(assignment.Coordinate, out var current)) continue;
                 if (assignment.State == CellKnowledge.Unknown) continue;
-                var target = assignment.State == CellKnowledge.Cat ? PlayerMark.Cat : PlayerMark.X;
+                var target = assignment.State == CellKnowledge.Paw ? PlayerMark.Paw : PlayerMark.X;
                 if (current == target) continue;
 
                 return new HintResult(HintStatus.Applied, step, assignment, current != PlayerMark.Empty);
@@ -131,7 +131,7 @@ namespace CatsAndArrows.Gameplay
             var result = PrepareHint();
             if (result.Status != HintStatus.Applied || !result.Assignment.HasValue) return result;
             var assignment = result.Assignment.Value;
-            _marks[assignment.Coordinate] = assignment.State == CellKnowledge.Cat ? PlayerMark.Cat : PlayerMark.X;
+            _marks[assignment.Coordinate] = assignment.State == CellKnowledge.Paw ? PlayerMark.Paw : PlayerMark.X;
             MarkRevision++;
             RefreshCompletion();
             return result;
@@ -139,9 +139,9 @@ namespace CatsAndArrows.Gameplay
 
         private void RefreshCompletion()
         {
-            var playerCats = _marks.Where(pair => pair.Value == PlayerMark.Cat).Select(pair => pair.Key);
-            if (Puzzle.SolutionCats.Count == _marks.Count(pair => pair.Value == PlayerMark.Cat) &&
-                new HashSet<BoardCoordinate>(playerCats).SetEquals(Puzzle.SolutionCats))
+            var playerPaws = _marks.Where(pair => pair.Value == PlayerMark.Paw).Select(pair => pair.Key);
+            if (Puzzle.SolutionPaws.Count == _marks.Count(pair => pair.Value == PlayerMark.Paw) &&
+                new HashSet<BoardCoordinate>(playerPaws).SetEquals(Puzzle.SolutionPaws))
             {
                 IsCompleted = true;
             }

@@ -17,7 +17,15 @@ namespace CatsAndArrows.Tests
             new[] { new ArrowClue(new BoardCoordinate(0, 1), Direction.Left) });
 
         [Test]
-        public void TapCyclesEmptyToXToCatToEmpty()
+        public void PawMarkKeepsLegacyNumericValue()
+        {
+            Assert.That((int)PlayerMark.Empty, Is.Zero);
+            Assert.That((int)PlayerMark.X, Is.EqualTo(1));
+            Assert.That((int)PlayerMark.Paw, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TapCyclesEmptyToXToPawToEmpty()
         {
             var session = new GameSession(MakePuzzle());
             var cell = new BoardCoordinate(2, 2);
@@ -25,7 +33,7 @@ namespace CatsAndArrows.Tests
             session.Tap(cell);
             Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.X));
             session.Tap(cell);
-            Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.Paw));
             session.Tap(cell);
             Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.Empty));
         }
@@ -46,26 +54,26 @@ namespace CatsAndArrows.Tests
             var a = new BoardCoordinate(2, 0);
             var b = new BoardCoordinate(2, 1);
             session.Tap(b); // X
-            session.Tap(b); // Cat
+            session.Tap(b); // Paw
 
             var changed = session.ApplyDrag(new[] { a, a, b });
 
             Assert.That(changed, Is.EqualTo(1));
             Assert.That(session.GetMark(a), Is.EqualTo(PlayerMark.X));
-            Assert.That(session.GetMark(b), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(session.GetMark(b), Is.EqualTo(PlayerMark.Paw));
         }
 
         [Test]
-        public void ExactCatsWinImmediatelyAndLockBoard()
+        public void ExactPawsWinImmediatelyAndLockBoard()
         {
             var session = new GameSession(MakePuzzle());
 
             session.Tap(new BoardCoordinate(0, 0));
-            session.Tap(new BoardCoordinate(0, 0)); // Cat
+            session.Tap(new BoardCoordinate(0, 0)); // Paw
             Assert.That(session.IsCompleted, Is.False);
 
             session.Tap(new BoardCoordinate(1, 1));
-            session.Tap(new BoardCoordinate(1, 1)); // Cat
+            session.Tap(new BoardCoordinate(1, 1)); // Paw
 
             Assert.That(session.IsCompleted, Is.True);
             Assert.That(session.Tap(new BoardCoordinate(2, 2)), Is.False);
@@ -73,15 +81,15 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void ExtraCatPreventsVictory()
+        public void ExtraPawPreventsVictory()
         {
             var session = new GameSession(MakePuzzle());
-            var extraCat = new BoardCoordinate(2, 2);
+            var extraPaw = new BoardCoordinate(2, 2);
             var cells = new[]
             {
-                // Issue #5: place the extra cat before completing the solution,
+                // Issue #5: place the extra paw before completing the solution,
                 // otherwise immediate victory correctly locks the board first.
-                extraCat,
+                extraPaw,
                 new BoardCoordinate(0, 0),
                 new BoardCoordinate(1, 1)
             };
@@ -90,11 +98,11 @@ namespace CatsAndArrows.Tests
             {
                 Assert.That(session.Tap(cell), Is.True);
                 Assert.That(session.Tap(cell), Is.True);
-                Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.Cat));
+                Assert.That(session.GetMark(cell), Is.EqualTo(PlayerMark.Paw));
             }
 
             Assert.That(session.IsCompleted, Is.False);
-            Assert.That(session.Tap(extraCat), Is.True); // Cat -> Empty restores the exact solution.
+            Assert.That(session.Tap(extraPaw), Is.True); // Paw -> Empty restores the exact solution.
             Assert.That(session.IsCompleted, Is.True);
         }
 
@@ -110,7 +118,7 @@ namespace CatsAndArrows.Tests
             Assert.That(session.Tap(cell), Is.True);
             Assert.That(view[cell], Is.EqualTo(PlayerMark.X));
             Assert.That(session.Tap(cell), Is.True);
-            Assert.That(view[cell], Is.EqualTo(PlayerMark.Cat));
+            Assert.That(view[cell], Is.EqualTo(PlayerMark.Paw));
             Assert.That(session.Clear(), Is.True);
             Assert.That(view[cell], Is.EqualTo(PlayerMark.Empty));
             Assert.That(session.IsCompleted, Is.False);
@@ -121,11 +129,11 @@ namespace CatsAndArrows.Tests
         {
             var session = new GameSession(MakePuzzle());
             var view = session.Marks;
-            PlaceCat(session, new BoardCoordinate(0, 0));
-            PlaceCat(session, new BoardCoordinate(1, 1));
+            PlacePaw(session, new BoardCoordinate(0, 0));
+            PlacePaw(session, new BoardCoordinate(1, 1));
 
             Assert.That(session.IsCompleted, Is.True);
-            Assert.That(view[new BoardCoordinate(1, 1)], Is.EqualTo(PlayerMark.Cat));
+            Assert.That(view[new BoardCoordinate(1, 1)], Is.EqualTo(PlayerMark.Paw));
             AssertMarkViewRejectsMutation(session, new BoardCoordinate(0, 0));
             Assert.That(session.IsCompleted, Is.True);
         }
@@ -146,8 +154,8 @@ namespace CatsAndArrows.Tests
             Assert.That(session.CanInteract(addedLater), Is.True);
             AssertProtectedViewRejectsMutation(session, addedLater);
 
-            PlaceCat(session, new BoardCoordinate(0, 0));
-            PlaceCat(session, new BoardCoordinate(1, 1));
+            PlacePaw(session, new BoardCoordinate(0, 0));
+            PlacePaw(session, new BoardCoordinate(1, 1));
 
             Assert.That(session.IsCompleted, Is.True);
             AssertProtectedViewRejectsMutation(session, addedLater);
@@ -203,7 +211,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void ProtectingASolutionCatIsRejectedInsteadOfCreatingAnUnwinnableSession()
+        public void ProtectingASolutionPawIsRejectedInsteadOfCreatingAnUnwinnableSession()
         {
             var error = Assert.Throws<ArgumentException>(() =>
                 new GameSession(MakePuzzle(), new[] { new BoardCoordinate(0, 0) }));
@@ -240,33 +248,33 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void MixedDragChangesOnlyEligibleEmptyCellsAndTheNextTapAdvancesXToCat()
+        public void MixedDragChangesOnlyEligibleEmptyCellsAndTheNextTapAdvancesXToPaw()
         {
             var emptyCell = new BoardCoordinate(2, 0);
             var xCell = new BoardCoordinate(2, 1);
-            var catCell = new BoardCoordinate(2, 2);
+            var pawCell = new BoardCoordinate(2, 2);
             var arrow = new BoardCoordinate(0, 1);
             var protectedCell = new BoardCoordinate(2, 3);
             var session = new GameSession(MakePuzzle(), new[] { protectedCell });
             Assert.That(session.Tap(xCell), Is.True);
-            PlaceCat(session, catCell);
+            PlacePaw(session, pawCell);
 
             var changed = session.ApplyDrag(new[]
             {
-                emptyCell, xCell, catCell, arrow, protectedCell,
+                emptyCell, xCell, pawCell, arrow, protectedCell,
                 new BoardCoordinate(-1, 0), new BoardCoordinate(5, 0),
-                emptyCell, xCell, catCell
+                emptyCell, xCell, pawCell
             });
 
             Assert.That(changed, Is.EqualTo(1));
             Assert.That(session.GetMark(emptyCell), Is.EqualTo(PlayerMark.X));
             Assert.That(session.GetMark(xCell), Is.EqualTo(PlayerMark.X));
-            Assert.That(session.GetMark(catCell), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(session.GetMark(pawCell), Is.EqualTo(PlayerMark.Paw));
             Assert.That(session.GetMark(arrow), Is.EqualTo(PlayerMark.Empty));
             Assert.That(session.GetMark(protectedCell), Is.EqualTo(PlayerMark.Empty));
-            Assert.That(session.ApplyDrag(new[] { emptyCell, xCell, catCell }), Is.Zero);
+            Assert.That(session.ApplyDrag(new[] { emptyCell, xCell, pawCell }), Is.Zero);
             Assert.That(session.Tap(emptyCell), Is.True);
-            Assert.That(session.GetMark(emptyCell), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(session.GetMark(emptyCell), Is.EqualTo(PlayerMark.Paw));
             Assert.That(session.Tap(emptyCell), Is.True);
             Assert.That(session.GetMark(emptyCell), Is.EqualTo(PlayerMark.Empty));
         }
@@ -290,8 +298,8 @@ namespace CatsAndArrows.Tests
             var protectedCell = new BoardCoordinate(3, 3);
             var session = new GameSession(puzzle, new[] { protectedCell });
             Assert.That(session.Tap(new BoardCoordinate(2, 0)), Is.True);
-            PlaceCat(session, new BoardCoordinate(2, 1));
-            PlaceCat(session, new BoardCoordinate(0, 0));
+            PlacePaw(session, new BoardCoordinate(2, 1));
+            PlacePaw(session, new BoardCoordinate(0, 0));
 
             Assert.That(session.Clear(), Is.True);
             Assert.That(session.Puzzle, Is.SameAs(puzzle));
@@ -307,14 +315,14 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void MixedEmptyAndXNonCatsPermitVictoryAndAllCompletedOperationsPreserveMarks()
+        public void MixedEmptyAndXNonPawsPermitVictoryAndAllCompletedOperationsPreserveMarks()
         {
             var session = new GameSession(MakePuzzle());
             var xCell = new BoardCoordinate(2, 0);
             var emptyCell = new BoardCoordinate(2, 1);
             Assert.That(session.Tap(xCell), Is.True);
-            PlaceCat(session, new BoardCoordinate(0, 0));
-            PlaceCat(session, new BoardCoordinate(1, 1));
+            PlacePaw(session, new BoardCoordinate(0, 0));
+            PlacePaw(session, new BoardCoordinate(1, 1));
             var completedMarks = session.Marks.ToArray();
 
             Assert.That(session.IsCompleted, Is.True);
@@ -331,7 +339,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void ZeroCatPuzzleCompletesAtConstructionAndIsReadOnlyImmediately()
+        public void ZeroPawPuzzleCompletesAtConstructionAndIsReadOnlyImmediately()
         {
             var puzzle = new PuzzleDefinition(2, 12, "test", Array.Empty<BoardCoordinate>(), Array.Empty<ArrowClue>());
             var session = new GameSession(puzzle);
@@ -345,11 +353,11 @@ namespace CatsAndArrows.Tests
             Assert.That(session.Marks, Is.EquivalentTo(before));
         }
 
-        private static void PlaceCat(GameSession session, BoardCoordinate coordinate)
+        private static void PlacePaw(GameSession session, BoardCoordinate coordinate)
         {
             Assert.That(session.Tap(coordinate), Is.True);
             Assert.That(session.Tap(coordinate), Is.True);
-            Assert.That(session.GetMark(coordinate), Is.EqualTo(PlayerMark.Cat));
+            Assert.That(session.GetMark(coordinate), Is.EqualTo(PlayerMark.Paw));
         }
 
         private static void AssertMarkViewRejectsMutation(GameSession session, BoardCoordinate coordinate)
@@ -359,11 +367,11 @@ namespace CatsAndArrows.Tests
             Assert.That(dictionary, Is.Not.Null);
             Assert.That(dictionary.IsReadOnly, Is.True);
             Assert.Throws<NotSupportedException>(() => dictionary[coordinate] = PlayerMark.X);
-            Assert.Throws<NotSupportedException>(() => dictionary.Add(new BoardCoordinate(-1, -1), PlayerMark.Cat));
+            Assert.Throws<NotSupportedException>(() => dictionary.Add(new BoardCoordinate(-1, -1), PlayerMark.Paw));
             Assert.Throws<NotSupportedException>(() => dictionary.Remove(coordinate));
             Assert.Throws<NotSupportedException>(() => dictionary.Clear());
             var collection = (ICollection<KeyValuePair<BoardCoordinate, PlayerMark>>)dictionary;
-            Assert.Throws<NotSupportedException>(() => collection.Add(new KeyValuePair<BoardCoordinate, PlayerMark>(coordinate, PlayerMark.Cat)));
+            Assert.Throws<NotSupportedException>(() => collection.Add(new KeyValuePair<BoardCoordinate, PlayerMark>(coordinate, PlayerMark.Paw)));
             Assert.Throws<NotSupportedException>(() => collection.Remove(new KeyValuePair<BoardCoordinate, PlayerMark>(coordinate, session.GetMark(coordinate))));
             Assert.That(session.Marks, Is.EquivalentTo(before));
         }

@@ -20,7 +20,7 @@ namespace CatsAndArrows.UI
                 { "board.symbols", new[] { "Symbols", "Símbolos", "Símbolos" } },
                 { "board.empty", new[] { "Empty", "Vazia", "Vacía" } },
                 { "board.x", new[] { "No paw", "Sem pata", "Sin pata" } },
-                { "board.cat", new[] { "Paw", "Pata", "Pata" } },
+                { "board.paw", new[] { "Paw", "Pata", "Pata" } },
                 { "board.arrow", new[] { "Arrow", "Seta", "Flecha" } },
                 { "board.protected", new[] { "Protected", "Protegida", "Protegida" } },
                 { "board.completed", new[] { "Puzzle complete", "Tabuleiro completo", "Tablero completo" } },

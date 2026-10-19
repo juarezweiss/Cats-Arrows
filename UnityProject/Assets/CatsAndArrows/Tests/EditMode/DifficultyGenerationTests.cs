@@ -28,9 +28,9 @@ namespace CatsAndArrows.Tests
                 Assert.That(puzzle.Size, Is.EqualTo(id == "medium" ? 6 : 7));
                 Assert.That(puzzle.Seed, Is.EqualTo(seed));
                 Assert.That(PuzzleValidator.Validate(puzzle, profile).IsValid, Is.True);
-                var rows = Enumerable.Range(0, puzzle.Size).Select(puzzle.GetRowCatCount).ToArray();
-                var columns = Enumerable.Range(0, puzzle.Size).Select(puzzle.GetColumnCatCount).ToArray();
-                Assert.That(rows.Concat(columns).Max(), Is.LessThanOrEqualTo(profile.MaxCatsPerLine));
+                var rows = Enumerable.Range(0, puzzle.Size).Select(puzzle.GetRowPawCount).ToArray();
+                var columns = Enumerable.Range(0, puzzle.Size).Select(puzzle.GetColumnPawCount).ToArray();
+                Assert.That(rows.Concat(columns).Max(), Is.LessThanOrEqualTo(profile.MaxPawsPerLine));
                 Assert.That(rows.Count(n => n == 0), Is.LessThanOrEqualTo(profile.MaxZeroRows));
                 Assert.That(columns.Count(n => n == 0), Is.LessThanOrEqualTo(profile.MaxZeroColumns));
                 var three = rows.Concat(columns).Contains(3);
@@ -39,16 +39,16 @@ namespace CatsAndArrows.Tests
                 sawThree |= three;
                 foreach (var arrow in puzzle.Arrows)
                 {
-                    Assert.That(puzzle.IsSolutionCat(arrow.Key), Is.False);
-                    Assert.That(puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionCat), Is.True);
+                    Assert.That(puzzle.IsSolutionPaw(arrow.Key), Is.False);
+                    Assert.That(puzzle.GetDirectionalSegment(arrow.Key, arrow.Value).Any(puzzle.IsSolutionPaw), Is.True);
                 }
                 var independent = PuzzleSolvabilityAssessment.Assess(puzzle, profile);
                 Assert.That(independent.IsAccepted, Is.True);
                 Assert.That(independent.Solver.Human.Status, Is.EqualTo(HumanSolverStatus.Solved));
                 Assert.That(independent.Solver.Uniqueness.Status, Is.EqualTo(UniquenessStatus.Unique));
-                CollectionAssert.AreEquivalent(puzzle.SolutionCats, independent.Solver.Uniqueness.Solutions.Single());
-                CollectionAssert.AreEquivalent(puzzle.SolutionCats, independent.Solver.Human.Assignments
-                    .Where(a => a.State == CellKnowledge.Cat).Select(a => a.Coordinate));
+                CollectionAssert.AreEquivalent(puzzle.SolutionPaws, independent.Solver.Uniqueness.Solutions.Single());
+                CollectionAssert.AreEquivalent(puzzle.SolutionPaws, independent.Solver.Human.Assignments
+                    .Where(a => a.State == CellKnowledge.Paw).Select(a => a.Coordinate));
                 Assert.That(result.Metadata.GeneratorVersion, Is.EqualTo(id == "hard" ? SeededPuzzleGenerator.HardVersion : SeededPuzzleGenerator.Version));
                 Assert.That(puzzle.GeneratorVersion, Is.EqualTo(result.Metadata.GeneratorVersion));
                 Assert.That(result.Metadata.ProfileVersion, Is.EqualTo(id == "hard" ? SeededPuzzleGenerator.HardProfileVersion : SeededPuzzleGenerator.ProfileVersion));
@@ -84,7 +84,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void HardInitialHatchesIgnoreAllProofConsequencesIncludingOneCatArrowExclusions()
+        public void HardInitialHatchesIgnoreAllProofConsequencesIncludingOnePawArrowExclusions()
         {
             var sawFormerHatches = false;
             for (var seed = 0; seed < 32; seed++)
@@ -101,12 +101,12 @@ namespace CatsAndArrows.Tests
                 foreach (var coordinate in formerHatches)
                 {
                     Assert.That(result.Puzzle.Arrows.ContainsKey(coordinate), Is.False);
-                    Assert.That(result.Puzzle.IsSolutionCat(coordinate), Is.False);
+                    Assert.That(result.Puzzle.IsSolutionPaw(coordinate), Is.False);
                     Assert.That(proof.Assignments.Single(a => a.Coordinate == coordinate).State,
-                        Is.EqualTo(CellKnowledge.NotCat));
+                        Is.EqualTo(CellKnowledge.NotPaw));
                 }
             }
-            Assert.That(sawFormerHatches, Is.True, "Regression must exercise actual cardinal one-cat consequences.");
+            Assert.That(sawFormerHatches, Is.True, "Regression must exercise actual cardinal one-paw consequences.");
         }
 
         [TestCase("easy")]

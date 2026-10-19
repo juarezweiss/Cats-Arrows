@@ -8,11 +8,11 @@ namespace CatsAndArrows.Core
     internal sealed class ClueConstraint
     {
         public ConstraintReference Source { get; }
-        public int RequiredCats { get; }
+        public int RequiredPaws { get; }
         public int[] Cells { get; }
         public bool IsExact => Source.Kind != ConstraintKind.Arrow;
-        public ClueConstraint(ConstraintReference source, int requiredCats, IEnumerable<int> cells)
-        { Source = source; RequiredCats = requiredCats; Cells = cells.OrderBy(i => i).ToArray(); }
+        public ClueConstraint(ConstraintReference source, int requiredPaws, IEnumerable<int> cells)
+        { Source = source; RequiredPaws = requiredPaws; Cells = cells.OrderBy(i => i).ToArray(); }
     }
 
     internal sealed class ClueConstraints
@@ -44,7 +44,7 @@ namespace CatsAndArrows.Core
 
         public int Id(BoardCoordinate coordinate) => coordinate.Row * Clues.Size + coordinate.Column;
         public BoardCoordinate Coordinate(int id) => new BoardCoordinate(id / Clues.Size, id % Clues.Size);
-        public CellKnowledge[] InitialStates() => _isArrow.Select(a => a ? CellKnowledge.NotCat : CellKnowledge.Unknown).ToArray();
+        public CellKnowledge[] InitialStates() => _isArrow.Select(a => a ? CellKnowledge.NotPaw : CellKnowledge.Unknown).ToArray();
         public CellAssignment[] Assignments(CellKnowledge[] states) => states.Select((state, i) => new CellAssignment(Coordinate(i), state)).ToArray();
         public string InitialContradiction() => Clues.RowTotals.Sum(t => (long)t) != Clues.ColumnTotals.Sum(t => (long)t)
             ? "Row and column totals disagree." : null;

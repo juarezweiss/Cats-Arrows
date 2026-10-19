@@ -7,9 +7,10 @@ namespace CatsAndArrows.Gameplay
 {
     public enum TutorialStep
     {
-        Welcome, Goal, Begin, StatesIntro, EmptyState, XState, CatState, HatchedCells, Arrows, Practice, ZeroColumn, ZeroRow,
-        FirstCat, FirstColumnX, SecondCat, SecondRowX, DiagonalCat, FourthCat,
-        SingleX, FinalCat, Independent, Complete
+        Welcome = 0, Goal = 1, Begin = 2, StatesIntro = 3, EmptyState = 4, XState = 5, PawState = 6,
+        HatchedCells = 7, Arrows = 8, Practice = 9, ZeroColumn = 10, ZeroRow = 11,
+        FirstPaw = 12, FirstColumnX = 13, SecondPaw = 14, SecondRowX = 15, DiagonalPaw = 16, FourthPaw = 17,
+        SingleX = 18, FinalPaw = 19, Independent = 20, Complete = 21
     }
 
     // Issue #26: controls lesson progression, while GameSession owns every mark and win.
@@ -28,13 +29,13 @@ namespace CatsAndArrows.Gameplay
         public bool IsComplete => Step == TutorialStep.Complete;
         // These are read-only presentation samples, never player/session mutations.
         public BoardCoordinate? DemoCoordinate => DemoMark.HasValue
-            ? Step == TutorialStep.CatState ? Cell(2, 1) : Cell(0, 0)
+            ? Step == TutorialStep.PawState ? Cell(2, 1) : Cell(0, 0)
             : (BoardCoordinate?)null;
         public PlayerMark? DemoMark => Step switch
         {
             TutorialStep.EmptyState => PlayerMark.Empty,
             TutorialStep.XState => PlayerMark.X,
-            TutorialStep.CatState => PlayerMark.Cat,
+            TutorialStep.PawState => PlayerMark.Paw,
             _ => (PlayerMark?)null
         };
         public IReadOnlyList<BoardCoordinate> Targets => targets;
@@ -46,18 +47,18 @@ namespace CatsAndArrows.Gameplay
             TutorialStep.StatesIntro => "tutorial.states-intro",
             TutorialStep.EmptyState => "tutorial.empty-state",
             TutorialStep.XState => "tutorial.x-state",
-            TutorialStep.CatState => "tutorial.cat-state",
+            TutorialStep.PawState => "tutorial.paw-state",
             TutorialStep.HatchedCells => "tutorial.hatched",
             TutorialStep.ZeroColumn => "tutorial.zero-column",
             TutorialStep.ZeroRow => "tutorial.zero-row",
-            TutorialStep.FirstCat => "tutorial.first-cat",
+            TutorialStep.FirstPaw => "tutorial.first-paw",
             TutorialStep.FirstColumnX => "tutorial.first-column-x",
-            TutorialStep.SecondCat => "tutorial.second-cat",
+            TutorialStep.SecondPaw => "tutorial.second-paw",
             TutorialStep.SecondRowX => "tutorial.second-row-x",
-            TutorialStep.DiagonalCat => "tutorial.diagonal-cat",
-            TutorialStep.FourthCat => "tutorial.fourth-cat",
+            TutorialStep.DiagonalPaw => "tutorial.diagonal-paw",
+            TutorialStep.FourthPaw => "tutorial.fourth-paw",
             TutorialStep.SingleX => "tutorial.single-x",
-            TutorialStep.FinalCat => "tutorial.final-cat",
+            TutorialStep.FinalPaw => "tutorial.final-paw",
             _ => "tutorial." + Step.ToString().ToLowerInvariant()
         };
 
@@ -105,7 +106,7 @@ namespace CatsAndArrows.Gameplay
                 ? practiceTaps >= 3 && Session.GetMark(targets[0]) == PlayerMark.Empty
                 : IsXStep
                     ? targets.All(cell => Session.GetMark(cell) == PlayerMark.X)
-                    : targets.All(cell => Session.GetMark(cell) == PlayerMark.Cat);
+                    : targets.All(cell => Session.GetMark(cell) == PlayerMark.Paw);
             if (!finished) return false;
             Advance();
             return true;
@@ -116,7 +117,7 @@ namespace CatsAndArrows.Gameplay
 
         private void Advance()
         {
-            if (Step == TutorialStep.FinalCat)
+            if (Step == TutorialStep.FinalPaw)
                 Session = TutorialFixture.CreateSession();
             Step = (TutorialStep)((int)Step + 1);
             SetTargets();
@@ -136,7 +137,7 @@ namespace CatsAndArrows.Gameplay
             {
                 case TutorialStep.EmptyState:
                 case TutorialStep.XState:
-                case TutorialStep.CatState:
+                case TutorialStep.PawState:
                     highlights = new[] { DemoCoordinate.Value };
                     break;
                 case TutorialStep.HatchedCells:
@@ -158,7 +159,7 @@ namespace CatsAndArrows.Gameplay
                     editable = highlights.Where(cell => Session.CanInteract(cell) && cell.Column != 0).ToArray();
                     rows = new[] { 0 };
                     break;
-                case TutorialStep.FirstCat:
+                case TutorialStep.FirstPaw:
                     editable = new[] { Cell(1, 4) };
                     highlights = new[] { Cell(1, 3), Cell(1, 4) };
                     break;
@@ -167,7 +168,7 @@ namespace CatsAndArrows.Gameplay
                     highlights = Column(4);
                     columns = new[] { 4 };
                     break;
-                case TutorialStep.SecondCat:
+                case TutorialStep.SecondPaw:
                     editable = new[] { Cell(4, 2) };
                     highlights = new[] { Cell(3, 2), Cell(4, 2) };
                     break;
@@ -176,11 +177,11 @@ namespace CatsAndArrows.Gameplay
                     highlights = Row(4);
                     rows = new[] { 4 };
                     break;
-                case TutorialStep.DiagonalCat:
+                case TutorialStep.DiagonalPaw:
                     editable = new[] { Cell(2, 1) };
                     highlights = new[] { Cell(0, 3), Cell(1, 2), Cell(2, 1), Cell(3, 0) };
                     break;
-                case TutorialStep.FourthCat:
+                case TutorialStep.FourthPaw:
                     editable = new[] { Cell(2, 3) };
                     highlights = Row(2);
                     rows = new[] { 2 };
@@ -190,7 +191,7 @@ namespace CatsAndArrows.Gameplay
                     highlights = Column(3);
                     columns = new[] { 3 };
                     break;
-                case TutorialStep.FinalCat:
+                case TutorialStep.FinalPaw:
                     editable = new[] { Cell(3, 1) };
                     highlights = Column(1);
                     columns = new[] { 1 };

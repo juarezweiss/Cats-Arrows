@@ -6,22 +6,22 @@ namespace CatsAndArrows.Core
 {
     public sealed class PuzzleDefinition
     {
-        private readonly HashSet<BoardCoordinate> _solutionCats;
+        private readonly HashSet<BoardCoordinate> _solutionPaws;
         private readonly Dictionary<BoardCoordinate, Direction> _arrows;
-        private readonly IReadOnlyCollection<BoardCoordinate> _solutionCatsView;
+        private readonly IReadOnlyCollection<BoardCoordinate> _solutionPawsView;
         private readonly IReadOnlyDictionary<BoardCoordinate, Direction> _arrowsView;
 
         public int Size { get; }
         public int Seed { get; }
         public string GeneratorVersion { get; }
-        public IReadOnlyCollection<BoardCoordinate> SolutionCats => _solutionCatsView;
+        public IReadOnlyCollection<BoardCoordinate> SolutionPaws => _solutionPawsView;
         public IReadOnlyDictionary<BoardCoordinate, Direction> Arrows => _arrowsView;
 
         public PuzzleDefinition(
             int size,
             int seed,
             string generatorVersion,
-            IEnumerable<BoardCoordinate> solutionCats,
+            IEnumerable<BoardCoordinate> solutionPaws,
             IEnumerable<ArrowClue> arrows)
         {
             if (size <= 0) throw new ArgumentOutOfRangeException(nameof(size));
@@ -30,10 +30,10 @@ namespace CatsAndArrows.Core
             Size = size;
             Seed = seed;
             GeneratorVersion = generatorVersion;
-            _solutionCats = new HashSet<BoardCoordinate>(solutionCats ?? throw new ArgumentNullException(nameof(solutionCats)));
+            _solutionPaws = new HashSet<BoardCoordinate>(solutionPaws ?? throw new ArgumentNullException(nameof(solutionPaws)));
             _arrows = (arrows ?? throw new ArgumentNullException(nameof(arrows)))
                 .ToDictionary(a => a.Coordinate, a => a.Direction);
-            _solutionCatsView = Array.AsReadOnly(_solutionCats.OrderBy(c => c.Row).ThenBy(c => c.Column).ToArray());
+            _solutionPawsView = Array.AsReadOnly(_solutionPaws.OrderBy(c => c.Row).ThenBy(c => c.Column).ToArray());
             _arrowsView = new System.Collections.ObjectModel.ReadOnlyDictionary<BoardCoordinate, Direction>(_arrows);
         }
 
@@ -41,10 +41,10 @@ namespace CatsAndArrows.Core
             coordinate.Row >= 0 && coordinate.Row < Size && coordinate.Column >= 0 && coordinate.Column < Size;
 
         public bool IsArrow(BoardCoordinate coordinate) => _arrows.ContainsKey(coordinate);
-        public bool IsSolutionCat(BoardCoordinate coordinate) => _solutionCats.Contains(coordinate);
+        public bool IsSolutionPaw(BoardCoordinate coordinate) => _solutionPaws.Contains(coordinate);
 
-        public int GetRowCatCount(int row) => _solutionCats.Count(c => c.Row == row);
-        public int GetColumnCatCount(int column) => _solutionCats.Count(c => c.Column == column);
+        public int GetRowPawCount(int row) => _solutionPaws.Count(c => c.Row == row);
+        public int GetColumnPawCount(int column) => _solutionPaws.Count(c => c.Column == column);
 
         public IEnumerable<BoardCoordinate> GetDirectionalSegment(BoardCoordinate origin, Direction direction) =>
             DirectionGeometry.GetDirectionalSegment(Size, origin, direction);

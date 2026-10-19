@@ -138,7 +138,7 @@ namespace CatsAndArrows.UI
                 {
                     // A session can become completed by an external legitimate intent while held.
                     session.Tap(new BoardCoordinate(1, 5));
-                    foreach (var cat in session.Puzzle.SolutionCats) { session.Tap(cat); session.Tap(cat); }
+                    foreach (var paw in session.Puzzle.SolutionPaws) { session.Tap(paw); session.Tap(paw); }
                     Require(session.IsCompleted, "fixture completion");
                 }
                 catch (Exception exception) { Fail(exception); yield break; }
@@ -198,8 +198,8 @@ namespace CatsAndArrows.UI
         {
             Require(session.Marks.Count(pair => pair.Value == PlayerMark.X) == 1 &&
                 session.GetMark(new BoardCoordinate(2, 4)) == PlayerMark.X &&
-                session.Marks.Count(pair => pair.Value == PlayerMark.Cat) == 1 &&
-                session.GetMark(new BoardCoordinate(1, 5)) == PlayerMark.Cat && !session.IsCompleted,
+                session.Marks.Count(pair => pair.Value == PlayerMark.Paw) == 1 &&
+                session.GetMark(new BoardCoordinate(1, 5)) == PlayerMark.Paw && !session.IsCompleted,
                 "arrow holds never mutate marks");
         }
         private static Vector2 Center(PortraitBoardView view, VisualElement grid, BoardCoordinate coordinate) =>

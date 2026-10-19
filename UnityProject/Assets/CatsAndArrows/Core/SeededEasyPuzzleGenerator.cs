@@ -35,7 +35,7 @@ namespace CatsAndArrows.Core
             if (profile == null || profile.MaxZeroRows < 0 || profile.MaxZeroColumns < 0)
                 return Result(GenerationStatus.InvalidProfile);
             if (!string.Equals(profile.Id, "easy", StringComparison.Ordinal) || profile.Size != Size ||
-                profile.MaxCatsPerLine != 2 || profile.MaxZeroRows != 1 || profile.MaxZeroColumns != 1 || profile.RequiredCatCountInSomeLine.HasValue)
+                profile.MaxPawsPerLine != 2 || profile.MaxZeroRows != 1 || profile.MaxZeroColumns != 1 || profile.RequiredPawCountInSomeLine.HasValue)
                 return Result(GenerationStatus.UnsupportedProfile);
             if (cancellationToken.IsCancellationRequested) return Stopped();
             if (options.MaxAttempts == 0) return Stopped();
@@ -55,7 +55,7 @@ namespace CatsAndArrows.Core
                 var choices = quotas[totalIndex + 4];
                 if (!work.NextInt(layoutRandom, choices.Count, out var rowChoice) ||
                     !work.NextInt(layoutRandom, choices.Count, out var columnChoice)) return Stopped();
-                if (!TryLayout(choices[rowChoice], choices[columnChoice], layoutRandom, work, out var cats))
+                if (!TryLayout(choices[rowChoice], choices[columnChoice], layoutRandom, work, out var paws))
                 {
                     if (work.IsStopped) return Stopped();
                     work.Reject(GenerationRejectionReason.LayoutBudget);
@@ -63,7 +63,7 @@ namespace CatsAndArrows.Core
                 }
 
                 var selected = new List<ArrowClue>();
-                var barePuzzle = new PuzzleDefinition(Size, seed, Version, cats, selected);
+                var barePuzzle = new PuzzleDefinition(Size, seed, Version, paws, selected);
                 var pool = TruthfulArrows(barePuzzle);
                 var current = work.SolveHuman(barePuzzle);
                 if (cancellationToken.IsCancellationRequested) return Stopped();
@@ -96,7 +96,7 @@ namespace CatsAndArrows.Core
                     {
                         if (work.IsStopped) return Stopped();
                         var arrow = available[trial];
-                        var candidate = new PuzzleDefinition(Size, seed, Version, cats, selected.Concat(new[] { arrow }));
+                        var candidate = new PuzzleDefinition(Size, seed, Version, paws, selected.Concat(new[] { arrow }));
                         work.ArrowTrials++;
                         var solved = work.SolveHuman(candidate);
                         if (cancellationToken.IsCancellationRequested) return Stopped();
@@ -148,9 +148,9 @@ namespace CatsAndArrows.Core
         }
 
         private static bool TryLayout(int[] rows, int[] columns, SplitMix64Random random, GenerationWork work,
-            out IReadOnlyList<BoardCoordinate> cats)
+            out IReadOnlyList<BoardCoordinate> paws)
         {
-            cats = null;
+            paws = null;
             var rowOrder = Enumerable.Range(0, Size).ToList();
             if (!work.Shuffle(rowOrder, random)) return false;
             var remaining = (int[])columns.Clone();
@@ -200,7 +200,7 @@ namespace CatsAndArrows.Core
             }
 
             if (!Visit(0)) return false;
-            cats = Array.AsReadOnly(Enumerable.Range(0, Size).SelectMany(row => Enumerable.Range(0, Size)
+            paws = Array.AsReadOnly(Enumerable.Range(0, Size).SelectMany(row => Enumerable.Range(0, Size)
                 .Where(column => (chosen[row] & (1 << column)) != 0).Select(column => new BoardCoordinate(row, column))).ToArray());
             return true;
         }
@@ -212,10 +212,10 @@ namespace CatsAndArrows.Core
             for (var column = 0; column < Size; column++)
             {
                 var coordinate = new BoardCoordinate(row, column);
-                if (puzzle.IsSolutionCat(coordinate)) continue;
+                if (puzzle.IsSolutionPaw(coordinate)) continue;
                 foreach (var direction in ArrowDirections)
                 {
-                    if (puzzle.GetDirectionalSegment(coordinate, direction).Any(puzzle.IsSolutionCat))
+                    if (puzzle.GetDirectionalSegment(coordinate, direction).Any(puzzle.IsSolutionPaw))
                         arrows.Add(new ArrowClue(coordinate, direction));
                 }
             }

@@ -27,8 +27,8 @@ namespace CatsAndArrows.Tests
         { var session = TutorialFixture.CreateSession(); service.BindSession(session, ordinary); return session; }
         private void Complete(GameSession session)
         {
-            foreach (var cat in session.Puzzle.SolutionCats)
-            { while (session.GetMark(cat) != PlayerMark.Cat) session.Tap(cat); }
+            foreach (var paw in session.Puzzle.SolutionPaws)
+            { while (session.GetMark(paw) != PlayerMark.Paw) session.Tap(paw); }
             Assert.That(session.IsCompleted, Is.True); service.RecordCompletion();
         }
         private void Win(int count)
