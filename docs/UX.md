@@ -12,15 +12,22 @@ The supplied demo establishes a useful portrait interaction model: compact cente
 - Drag marking must feel deliberate and axis-locked.
 
 ## Visual semantics
-Do not rely on red/green distinction alone. Cat, arrow, X, protected, and empty states require shape/icon/texture differences in addition to color.
+Do not rely on red/green distinction alone. Paw, arrow, X, protected, and empty
+states require shape/icon/texture differences in addition to color.
 
 The user specifically found low-contrast red/green states difficult in the prototype. Default palette decisions must be checked with color-vision simulation/contrast tooling before approval.
+
+Owner physical-iPhone appearance review (2026-10-19): the current Paws name/icon,
+paw symbol readability and localized visual fit were reviewed and approved. This
+closes PR #54's appearance gate. It is not broader-device, performance, lifecycle,
+touch-comfort or clean-distribution-build evidence.
 
 ## Feedback
 - No punishment animation for a wrong intermediate mark.
 - Use subtle haptic/audio feedback for deliberate state changes if enabled.
 - Victory retains an inline status and subtle grey grid treatment; ordinary boards also use the Issue #44 sequence below.
-- Hint should explain a deduction where feasible.
+- Hint applies one guaranteed deduction immediately and briefly outlines its target;
+  the current flow intentionally has no explanation UI (#23).
 
 ## Controls
 
@@ -49,7 +56,7 @@ After completion: `Hint` and `Clear` disabled; board read-only; `Next board` and
 ## Issue #44 ordinary-board celebration
 
 The finished grid remains stationary at 82% opacity beneath a centered lowercase
-localized “you found all the cats” message. A bounded procedural burst from both
+localized “you found all the paws” message. A bounded procedural burst from both
 sides ends at three seconds. The message fades in over 250 ms, begins fading out
 at four seconds, then three lowercase localized actions fade in over 250 ms:
 `next board`, `back to completed board`, `menu`. Actions become interactive only
@@ -68,7 +75,7 @@ independent tutorial stages keep their existing completion behavior.
 
 Taps commit once on release in the original cell, with movement below 8 logical
 panel units. Holding does not repeat. Only an Empty cell can start drag marking;
-moving from X/Cat beyond the threshold cancels the tap without changing marks.
+moving from X/Paw beyond the threshold cancels the tap without changing marks.
 The dominant direction locks the drag to the starting row/column. Reversing does
 not revisit cells; moving diagonally does not switch axes. Internal gaps are
 bridged while dragging, but clues/gaps cannot start a gesture. Leaving the grid
@@ -115,10 +122,11 @@ localized controls starts a fresh interval.
 Center the tile grid itself within the safe board region; the numeric clue gutters
 follow the centered grid and remain within bounds. Arrow and protected/hatched
 cells share a subtly darker background while retaining distinct shapes/hatching.
-Completed boards remain visible with the localized “All cats found!” phrase below
-the difficulty. Issue #44 adds the ordinary-board sequence above. A final Hint can be reviewed via an
-optional “Last hint” action; opening its explanation is deliberate. New Game
-clears the completion treatment. Upright portrait is mandatory on mobile.
+Completed boards remain visible with the localized “All paws found!” phrase below
+the difficulty. Issue #44 adds the ordinary-board sequence above. Issue #23
+supersedes the former optional Last hint/explanation presentation: current Hint
+applies immediately without explanation UI. New Game clears the completion
+treatment. Upright portrait is mandatory on mobile.
 
 ## Issue #29 future monetization controls
 
@@ -142,7 +150,7 @@ ad-free trial remains unchanged. Full failure/cadence policy:
 
 The owner approved immediate hints as the ongoing default on 2026-10-10 after
 rejecting the optional Why explanation in device review. Hint applies
-one guaranteed Cat/X conclusion immediately, briefly outlines the target and
+one guaranteed Paw/X conclusion immediately, briefly outlines the target and
 keeps the board playable. There is no Why button, explanation area or final-hint
 review action in the default flow. Hint/Clear share the first control row;
 Menu/New Game remain below. Completion keeps its calm inline status and readonly
@@ -159,7 +167,7 @@ Hint/Clear/New Game controls. The three editable states are demonstrated separat
 Swipes start at an eligible Empty cell, skip fixed/existing marks, and advance
 the lesson after the gesture ends, never midway through it. A tap-based marking
 path can satisfy the same state predicates. The practice stage requires the
-actual Empty→X→Cat→Empty sequence. After the guided solve, the same board resets for independent play with a
+actual Empty→X→Paw→Empty sequence. After the guided solve, the same board resets for independent play with a
 “Now try it yourself” message. Only independent completion stays visible and
 readonly with Play opening a random board. Menu/locale changes retain the active
 lesson; selecting Tutorial explicitly restarts it. Starting Tutorial replaces
@@ -173,6 +181,6 @@ does not save tutorial progress. Reinstallation/resetting app data may reset
 first-play history. English, Brazilian Portuguese and Spanish are required.
 
 The welcome explicitly directs the player to Continue and outlines that button.
-A short editable-cell introduction precedes individual Empty, X and Cat examples
+A short editable-cell introduction precedes individual Empty, X and Paw examples
 with one highlighted example at a time. Hatching highlights only protected cells; the following
 arrow introduction highlights only arrows. Sample marks never enter the session.
