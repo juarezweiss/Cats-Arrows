@@ -62,17 +62,19 @@ namespace CatsAndArrows.UI
                     Line(tip, tip - vector * size * .16f - side * size * .15f);
                     break;
                 case BoardCellKind.Cat:
-                    // Issue #53: one solid pad and four separated toes, readable at phone cell sizes.
-                    painter.BeginPath(); painter.MoveTo(Point(0, -.04f));
-                    painter.BezierCurveTo(Point(.09f, -.04f), Point(.12f, .06f), Point(.20f, .13f));
-                    painter.BezierCurveTo(Point(.31f, .28f), Point(.14f, .32f), Point(0, .25f));
-                    painter.BezierCurveTo(Point(-.14f, .32f), Point(-.31f, .28f), Point(-.20f, .13f));
-                    painter.BezierCurveTo(Point(-.12f, .06f), Point(-.09f, -.04f), Point(0, -.04f));
+                    // Issue #53: a lighter paw, about one third smaller and centered in the cell.
+                    size *= .69f;
+                    center.y += size * .0225f;
+                    painter.BeginPath(); painter.MoveTo(Point(0, -.025f));
+                    painter.BezierCurveTo(Point(.09f, -.025f), Point(.105f, .065f), Point(.17f, .13f));
+                    painter.BezierCurveTo(Point(.25f, .24f), Point(.13f, .28f), Point(0, .28f));
+                    painter.BezierCurveTo(Point(-.13f, .28f), Point(-.25f, .24f), Point(-.17f, .13f));
+                    painter.BezierCurveTo(Point(-.105f, .065f), Point(-.09f, -.025f), Point(0, -.025f));
                     painter.ClosePath(); painter.Fill();
-                    Toe(-.24f, -.10f, .075f, .09f);
-                    Toe(-.095f, -.245f, .075f, .10f);
-                    Toe(.095f, -.245f, .075f, .10f);
-                    Toe(.24f, -.10f, .075f, .09f);
+                    Toe(-.24f, -.10f, .07f, .08f);
+                    Toe(-.095f, -.245f, .07f, .08f);
+                    Toe(.095f, -.245f, .07f, .08f);
+                    Toe(.24f, -.10f, .07f, .08f);
                     break;
                 case BoardCellKind.Protected:
                     painter.lineWidth = Mathf.Max(1.5f, size * .036f);
