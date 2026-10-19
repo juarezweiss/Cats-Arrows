@@ -65,9 +65,9 @@ namespace CatsAndArrows.Tests
             Assert.That(shell.BoardView.InteractionEnabled, Is.False);
         }
 
-        [TestCase("en", "you found all the cats", "next board", "back to completed board", "menu")]
-        [TestCase("pt-BR", "você encontrou todos os gatos", "próximo tabuleiro", "voltar ao tabuleiro concluído", "menu")]
-        [TestCase("es", "encontraste todos los gatos", "siguiente tablero", "volver al tablero completado", "menú")]
+        [TestCase("en", "you found all the paws", "next board", "back to completed board", "menu")]
+        [TestCase("pt-BR", "você encontrou todas as patas", "próximo tabuleiro", "voltar ao tabuleiro concluído", "menu")]
+        [TestCase("es", "encontraste todas las patas", "siguiente tablero", "volver al tablero completado", "menú")]
         public void CelebrationResourcesAreLocalizedAndLowercase(string locale, string message, string next, string back, string menu)
         {
             var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
