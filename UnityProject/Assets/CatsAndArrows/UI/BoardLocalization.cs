@@ -11,7 +11,7 @@ namespace CatsAndArrows.UI
             var core = DefaultLocalization.CreateCatalog();
             var extras = new Dictionary<string, string[]>
             {
-                { "board.title", new[] { "Cats & Arrows", "Gatos e Setas", "Gatos y Flechas" } },
+                { "board.title", new[] { "Paws", "Paws", "Paws" } },
                 { "board.easy", new[] { "Easy · 5 × 5", "Fácil · 5 × 5", "Fácil · 5 × 5" } },
                 { "board.medium", new[] { "Medium · 6 × 6", "Médio · 6 × 6", "Medio · 6 × 6" } },
                 { "board.hard", new[] { "Hard · 7 × 7", "Difícil · 7 × 7", "Difícil · 7 × 7" } },
@@ -19,15 +19,15 @@ namespace CatsAndArrows.UI
                 { "board.review", new[] { "Board preview", "Prévia do tabuleiro", "Vista previa del tablero" } },
                 { "board.symbols", new[] { "Symbols", "Símbolos", "Símbolos" } },
                 { "board.empty", new[] { "Empty", "Vazia", "Vacía" } },
-                { "board.x", new[] { "No cat", "Sem gato", "Sin gato" } },
-                { "board.cat", new[] { "Cat", "Gato", "Gato" } },
+                { "board.x", new[] { "No paw", "Sem pata", "Sin pata" } },
+                { "board.cat", new[] { "Paw", "Pata", "Pata" } },
                 { "board.arrow", new[] { "Arrow", "Seta", "Flecha" } },
                 { "board.protected", new[] { "Protected", "Protegida", "Protegida" } },
                 { "board.completed", new[] { "Puzzle complete", "Tabuleiro completo", "Tablero completo" } },
                 { "board.cell-description", new[] { "Row {row}, column {column}: {state}", "Linha {row}, coluna {column}: {state}", "Fila {row}, columna {column}: {state}" } },
                 { "board.arrow-description", new[] { "Arrow pointing {direction}", "Seta apontando {direction}", "Flecha apuntando {direction}" } },
-                { "board.row-total", new[] { "Row {index}: {total} cats", "Linha {index}: {total} gatos", "Fila {index}: {total} gatos" } },
-                { "board.column-total", new[] { "Column {index}: {total} cats", "Coluna {index}: {total} gatos", "Columna {index}: {total} gatos" } }
+                { "board.row-total", new[] { "Row {index}: {total} paws", "Linha {index}: {total} patas", "Fila {index}: {total} patas" } },
+                { "board.column-total", new[] { "Column {index}: {total} paws", "Coluna {index}: {total} patas", "Columna {index}: {total} patas" } }
             };
             var locales = new[] { "en", "pt-BR", "es" };
             return new LocalizationCatalog(locales.Select((locale, index) =>

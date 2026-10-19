@@ -12,6 +12,38 @@ namespace CatsAndArrows.Tests
 {
     public sealed class BoardLocalizationTests
     {
+        [TestCase("en", "Paw", "No paw", "paws")]
+        [TestCase("pt-BR", "Pata", "Sem pata", "patas")]
+        [TestCase("es", "Pata", "Sin pata", "patas")]
+        public void Issue53PlayerFacingCatalogUsesPawsWithExistingKeysAndLocales(
+            string locale, string paw, string noPaw, string paws)
+        {
+            var catalog = GameLocalization.CreateCatalog();
+            var messages = catalog.GetResource(locale).Messages;
+            Assert.That(catalog.AvailableLocales, Is.EquivalentTo(new[] { "en", "pt-BR", "es" }));
+            Assert.That(messages["board.title"], Is.EqualTo("Paws"));
+            Assert.That(messages["board.cat"], Is.EqualTo(paw));
+            Assert.That(messages["board.x"], Is.EqualTo(noPaw));
+            Assert.That(messages["tutorial.welcome"], Does.Contain("Paws"));
+            Assert.That(messages["tutorial.cat-state"], Does.Contain("<b>" + paw + "</b>"));
+            Assert.That(messages["tutorial.practice"], Does.Contain("→ X → " + paw + " →"));
+            Assert.That(messages["monetization.rules-body"], Does.Contain(messages["monetization.rules"]));
+            Assert.That(messages["monetization.rules-body"], Does.Not.Contain(locale == "en" ? "unlimited" : "ilimitadas"));
+            foreach (var key in new[] { "board.row-total", "board.column-total", "game.rules-body",
+                "tutorial.goal", "tutorial.independent", "tutorial.complete", "game.victory", "completion.message" })
+                Assert.That(messages[key], Does.Contain(paws), locale + ":" + key);
+            foreach (var message in messages)
+            {
+                Assert.That(message.Value, Does.Not.Match(@"(?i)\b(cats?|gatos?)\b"), locale + ":" + message.Key);
+                Assert.That(Placeholders(message.Value),
+                    Is.EquivalentTo(Placeholders(catalog.GetResource("en").Messages[message.Key])), message.Key);
+            }
+            var text = new LocalizationService(catalog, CultureInfo.GetCultureInfo(locale));
+            var tooltip = text.Format("board.cell-description", new Dictionary<string, object>
+                { { "row", 2 }, { "column", 3 }, { "state", text.GetText("board.cat") } });
+            Assert.That(tooltip, Does.Contain(paw).And.Contain("2").And.Contain("3"));
+        }
+
         [TestCase("en")]
         [TestCase("pt-BR")]
         [TestCase("es")]

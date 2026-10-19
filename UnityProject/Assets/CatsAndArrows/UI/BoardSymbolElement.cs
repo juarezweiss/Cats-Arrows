@@ -62,17 +62,19 @@ namespace CatsAndArrows.UI
                     Line(tip, tip - vector * size * .16f - side * size * .15f);
                     break;
                 case BoardCellKind.Cat:
-                    painter.BeginPath(); painter.MoveTo(Point(-.26f, -.27f));
-                    painter.LineTo(Point(-.10f, -.15f));
-                    painter.BezierCurveTo(Point(-.04f, -.18f), Point(.04f, -.18f), Point(.10f, -.15f));
-                    painter.LineTo(Point(.26f, -.27f)); painter.LineTo(Point(.27f, .06f));
-                    painter.BezierCurveTo(Point(.27f, .32f), Point(-.27f, .32f), Point(-.27f, .06f));
+                    // Issue #53: a lighter paw, about one third smaller and centered in the cell.
+                    size *= .69f;
+                    center.y += size * .0225f;
+                    painter.BeginPath(); painter.MoveTo(Point(0, -.025f));
+                    painter.BezierCurveTo(Point(.09f, -.025f), Point(.105f, .065f), Point(.17f, .13f));
+                    painter.BezierCurveTo(Point(.25f, .24f), Point(.13f, .28f), Point(0, .28f));
+                    painter.BezierCurveTo(Point(-.13f, .28f), Point(-.25f, .24f), Point(-.17f, .13f));
+                    painter.BezierCurveTo(Point(-.105f, .065f), Point(-.09f, -.025f), Point(0, -.025f));
                     painter.ClosePath(); painter.Fill();
-                    painter.strokeColor = new Color(.98f, .96f, .91f);
-                    painter.lineWidth = Mathf.Max(1.8f, size * .045f);
-                    Line(Point(-.13f, .02f), Point(-.10f, .04f));
-                    Line(Point(.10f, .04f), Point(.13f, .02f));
-                    Line(Point(-.035f, .13f), Point(.035f, .13f));
+                    Toe(-.24f, -.10f, .07f, .08f);
+                    Toe(-.095f, -.245f, .07f, .08f);
+                    Toe(.095f, -.245f, .07f, .08f);
+                    Toe(.24f, -.10f, .07f, .08f);
                     break;
                 case BoardCellKind.Protected:
                     painter.lineWidth = Mathf.Max(1.5f, size * .036f);
@@ -85,6 +87,16 @@ namespace CatsAndArrows.UI
                     Line(Point(-.10f, .16f), Point(.16f, -.10f));
                     Line(Point(.05f, .16f), Point(.16f, .05f));
                     break;
+            }
+            void Toe(float x, float y, float radiusX, float radiusY)
+            {
+                const float curve = .55228475f;
+                painter.BeginPath(); painter.MoveTo(Point(x + radiusX, y));
+                painter.BezierCurveTo(Point(x + radiusX, y + curve * radiusY), Point(x + curve * radiusX, y + radiusY), Point(x, y + radiusY));
+                painter.BezierCurveTo(Point(x - curve * radiusX, y + radiusY), Point(x - radiusX, y + curve * radiusY), Point(x - radiusX, y));
+                painter.BezierCurveTo(Point(x - radiusX, y - curve * radiusY), Point(x - curve * radiusX, y - radiusY), Point(x, y - radiusY));
+                painter.BezierCurveTo(Point(x + curve * radiusX, y - radiusY), Point(x + radiusX, y - curve * radiusY), Point(x + radiusX, y));
+                painter.ClosePath(); painter.Fill();
             }
         }
     }
