@@ -45,8 +45,9 @@ Every purchase or subscription still requires separate explicit owner approval.
   [#21](https://github.com/juarezweiss/Paws/issues/21): durable bundle/version/build
   identity, trial-only build contents, final SDK/data inspection, beta metadata
   and enrollment/signing prerequisite review.
-- Complete human physical-iPhone appearance review of the Paws branding and paw
-  symbol; build/install/launch evidence does not satisfy that gate.
+- The owner approved the current Paws physical-iPhone appearance on 2026-10-19.
+  A future clean tester build still needs its own task-specific technical/device
+  checks when build configuration changes.
 - Continue the qualitative friend-trial tracker in
   [#22](https://github.com/juarezweiss/Paws/issues/22). One unversioned session is
   recorded; broader feedback, repeated-obstacle triage and a visual-direction

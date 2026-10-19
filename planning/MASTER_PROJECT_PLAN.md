@@ -52,7 +52,7 @@ and request an owner decision rather than silently extending scope.
 
 | Area | Status on `develop` | Evidence / remaining limit |
 | --- | --- | --- |
-| Brand and semantics | Complete | Paws title, paw artwork, en/pt-BR/es copy, internal gameplay terminology and repository links merged in #53/#55/#57/#59. Human physical-iPhone appearance review of the current branding remains pending. |
+| Brand and semantics | Complete | Paws title, paw artwork, en/pt-BR/es copy, internal gameplay terminology and repository links merged in #53/#55/#57/#59. The owner approved current physical-iPhone appearance on 2026-10-19. |
 | Puzzle foundation | Complete | Deterministic immutable model, eight-direction clues, human deduction, independent uniqueness and versioned replay/generation are integrated. |
 | Difficulty profiles | Complete for current rules | Easy 5×5, Medium 6×6 and Hard 7×7 are generated and independently admitted. Medium/Hard pruning and Hard's no-hatch policy are merged (#32/#35/#37). Labels are not a claim of calibrated perceived difficulty. |
 | Core game loop | Complete | Tap cycle, axis-locked drag, protected cells, immediate clue-derived Hint, Clear/Menu, exact-paw win and completed-board lock are integrated. |
@@ -65,8 +65,8 @@ and request an owner decision rather than silently extending scope.
 
 The latest behavior-changing baseline passed Unity 6000.3.25f1 compilation and
 473/473 EditMode tests in PR #56. Later merged work through `5b9e06b` is
-documentation-only. Automated, desktop and build/install evidence does not replace
-the required owner-performed physical iPhone interaction and appearance review.
+documentation-only. The Paws appearance pass is recorded, but it does not replace
+task-specific owner interaction/lifecycle review of a future clean tester build.
 No production release is implied by integration into `develop`.
 
 ## 4. Current delivery scope
@@ -81,8 +81,9 @@ No production release is implied by integration into `develop`.
   Menu, completion celebration and completed-board review.
 - A versioned, reproducible iOS tester build tied to a commit, with diagnostic and
   automated review modes excluded.
-- Human physical-iPhone review and a small qualitative friend trial recorded in
-  #21/#22 before public-release preparation.
+- The approved Paws physical-iPhone appearance evidence, task-specific review of
+  the eventual clean tester build and a small qualitative friend trial recorded
+  in #21/#22 before public-release preparation.
 
 ### Not required for that trial
 
@@ -102,7 +103,8 @@ limitation, not an untracked promise to add persistence.
 | --- | --- |
 | Puzzle/gameplay integrity | Existing deterministic validation, human-solvability, uniqueness, exact-paw victory and interaction invariants continue to pass for all affected profiles. |
 | Clean tester build | Approved identity/version/build, one intended game entry point, diagnostics excluded, artifact tied to source and final SDK/capability/data behavior inspected. |
-| Physical iPhone review | Owner reports explicit pass/fail and scope for current branding, readability, touch, lifecycle and task-specific interactions. Technical build/install/launch checks alone are insufficient. |
+| Paws appearance | Owner approval recorded 2026-10-19 for current physical-iPhone branding, paw readability and localized visual fit. This does not establish broader-device coverage. |
+| Clean-build physical review | After relevant build-setting changes, owner reports explicit pass/fail and scope for task-specific touch, lifecycle and comfort checks. Technical build/install/launch checks alone are insufficient. |
 | Small friend trial | Versioned build delivered through an approved route; responses recorded without invented data; progress blockers triaged into focused Issues. |
 | iOS release candidate | Trial evidence reviewed, final declarations/materials prepared, known release blockers resolved and rollback/source provenance recorded. |
 | Public iOS release | Owner explicitly approves production merge, signing/submission and release in the current task. |
@@ -111,7 +113,7 @@ limitation, not an untracked promise to add persistence.
 
 ## 6. Strategic sequence and forecasting
 
-1. Complete #21 clean-build readiness and the pending current-Paws human iPhone review.
+1. Complete #21 clean-build readiness and its task-specific technical/device review.
 2. Run the small #22 trial; distinguish repeated blockers from one-person preferences.
 3. Let the owner select the smallest focused improvement or proceed to release-candidate work.
 4. Prepare public iOS materials and submission only after the trial gate.
@@ -157,7 +159,7 @@ reduce scope, use a free alternative or request a budget revision first.
 | Risk | Response |
 | --- | --- |
 | Trial starts from stale identity/build instructions | Resolve #21 against current Paws settings and actual archive contents; do not reuse the old difficulty-menu or Cats & Arrows checklist without correction. |
-| Branding or paw symbol is unclear on a phone | Use the owner-only physical iPhone gate; record device/build and explicit scope. |
+| Approved Paws appearance does not generalize to every device | Preserve the one-iPhone pass honestly; check compact layouts in the clean trial build and keep Android separate. |
 | One tester's preferences become roadmap commitments | Collect more versioned sessions, separate observations from interpretation and require owner prioritization. |
 | Medium/Hard labels overstate calibrated difficulty | Preserve current proven generation profiles while treating perceived difficulty as trial evidence. |
 | Touch or layout regresses on compact devices | Retain focused automated coverage and request human device review; Android remains a separate gate. |

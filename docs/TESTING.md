@@ -19,6 +19,20 @@ Keep desktop/simulated input tests and Unity tests as separate evidence.
 Historical agent-driven physical-device exercises remain factual records but
 do not satisfy this human review gate. Do not repeat their automation workflow.
 
+## Issue #53 Paws physical appearance
+
+PR #54 prepared source `a17ed5b` as an arm64 Release build, verified signing and
+device compatibility, and installed/launched it on iPhone 17 / iOS 27.0.1. The
+owner subsequently reported on 2026-10-19 that the physical-iPhone appearance was
+reviewed and approved. This closes the pending appearance scope for the Paws app
+name/icon, paw readability and localized visual fit.
+
+The report does not add a new tap/drag, lifecycle, performance, comfort,
+smaller-phone or distribution-archive result. Those remain separate task-specific
+checks. Automated and desktop validation for the rebrand remains recorded in PR
+#54; the later full behavior-changing baseline passed 473/473 EditMode tests in
+PR #56.
+
 ## Issue #44 timed completion
 
 2026-10-16: pinned Unity **6000.3.25f1** compilation passed (`compile.d5Lj3z`);
