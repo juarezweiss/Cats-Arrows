@@ -1,81 +1,74 @@
-# Cats & Arrows
+# Paws
 
-A cozy mobile logic puzzle about deducing the exact locations of hidden cats from row/column totals and directional arrow clues.
+Paws is a cozy mobile logic puzzle about finding every hidden paw. Read the row
+and column totals, follow directional arrows, and mark the board until the exact
+solution is revealed—no guessing required.
 
-## Status
-Playable pre-alpha on iOS. The next milestone is a small 5–8 person tester trial:
-[build preparation #21](https://github.com/juarezweiss/Cats-Arrows/issues/21) and
-[feedback #22](https://github.com/juarezweiss/Cats-Arrows/issues/22).
-Android work is deferred. Local iPhone builds are available; a TestFlight build
-and distribution setup are still pending.
+## How to play
 
-## Playable features
-- Play chooses Easy 5×5, Medium 6×6 or Hard 7×7, with at most two consecutive
-  boards of one difficulty even across restarts. Hard starts without
-  hatches so players make and mark their own deductions.
-- First Play opens the fixed Easy tutorial; subsequent Plays choose random boards.
-  Tap cycling (`Empty → X → Cat → Empty`), horizontal/vertical
-  drag marking, immediate one-fact Hint, Clear, Menu and Next board.
-- Exact-cat victory and read-only completed boards; portrait layout in English,
-  Brazilian Portuguese and Spanish.
-- Deterministic seeded generation, with independent uniqueness verification and
-  a complete logical derivation without guessing or hints for every admitted board.
+- Each row and column total gives the exact number of hidden paws in that line.
+- An arrow means at least one hidden paw lies along its forward horizontal,
+  vertical, or diagonal path. Arrow cells cannot contain paws or be marked.
+- Tap a playable cell to cycle `Empty → X → Paw → Empty`. **Paw** is the board
+  symbol for a suspected hidden paw; **X** marks a cell that cannot contain one.
+- Drag horizontally or vertically to add X marks to eligible empty cells.
+- Hint applies one valid clue-derived Paw or X deduction. Clear removes player
+  marks so the puzzle can be reconsidered from the original clues.
+- The board is complete as soon as the placed Paw symbols exactly match the
+  hidden-paw solution. Completed boards are read-only; continue with Next board.
 
-See [game rules](docs/GAME_DESIGN.md) and the
-[puzzle solvability contract](docs/PUZZLE_SOLVABILITY.md) for the full guarantees.
+The current game includes:
 
-## Validation
-As of 2026-10-16, Unity 6000.3.25f1 compilation and **340/340 EditMode tests**
-passed for [Play selection #43](https://github.com/juarezweiss/Cats-Arrows/issues/43).
-Native desktop portrait checks cover English, Brazilian Portuguese and Spanish;
-physical-device validation of this flow is pending. See [Play test evidence](docs/TESTING.md#issue-43-persistent-play-selection).
+- **Easy — 5×5:** compact boards and a fixed first-play tutorial.
+- **Medium — 6×6:** larger boards with denser totals and clue combinations.
+- **Hard — 7×7:** the largest boards, with no starting hatches; players mark all
+  deductions themselves.
 
-The owner previously passed the Hard hatch-fix smoke checks on iPhone 17,
-including manual marking, controls, completion locks and unchanged Easy/Medium
-behavior, and reported that Hard feels better. This is qualitative evidence on
-one device. See [hatch-fix evidence](docs/TESTING.md#issue-37-hard-hatch-regression).
+Ordinary Play and Next board select among all three difficulties while limiting
+long repeat streaks. Every generated puzzle is seeded, reproducible, uniquely
+solvable, and validated for a complete logical path without hints.
+
+## Project status
+
+Paws is a playable iOS-first pre-alpha. It supports portrait play in English,
+Brazilian Portuguese, and Spanish. Android work and wider distribution are
+deferred while the iOS tester build is prepared.
+
+For the detailed rules and guarantees, see [Game Design](docs/GAME_DESIGN.md) and
+[Puzzle Solvability](docs/PUZZLE_SOLVABILITY.md).
 
 ## Technology
-- Unity 6.3 LTS
-- C#
-- iOS first; Android deferred
-- GitHub Issues/PRs for task traceability
-- Codex `AGENTS.md`, repo-local skill, and project-scoped subagents
 
-## Branches
-- `main`: human-approved production/release history only
-- `develop`: integration/lower-environment branch
-- feature/fix branches: short-lived work branches
+- Unity 6.3 LTS; the exact editor patch is pinned in
+  [ProjectVersion.txt](UnityProject/ProjectSettings/ProjectVersion.txt)
+- C# with deterministic puzzle-domain logic separated from Unity presentation
+- GitHub Issues and pull requests for traceability
+- Codex orchestration through [AGENTS.md](AGENTS.md), the repo-local development
+  skill, [CONTEXT_MAP.md](docs/CONTEXT_MAP.md), and specialist agents when useful
 
-## Start here
-1. Install the exact Unity editor pinned in [ProjectVersion.txt](UnityProject/ProjectSettings/ProjectVersion.txt) through Unity Hub.
-2. Open `UnityProject/`.
-3. Read [AGENTS.md](AGENTS.md) and use [CONTEXT_MAP.md](docs/CONTEXT_MAP.md) to load the context relevant to your task.
-4. Work from a GitHub Issue.
-5. Run `scripts/validate.sh` before opening a PR.
+## Development workflow
 
-## Local Codex and Unity validation
+Work starts from a [GitHub Issue](https://github.com/juarezweiss/Cats-Arrows/issues)
+and a short-lived issue branch. Codex loads only the task-relevant repository
+context, makes focused changes, runs the required checks, and prepares a pull
+request into `develop`. The `main` branch remains human-controlled release
+history; production merges and releases require explicit owner approval.
 
-Open this repository as a **local task** in the Codex app to give Codex access to
-the editor on your Mac. A cloud task remains attached to its cloud machine.
-Read [local validation instructions](docs/TESTING.md#local-unity-validation) for
-editor discovery, prerequisites, and artifacts. From the repository root:
+## Get started
+
+1. Install the Unity editor version pinned in `ProjectVersion.txt` through Unity Hub.
+2. Open [UnityProject](UnityProject/) in Unity.
+3. Read [AGENTS.md](AGENTS.md), then use
+   [CONTEXT_MAP.md](docs/CONTEXT_MAP.md) for task-specific context.
+4. Select or create an Issue before implementation.
+5. Validate from the repository root:
 
 ```bash
-bash scripts/unity.sh     # Print the discovered editor executable.
-bash scripts/validate.sh # Check repository contracts (Python 3.11+).
-bash scripts/compile.sh  # Import and compile with the local editor.
-bash scripts/test.sh     # Run and validate EditMode results.
+bash scripts/unity.sh
+bash scripts/validate.sh
+bash scripts/compile.sh
+bash scripts/test.sh
 ```
 
-The scripts find the exact version in `ProjectVersion.txt` in Unity Hub's default
-installation directory. No manual `UNITY_EDITOR` setting is needed for a standard
-Mac installation. Activate Unity Personal through Hub and close this project's
-GUI Editor before running batch commands.
-
-## Next milestone
-Prepare a clean, versioned iOS tester build with confirmed app identity and review
-modes excluded, then collect independent playtest feedback. See
-[iOS trial preparation](docs/IOS_TRIAL_PREPARATION.md) and the
-[tester questionnaire](docs/TESTER_QUESTIONNAIRE.md). Enrollment, spending and
-distribution require separate owner approval.
+Local Unity setup, result requirements, and test artifacts are documented in
+[Testing](docs/TESTING.md#local-unity-validation).
