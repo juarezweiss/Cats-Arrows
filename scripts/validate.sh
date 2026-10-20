@@ -12,7 +12,7 @@ required=(
   docs/TESTING.md
   docs/RELEASE.md
   .codex/config.toml
-  .agents/skills/cats-arrows-development/SKILL.md
+  .agents/skills/paws-development/SKILL.md
   UnityProject/Assets/CatsAndArrows/Core/PuzzleDefinition.cs
   UnityProject/Assets/CatsAndArrows/Gameplay/GameSession.cs
 )
