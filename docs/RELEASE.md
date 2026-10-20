@@ -217,15 +217,18 @@ Paws **0.1.0 (1)** (`com.jweiss.paws`) was installed over the existing app on
 running process were verified. Local development signing expires
 **2026-10-27 17:36:44 UTC**; this is not an App Store distribution signature.
 [Sanitized preparation receipt](evidence/issue76/device-preparation.json) records
-source, artifact hashes and the separate pending human review.
+source, artifact hashes and the separately recorded owner physical review pass.
 
 Retained locally: `Builds/Issue76iPhone-f15860d.xcarchive/` with dSYMs,
 `Builds/Issue76iPhone-f15860d/Paws.app` and its small export metadata, plus ignored
 technical logs/receipts. This run's export and DerivedData were removed after
 success. No provider integration, upload, store submission or merge was performed.
 
-Human physical review remains pending for this source. Checklist: approved Play
-width/height/bold text and comfortable gear; Settings/Back; native language
-selection with immediate localization and persistence; Tutorial replay and
-Home Play resume. No physical interaction, appearance or lifecycle tests were
-automated; the earlier #63 human pass does not cover this changed menu.
+Owner physical review passed on 2026-10-20: “iphone review finished, pass”.
+The report covers the supplied #76/#77 menu/settings handoff checklist for this
+installed source/device: approved Play/gear comfort, Settings/Back, native-language
+selection/localization/persistence, Tutorial replay and Home Play resume.
+This closes the physical menu review for source `f15860d` on iPhone 17 / iOS
+27.0.1. No device automation, rebuild or installation was performed to record the
+report. Other-device coverage, measured performance and App Store distribution
+acceptance are not inferred; the earlier #63 report remains separate.

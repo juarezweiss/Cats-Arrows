@@ -20,7 +20,7 @@
   "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
   "deviceIncludedInProfile": true,
   "installed": true,
-  "physicalIPhoneReview": "pending-human",
+  "physicalIPhoneReview": "passed-owner",
   "recompiled": true,
   "originalArchiveUnchanged": true,
   "launchVerified": true,
@@ -33,12 +33,26 @@
   "installedVersion": "0.1.0 (1)",
   "installMode": "in-place-update-no-uninstall",
   "humanReview": {
-    "result": "pending-human",
+    "result": "pass",
     "scope": [
-      "Approved compact bold Play button on Home",
-      "Settings navigation, locale selector and tutorial replay"
+      "Issue #76 / PR #77 supplied menu/settings handoff checklist",
+      "Approved compact bold Play and gear comfort; Settings/Back",
+      "Native-language selection, immediate localization and persistence",
+      "Tutorial replay and Home Play resume"
     ],
-    "automatedPhysicalInteractionTests": false
+    "automatedPhysicalInteractionTests": false,
+    "reviewer": "owner",
+    "reportedDate": "2026-10-20",
+    "report": "iphone review finished, pass",
+    "device": "iPhone 17",
+    "iOS": "27.0.1",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "sourceSha": "f15860d0e5ba8c4b7deb393419e73388e39a05a8",
+    "limitations": [
+      "Single reviewed device and installed source; no broader-device or measured-performance claim",
+      "Local development signing only; no App Store distribution approval"
+    ]
   },
   "removedIntermediates": [
     "Builds/Issue76iPhone-f15860d-export/",
