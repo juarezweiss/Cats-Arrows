@@ -1,0 +1,180 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f5f5;
+  color: #1d1d1d;
+  font-family: -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Arial, sans-serif;
+}
+
+/* Main two-column layout */
+
+.hero {
+  max-width: 1200px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 64px 32px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+/* Left column */
+
+.content h1 {
+  font-size: clamp(3rem, 5vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  margin: 0 0 30px;
+}
+
+.content p {
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+  line-height: 1.6;
+  margin: 0 0 48px;
+  max-width: 690px;
+}
+
+/* Side-by-side badges */
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.badge img {
+  display: block;
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+a.badge:hover {
+  opacity: 0.85;
+}
+
+/* Right column */
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px 35px 35px 0;
+}
+
+.artwork {
+  position: relative;
+  width: min(100%, 210px);
+}
+
+/* Minimal phone mockup */
+
+.phone {
+  position: relative;
+  padding: 7px;
+  border: 7px solid #202020;
+  border-radius: 36px;
+  background: #202020;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.phone::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 66px;
+  height: 12px;
+  background: #202020;
+  border-radius: 12px;
+}
+
+.phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 24px;
+}
+
+/* Enlarged app icon overlapping the phone */
+
+.app-icon {
+  position: absolute;
+  width: 105px;
+  height: 105px;
+  right: -30px;
+  bottom: -25px;
+  border-radius: 24px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* Mobile layout */
+
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "preview"
+      "content";
+    min-height: auto;
+    padding: 44px 22px 60px;
+    gap: 34px;
+  }
+
+  /* Phone and app icon first */
+  .preview {
+    grid-area: preview;
+    padding: 0 32px 12px 0;
+  }
+
+  .artwork {
+    width: min(100%, 190px);
+  }
+
+  /* Title, description and buttons below */
+  .content {
+    grid-area: content;
+  }
+
+  .content h1 {
+    font-size: clamp(2.35rem, 8vw, 3.5rem);
+    margin-bottom: 22px;
+  }
+
+  .content p {
+    font-size: 1.15rem;
+    line-height: 1.55;
+    margin-bottom: 30px;
+  }
+
+  /* Keep buttons side by side */
+  .badges {
+    display: flex;
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .badge {
+    height: clamp(34px, 10vw, 52px);
+  }
+
+}
