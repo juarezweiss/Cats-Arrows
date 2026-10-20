@@ -1,3 +1,4 @@
+#if !PAWS_PRODUCTION
 using System;
 using System.Collections;
 using System.IO;
@@ -228,3 +229,5 @@ namespace CatsAndArrows.UI
         private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException("Tutorial review failed: " + message); }
     }
 }
+
+#endif

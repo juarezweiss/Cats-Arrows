@@ -1,3 +1,4 @@
+#if !PAWS_PRODUCTION
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -220,3 +221,5 @@ namespace CatsAndArrows.UI
         { if (!condition) throw new InvalidOperationException("Game loop review failed: " + message); }
     }
 }
+
+#endif

@@ -1,3 +1,4 @@
+#if !PAWS_PRODUCTION
 using System;
 using System.Collections;
 using System.Globalization;
@@ -190,3 +191,5 @@ namespace CatsAndArrows.UI
         }
     }
 }
+
+#endif

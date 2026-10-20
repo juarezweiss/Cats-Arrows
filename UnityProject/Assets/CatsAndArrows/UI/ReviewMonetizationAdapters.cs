@@ -1,3 +1,4 @@
+#if !PAWS_PRODUCTION
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System;
 using System.IO;
@@ -77,4 +78,6 @@ namespace CatsAndArrows.UI
             evidenceReference: Evidence, transactionReference: "mock-remove-all-ads-transaction");
     }
 }
+#endif
+
 #endif

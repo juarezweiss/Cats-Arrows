@@ -1,3 +1,4 @@
+#if !PAWS_PRODUCTION
 using System;
 using System.Collections;
 using System.IO;
@@ -196,3 +197,5 @@ namespace CatsAndArrows.UI
         { if (!condition) throw new InvalidOperationException("Hint idle review failed: " + message); }
     }
 }
+
+#endif
