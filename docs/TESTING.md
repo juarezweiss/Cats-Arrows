@@ -1,5 +1,41 @@
 # Testing Strategy
 
+## Issue #64 Apple purchase adapter
+
+Dependency #63 is integrated in current develop; owner approved product mapping
+`com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
+[APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
+
+Unity **6000.3.25f1** final compilation passed (`compile.IYRpa3`). Focused provider/build
+tests **40/40 passed** (`issue64-final-focused.v0gOQX`), including private-marker
+write failure with successfully persisted coordinator Pending state. The final full EditMode gate
+**537/537 passed**, zero failed/skipped/inconclusive and successful editor exit
+(`editmode.v6sp26`). The preceding full gate also passed 536/536 (`editmode.ijaG8a`). An earlier full run had one existing portrait Settings test
+failure (Back target position); that test passed in isolation and in the full
+rerun without a UI/source change. This transient is recorded, not suppressed.
+All **41** Python runner/inspector contracts (including five new review-export
+contracts), repository validation and whitespace
+checks passed. Native desktop policy regressions passed **11 assertions**, and
+Swift typechecking passed against the iOS 16.3 simulator SDK target. Independent
+QA reports no blocking findings after finalization/refund/refresh corrections.
+
+The provider tests use actual IAP 5 SDK models through the adapter with controlled
+store/native-evidence seams. They cover verified versus unverified success,
+cancel/failure/deferred/restart, duplicate/late updates, restore callback ordering,
+offline cache/reinstall/account change/revocation, store/private-state write
+failures, multiple unfinished transactions, crash after native finish before
+journal clear, timeouts and focus refresh during a native buy. Native regressions
+execute the actual same-transaction refund reconciliation and production versus
+sandbox/Xcode environment policy. Review build tests protect the separate scene,
+development-only define and approved product mapping. Existing #30 coordinator,
+storage and UI coverage remains in the full gate.
+
+These automated checks do not establish live StoreKit/sandbox behavior. Owner
+App Store Connect actions and physical purchase/restore/lifecycle acceptance remain
+pending; use the checklist and provenance fields in [APPLE_IAP.md](APPLE_IAP.md).
+No physical-device tests, account/product creation, signing, purchase or upload
+were automated.
+
 ## Issue #63 production iOS configuration
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);

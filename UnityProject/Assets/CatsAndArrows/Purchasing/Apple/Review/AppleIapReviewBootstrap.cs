@@ -20,9 +20,10 @@ namespace CatsAndArrows.Purchasing.Apple.Review
         {
             if (!Debug.isDebugBuild || Application.platform != RuntimePlatform.IPhonePlayer)
                 throw new InvalidOperationException("Apple IAP review requires an explicit iOS development export.");
-            purchases = new ApplePurchaseService(appleProductId, ApplePurchaseEnvironment.SandboxReview);
-            var coordinator = new MonetizationCoordinator(true,
-                new FileMonetizationStateStore(Path.Combine(Application.persistentDataPath, "apple-iap-review", "state.bin")),
+            var store = new FileMonetizationStateStore(Path.Combine(Application.persistentDataPath, "apple-iap-review", "state.bin"));
+            var recoveredPending = store.TryLoad(out var recovered) && recovered != null && recovered.IsValid() && recovered.PendingPurchase;
+            purchases = new ApplePurchaseService(appleProductId, ApplePurchaseEnvironment.SandboxReview, recoveredPending);
+            var coordinator = new MonetizationCoordinator(true, store,
                 new UnavailableAdService(), purchases);
             shell = new GameShellView(unchecked((int)DateTime.UtcNow.Ticks), monetization: coordinator);
             var root = GetComponent<UIDocument>().rootVisualElement;

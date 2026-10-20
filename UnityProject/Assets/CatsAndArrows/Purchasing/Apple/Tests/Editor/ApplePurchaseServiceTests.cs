@@ -161,6 +161,26 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
                 Assert.That(coordinator.IsOwned, Is.True); Assert.That(client.Buys, Is.EqualTo(1));
             }
         }
+        [Test] public void PrivateMarkerWriteFailureCannotEraseRecoveredCoordinatorPendingState()
+        {
+            var store = new MemoryMonetizationStateStore();
+            using (var coordinator = Coordinator(store))
+            {
+                evidence.MarkerWritesSucceed = false;
+                client.EmitDeferred(new DeferredOrder(Paid().CartOrdered, new Info("")));
+                Assert.That(coordinator.Snapshot.PendingPurchase, Is.True);
+                Assert.That(evidence.Deferred, Is.False);
+            }
+            Assert.That(store.TryLoad(out var recovered), Is.True);
+            service.Dispose();
+            service = new ApplePurchaseService(ProductId, () => client, evidence, () => now, recovered.PendingPurchase);
+            evidence.Proof = new AppleEvidence { state = 3, complete = true, deferred = false };
+            using (var restarted = Coordinator(store))
+            {
+                Assert.That(restarted.Snapshot.PendingPurchase, Is.True);
+                Assert.That(restarted.CanPurchase, Is.False); Assert.That(restarted.IsOwned, Is.False);
+            }
+        }
         [Test] public void FinishFailureKeepsJournalAndRestartReplays()
         {
             var store = new MemoryMonetizationStateStore(); string reference;
@@ -369,12 +389,13 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
         private sealed class FakeEvidence : IAppleEvidence
         {
             public AppleEvidence Proof = new AppleEvidence { state = 3, complete = true };
-            public string Cached; public bool Deferred, Delay, WasSynchronized; public int Reads;
+            public string Cached; public bool Deferred, Delay, WasSynchronized; public bool MarkerWritesSucceed = true; public int Reads;
             public Action<AppleEvidence> Pending;
             public bool VerifyCached(string product, string reference) => reference != null && reference == Cached;
             public void Read(string product, bool synchronized, Action<AppleEvidence> complete)
             { Reads++; WasSynchronized = synchronized; if (Delay) Pending = complete; else complete(Proof); }
-            public bool SetDeferred(string product, bool value) { Deferred = value; return true; }
+            public bool SetDeferred(string product, bool value)
+            { if (MarkerWritesSucceed) Deferred = value; return MarkerWritesSucceed; }
             public void Dispose() { }
         }
         private sealed class FakeStore : IAppleStoreClient

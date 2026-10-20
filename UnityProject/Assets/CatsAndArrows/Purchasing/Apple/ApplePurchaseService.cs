@@ -37,8 +37,10 @@ namespace CatsAndArrows.Purchasing.Apple
         private double started, finishStarted;
         public event Action<PurchaseResult> Updated;
 
-        public ApplePurchaseService(string appleProductId, ApplePurchaseEnvironment environment = ApplePurchaseEnvironment.Production) : this(appleProductId,
-            CreateNativeClient, new NativeAppleEvidence(environment == ApplePurchaseEnvironment.SandboxReview), () => Time.realtimeSinceStartupAsDouble) { }
+        public ApplePurchaseService(string appleProductId, ApplePurchaseEnvironment environment = ApplePurchaseEnvironment.Production,
+            bool recoveredPendingPurchase = false) : this(appleProductId,
+            CreateNativeClient, new NativeAppleEvidence(environment == ApplePurchaseEnvironment.SandboxReview),
+            () => Time.realtimeSinceStartupAsDouble, recoveredPendingPurchase) { }
 
         private static IAppleStoreClient CreateNativeClient()
         {
@@ -48,7 +50,7 @@ namespace CatsAndArrows.Purchasing.Apple
         }
 
         internal ApplePurchaseService(string appleProductId, Func<IAppleStoreClient> createClient,
-            IAppleEvidence evidence, Func<double> clock)
+            IAppleEvidence evidence, Func<double> clock, bool recoveredPendingPurchase = false)
         {
             if (string.IsNullOrWhiteSpace(appleProductId) || appleProductId.Trim() != appleProductId)
                 throw new ArgumentException("An owner-approved Apple product mapping is required.", nameof(appleProductId));
@@ -56,6 +58,9 @@ namespace CatsAndArrows.Purchasing.Apple
             this.createClient = createClient ?? throw new ArgumentNullException(nameof(createClient));
             this.evidence = evidence ?? throw new ArgumentNullException(nameof(evidence));
             this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+            // Native inventory cannot enumerate unpaid Ask to Buy. Recover the coordinator's
+            // normalized pending flag too, so a failed private-marker write cannot erase it.
+            deferred = recoveredPendingPurchase;
         }
 
         public PurchaseOffer GetOffer() => new PurchaseOffer(!disposed && connected && !nativePurchaseOpen && !deferred && product?.availableToPurchase == true &&

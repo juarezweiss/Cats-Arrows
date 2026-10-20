@@ -29,7 +29,7 @@ an unused Android store selector in Assets/Resources on editor load; it is ignor
 The adapter explicitly selects AppleAppStore, never the Editor FakeStore.
 
 The production `Paws` scene/bootstrap still composes no monetization coordinator.
-Installing the package includes its Apple native code/StoreKit capability in iOS
+Installing the package includes its Apple native code/StoreKit linkage in iOS
 exports; package presence does not enable purchases. Rollback keeps production
 composition disabled, and retains coordinator/vault state. Review composition is
 a separate, explicitly built development scene and state file. No main changes,
@@ -67,7 +67,12 @@ resurrection through an older state-file backup. No catch-up ad debt is created.
 
 Unpaid deferred requests cannot be enumerated using `Transaction.unfinished`.
 The adapter persists a separate private deferred marker before reporting Pending,
-and retains it across ambiguous empty/offline refreshes. It resolves only on
+and retains it across ambiguous empty/offline refreshes. Composition must also
+pass the successfully loaded/validated coordinator state's `PendingPurchase` as
+`recoveredPendingPurchase`; the review bootstrap does this before constructing the
+coordinator. Either durable copy preserves pending after a single write failure;
+simultaneous failure of both copies followed by a crash has no invented guarantee.
+It resolves only on
 verified ownership or a terminal store cancellation/failure; an absent deferred
 request is not inferred cancelled. A request denied while the app was absent may
 therefore require later authoritative store resolution. No daily polling/backend
@@ -109,7 +114,8 @@ xcodebuild -project Builds/Issue64-AppleIapReview/Unity-iPhone.xcodeproj -scheme
   -configuration Release -destination 'generic/platform=iOS' \
   -archivePath "$PWD/Builds/Issue64-AppleIapReview.xcarchive" \
   -derivedDataPath "$PWD/.unity-results/issue64-archive/DerivedData" \
-  CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO archive
+  CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
+  COMPILER_INDEX_STORE_ENABLE=NO DEBUG_INFORMATION_FORMAT=dwarf archive
 ```
 
 ## Owner StoreKit Test and sandbox handoff
@@ -148,3 +154,15 @@ Record reviewer, device/iOS, source SHA, version/build, Unity/package/Xcode vers
 StoreKit Test versus sandbox, scenario pass/fail and gaps. Physical interaction and
 purchase/restore acceptance stays **pending** until the owner's explicit report;
 unsigned export/archive or automated tests cannot satisfy it. No real charge needed.
+
+## Archive gate status — 2026-10-20
+
+The owner explicitly selected **leave the archive gate pending** after local disk
+exhaustion. Native Swift and IL2CPP compilation were reached, but static-archive
+assembly/native linking exhausted disk space; a superseded retry was interrupted
+for the pending-state correction. This is not a successful archive gate. Logs
+and the initial export inventory are retained under ignored
+`.unity-results/issue64-archive/`. Failed task-only intermediates were removed;
+existing owner-tested builds were preserved. Free at least 5 GB before a later
+archive attempt. StoreKit Test/sandbox and physical purchase/restore acceptance
+remain owner actions. Keep the PR draft until these validation gates are resolved.
