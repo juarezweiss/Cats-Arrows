@@ -36,8 +36,7 @@ and completion lock. Owner iPhone review accepted the simplified flow.
 ## Fresh validation
 
 Pinned Unity 6000.3.25f1 compile passed (compile.Q3aGXm); EditMode passed
-227/227 with zero failed/skipped/inconclusive cases (editmode.jaOnNR). Localized
-How to Play wording was updated afterward and compiled into the native builds.
+227/227 with zero failed/skipped/inconclusive cases (editmode.jaOnNR).
 Repository validation passed. Existing planning/source materials match the
 pre-task SHA-256 snapshot.
 

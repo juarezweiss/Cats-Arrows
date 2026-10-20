@@ -18,7 +18,7 @@ generation and the fixed Easy tutorial are unchanged.
 
 ## Play and difficulty selection — Issue #43
 
-The menu offers Play, Tutorial, How to Play and languages, with no difficulty
+The menu offers Play, Tutorial and languages, with no difficulty
 choice. Ordinary Play and Next board choose uniformly from Easy/Medium/Hard, except
 that a difficulty is excluded after two consecutive successful starts in it.
 The last difficulty and run length persist across app restarts. Abandoning a
@@ -129,8 +129,9 @@ sequence, and completion still belongs to GameSession immediately at the last pa
 
 ## Issue #8 Easy loop
 
-The menu offers Easy only, rules help and English/Brazilian Portuguese/Spanish
-selection. Language preference persists; the live board stays in memory through
+The original menu offered Easy and English/Brazilian Portuguese/Spanish
+selection. The current menu uses Play and an always-available Tutorial (#72).
+Language preference persists; the live board stays in memory through
 Menu and background/foreground, while process termination need not resume it.
 New Game requests a fresh seed, preserving Easy. Normal app launch selects a fresh
 initial seed; an explicit review seed can reproduce a diagnostic run.

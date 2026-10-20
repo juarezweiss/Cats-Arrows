@@ -41,6 +41,7 @@ namespace CatsAndArrows.UI
 #endif
             var locale = Argument("--board-locale=") ?? CultureInfo.CurrentUICulture.Name;
             var capture = Argument("--board-capture=");
+            var menuCapture = Argument("--menu-capture=");
             var tutorialCheck = Argument("--tutorial-check=") == "1";
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             var monetizationCheck = Argument("--monetization-check=") == "1";
@@ -50,7 +51,7 @@ namespace CatsAndArrows.UI
             var hintIdleCheck = Argument("--hint-idle-check=") == "1";
             var completionCheck = Argument("--completion-check=") == "1";
             double holdReviewTime = 0;
-            if (completionCheck || hintIdleCheck || arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
+            if (completionCheck || hintIdleCheck || arrowHoldCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(capture) || !string.IsNullOrEmpty(menuCapture) || Argument("--board-input-check=") == "1" || Argument("--game-loop-check=") == "1") Application.runInBackground = true;
             // Opt-in capture insets are pixels, like Screen.safeArea; real devices use their reported safe area.
             simulateSafeArea = float.TryParse(Argument("--board-safe-top="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeTop) |
                 float.TryParse(Argument("--board-safe-bottom="), NumberStyles.Float, CultureInfo.InvariantCulture, out safeBottom);
@@ -97,7 +98,7 @@ namespace CatsAndArrows.UI
                         () => Time.realtimeSinceStartupAsDouble);
                 }
 #endif
-                var isolatedReview = completionCheck || hintIdleCheck || tutorialCheck || autoReview || Argument("--game-loop-check=") == "1";
+                var isolatedReview = completionCheck || hintIdleCheck || tutorialCheck || autoReview || !string.IsNullOrEmpty(menuCapture) || Argument("--game-loop-check=") == "1";
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 isolatedReview |= monetizationCheck;
 #endif
@@ -124,6 +125,7 @@ namespace CatsAndArrows.UI
             else if ((autoReview || Argument("--game-loop-check=") == "1") && shell != null) StartCoroutine(GameLoopReviewChecks.Run(shell, Argument("--game-captures=")));
             else if (Argument("--board-input-check=") == "1" && view != null) StartCoroutine(BoardInputReviewChecks.Run(view));
             else if (!string.IsNullOrEmpty(capture)) StartCoroutine(Capture(capture));
+            else if (!string.IsNullOrEmpty(menuCapture)) StartCoroutine(Capture(menuCapture));
         }
         private void Update()
         {

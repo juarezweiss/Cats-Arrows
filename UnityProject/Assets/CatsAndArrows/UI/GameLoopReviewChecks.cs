@@ -25,10 +25,6 @@ namespace CatsAndArrows.UI
                     Require(shell.Q<Button>("menu-difficulty-" + id) == null, "Play has no difficulty choice");
             })) yield break;
             yield return Capture(captures, "menu");
-            if (!Check(() => Click(shell, "menu-rules"))) yield break;
-            yield return Capture(captures, "rules");
-            if (!Check(() => { Require(shell.Modal == "rules", "rules open"); Click(shell, "modal-back"); })) yield break;
-            yield return new WaitForEndOfFrame();
             if (!Check(() => Click(shell, "menu-start"))) yield break;
             yield return Ready(shell);
             if (!Check(() => Require(shell.Loop.Session != null && shell.Screen == "play" &&

@@ -31,8 +31,19 @@ touch-comfort or clean-distribution-build evidence.
 
 ## Controls
 
+Issue #72 gives the initial menu a dominant shared board paw and centered Paws
+title, with localized Play and Tutorial side by side near the bottom. Below them
+are only Brazilian, Spanish and British flag selectors (pt-BR, es, en), each with
+a 60×48 target, a native-language tooltip and an outlined selected state. Flags
+are vector artwork so they do not depend on platform emoji support. The intro
+tagline and visible Language heading are removed. Tutorial is the menu’s learning
+entry point; a live session adds Back to the Game above the primary actions.
+Configured purchase controls remain above those actions. Content fills the safe
+portrait area and scrolls on unusually short viewports instead of shrinking
+targets. Language persistence and all existing navigation policies are retained.
+
 Issue #43 replaces the menu difficulty controls with a localized Play action,
-alongside Tutorial, How to Play and languages. Play and Next board select
+alongside Tutorial and languages. Play and Next board select
 Easy/Medium/Hard through one shared policy, with no more than two consecutive
 successful boards of one mode, even across restarts. Failure/retry retains its
 pending mode. Clear, Menu/back and language changes keep the live board and its
@@ -99,7 +110,7 @@ changes and rebind remove pending or active hold feedback. The aid does not run
 on completed boards. During guided tutorial steps it remains disabled except for the
 focused R1C4 DownLeft arrow-hold lesson; the independent same-board stage enables any
 arrow. Cleanup preserves the lesson's existing outlines.
-How to Play describes the gesture in English, pt-BR and Spanish.
+The tutorial teaches the gesture in English, pt-BR and Spanish.
 
 ## Issue #48 idle Hint attention
 

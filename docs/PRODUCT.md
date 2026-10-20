@@ -52,7 +52,7 @@ is tracked in #61. Every purchase or subscription needs separate explicit owner 
 - Timed ordinary-board celebration and return to the same locked finished board.
 - Hold-to-highlight arrow paths and non-moving Hint attention after board inactivity.
 - English, Brazilian Portuguese and Spanish; language preference and shape-based readability.
-- Current Paws name/paw artwork, brief rules help and unlimited clue-derived hints
+- Current Paws name/paw artwork, guided tutorial and unlimited clue-derived hints
   while monetization remains disabled.
 
 Start the first tester session with the fixed Easy tutorial; subsequent ordinary

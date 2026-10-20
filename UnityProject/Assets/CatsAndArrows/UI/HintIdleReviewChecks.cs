@@ -132,10 +132,10 @@ namespace CatsAndArrows.UI
             {
                 Click(shell, "menu-back"); shell.TickHintAttention(); Require(!Attention(shell), "return starts fresh");
                 advance(6); shell.TickHintAttention(); Require(Attention(shell), "return interval");
-                shell.ShowRules(); Require(!Attention(shell), "modal immediately removes emphasis");
-                advance(60); shell.TickHintAttention(); shell.BackToGame();
-                advance(5.999); shell.TickHintAttention(); Require(!Attention(shell), "no modal time accumulation");
-                advance(.002); shell.TickHintAttention(); Require(Attention(shell), "full post-modal interval");
+                shell.SetApplicationPaused(true); Require(!Attention(shell), "pause immediately removes emphasis");
+                advance(60); shell.TickHintAttention(); shell.SetApplicationPaused(false);
+                advance(5.999); shell.TickHintAttention(); Require(!Attention(shell), "no paused time accumulation");
+                advance(.002); shell.TickHintAttention(); Require(Attention(shell), "full post-pause interval");
                 shell.ShowMenu(); shell.SelectLanguage(locale); shell.BackToGame(); shell.TickHintAttention();
                 Require(!Attention(shell) && hint.style.backgroundColor.value == PortraitBoardView.Tile &&
                     hint.style.color.value == BoardSymbolElement.Ink, "old button restored after locale rebuild");

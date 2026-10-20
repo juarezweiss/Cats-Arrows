@@ -122,7 +122,7 @@ namespace CatsAndArrows.Tests
         {
             yield return Mount(inline: false);
             Advance(6); AssertAttention(Hint, true);
-            view.ShowRules(); AssertAttention(Hint, false);
+            view.RequestHint(); Assert.That(view.Modal, Is.EqualTo("hint")); AssertAttention(Hint, false);
             Advance(60); AssertAttention(Hint, false);
             view.BackToGame(); Advance(5.999); AssertAttention(Hint, false);
             Advance(.002); AssertAttention(Hint, true);

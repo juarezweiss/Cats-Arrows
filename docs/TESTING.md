@@ -1,5 +1,40 @@
 # Testing Strategy
 
+## Issue #72 initial menu
+
+2026-10-20: pinned Unity **6000.3.25f1** compilation passed
+(`compile.mCNjsj`); final EditMode **480/480 passed**, zero failed/skipped/
+inconclusive, successful editor exit (`editmode.didpG3`). Repository validation
+and whitespace checks passed. `MenuPresentationTests` mounts all three locales
+at 320×568, 390×844 and 430×932, checking safe bounds, minimum touch targets,
+side-by-side actions, flag order/selection, removed copy and unchanged live-board
+navigation. The full suite includes tap/drag, fixed cells, completion locks,
+clear/new-board, tutorial and locale persistence regressions. Independent QA
+reported no blocking findings after code and screenshot review.
+
+The macOS review player passed the existing `--game-loop-check=1` navigation/
+ordinary-play smoke at EN 390×844 with 59/34 simulated safe insets (Play,
+Menu/resume, clear/hint, completion locks and next-board routing). The updated
+`--hint-idle-check=1` smoke also passed, including fresh idle timing after pause.
+Native menu
+captures use 20/0 insets for compact EN and 59/34 for standard PT and tall ES:
+
+| Compact EN · 320×568 | Standard pt-BR · 390×844 | Tall ES · 430×932 |
+| --- | --- | --- |
+| [Menu](evidence/issue72/menu-en320.png) | [Menu](evidence/issue72/menu-pt390.png) | [Menu](evidence/issue72/menu-es430.png) |
+
+Reproduce captures with `BoardReviewBuild.Build`, then the local player arguments
+`--board-locale=<locale> --board-width=<width> --board-height=<height>
+--board-safe-top=<pixels> --board-safe-bottom=<pixels>
+--menu-capture=<absolute-PNG-path>`. This opt-in path captures the initial menu
+without starting gameplay and uses isolated first-Play/difficulty history stores.
+Logs and the player remain under ignored `.unity-results/issue72/`.
+
+Physical iPhone review is pending. Human checklist: confirm paw/title balance and
+safe spacing, comfortable Play/Tutorial/flag targets, selected flag visibility,
+all three localized labels, Tutorial/Play routes and live-board
+Menu/resume. Desktop checks do not establish physical appearance or comfort.
+
 ## Physical iPhone tests: human review required
 
 Owner policy for all future runs: physical iPhone interaction, appearance,
@@ -760,7 +795,7 @@ preferences, live-menu resume, modal command guards and completed action locks.
 
 Mounted shell flows passed in all three initial locales. A final mounted pass
 verifies panel picking before synthetic button events (`issue8-panel-picking.log`).
-UX reviewed 18 Menu/Rules/Play/Hint/Victory/Completed captures without blockers.
+UX reviewed 18 historical menu/gameplay captures without blockers.
 QA found no local code/test/render blockers. iOS Release build/sign/install
 passed. Owner iPhone playtest passed the full flow, three languages, saved locale,
 completed-board locks and background/reopen. Native iPhone 17 Release diagnostic

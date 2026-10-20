@@ -229,24 +229,80 @@ namespace CatsAndArrows.UI
             controls.style.display = DisplayStyle.None; menu.style.display = DisplayStyle.Flex;
             TickHintAttention();
             menu.Clear();
-            var scroll = new ScrollView(ScrollViewMode.Vertical); scroll.style.flexGrow = 1;
-            scroll.contentContainer.style.paddingBottom = 8; menu.Add(scroll);
-            scroll.Add(Heading(text.GetText("board.title"), 26));
-            scroll.Add(Paragraph(text.GetText("board.intro")));
-            scroll.Add(MakeButton("menu-start", "game.start", StartPlaying));
-            if (ActiveSession != null) scroll.Add(MakeButton("menu-back", "game.back", BackToGame));
-            if (enableTutorial) scroll.Add(MakeButton("menu-tutorial", "tutorial.title", StartTutorial));
-            scroll.Add(MakeButton("menu-rules", "game.rules", ShowRules));
-            AddMonetizationMenu(scroll);
-            scroll.Add(Paragraph(text.GetText("game.language")));
-            AddLanguage(scroll, "en", "English");
-            AddLanguage(scroll, "pt-BR", "Português (Brasil)");
-            AddLanguage(scroll, "es", "Español");
+            var scroll = new ScrollView(ScrollViewMode.Vertical) { name = "menu-scroll" };
+            scroll.style.flexGrow = 1;
+            scroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            scroll.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            menu.Add(scroll);
+            // Fill ordinary portraits; let unusually short safe areas scroll without shrinking targets.
+            scroll.contentViewport.RegisterCallback<GeometryChangedEvent>(evt =>
+                scroll.contentContainer.style.minHeight = evt.newRect.height);
+            scroll.contentContainer.style.alignItems = Align.Center;
+
+            var hero = new VisualElement { name = "menu-hero" };
+            hero.style.flexGrow = 1; hero.style.flexShrink = 0;
+            hero.style.minHeight = 300; hero.style.width = Length.Percent(100);
+            hero.style.alignItems = Align.Center; hero.style.justifyContent = Justify.Center;
+            var paw = new BoardSymbolElement(BoardCellKind.Paw, artworkScale: 2) { name = "menu-paw" };
+            paw.style.width = Length.Percent(100); paw.style.maxWidth = 340;
+            paw.style.height = 230; paw.style.flexShrink = 0;
+            hero.Add(paw);
+            var title = Heading(text.GetText("board.title"), 40); title.name = "menu-title";
+            title.style.marginTop = 4; title.style.marginBottom = 24;
+            hero.Add(title); scroll.Add(hero);
+
+            var footer = new VisualElement { name = "menu-footer" };
+            footer.style.width = Length.Percent(100); footer.style.maxWidth = 360;
+            footer.style.flexShrink = 0; footer.style.paddingBottom = 16;
+            if (ActiveSession != null)
+            {
+                var back = MakeButton("menu-back", "game.back", BackToGame);
+                QuietMenuButton(back); back.style.marginBottom = 12; footer.Add(back);
+            }
+            AddMonetizationMenu(footer);
+            var actions = ActionRow(); actions.name = "menu-actions";
+            actions.style.height = 62; actions.style.marginBottom = 20;
+            var play = MakeButton("menu-start", "game.start", StartPlaying);
+            play.style.backgroundColor = BoardSymbolElement.Ink; play.style.color = PortraitBoardView.Tile;
+            StyleMenuAction(play); actions.Add(play);
+            if (enableTutorial)
+            {
+                var tutorial = MakeButton("menu-tutorial", "tutorial.title", StartTutorial);
+                StyleMenuAction(tutorial); actions.Add(tutorial);
+            }
+            footer.Add(actions);
+            var languages = new VisualElement { name = "menu-languages" };
+            languages.style.flexDirection = FlexDirection.Row; languages.style.justifyContent = Justify.Center;
+            AddLanguage(languages, "pt-BR", "Português (Brasil)");
+            AddLanguage(languages, "es", "Español");
+            AddLanguage(languages, "en", "English");
+            footer.Add(languages); scroll.Add(footer);
         }
         private void AddLanguage(VisualElement parent, string locale, string label)
         {
-            var button = new Button(() => SelectLanguage(locale)) { name = "language-" + locale, text = label };
-            StyleButton(button); button.SetEnabled(locale != Locale); parent.Add(button);
+            var selected = locale == Locale;
+            var button = new Button(() => SelectLanguage(locale)) { name = "language-" + locale, tooltip = label };
+            StyleButton(button);
+            button.style.width = 60; button.style.height = 48;
+            button.style.marginLeft = button.style.marginRight = 8;
+            button.style.alignItems = Align.Center; button.style.justifyContent = Justify.Center;
+            button.style.backgroundColor = selected ? PortraitBoardView.Tile : Color.clear;
+            var border = selected ? 2 : 0;
+            button.style.borderLeftWidth = button.style.borderRightWidth = button.style.borderTopWidth = button.style.borderBottomWidth = border;
+            button.style.borderTopLeftRadius = button.style.borderTopRightRadius = button.style.borderBottomLeftRadius = button.style.borderBottomRightRadius = 10;
+            button.Add(new MenuFlagElement(locale));
+            button.SetEnabled(!selected); button.style.opacity = 1; parent.Add(button);
+        }
+        private static void QuietMenuButton(Button button)
+        {
+            button.style.backgroundColor = Color.clear;
+            button.style.borderLeftWidth = button.style.borderRightWidth = button.style.borderTopWidth = button.style.borderBottomWidth = 0;
+        }
+        private static void StyleMenuAction(Button button)
+        {
+            button.style.flexGrow = 1; button.style.flexBasis = 0; button.style.minWidth = 0;
+            button.style.marginLeft = button.style.marginRight = 5;
+            button.style.borderTopLeftRadius = button.style.borderTopRightRadius = button.style.borderBottomLeftRadius = button.style.borderBottomRightRadius = 14;
         }
         public void SelectLanguage(string locale)
         {
@@ -568,13 +624,6 @@ namespace CatsAndArrows.UI
             monetization.Changed -= OnMonetizationChanged;
             monetization.HintDelivered -= OnHintDelivered;
             monetization.Dispose();
-        }
-        public void ShowRules()
-        {
-            if (loading || CommercialBusy) return;
-            var returnToMenu = Screen == "menu";
-            ShowModal("rules", text.GetText("game.rules"), text.GetText(monetization?.Enabled == true ? "monetization.rules-body" : "game.rules-body"),
-                MakeButton("modal-back", "game.close", () => { if (returnToMenu) ShowMenu(); else BackToGame(); }));
         }
         private void ShowModal(string kind, string heading, string body, params Button[] actions)
         {

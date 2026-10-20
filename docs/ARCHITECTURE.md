@@ -219,9 +219,9 @@ the session, returns the proof and correction flag, and immediately checks
 completion. Player marks never become solver premises. Clear does not alter
 clues/protection or require a persistent hint cursor.
 
-`GameShellView` manages Menu/Play/Failure and blocking Rules/Hint overlays and inline completion.
+`GameShellView` manages Menu/Play/Failure and blocking Hint overlays and inline completion.
 It sends gameplay intents and listens for board state changes. The compact play
-layout replaces the persistent legend with a 2×2 control group; scrollable help
+layout replaces the persistent legend with a 2×2 control group; the tutorial
 explains the symbols. Local preferences now also include the Issue #43 difficulty
 history and first-Play gate, alongside language/tutorial-seen data. A live session
 survives Menu and focus changes; board persistence remains deferred. A final Hint
