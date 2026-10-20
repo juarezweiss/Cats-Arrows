@@ -10,7 +10,8 @@ namespace CatsAndArrows.Gameplay
         Welcome = 0, Goal = 1, Begin = 2, StatesIntro = 3, EmptyState = 4, XState = 5, PawState = 6,
         HatchedCells = 7, Arrows = 8, Practice = 9, ZeroColumn = 10, ZeroRow = 11,
         FirstPaw = 12, FirstColumnX = 13, SecondPaw = 14, SecondRowX = 15, DiagonalPaw = 16, FourthPaw = 17,
-        SingleX = 18, FinalPaw = 19, Independent = 20, Complete = 21
+        SingleX = 18, FinalPaw = 19, Independent = 20, Complete = 21,
+        ArrowHoldIntro = 22
     }
 
     // Issue #26: controls lesson progression, while GameSession owns every mark and win.
@@ -25,7 +26,7 @@ namespace CatsAndArrows.Gameplay
 
         public GameSession Session { get; private set; }
         public TutorialStep Step { get; private set; } = TutorialStep.Welcome;
-        public bool CanContinue => Step <= TutorialStep.Arrows;
+        public bool CanContinue => Step <= TutorialStep.Arrows || Step == TutorialStep.ArrowHoldIntro;
         public bool IsComplete => Step == TutorialStep.Complete;
         // These are read-only presentation samples, never player/session mutations.
         public BoardCoordinate? DemoCoordinate => DemoMark.HasValue
@@ -55,6 +56,7 @@ namespace CatsAndArrows.Gameplay
             TutorialStep.FirstColumnX => "tutorial.first-column-x",
             TutorialStep.SecondPaw => "tutorial.second-paw",
             TutorialStep.SecondRowX => "tutorial.second-row-x",
+            TutorialStep.ArrowHoldIntro => "tutorial.arrow-hold-intro",
             TutorialStep.DiagonalPaw => "tutorial.diagonal-paw",
             TutorialStep.FourthPaw => "tutorial.fourth-paw",
             TutorialStep.SingleX => "tutorial.single-x",
@@ -76,7 +78,18 @@ namespace CatsAndArrows.Gameplay
         }
 
         public bool CanInteract(BoardCoordinate coordinate) =>
-            !CanContinue && !IsComplete && targets.Contains(coordinate) && Session.CanInteract(coordinate);
+            !CanContinue && !IsComplete && (Step != TutorialStep.DiagonalPaw || diagonalArrowHeld) &&
+            targets.Contains(coordinate) && Session.CanInteract(coordinate);
+
+        public bool CanHoldArrow(BoardCoordinate coordinate) =>
+            Step == TutorialStep.DiagonalPaw && coordinate.Equals(Cell(0, 3));
+
+        public bool RecordArrowHold(BoardCoordinate coordinate)
+        {
+            if (!CanHoldArrow(coordinate)) return false;
+            diagonalArrowHeld = true;
+            return true;
+        }
 
         public bool CanTap(BoardCoordinate coordinate) => CanInteract(coordinate);
 
@@ -115,11 +128,19 @@ namespace CatsAndArrows.Gameplay
         private bool IsXStep => Step == TutorialStep.ZeroColumn || Step == TutorialStep.ZeroRow ||
             Step == TutorialStep.FirstColumnX || Step == TutorialStep.SecondRowX || Step == TutorialStep.SingleX;
 
+        private bool diagonalArrowHeld;
+
         private void Advance()
         {
             if (Step == TutorialStep.FinalPaw)
                 Session = TutorialFixture.CreateSession();
-            Step = (TutorialStep)((int)Step + 1);
+            Step = Step switch
+            {
+                TutorialStep.SecondRowX => TutorialStep.ArrowHoldIntro,
+                TutorialStep.ArrowHoldIntro => TutorialStep.DiagonalPaw,
+                _ => (TutorialStep)((int)Step + 1)
+            };
+            if (Step == TutorialStep.DiagonalPaw) diagonalArrowHeld = false;
             SetTargets();
         }
 
@@ -177,9 +198,12 @@ namespace CatsAndArrows.Gameplay
                     highlights = Row(4);
                     rows = new[] { 4 };
                     break;
+                case TutorialStep.ArrowHoldIntro:
+                    highlights = new[] { Cell(0, 3) };
+                    break;
                 case TutorialStep.DiagonalPaw:
                     editable = new[] { Cell(2, 1) };
-                    highlights = new[] { Cell(0, 3), Cell(1, 2), Cell(2, 1), Cell(3, 0) };
+                    highlights = new[] { Cell(0, 3) };
                     break;
                 case TutorialStep.FourthPaw:
                     editable = new[] { Cell(2, 3) };

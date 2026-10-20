@@ -92,10 +92,15 @@ namespace CatsAndArrows.UI
                 "Esta linha já tem sua única pata. Arraste pelas vazias para X; a pata fica.",
                 "La fila ya tiene su pata. Desliza por las vacías para X; la pata queda."
             } },
+            { "tutorial.arrow-hold-intro", new[] {
+                "Press and hold any arrow to highlight its path.",
+                "Pressione e segure qualquer seta para destacar seu caminho.",
+                "Mantén pulsada cualquier flecha para resaltar su camino."
+            } },
             { "tutorial.diagonal-paw", new[] {
-                "Follow the 45° arrow. Only this cell can have a paw. Tap twice.",
-                "Siga a seta a 45°. Só esta célula pode ter pata. Toque 2 vezes.",
-                "Sigue la flecha a 45°. Solo esta celda puede tener pata. Toca 2 veces."
+                "Hold this 45° arrow, find the only available paw cell, then tap it twice.",
+                "Segure esta seta de 45°, encontre a única célula disponível para pata e toque nela 2 vezes.",
+                "Mantén pulsada esta flecha de 45°, encuentra la única celda disponible para una pata y tócala 2 veces."
             } },
             { "tutorial.fourth-paw", new[] {
                 "This row needs 2 paws. One is found; only this cell remains. Tap twice.",

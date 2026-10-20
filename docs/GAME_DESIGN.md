@@ -58,7 +58,8 @@ for 350 ms to outline its full forward path, using the tutorial's outline
 style. The path includes intervening arrows and marked/protected cells, continuing
 to the edge; it reveals no hidden paw information. Release or cancellation removes
 the outline immediately. Arrow holds never mark cells or become drag marking.
-Tutorial and completed-board interaction remain unchanged.
+Completed-board interaction remains unchanged. The fixed tutorial enables this aid only
+for its focused R1C4 DownLeft arrow-hold lesson before the diagonal-paw deduction.
 
 ## Player cell states
 Interactive normal cells cycle on a discrete tap:

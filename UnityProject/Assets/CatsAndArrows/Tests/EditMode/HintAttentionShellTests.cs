@@ -181,6 +181,8 @@ namespace CatsAndArrows.Tests
             for (var action = 0; action < 30 && tutorial.Step != TutorialStep.Independent; action++)
             {
                 if (tutorial.CanContinue) { view.ContinueTutorial(); continue; }
+                if (tutorial.Step == TutorialStep.DiagonalPaw)
+                    Assert.That(tutorial.RecordArrowHold(new BoardCoordinate(0, 3)), Is.True);
                 if (tutorial.Step == TutorialStep.Practice)
                     for (var tap = 0; tap < 3; tap++) tutorial.Tap(tutorial.Targets[0]);
                 else foreach (var target in tutorial.Targets)

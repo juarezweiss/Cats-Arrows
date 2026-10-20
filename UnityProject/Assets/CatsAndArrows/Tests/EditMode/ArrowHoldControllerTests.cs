@@ -50,6 +50,44 @@ namespace CatsAndArrows.Tests
             Assert.That(session.IsCompleted, Is.False);
         }
 
+        [Test]
+        public void EligibilityAndActivationHooksKeepTheExistingTimingAndOrdinaryDefault()
+        {
+            var other = new BoardCoordinate(0, 0);
+            var puzzle = new PuzzleDefinition(5, 68, "issue-68-tutorial-hold",
+                new[] { new BoardCoordinate(4, 4), new BoardCoordinate(0, 4) },
+                new[] { new ArrowClue(origin, Direction.DownRight), new ArrowClue(other, Direction.Right) });
+            var game = new GameSession(puzzle);
+            var activations = 0;
+            var activatedOrigin = default(BoardCoordinate);
+            now = 0;
+            var tutorialHold = new ArrowHoldController(game, layout, () => now,
+                canBegin: coordinate => coordinate.Equals(origin),
+                activated: coordinate => { activations++; activatedOrigin = coordinate; });
+
+            Assert.That(tutorialHold.Begin(1, Center(other)), Is.False);
+            Assert.That(tutorialHold.Begin(1, Center(origin)), Is.True);
+            now = .349;
+            Assert.That(tutorialHold.Tick(), Is.False);
+            Assert.That(activations, Is.Zero);
+            tutorialHold.End(1);
+            now = 10;
+            Assert.That(tutorialHold.Tick(), Is.False);
+            Assert.That(activations, Is.Zero);
+
+            Assert.That(tutorialHold.Begin(2, Center(origin)), Is.True);
+            now += 1;
+            Assert.That(tutorialHold.Tick(), Is.True);
+            Assert.That(tutorialHold.Tick(), Is.False);
+            Assert.That(activations, Is.EqualTo(1));
+            Assert.That(activatedOrigin, Is.EqualTo(origin));
+            tutorialHold.End(2);
+
+            var ordinaryHold = new ArrowHoldController(game, layout, () => now);
+            Assert.That(ordinaryHold.Begin(3, Center(other)), Is.True,
+                "No eligibility hook must preserve ordinary-board arrow holds.");
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         public void CancelBeforeOrAfterActivationPreventsLateCallbacksAndRelease(bool activate)

@@ -85,6 +85,15 @@ namespace CatsAndArrows.Tests
             foreach (var key in keys) Assert.That(resource[key], Is.Not.Empty, key);
             Assert.That(resource["tutorial.diagonal-paw"], Does.Contain("45°"));
         }
+        [TestCase("en", "hold")]
+        [TestCase("pt-BR", "segure")]
+        [TestCase("es", "pulsada")]
+        public void ArrowHoldLessonIsLocalizedInEverySupportedLocale(string locale, string gestureWord)
+        {
+            var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
+            Assert.That(messages["tutorial.arrow-hold-intro"].ToLowerInvariant(), Does.Contain(gestureWord));
+            Assert.That(messages["tutorial.diagonal-paw"].ToLowerInvariant(), Does.Contain(gestureWord));
+        }
         [Test] public void SequentialDemoSymbolsAreBoldReadOnlyAndFixedKindsAreSeparate()
         {
             var shell = PlayTestFactory.Shell(14, "en", tutorialSeen: () => true, markTutorialSeen: () => { });

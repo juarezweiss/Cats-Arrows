@@ -14,6 +14,8 @@ namespace CatsAndArrows.UI
         private readonly GameSession session;
         private readonly BoardLayout layout;
         private readonly Func<double> clock;
+        private readonly Func<BoardCoordinate, bool> canBegin;
+        private readonly Action<BoardCoordinate> activated;
         private readonly float tolerance;
         private Vector2 pressPosition;
         private double startedAt;
@@ -23,7 +25,8 @@ namespace CatsAndArrows.UI
         public BoardCoordinate Origin { get; private set; }
         public IReadOnlyList<BoardCoordinate> Path { get; private set; } = Array.Empty<BoardCoordinate>();
 
-        public ArrowHoldController(GameSession session, BoardLayout layout, Func<double> clock, float tolerance = 8)
+        public ArrowHoldController(GameSession session, BoardLayout layout, Func<double> clock, float tolerance = 8,
+            Func<BoardCoordinate, bool> canBegin = null, Action<BoardCoordinate> activated = null)
         {
             this.session = session ?? throw new ArgumentNullException(nameof(session));
             this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
@@ -32,6 +35,8 @@ namespace CatsAndArrows.UI
             if (!float.IsFinite(tolerance) || tolerance <= 0) throw new ArgumentOutOfRangeException(nameof(tolerance));
             this.layout = layout;
             this.tolerance = tolerance;
+            this.canBegin = canBegin;
+            this.activated = activated;
         }
 
         public bool Begin(int pointerId, Vector2 position)
@@ -40,6 +45,7 @@ namespace CatsAndArrows.UI
             foreach (var arrow in session.Puzzle.Arrows)
             {
                 if (!layout.GetCellRect(arrow.Key).Contains(position)) continue;
+                if (canBegin != null && !canBegin(arrow.Key)) return false;
                 var now = clock();
                 if (!double.IsFinite(now)) return false;
                 Origin = arrow.Key;
@@ -67,6 +73,7 @@ namespace CatsAndArrows.UI
             if (!double.IsFinite(now) || now < startedAt) { Cancel(); return false; }
             if (IsHighlighted || now - startedAt < HoldSeconds) return false;
             IsHighlighted = true;
+            activated?.Invoke(Origin);
             return true;
         }
 
