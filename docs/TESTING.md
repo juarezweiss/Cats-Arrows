@@ -36,6 +36,17 @@ pending; use the checklist and provenance fields in [APPLE_IAP.md](APPLE_IAP.md)
 No physical-device tests, account/product creation, signing, purchase or upload
 were automated.
 
+The final clean unsigned iOS development export succeeded from `46bee5e`
+(`apple-iap-export.9OzXMM`) with pinned Unity/Xcode 27.0. Its normal shell Settings
+composition includes the recovered-Pending correction; production remains disabled.
+[Review receipt](evidence/issue64/apple-iap-review-receipt.json) records actual
+package lock, resolved identity, framework linkage, capabilities and privacy
+manifest. Archive attempts exhausted disk during native assembly/link; on
+2026-10-20 the owner explicitly selected **leave the archive gate pending**.
+The unsigned export is retained under ignored `Builds/Issue64-AppleIapReview/`;
+failed task-only intermediate builds were removed. No full archive pass or runtime
+network observation is claimed. Owner StoreKit Test/sandbox acceptance remains pending.
+
 ## Issue #63 production iOS configuration
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);

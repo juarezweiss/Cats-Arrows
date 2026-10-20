@@ -157,6 +157,12 @@ unsigned export/archive or automated tests cannot satisfy it. No real charge nee
 
 ## Archive gate status — 2026-10-20
 
+Final clean unsigned development export: source **`46bee5e`**, Unity 6000.3.25f1 /
+Xcode 27.0, retained at `Builds/Issue64-AppleIapReview/` (ignored). The
+[review receipt](evidence/issue64/apple-iap-review-receipt.json) records the package
+lock, resolved identity and actual frameworks/capabilities/privacy manifest, plus
+the final automated test evidence. It includes the recovered-Pending correction.
+
 The owner explicitly selected **leave the archive gate pending** after local disk
 exhaustion. Native Swift and IL2CPP compilation were reached, but static-archive
 assembly/native linking exhausted disk space; a superseded retry was interrupted
