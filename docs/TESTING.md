@@ -1,5 +1,49 @@
 # Testing Strategy
 
+## Issue #63 production iOS configuration
+
+2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);
+final EditMode **495/495 passed**, zero failed/skipped/inconclusive and successful
+editor exit (`editmode.H8QhAh`). The 15 new release tests check actual approved
+PlayerSettings, unsigned configuration, sole production scene/bootstrap/panel,
+non-development build options, inherited diagnostic define rejection, canonical
+positive build numbers and fresh absolute outputs. The scene test uses an
+isolated preview scene. Existing 480 gameplay/UI/persistence/domain tests pass.
+Repository validation, whitespace and all **36** Python contracts pass, including
+25 iOS inspector/shell tests. Independent release QA reports no blocking findings.
+
+Source `b1dee6a6e641e7f026336b319a458dfca4c8483e`: one clean production iOS
+export and one **unsigned** Release archive passed with Xcode **27.0 (27A266a)**.
+The actual artifact has `com.jweiss.paws`, version/build **0.1.0 (1)**,
+iPhone-only family and minimum iOS **16.3**. Inspector checks validate Unity's
+unmodified identity/provisioning bindings, production settings, excluded
+review/benchmark/mock types (191 generated IL2CPP sources/headers), capabilities,
+framework linkage and privacy-manifest inventory. No monetization adapter is
+composed. [Full receipt](evidence/issue63/ios-release-receipt.json) and
+[reproduction/physical checklist](RELEASE.md) preserve provenance and scope.
+The archive and dSYMs remain in ignored `Builds/Issue63-Paws-0.1.0-1.xcarchive/`;
+small export metadata/logs/receipts are retained, while task-only export and
+DerivedData were removed after the local installation below.
+
+The unsigned archive result does not establish distribution signing or human
+physical-iPhone acceptance. Subsequent owner-authorized local preparation signed
+a copy of its existing Release app with the matching development profile and
+installed/launched **0.1.0 (1)** on **iPhone 17 / iOS 27.0.1**. Strict signatures,
+profile/device/expiry checks and running-process verification passed; no rebuild
+or IPA was needed. This development signature expires 2026-10-27;
+[device-preparation receipt](evidence/issue63/device-preparation.json) records
+separate provenance. No physical interaction tests were automated.
+The owner reported **“all passed” on 2026-10-20**, completing #63's physical
+review checklist on **iPhone 17 / iOS 27.0.1**, **0.1.0 (1)**, source `b1dee6a`.
+Scope: Paws name/icon, portrait/safe areas, EN/pt-BR/es; first Play tutorial,
+replay/Skip and Play/Next across difficulties; tap/drag, protected cells, arrow
+hold, Hint/Clear/Menu; celebration/static return and completion lock;
+background/reopen/restart and saved language/preferences; no ads/purchase prompts.
+The report is the owner's human acceptance, separate from technical install/launch
+checks. It does not establish other-device coverage, measured performance or
+App Store distribution signing/approval. Account actions, signing credentials,
+purchases and distribution remain owner-controlled.
+
 ## Issue #72 initial menu
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed

@@ -1,3 +1,4 @@
+#if !PAWS_PRODUCTION
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System;
 using System.Collections;
@@ -80,4 +81,6 @@ namespace CatsAndArrows.UI
         { if (!condition) throw new InvalidOperationException("Monetization mounted check: " + message); }
     }
 }
+#endif
+
 #endif

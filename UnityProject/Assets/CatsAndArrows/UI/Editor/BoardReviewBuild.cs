@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Build;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -82,17 +83,29 @@ namespace CatsAndArrows.UI.Editor
             var defines = new List<string>();
             if (Environment.GetEnvironmentVariable("CATS_ARROWS_GAME_LOOP_AUTORUN") == "1") defines.Add("CATS_ARROWS_GAME_LOOP_CHECK");
             if (Environment.GetEnvironmentVariable("CATS_ARROWS_HINT_FLOW") == "legacy") defines.Add("CATS_ARROWS_LEGACY_HINTS");
-            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            var previousIdentifier = PlayerSettings.GetApplicationIdentifier(NamedBuildTarget.iOS);
+            try
             {
-                scenes = new[] { ScenePath }, target = target, targetGroup = group,
-                locationPathName = output,
-                options = Environment.GetEnvironmentVariable("CATS_ARROWS_MONETIZATION_REVIEW") == "1"
-                    ? BuildOptions.Development : BuildOptions.None,
-                // Per-build diagnostic opt-in; never persist this in PlayerSettings.
-                extraScriptingDefines = defines.ToArray()
-            });
-            if (report.summary.result != BuildResult.Succeeded) throw new InvalidOperationException("Board review build failed: " + report.summary.result);
-            Debug.Log("BOARD_REVIEW_BUILD " + output);
+                // Review builds must never replace the production app/sandbox (#63).
+                if (target == BuildTarget.iOS)
+                    PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, "com.juarezweiss.catsarrows.inputreview");
+                var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+                {
+                    scenes = new[] { ScenePath }, target = target, targetGroup = group,
+                    locationPathName = output,
+                    options = Environment.GetEnvironmentVariable("CATS_ARROWS_MONETIZATION_REVIEW") == "1"
+                        ? BuildOptions.Development : BuildOptions.None,
+                    // Per-build diagnostic opt-in; never persist this in PlayerSettings.
+                    extraScriptingDefines = defines.ToArray()
+                });
+                if (report.summary.result != BuildResult.Succeeded) throw new InvalidOperationException("Board review build failed: " + report.summary.result);
+                Debug.Log("BOARD_REVIEW_BUILD " + output);
+            }
+            finally
+            {
+                if (target == BuildTarget.iOS)
+                    PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS, previousIdentifier);
+            }
         }
     }
 }

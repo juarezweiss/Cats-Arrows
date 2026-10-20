@@ -18,8 +18,15 @@ three board sizes, touch flow, lifecycle smoke and all three languages. On
 2026-10-19 the owner also reported the current Paws physical-iPhone appearance
 approved, closing PR #54's branding appearance gate. Smaller phones and measured
 Medium/Hard tap-to-ready latency remain unverified. See
-[TESTING.md](TESTING.md) for evidence and scope limits. No clean distribution
-archive or TestFlight trial is claimed.
+[TESTING.md](TESTING.md) for evidence and scope limits. #63 subsequently validated a clean **unsigned** production export/archive at
+`b1dee6a` with Unity 6000.3.25f1 / Xcode 27.0, 495/495 EditMode tests and
+36 Python contracts. See [release evidence](RELEASE.md) and its artifact receipt.
+The owner subsequently reported **“all passed”** for the #63 checklist on the
+locally development-signed **0.1.0 (1)** build, source `b1dee6a`,
+**iPhone 17 / iOS 27.0.1**, on 2026-10-20. This covers localized appearance,
+touch/tutorial/game flow, completion locks, portrait/safe areas and lifecycle/
+preferences on that device. See [TESTING.md](TESTING.md) and the device receipt.
+No signed distribution artifact or TestFlight trial is claimed.
 
 The owner confirmed no paid Apple Developer Program membership. Local installed
 phone builds can continue, but TestFlight requires enrollment. Every purchase or
@@ -27,20 +34,22 @@ subscription and each upload/invitation/distribution action requires separate
 explicit owner approval. None is authorized here. No credentials belong in Git
 or chat.
 
-## Smallest required build work
+## Build and distribution checklist
 
 1. Finalize durable app identity and numbering. Tracked settings now use the Paws
    product name and all iOS icon slots use the approved paw artwork. The repository
-   still has no explicit permanent application identifier and retains version
-   `1.0` / build `0`; choose and register the bundle identifier plus a `0.x.y`
-   version/build only with owner approval. Do not rename compatibility-sensitive
+   now has owner-approved production identity `com.jweiss.paws`, iPhone-only,
+   minimum iOS 16.3 and initial `0.1.0` / build `1` (#63, 2026-10-20).
+   See [RELEASE.md](RELEASE.md) for the globally increasing build policy and
+   reproducible production entry point. Owner-configured local development
+   provisioning and installation passed; distribution registration/signing and
+   App Store Connect readiness remain pending. Do not rename compatibility-sensitive
    `CatsAndArrows` project identifiers as part of distribution setup.
 2. Use one explicit normal-game iOS build entry point. Exclude benchmark autorun,
    mounted review checks, synthetic input/capture modes and development-only
    monetization mocks from the tester player.
-3. Confirm the supported device family. Prefer iPhone-only for the first trial
-   unless the owner approves tested iPad support; keep upright portrait and the
-   existing English, Brazilian Portuguese and Spanish resources.
+3. Use the approved iPhone-only device family, minimum iOS 16.3 and upright
+   portrait; retain the existing English, Brazilian Portuguese and Spanish resources.
 4. Build from an approved commit and record source revision, version/build,
    Unity/Xcode versions, artifact checksum and exact validation results. Keep
    signing local and preserve the signed artifact outside Git. Remove only
