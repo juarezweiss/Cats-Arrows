@@ -157,7 +157,9 @@ namespace CatsAndArrows.UI
             if (!Check(() => Require(shell.Tutorial == null && shell.ActiveSession == shell.Loop.Session && shell.ActiveSession != null, "Play opens random"))) yield break;
             if (!Check(() => Click(shell, "action-menu"))) yield break;
             yield return new WaitForEndOfFrame();
-            if (!Check(() => Click(shell, "menu-tutorial"))) yield break;
+            if (!Check(() => Click(shell, "menu-settings"))) yield break;
+            yield return new WaitForEndOfFrame();
+            if (!Check(() => Click(shell, "settings-tutorial"))) yield break;
             yield return new WaitForEndOfFrame();
             if (!Check(() => { Require(shell.Tutorial.Step == TutorialStep.Welcome && shell.ActiveSession.Marks.Values.All(mark => mark == PlayerMark.Empty), "manual replay fresh"); })) yield break;
             while (shell.Tutorial.CanContinue)

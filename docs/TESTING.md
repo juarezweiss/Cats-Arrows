@@ -44,7 +44,58 @@ checks. It does not establish other-device coverage, measured performance or
 App Store distribution signing/approval. Account actions, signing credentials,
 purchases and distribution remain owner-controlled.
 
-## Issue #72 initial menu
+## Issue #76 Home and Settings navigation
+
+Supersedes #72’s visible Tutorial/flags/purchase menu layout. Coverage includes
+Home → Settings → language selector/Back, native option names and persisted
+immediate locale refresh, manual tutorial replay, live-board Play resume and
+first-Play behavior. Mounted tests use en/pt-BR/es at 320×568, 390×844 and 430×932
+with simulated safe insets and check minimum 48-unit targets and scrollable rows.
+Purchase/restore coverage uses existing SDK-free fakes for disabled, unavailable,
+localized price, pending, owned and status refresh; no provider is integrated.
+The complete EditMode suite also checks tap cycle, drag, protected cells,
+completion locks and Clear/Next board behavior.
+
+2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.paERlQ`);
+focused EditMode **72/72 passed**, zero failed/skipped/inconclusive and successful
+editor exit (`issue76-focused.uWao6L`). Final required EditMode **497/497 passed**,
+zero failed/skipped/inconclusive and successful editor exit (`editmode.vPgLpb`).
+Repository validation, whitespace and all
+**36** Python runner contracts pass. Independent QA reports no blocking findings
+following code and native screenshot review.
+
+The macOS development review player built successfully
+(`issue76-review-build.9tLUA1`). Native `--game-loop-check=1`,
+`--tutorial-check=1` and SDK-free `--monetization-mock=1 --monetization-check=1`
+smokes passed at EN 390×844 with simulated 59/34 safe insets. The navigation smoke
+includes Clear/Hint, retained-session Play resume, completion locks and 20 fresh
+boards; tutorial smoke uses simulated touch and manual Settings replay. Mock
+checks exercise rewarded assistance and owned/unowned Settings without real
+stores, ads or charges. Logs/player remain under ignored `.unity-results/issue76/`.
+
+| Screen | Compact EN · 320×568 | Standard pt-BR · 390×844 | Tall ES · 430×932 |
+| --- | --- | --- | --- |
+| Home | [Capture](evidence/issue76/home-en320.png) | [Capture](evidence/issue76/home-pt390.png) | [Capture](evidence/issue76/home-es430.png) |
+| Settings | [Capture](evidence/issue76/settings-en320.png) | [Capture](evidence/issue76/settings-pt390.png) | [Capture](evidence/issue76/settings-es430.png) |
+| Language | [Capture](evidence/issue76/language-en320.png) | [Capture](evidence/issue76/language-pt390.png) | [Capture](evidence/issue76/language-es430.png) |
+
+Enabled SDK-free Settings evidence: [localized mock price/unowned](evidence/issue76/settings-mock-unowned-en390.png),
+[verified mock ownership](evidence/issue76/settings-mock-owned-en390.png).
+Reproduce using `BoardReviewBuild.Build` with
+`CATS_ARROWS_MONETIZATION_REVIEW=1` for mock-only diagnostics; the ordinary app
+composes no provider. Run the resulting windowed macOS player with
+`--board-locale=<locale> --board-width=<width> --board-height=<height>
+--board-safe-top=<pixels> --board-safe-bottom=<pixels>` and exactly one of
+`--menu-capture=<absolute-PNG-path>`, `--settings-capture=<absolute-PNG-path>` or
+`--language-capture=<absolute-PNG-path>`. Captures isolate first-Play/history and
+do not start a board. Compact captures use 20/0 insets, standard/tall use 59/34.
+Physical iPhone review remains pending. Human checklist: Home/gear balance and
+comfortable targets; Back returns Home; native-language selection and immediate
+localized Settings; tutorial replay/first Play; Menu → Play retains current marks
+and lesson/completion state; compact/tall safe-area fit and list scrolling.
+Desktop checks and captures do not satisfy human physical review.
+
+## Issue #72 initial menu (historical; superseded by #76)
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed
 (`compile.mCNjsj`); final EditMode **480/480 passed**, zero failed/skipped/

@@ -105,7 +105,14 @@ namespace CatsAndArrows.Tests
         {
             var shell = FreshShell(); Assert.That(shell.StartNewGame(), Is.True);
             Assert.That(FirstPlayPreference.HasPlayed(), Is.False);
-            shell.ShowMenu(); shell.StartPlaying(); Assert.That(shell.Tutorial, Is.Not.Null);
+            var session = shell.ActiveSession;
+            shell.ShowMenu(); shell.StartPlaying();
+            Assert.That(shell.ActiveSession, Is.SameAs(session));
+            Assert.That(shell.Tutorial, Is.Null);
+            Assert.That(FirstPlayPreference.HasPlayed(), Is.False);
+            var restarted = FreshShell(); restarted.StartPlaying();
+            Assert.That(restarted.Tutorial, Is.Not.Null);
+            Assert.That(FirstPlayPreference.HasPlayed(), Is.True);
         }
 
         private static GameShellView FreshShell() => new GameShellView(14, "en",

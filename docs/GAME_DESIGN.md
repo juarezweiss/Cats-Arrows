@@ -18,8 +18,10 @@ generation and the fixed Easy tutorial are unchanged.
 
 ## Play and difficulty selection — Issue #43
 
-The menu offers Play, Tutorial and languages, with no difficulty
-choice. Ordinary Play and Next board choose uniformly from Easy/Medium/Hard, except
+Home offers Play and a Settings gear (#76), with Tutorial and language selection
+in Settings and no difficulty choice. Play resumes any live in-memory board.
+Ordinary Play without a live board and Next board choose uniformly from
+Easy/Medium/Hard, except
 that a difficulty is excluded after two consecutive successful starts in it.
 The last difficulty and run length persist across app restarts. Abandoning a
 successfully started board still counts; generation failure does not. Retry keeps
@@ -27,8 +29,8 @@ its pending difficulty and advances only the puzzle seed. Menu, language changes
 Clear and tutorial entry do not consume or reset this history.
 
 First-ever Play presents the fixed Easy tutorial. That first-use gate persists,
-so subsequent Plays request random ordinary boards even after a restart. Manual
-Tutorial remains available and does not consume a fresh installation's first
+so later Plays without a live board request random ordinary boards, including
+after a restart. Manual Tutorial remains available and does not consume a fresh installation's first
 Play. Existing tutorial-seen installations migrate once as returning users.
 Tutorial Skip/Play uses the same ordinary-board selector, without counting the
 tutorial fixture. This adds no board save/resume or generation rule.
@@ -130,7 +132,8 @@ sequence, and completion still belongs to GameSession immediately at the last pa
 ## Issue #8 Easy loop
 
 The original menu offered Easy and English/Brazilian Portuguese/Spanish
-selection. The current menu uses Play and an always-available Tutorial (#72).
+selection. Issue #76 supersedes #72: Home has Play and Settings; Settings contains
+languages and the permanent Tutorial replay action.
 Language preference persists; the live board stays in memory through
 Menu and background/foreground, while process termination need not resume it.
 New Game requests a fresh seed, preserving Easy. Normal app launch selects a fresh
@@ -176,7 +179,7 @@ and hatches never require X. No cleanup action follows the final paw.
 
 First-ever Play presents the tutorial once across restarts; Skip starts a fresh
 ordinary board using Issue #43's persistent difficulty selector. A permanent
-Tutorial menu action always restarts the same fixed Easy board/flow, independent
+Tutorial Settings action always restarts the same fixed Easy board/flow, independent
 of ordinary difficulty history. Manual replay does not consume a fresh first-Play
 gate; already-seen installations migrate as returning users.
 The tutorial is an explicit exception to previously deferred tutorial frameworks;

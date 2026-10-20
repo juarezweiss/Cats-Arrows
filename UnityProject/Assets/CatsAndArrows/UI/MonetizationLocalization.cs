@@ -9,7 +9,7 @@ namespace CatsAndArrows.UI
             var entries = new Dictionary<string, string[]>
             {
                 { "monetization.hint-ads", new[] { "Hint (ads)", "Dica (anúncios)", "Pista (anuncios)" } },
-                { "monetization.remove", new[] { "Remove All Ads", "Remover todos os anúncios", "Eliminar todos los anuncios" } },
+                { "monetization.remove", new[] { "Remove Ads", "Remover anúncios", "Eliminar anuncios" } },
                 { "monetization.restore", new[] { "Restore Purchases", "Restaurar compras", "Restaurar compras" } },
                 { "monetization.explanation", new[] { "Removes ads between puzzles and makes hints available without ads.", "Remove anúncios entre tabuleiros e libera dicas sem anúncios.", "Elimina anuncios entre tableros y permite pistas sin anuncios." } },
                 { "monetization.review", new[] { "Mock review only. No real ads, store or charges.", "Apenas teste simulado. Sem anúncios reais, loja ou cobranças.", "Solo prueba simulada. Sin anuncios reales, tienda ni cargos." } },

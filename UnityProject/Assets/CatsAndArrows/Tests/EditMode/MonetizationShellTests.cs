@@ -16,14 +16,25 @@ namespace CatsAndArrows.Tests
     {
         private GameObject host;
         private PanelSettings panelSettings;
+        private RenderTexture panelTexture;
         private GameShellView mountedShell;
         private double now;
+        private bool hadLanguage;
+        private string previousLanguage;
+        [SetUp] public void PreserveLanguage()
+        {
+            hadLanguage = PlayerPrefs.HasKey(LanguagePreference.Key);
+            previousLanguage = PlayerPrefs.GetString(LanguagePreference.Key);
+        }
 
         [TearDown]
         public void TearDown()
         {
             if (host != null) UnityEngine.Object.DestroyImmediate(host);
             if (panelSettings != null) UnityEngine.Object.DestroyImmediate(panelSettings);
+            if (panelTexture != null) UnityEngine.Object.DestroyImmediate(panelTexture);
+            if (hadLanguage) PlayerPrefs.SetString(LanguagePreference.Key, previousLanguage); else PlayerPrefs.DeleteKey(LanguagePreference.Key);
+            PlayerPrefs.Save();
         }
 
         private IEnumerator Mount(MonetizationCoordinator coordinator)
@@ -31,6 +42,9 @@ namespace CatsAndArrows.Tests
             now = 0;
             panelSettings = ScriptableObject.CreateInstance<PanelSettings>();
             panelSettings.hideFlags = HideFlags.HideAndDontSave;
+            panelSettings.scaleMode = PanelScaleMode.ConstantPixelSize; panelSettings.scale = 1;
+            panelTexture = new RenderTexture(390, 844, 0);
+            panelSettings.targetTexture = panelTexture;
             host = new GameObject("issue30-idle-integration", typeof(UIDocument));
             host.hideFlags = HideFlags.HideAndDontSave;
             var document = host.GetComponent<UIDocument>();
@@ -127,12 +141,23 @@ namespace CatsAndArrows.Tests
         {
             public event Action<PurchaseResult> Updated { add { } remove { } }
             public bool Owned, OfferAvailable = true;
-            public int Refreshes;
+            public int Refreshes, PurchaseCalls, RestoreCalls;
+            public bool HoldPurchase, HoldRestore;
+            public Action<PurchaseResult> PurchaseCallback, RestoreCallback;
             public PurchaseOffer GetOffer() => new PurchaseOffer(OfferAvailable, "review-price", true);
             public bool VerifyCachedOwnership(string storeNamespace, string evidenceReference) => Owned;
             public void Refresh(Action<PurchaseResult> complete) { Refreshes++; complete(Result()); }
-            public void Restore(long requestId, Action<PurchaseResult> complete) => complete(Result());
-            public void Purchase(long requestId, Action<PurchaseResult> complete) { Owned = true; complete(Result()); }
+            public void Restore(long requestId, Action<PurchaseResult> complete)
+            {
+                RestoreCalls++;
+                if (HoldRestore) RestoreCallback = complete; else complete(Result());
+            }
+            public void Purchase(long requestId, Action<PurchaseResult> complete)
+            {
+                PurchaseCalls++;
+                if (HoldPurchase) PurchaseCallback = complete;
+                else { Owned = true; complete(Result()); }
+            }
             public void Finish(string transactionReference, Action<bool> complete) => complete(true);
             private PurchaseResult Result() => new PurchaseResult(Owned ? PurchaseOutcome.Owned : PurchaseOutcome.NotOwned,
                 verified: true, completeInventory: true, pendingResolved: true, storeNamespace: "test",
@@ -162,12 +187,12 @@ namespace CatsAndArrows.Tests
             using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, purchases);
             var shell = Started(coordinator, locale);
             Assert.That(shell.Q<Button>("action-hint").text, Is.EqualTo(unowned));
-            shell.ShowMenu();
-            Assert.That(shell.Q<Button>("menu-remove-ads").text, Does.Contain("review-price"));
-            Assert.That(shell.Q<Button>("menu-restore"), Is.Not.Null);
+            shell.ShowSettings();
+            Assert.That(shell.Q<Button>("settings-remove-ads").text, Does.Contain("review-price"));
+            Assert.That(shell.Q<Button>("settings-restore"), Is.Not.Null);
             shell.PurchaseRemoveAds();
             Assert.That(coordinator.IsOwned, Is.True);
-            Assert.That(shell.Q<Button>("menu-remove-ads").enabledSelf, Is.False);
+            Assert.That(shell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
             shell.BackToGame();
             Assert.That(shell.Q<Button>("action-hint").text, Is.EqualTo(owned));
             shell.RequestHint();
@@ -176,6 +201,66 @@ namespace CatsAndArrows.Tests
             var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
             foreach (var key in messages.Keys.Where(key => key.StartsWith("monetization.status.") && !key.EndsWith("None")))
                 Assert.That(messages[key], Is.Not.Empty, key);
+        }
+
+        // Issue #76: UI only forwards settings intents; coordinator owns pending/verification state.
+        [UnityTest]
+        public IEnumerator SettingsPurchasesKeepBusyPendingAndRestoreStateAcrossLocaleChanges()
+        {
+            foreach (var locale in new[] { "en", "pt-BR", "es" })
+            {
+                var purchases = new Purchases { HoldPurchase = true, HoldRestore = true };
+                using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), new Ads(), purchases);
+                yield return Mount(coordinator);
+                var session = mountedShell.ActiveSession; var marks = session.Marks.ToArray();
+                mountedShell.ShowMenu();
+                mountedShell.PurchaseRemoveAds(); mountedShell.RestorePurchases();
+                Assert.That(purchases.PurchaseCalls, Is.Zero); Assert.That(purchases.RestoreCalls, Is.Zero);
+                mountedShell.ShowSettings(); mountedShell.SelectLanguage(locale);
+                yield return null; yield return null;
+                var purchase = mountedShell.Q<Button>("settings-remove-ads");
+                Assert.That(purchase.text, Does.Contain("review-price"));
+                var position = purchase.worldBound.center;
+                Assert.That(mountedShell.panel.visualTree.layout.Contains(position), Is.True, "inside panel pointer area position=" + position + " panel=" + mountedShell.panel.visualTree.layout);
+                var picked = mountedShell.panel.Pick(position);
+                Assert.That(picked == purchase || (picked != null && purchase.Contains(picked)), Is.True);
+                using (var down = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, button = 0, mousePosition = position }))
+                { down.target = purchase; purchase.SendEvent(down); }
+                using (var up = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, button = 0, mousePosition = position }))
+                { up.target = purchase; purchase.SendEvent(up); }
+                Assert.That(purchases.PurchaseCalls, Is.EqualTo(1));
+                Assert.That(coordinator.IsBusy, Is.True);
+                Assert.That(mountedShell.Q("game-menu").enabledInHierarchy, Is.False);
+                mountedShell.ShowMenu(); mountedShell.StartTutorial(); mountedShell.SelectLanguage("en");
+                mountedShell.PurchaseRemoveAds(); mountedShell.RestorePurchases();
+                Assert.That(mountedShell.Screen, Is.EqualTo("settings"));
+                Assert.That(purchases.PurchaseCalls, Is.EqualTo(1)); Assert.That(purchases.RestoreCalls, Is.Zero);
+                var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(messages["monetization.status.Busy"]));
+                purchases.PurchaseCallback(new PurchaseResult(PurchaseOutcome.Pending, transactionReference: "pending-76"));
+                Assert.That(coordinator.IsBusy, Is.False);
+                Assert.That(mountedShell.Q("game-menu").enabledInHierarchy, Is.True);
+                Assert.That(mountedShell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
+                Assert.That(mountedShell.Q<Button>("settings-restore").enabledSelf, Is.True);
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(messages["monetization.status.PurchasePending"]));
+                mountedShell.ShowLanguageSelector(); mountedShell.SelectLanguage(locale == "en" ? "es" : "en");
+                var changedMessages = GameLocalization.CreateCatalog().GetResource(mountedShell.Locale).Messages;
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(changedMessages["monetization.status.PurchasePending"]));
+                mountedShell.RestorePurchases();
+                Assert.That(purchases.RestoreCalls, Is.EqualTo(1));
+                Assert.That(coordinator.IsBusy, Is.True);
+                Assert.That(mountedShell.Screen, Is.EqualTo("settings"));
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(changedMessages["monetization.status.Busy"]));
+                purchases.RestoreCallback(new PurchaseResult(PurchaseOutcome.NotOwned, verified: true,
+                    completeInventory: true, pendingResolved: true, storeNamespace: "test"));
+                Assert.That(coordinator.IsBusy, Is.False);
+                Assert.That(mountedShell.Screen, Is.EqualTo("settings"));
+                Assert.That(mountedShell.Q<Button>("settings-remove-ads").enabledSelf, Is.True);
+                Assert.That(mountedShell.ActiveSession, Is.SameAs(session));
+                Assert.That(session.Marks, Is.EquivalentTo(marks));
+                mountedShell.BackToGame(); Assert.That(mountedShell.BoardView.InteractionEnabled, Is.True);
+                TearDown(); host = null; panelSettings = null;
+            }
         }
 
         [Test]
@@ -290,8 +375,9 @@ namespace CatsAndArrows.Tests
             var ads = new Ads(); var purchases = new Purchases { OfferAvailable = false };
             using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, purchases);
             var shell = new GameShellView(14, "en", monetization: coordinator);
-            Assert.That(shell.Q<Button>("menu-remove-ads").enabledSelf, Is.False);
-            Assert.That(shell.Q<Button>("menu-restore").enabledSelf, Is.True);
+            shell.ShowSettings();
+            Assert.That(shell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
+            Assert.That(shell.Q<Button>("settings-restore").enabledSelf, Is.True);
             var unusedPurchases = new Purchases();
             using var disabled = new MonetizationCoordinator(false, new MemoryMonetizationStateStore(), ads, unusedPurchases);
             var freeShell = Started(disabled);
@@ -299,7 +385,11 @@ namespace CatsAndArrows.Tests
             Assert.That(freeShell.Q<Button>("action-hint").text, Is.EqualTo("Hint"));
             freeShell.RequestHint();
             Assert.That(freeShell.ActiveSession.Marks.Values.Count(mark => mark != PlayerMark.Empty), Is.EqualTo(1));
-            freeShell.ShowMenu(); Assert.That(freeShell.Q<Button>("menu-remove-ads"), Is.Null);
+            freeShell.ShowMenu(); Assert.That(freeShell.Q<Button>("settings-remove-ads"), Is.Null);
+            freeShell.ShowSettings();
+            Assert.That(freeShell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
+            Assert.That(freeShell.Q<Button>("settings-restore").enabledSelf, Is.False);
+            Assert.That(freeShell.Q<Label>("monetization-settings-status").text, Does.Contain("unavailable"));
         }
     }
 }

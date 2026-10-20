@@ -1,7 +1,7 @@
 # UX and Accessibility
 
 ## Reference behavior
-The supplied demo establishes a useful portrait interaction model: compact centered board, numeric clues outside the grid, arrows inside cells, bottom action controls, and visible completed-board review. Current menu behavior follows Issue #43 below. Treat the demo as behavioral context, not final visual art.
+The supplied demo establishes a useful portrait interaction model: compact centered board, numeric clues outside the grid, arrows inside cells, bottom action controls, and visible completed-board review. Current navigation follows Issue #76 below, retaining Issue #43’s first-Play and difficulty policies. Treat the demo as behavioral context, not final visual art.
 
 ## Mobile-first requirements
 - Mobile play is locked to upright portrait.
@@ -31,26 +31,37 @@ touch-comfort or clean-distribution-build evidence.
 
 ## Controls
 
-Issue #72 gives the initial menu a dominant shared board paw and centered Paws
-title, with localized Play and Tutorial side by side near the bottom. Below them
-are only Brazilian, Spanish and British flag selectors (pt-BR, es, en), each with
-a 60×48 target, a native-language tooltip and an outlined selected state. Flags
-are vector artwork so they do not depend on platform emoji support. The intro
-tagline and visible Language heading are removed. Tutorial is the menu’s learning
-entry point; a live session adds Back to the Game above the primary actions.
-Configured purchase controls remain above those actions. Content fills the safe
-portrait area and scrolls on unusually short viewports instead of shrinking
-targets. Language persistence and all existing navigation policies are retained.
+Issue #76 supersedes #72’s visible Tutorial, flags and purchase controls. Home
+contains only the centered shared board paw and Paws name, Play, and a small dark
+gear at bottom-right. Play resumes an in-memory ordinary/tutorial/completed board;
+with no live board it follows the existing first-Play policy. Next board remains
+the explicit fresh-board action. Navigation does not save boards across restarts.
+
+The gear opens a separate Settings screen with a small top-left Back action to
+Home and an extensible vertical scrolling list. Initial rows, in order: Language,
+Tutorial, Remove Ads, Restore Purchases. Language opens a compact selector whose
+options are exactly `Português`, `English`, `Español`, in that order in every locale.
+The current option has a non-color selected indicator. Selection applies and
+persists immediately, closes the selector, and relocalizes Settings in place.
+Tutorial starts the existing manual replay. All controls retain at least 48-unit
+touch targets and respect safe portrait bounds at compact, standard and tall sizes;
+short Settings viewports scroll without shrinking targets.
+
+Remove Ads and Restore Purchases delegate to the existing provider-agnostic
+coordinator. Rows remain visible but unavailable when monetization is disabled;
+enabled state retains localized store price, owned/pending/unavailable status,
+restore availability and the explanation covering both ad removals. Navigation
+adds no provider, purchase authority or duplicated purchase policy.
 
 Issue #43 replaces the menu difficulty controls with a localized Play action,
-alongside Tutorial and languages. Play and Next board select
-Easy/Medium/Hard through one shared policy, with no more than two consecutive
+with Tutorial and languages now in Settings (#76). Play without a live session
+and Next board select Easy/Medium/Hard through one shared policy, with no more than two consecutive
 successful boards of one mode, even across restarts. Failure/retry retains its
 pending mode. Clear, Menu/back and language changes keep the live board and its
 actual difficulty label; they do not consume history.
 
-First-ever Play opens the fixed Easy tutorial; later Plays request ordinary
-random boards. This gate persists across restarts independently of the difficulty
+First-ever Play opens the fixed Easy tutorial; later Plays without a live session
+request ordinary random boards. This gate persists across restarts independently of the difficulty
 streak. Manual Tutorial stays available and does not consume first Play on fresh
 installations. Legacy tutorial-seen installations migrate as returning users;
 lesson steps and unfinished boards still are not saved. Tutorial Skip/Play enters
@@ -143,9 +154,9 @@ treatment. Upright portrait is mandatory on mobile.
 
 ## Issue #29 future monetization controls
 
-Current free-MVP controls remain unchanged. Future enabled monetization #29 uses
-`Hint (ads)` for unowned players and `Hint` for verified owners. Main menu includes
-`Remove All Ads`, store-localized price, both-removals explanation and a distinct
+Current free-MVP gameplay remains ad-free. Future enabled monetization #29 uses
+`Hint (ads)` for unowned players and `Hint` for verified owners. Settings (#76) includes
+`Remove Ads`, store-localized price, both-removals explanation and a distinct
 `Restore Purchases` action. Pending/unavailable/owned status is textual and localized
 in en/pt-BR/es. Reward loading suspends gestures; cancellation/errors restore
 controls only after native presentation ends. No rewarded ad without an eligible
