@@ -1,5 +1,35 @@
 # Testing Strategy
 
+## Issue #63 production iOS configuration
+
+2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);
+final EditMode **495/495 passed**, zero failed/skipped/inconclusive and successful
+editor exit (`editmode.H8QhAh`). The 15 new release tests check actual approved
+PlayerSettings, unsigned configuration, sole production scene/bootstrap/panel,
+non-development build options, inherited diagnostic define rejection, canonical
+positive build numbers and fresh absolute outputs. The scene test uses an
+isolated preview scene. Existing 480 gameplay/UI/persistence/domain tests pass.
+Repository validation, whitespace and all **36** Python contracts pass, including
+25 iOS inspector/shell tests. Independent release QA reports no blocking findings.
+
+Source `b1dee6a6e641e7f026336b319a458dfca4c8483e`: one clean production iOS
+export and one **unsigned** Release archive passed with Xcode **27.0 (27A266a)**.
+The actual artifact has `com.jweiss.paws`, version/build **0.1.0 (1)**,
+iPhone-only family and minimum iOS **16.3**. Inspector checks validate Unity's
+unmodified identity/provisioning bindings, production settings, excluded
+review/benchmark/mock types (191 generated IL2CPP sources/headers), capabilities,
+framework linkage and privacy-manifest inventory. No monetization adapter is
+composed. [Full receipt](evidence/issue63/ios-release-receipt.json) and
+[reproduction/physical checklist](RELEASE.md) preserve provenance and scope.
+The archive and dSYMs remain in ignored `Builds/Issue63-Paws-0.1.0-1.xcarchive/`;
+export/logs/receipts are retained, while task-only DerivedData was removed.
+
+No signed archive, signature/profile/device readiness, install/launch or human
+physical-iPhone acceptance is claimed. Human review remains **pending** for
+#63's fresh production sandbox, localized appearance/touch/tutorial/gameplay,
+completion locks, portrait/safe areas and lifecycle/preferences. Account actions,
+signing credentials, purchases and distribution remain owner-controlled.
+
 ## Issue #72 initial menu
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed

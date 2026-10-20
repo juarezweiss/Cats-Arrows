@@ -1,0 +1,523 @@
+{
+  "archive": {
+    "archiveTreeSha256": "e5b15df98ebe53f98479fe28ed00159aebc17539c3a260f01c358c6742910e5f",
+    "backgroundModes": [],
+    "capabilities": [
+      "arm64",
+      "metal"
+    ],
+    "checksumAlgorithm": "paws-tree-sha256-v1",
+    "distributionApproval": "pending-owner",
+    "entitlements": {},
+    "infoPlist": {
+      "BuildMachineOSBuild": "25G83",
+      "CADisableMinimumFrameDuration": false,
+      "CADisableMinimumFrameDurationOnPhone": false,
+      "CFBundleAllowMixedLocalizations": true,
+      "CFBundleDevelopmentRegion": "en",
+      "CFBundleDisplayName": "Paws",
+      "CFBundleExecutable": "Paws",
+      "CFBundleIcons": {
+        "CFBundlePrimaryIcon": {
+          "CFBundleIconFiles": [
+            "AppIcon60x60"
+          ],
+          "CFBundleIconName": "AppIcon"
+        }
+      },
+      "CFBundleIdentifier": "com.jweiss.paws",
+      "CFBundleInfoDictionaryVersion": "6.0",
+      "CFBundleName": "Paws",
+      "CFBundlePackageType": "APPL",
+      "CFBundleShortVersionString": "0.1.0",
+      "CFBundleSupportedPlatforms": [
+        "iPhoneOS"
+      ],
+      "CFBundleVersion": "1",
+      "DTCompiler": "com.apple.compilers.llvm.clang.1_0",
+      "DTPlatformBuild": "24A430",
+      "DTPlatformName": "iphoneos",
+      "DTPlatformVersion": "27.0",
+      "DTSDKBuild": "24A430",
+      "DTSDKName": "iphoneos27.0",
+      "DTXcode": "2700",
+      "DTXcodeBuild": "27A266a",
+      "LSRequiresIPhoneOS": true,
+      "MinimumOSVersion": "16.3",
+      "UIApplicationSceneManifest": {
+        "UIApplicationSupportsMultipleScenes": false,
+        "UISceneConfigurations": {
+          "UIWindowSceneSessionRoleApplication": [
+            {
+              "UISceneConfigurationName": "Default Configuration",
+              "UISceneDelegateClassName": "UnityScene"
+            }
+          ]
+        }
+      },
+      "UIDeviceFamily": [
+        1
+      ],
+      "UILaunchStoryboardName": "LaunchScreen-iPhone",
+      "UILaunchStoryboardName~iphone": "LaunchScreen-iPhone",
+      "UILaunchStoryboardName~ipod": "LaunchScreen-iPhone",
+      "UIPrerenderedIcon": false,
+      "UIRequiredDeviceCapabilities": [
+        "arm64",
+        "metal"
+      ],
+      "UIRequiresFullScreen": true,
+      "UIRequiresPersistentWiFi": false,
+      "UIStatusBarHidden": true,
+      "UIStatusBarStyle": "UIStatusBarStyleDefault",
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait"
+      ],
+      "UIViewControllerBasedStatusBarAppearance": true,
+      "Unity_LoadingActivityIndicatorStyle": -1
+    },
+    "inventory": {
+      "entitlementFiles": [],
+      "frameworks": [
+        "Products/Applications/Paws.app/Frameworks/UnityFramework.framework"
+      ],
+      "nativeLibraries": [],
+      "privacyManifests": [
+        {
+          "declarations": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "35F9.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "E174.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "CA92.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "0A2A.1",
+                  "C617.1"
+                ]
+              }
+            ]
+          },
+          "path": "Products/Applications/Paws.app/Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+          "sha256": "cc12b26e737396e847202af5824d415682adecb4e0e2d9571214f5c4089fb86f"
+        }
+      ]
+    },
+    "linkedLibraries": [
+      {
+        "binary": "Products/Applications/Paws.app/Frameworks/UnityFramework.framework/UnityFramework",
+        "linkedLibraries": [
+          "@rpath/UnityFramework.framework/UnityFramework (compatibility version 0.0.0, current version 0.0.0)",
+          "/System/Library/Frameworks/CoreMotion.framework/CoreMotion (compatibility version 1.0.0, current version 3185.0.6, weak)",
+          "/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0, weak)",
+          "/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)",
+          "/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)",
+          "/System/Library/Frameworks/AVFoundation.framework/AVFoundation (compatibility version 1.0.0, current version 2.0.0)",
+          "/System/Library/Frameworks/AVKit.framework/AVKit (compatibility version 1.0.0, current version 1.0.0)",
+          "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics (compatibility version 64.0.0, current version 2050.0.0)",
+          "/System/Library/Frameworks/CoreMedia.framework/CoreMedia (compatibility version 1.0.0, current version 3350.77.1)",
+          "/System/Library/Frameworks/CoreText.framework/CoreText (compatibility version 1.0.0, current version 904.0.0)",
+          "/System/Library/Frameworks/CoreVideo.framework/CoreVideo (compatibility version 1.2.0, current version 758.27.0)",
+          "/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5027.0.69)",
+          "/System/Library/Frameworks/Metal.framework/Metal (compatibility version 1.0.0, current version 382.5.3)",
+          "/System/Library/Frameworks/QuartzCore.framework/QuartzCore (compatibility version 1.2.0, current version 1223.0.18)",
+          "/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 62460.2.2)",
+          "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration (compatibility version 1.0.0, current version 1446.0.0)",
+          "/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9127.0.84)",
+          "/System/Library/Frameworks/GameController.framework/GameController (compatibility version 1.0.0, current version 14.0.24, weak)",
+          "/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+          "/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)",
+          "/System/Library/Frameworks/AVFAudio.framework/AVFAudio (compatibility version 1.0.0, current version 1.0.0)",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)"
+        ]
+      },
+      {
+        "binary": "Products/Applications/Paws.app/Paws",
+        "linkedLibraries": [
+          "/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5027.0.69)",
+          "/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+          "/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)",
+          "/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)"
+        ]
+      }
+    ],
+    "physicalIPhoneReview": "pending-human",
+    "signatureVerified": false,
+    "stage": "unsigned-archive-validated"
+  },
+  "configuration": {
+    "buildNumber": "1",
+    "bundleIdentifier": "com.jweiss.paws",
+    "deviceFamily": [
+      1
+    ],
+    "displayName": "Paws",
+    "minimumIOS": "16.3",
+    "unityVersion": "6000.3.25f1",
+    "version": "0.1.0"
+  },
+  "diagnosticExclusion": {
+    "excludedTypesAbsent": true,
+    "sourceFilesInspected": 191
+  },
+  "distributionApproval": "pending-owner",
+  "enabledConfiguration": {
+    "buildNumber": "1",
+    "bundleIdentifier": "com.jweiss.paws",
+    "developmentBuild": false,
+    "deviceFamily": [
+      1
+    ],
+    "minimumIOS": "16.3",
+    "monetizationEnabled": false,
+    "productionDefine": "PAWS_PRODUCTION",
+    "profilerEnabled": false,
+    "scriptDebugging": false,
+    "sourceSha": "b1dee6a6e641e7f026336b319a458dfca4c8483e",
+    "unityVersion": "6000.3.25f1",
+    "version": "0.1.0"
+  },
+  "exportInfoPlist": {
+    "CADisableMinimumFrameDuration": false,
+    "CADisableMinimumFrameDurationOnPhone": false,
+    "CFBundleAllowMixedLocalizations": true,
+    "CFBundleDevelopmentRegion": "en",
+    "CFBundleDisplayName": "Paws",
+    "CFBundleExecutable": "${EXECUTABLE_NAME}",
+    "CFBundleIdentifier": "${PRODUCT_BUNDLE_IDENTIFIER}",
+    "CFBundleInfoDictionaryVersion": "6.0",
+    "CFBundleName": "${PRODUCT_NAME}",
+    "CFBundlePackageType": "APPL",
+    "CFBundleShortVersionString": "0.1.0",
+    "CFBundleVersion": "1",
+    "LSRequiresIPhoneOS": true,
+    "UIApplicationSceneManifest": {
+      "UIApplicationSupportsMultipleScenes": false,
+      "UISceneConfigurations": {
+        "UIWindowSceneSessionRoleApplication": [
+          {
+            "UISceneConfigurationName": "Default Configuration",
+            "UISceneDelegateClassName": "UnityScene"
+          }
+        ]
+      }
+    },
+    "UILaunchStoryboardName": "LaunchScreen-iPhone",
+    "UILaunchStoryboardName~iphone": "LaunchScreen-iPhone",
+    "UILaunchStoryboardName~ipod": "LaunchScreen-iPhone",
+    "UIPrerenderedIcon": false,
+    "UIRequiredDeviceCapabilities": [
+      "arm64",
+      "metal"
+    ],
+    "UIRequiresFullScreen": true,
+    "UIRequiresPersistentWiFi": false,
+    "UIStatusBarHidden": true,
+    "UIStatusBarStyle": "UIStatusBarStyleDefault",
+    "UISupportedInterfaceOrientations": [
+      "UIInterfaceOrientationPortrait"
+    ],
+    "UIViewControllerBasedStatusBarAppearance": true,
+    "Unity_LoadingActivityIndicatorStyle": -1
+  },
+  "exportInventory": {
+    "entitlementFiles": [],
+    "frameworks": [],
+    "nativeLibraries": [
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libSystem.Globalization.Native.dylib",
+        "sha256": "4989324ef90366f9ec2985bb36ba33b351f4a6f3b57355dec15f42376fb2fe2b"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libSystem.IO.Compression.Native.dylib",
+        "sha256": "33f053c4129171b7fb7b28dc95afcbc676b53f8f014a41a0a92043a9d89fb95a"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libSystem.Native.dylib",
+        "sha256": "8f823757833558422e9347d8127a14177e990c06474170de172e33c9b73cf9d6"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libSystem.Net.Security.Native.dylib",
+        "sha256": "28eb267c68185802ecbdd38b9f2494fd0414aa2db897e8ed144dd07b27797d84"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libSystem.Security.Cryptography.Native.Apple.dylib",
+        "sha256": "39b6587aa7032200ed24b723dec45774dd1ba4c46adbd38e235350015aee95d2"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libSystem.Security.Cryptography.Native.OpenSsl.dylib",
+        "sha256": "a8641845de0f86f07978244e5e1f07c83d023d29e4b04864ea3ba4883312c216"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libclrgc.dylib",
+        "sha256": "6933a50fa18fc1e0c032500b46a2f2fcaae016494518f8393db5e8d53778dc4f"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libclrjit.dylib",
+        "sha256": "27a0707f4fef738e471801de6b7652cd489c013448d83d808faaf5e74622c702"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libcoreclr.dylib",
+        "sha256": "b2e091d4948863e8cc9da89c311de421e98ccd788fec19985aea3176d04e1e71"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libhostfxr.dylib",
+        "sha256": "5861f6e9d2deed8da7cb48beb878879336fc0dacd0aacd05f07962accd85f006"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libhostpolicy.dylib",
+        "sha256": "bc788c75eb3fd49d4b06ec9573c5aedf86328c5f54ade49cf16c53e99fc3b93e"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libmscordaccore.dylib",
+        "sha256": "ac7435443b9af4c8768b8b9e22e3a213c3a207a4b4dbf4cde21178fb4f9dc1b0"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_arm64/libmscordbi.dylib",
+        "sha256": "31d0471623cb5df47dc9c9c23700b17f219fd25340272a2b734ab862e2d7e1a6"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libSystem.Globalization.Native.dylib",
+        "sha256": "c85235b9fd8fbc4465e5cf3ca79cebc4d99c6383b53559eafd4126c969d56d19"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libSystem.IO.Compression.Native.dylib",
+        "sha256": "48f7b4f4288122ca41a1c84d6cfb9c7d2d27ed1d7971104b40688376fab07617"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libSystem.Native.dylib",
+        "sha256": "896c5896f02b0975eb3ded359e4fce0ef390f16503e0e72349b8e42081c3a742"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libSystem.Net.Security.Native.dylib",
+        "sha256": "16d02a25f933b48992ec1188413ae34f446edd0fab241fa22a967a28af8f6154"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libSystem.Security.Cryptography.Native.Apple.dylib",
+        "sha256": "cb2233b4efa69ec23b813382b47e74da77862b51365103ab674e83cd9dc2d6aa"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libSystem.Security.Cryptography.Native.OpenSsl.dylib",
+        "sha256": "27663d609be0034653ecb06a3e7f7c1c7883c323dc46579c4b7a6bc075602a4d"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libclrgc.dylib",
+        "sha256": "9c9fb6cb261ae5eff2bec1638c95375b976f6ed8e3cfd4a7f3e479b7406433fe"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libclrjit.dylib",
+        "sha256": "34e59fc2e806300ec1e4253a4c75badb333b8184eb5ae010da0d7bb0a438068a"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libcoreclr.dylib",
+        "sha256": "13d8cf98bad00d34bbe2b92bde4eec0962d45c6576bf7ff18f836df53a27a8a6"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libhostfxr.dylib",
+        "sha256": "29f4e80591c43f725d9919af7198fcc2a26141c05004b2347f7441f8c5a973d9"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libhostpolicy.dylib",
+        "sha256": "de2eb8af947345b87e22edf7d8ef355ca87566a288dce8901f8340be6c50fee1"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libmscordaccore.dylib",
+        "sha256": "590f2180888edf59bc8ba19c8f4ae4ad2f426700f7cb556727ffbefd9013b7d0"
+      },
+      {
+        "path": "Il2CppOutputProject/IL2CPP/build/deploy_x86_64/libmscordbi.dylib",
+        "sha256": "043f14ef26a78483a12e87a05763f0b49413153c54856314a04b7a1fd5899a58"
+      },
+      {
+        "path": "Libraries/baselib.a",
+        "sha256": "865f9c4b6e3f93ff325996a6f29d3e1b394c5f8ef9be6603eef7757af1e38afc"
+      },
+      {
+        "path": "Libraries/libiPhone-lib.a",
+        "sha256": "edc0cdaa6b23e1ea1862cc70af09abe84be0c26f4edaa84a212f0eab6d107e8f"
+      },
+      {
+        "path": "UnityFramework/UnityFramework.tbd",
+        "sha256": "8e7e2555ef2058a8d9e7eb83908777c71ad19eac35571060de08cc384e1f18ed"
+      }
+    ],
+    "privacyManifests": [
+      {
+        "declarations": {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "35F9.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "E174.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "0A2A.1",
+                "C617.1"
+              ]
+            }
+          ]
+        },
+        "path": "UnityFramework/PrivacyInfo.xcprivacy",
+        "sha256": "cc12b26e737396e847202af5824d415682adecb4e0e2d9571214f5c4089fb86f"
+      }
+    ]
+  },
+  "exportLinkedSDKReferences": [
+    "Libraries/baselib.a",
+    "Libraries/libiPhone-lib.a",
+    "System/Library/Frameworks/AVFoundation.framework",
+    "System/Library/Frameworks/AVKit.framework",
+    "System/Library/Frameworks/AudioToolbox.framework",
+    "System/Library/Frameworks/CoreGraphics.framework",
+    "System/Library/Frameworks/CoreMedia.framework",
+    "System/Library/Frameworks/CoreText.framework",
+    "System/Library/Frameworks/CoreVideo.framework",
+    "System/Library/Frameworks/Foundation.framework",
+    "System/Library/Frameworks/GameController.framework",
+    "System/Library/Frameworks/Metal.framework",
+    "System/Library/Frameworks/QuartzCore.framework",
+    "System/Library/Frameworks/Security.framework",
+    "System/Library/Frameworks/SystemConfiguration.framework",
+    "System/Library/Frameworks/UIKit.framework",
+    "UnityFramework.framework",
+    "libGameAssembly.a",
+    "usr/lib/libiconv.2.tbd"
+  ],
+  "exportProjectCapabilities": [
+    {
+      "1D6058900D05DD3D006BFB54": {
+        "ProvisioningStyle": "Manual",
+        "SystemCapabilities": {
+          "com.apple.GameControllers.appletvos": {
+            "enabled": "1"
+          }
+        },
+        "UnityMainTarget": "1"
+      },
+      "5623C57217FDCB0800090B9E": {
+        "ProvisioningStyle": "Manual",
+        "TestTargetID": "1D6058900D05DD3D006BFB54"
+      },
+      "7F4E059F2717216D00A2CBE4": {
+        "CreatedOnToolsVersion": "13.0",
+        "ProvisioningStyle": "Manual"
+      },
+      "9D25AB9C213FB47800354C27": {
+        "CreatedOnToolsVersion": "9.2",
+        "ProvisioningStyle": "Manual",
+        "UnityFrameworkTarget": "1"
+      }
+    }
+  ],
+  "physicalIPhoneReview": "pending-human",
+  "schema": "paws-ios-release-receipt-v1",
+  "sourceSha": "b1dee6a6e641e7f026336b319a458dfca4c8483e",
+  "stage": "unsigned-archive-validated",
+  "unityPackages": {
+    "com.unity.ext.nunit": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "2.0.5"
+    },
+    "com.unity.modules.hierarchycore": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.imageconversion": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.imgui": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.jsonserialize": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.physics": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.screencapture": {
+      "dependencies": {
+        "com.unity.modules.imageconversion": "1.0.0"
+      },
+      "depth": 0,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.ui": {
+      "dependencies": {},
+      "depth": 1,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.modules.uielements": {
+      "dependencies": {
+        "com.unity.modules.hierarchycore": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.ui": "1.0.0"
+      },
+      "depth": 0,
+      "source": "builtin",
+      "version": "1.0.0"
+    },
+    "com.unity.test-framework": {
+      "dependencies": {
+        "com.unity.ext.nunit": "2.0.3",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "depth": 0,
+      "source": "builtin",
+      "version": "1.6.0"
+    }
+  },
+  "unityVersion": "6000.3.25f1",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a"
+}

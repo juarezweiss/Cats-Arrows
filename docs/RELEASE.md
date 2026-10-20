@@ -125,3 +125,34 @@ version/build on a named device/iOS. Record reviewer, pass/fail and scope in #63
 Physical acceptance, Apple enrollment/App ID/App Store Connect creation, signing
 credentials, purchases, uploads/submission and release remain owner-controlled.
 #21's tester distribution/enrollment/privacy gates remain open.
+
+## #63 verified build evidence — 2026-10-20
+
+Source `b1dee6a6e641e7f026336b319a458dfca4c8483e` exported with pinned
+Unity **6000.3.25f1** and archived **unsigned** with Xcode **27.0 (27A266a)**.
+Actual identity is `com.jweiss.paws`, **0.1.0 (1)**, iPhone only, iOS 16.3,
+upright portrait. Clean export and Release archive succeeded without identifier
+patches or signing inputs. [Receipt](evidence/issue63/ios-release-receipt.json)
+records archive-tree SHA-256
+`e5b15df98ebe53f98479fe28ed00159aebc17539c3a260f01c358c6742910e5f`.
+Documentation-only commits after this source do not alter its build inputs;
+check out that recorded source commit to reproduce receipt inspection.
+
+The inspector verified 191 generated IL2CPP source/header files with excluded
+review/benchmark/mock types absent. The archive embeds only UnityFramework;
+required device capabilities are arm64/metal. Its Unity privacy manifest and
+native framework dependencies are inventoried in the receipt. Locked Unity
+packages are listed separately from embedded native frameworks; their presence
+is not evidence that Editor/test code shipped. No real monetization provider
+was added or enabled. This inspection is build evidence, not final App Store
+privacy/compliance approval.
+
+Preserved locally (ignored): `Builds/Issue63-export/`,
+`Builds/Issue63-Paws-0.1.0-1.xcarchive/` including app/framework dSYMs,
+`.unity-results/ios-export.EPWSZe/` and `.unity-results/ios-archive.6LQRxp/`.
+Only this run's reproducible DerivedData was removed after archive preservation.
+Repository checks, 36 Python contracts, pinned compilation and **495/495**
+EditMode tests passed; independent QA reports no blocking findings. See
+[TESTING.md](TESTING.md). **Signing/distribution readiness and human physical
+iPhone acceptance remain pending.** No credentials, account/registration,
+purchase, install, upload, submission or release actions were performed for #63.

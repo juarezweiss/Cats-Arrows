@@ -18,8 +18,11 @@ three board sizes, touch flow, lifecycle smoke and all three languages. On
 2026-10-19 the owner also reported the current Paws physical-iPhone appearance
 approved, closing PR #54's branding appearance gate. Smaller phones and measured
 Medium/Hard tap-to-ready latency remain unverified. See
-[TESTING.md](TESTING.md) for evidence and scope limits. No clean distribution
-archive or TestFlight trial is claimed.
+[TESTING.md](TESTING.md) for evidence and scope limits. #63 subsequently validated a clean **unsigned** production export/archive at
+`b1dee6a` with Unity 6000.3.25f1 / Xcode 27.0, 495/495 EditMode tests and
+36 Python contracts. See [release evidence](RELEASE.md) and its artifact receipt.
+No signed distribution artifact, fresh #63 physical acceptance or TestFlight trial
+is claimed.
 
 The owner confirmed no paid Apple Developer Program membership. Local installed
 phone builds can continue, but TestFlight requires enrollment. Every purchase or
