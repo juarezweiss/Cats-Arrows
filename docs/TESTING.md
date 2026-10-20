@@ -100,6 +100,13 @@ composes no provider. Run the resulting windowed macOS player with
 `--menu-capture=<absolute-PNG-path>`, `--settings-capture=<absolute-PNG-path>` or
 `--language-capture=<absolute-PNG-path>`. Captures isolate first-Play/history and
 do not start a board. Compact captures use 20/0 insets, standard/tall use 59/34.
+Owner-authorized local iPhone preparation completed on 2026-10-20 for source
+`f15860d`: Release/arm64 export/archive, signatures/provisioning, in-place install,
+plain launch and running process passed on iPhone 17 / iOS 27.0.1, Paws 0.1.0 (1).
+[Device receipt](evidence/issue76/device-preparation.json) and
+[release record](RELEASE.md#76-approved-menu--local-iphone-preparation-2026-10-20)
+retain separate technical evidence. No physical interaction was automated.
+
 Physical iPhone review remains pending. Human checklist: Home/gear balance and
 comfortable targets; Back returns Home; native-language selection and immediate
 localized Settings; tutorial replay/first Play; Menu → Play retains current marks
