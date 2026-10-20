@@ -115,7 +115,7 @@ xcodebuild -project Builds/Issue64-AppleIapReview/Unity-iPhone.xcodeproj -scheme
   -archivePath "$PWD/Builds/Issue64-AppleIapReview.xcarchive" \
   -derivedDataPath "$PWD/.unity-results/issue64-archive/DerivedData" \
   CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO \
-  COMPILER_INDEX_STORE_ENABLE=NO DEBUG_INFORMATION_FORMAT=dwarf archive
+  COMPILER_INDEX_STORE_ENABLE=NO DEBUG_INFORMATION_FORMAT=dwarf-with-dsym archive
 ```
 
 ## Owner StoreKit Test and sandbox handoff
@@ -163,12 +163,17 @@ Xcode 27.0, retained at `Builds/Issue64-AppleIapReview/` (ignored). The
 lock, resolved identity and actual frameworks/capabilities/privacy manifest, plus
 the final automated test evidence. It includes the recovered-Pending correction.
 
-The owner explicitly selected **leave the archive gate pending** after local disk
-exhaustion. Native Swift and IL2CPP compilation were reached, but static-archive
-assembly/native linking exhausted disk space; a superseded retry was interrupted
-for the pending-state correction. This is not a successful archive gate. Logs
-and the initial export inventory are retained under ignored
-`.unity-results/issue64-archive/`. Failed task-only intermediates were removed;
-existing owner-tested builds were preserved. Free at least 5 GB before a later
-archive attempt. StoreKit Test/sandbox and physical purchase/restore acceptance
-remain owner actions. Keep the PR draft until these validation gates are resolved.
+After freeing disk space, the owner resumed the gate on 2026-10-20. The **unsigned
+Release archive passed** using that unchanged export, retained at
+`Builds/Issue64-AppleIapReview.xcarchive/` with ARM64 dSYMs. Binary checks confirm
+`com.jweiss.paws`, **0.1.0 (1)**, iPhone portrait, minimum iOS **16.3**, matching
+binary/dSYM UUIDs, unsigned executables, native IAP entry points and the embedded
+framework/privacy inventory. The receipt records the archive checksum and checks;
+the successful log is `.unity-results/issue64-archive-resume.aoWOQj/xcodebuild.log`.
+Earlier disk-exhaustion logs remain under `.unity-results/issue64-archive/`.
+
+This is a development review archive with production monetization disabled.
+StoreKit Test/sandbox, runtime network/data observation and physical
+purchase/restore acceptance remain owner actions. Keep the PR draft until these
+validation gates are resolved; no signing, installation, purchase or upload was
+performed for this archive gate.

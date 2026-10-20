@@ -1,6 +1,6 @@
 {
   "schema": "paws-apple-iap-review-v1",
-  "stage": "unsigned-development-export-validated",
+  "stage": "unsigned-development-archive-validated",
   "sourceSha": "46bee5ebc727b2bd9d027776d8f0330b9c810a0b",
   "reviewConfiguration": {
     "unityVersion": "6000.3.25f1",
@@ -411,11 +411,218 @@
     "independentQA": "no blocking findings"
   },
   "archiveGate": {
-    "status": "pending-by-owner-direction-2026-10-20",
-    "reason": "earlier attempts exhausted disk during IL2CPP static archive/native link; owner chose to leave archive pending",
-    "signedOrCompleteArchiveProduced": false
+    "status": "passed-unsigned",
+    "resumedByOwner": "2026-10-20",
+    "signedOrCompleteArchiveProduced": true,
+    "signed": false,
+    "reason": "Owner resumed after freeing disk; native archive and artifact checks passed."
   },
   "physicalReview": "pending-owner",
-  "signing": "unsigned-export",
-  "storeActions": "none"
+  "signing": "unsigned-archive",
+  "storeActions": "none",
+  "archive": {
+    "path": "Builds/Issue64-AppleIapReview.xcarchive",
+    "sourceSha": "46bee5ebc727b2bd9d027776d8f0330b9c810a0b",
+    "sourceCompatibilityCheckedAtSha": "35dff3240bda07912e1755e322ee698fba27a596",
+    "treeSha256": "7e8e39fe6d2cfeba4e91435e52fda59678339eaf4e094f664fa9d65ef96219b6",
+    "configuration": "Release",
+    "developmentBuild": true,
+    "debugInformationFormat": "dwarf-with-dsym",
+    "codeSigningAllowed": false,
+    "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+    "log": ".unity-results/issue64-archive-resume.aoWOQj/xcodebuild.log",
+    "infoPlist": {
+      "BuildMachineOSBuild": "25G83",
+      "CADisableMinimumFrameDuration": false,
+      "CADisableMinimumFrameDurationOnPhone": false,
+      "CFBundleAllowMixedLocalizations": true,
+      "CFBundleDevelopmentRegion": "en",
+      "CFBundleDisplayName": "Paws",
+      "CFBundleExecutable": "Paws",
+      "CFBundleIcons": {
+        "CFBundlePrimaryIcon": {
+          "CFBundleIconFiles": [
+            "AppIcon60x60"
+          ],
+          "CFBundleIconName": "AppIcon"
+        }
+      },
+      "CFBundleIdentifier": "com.jweiss.paws",
+      "CFBundleInfoDictionaryVersion": "6.0",
+      "CFBundleName": "Paws",
+      "CFBundlePackageType": "APPL",
+      "CFBundleShortVersionString": "0.1.0",
+      "CFBundleSupportedPlatforms": [
+        "iPhoneOS"
+      ],
+      "CFBundleVersion": "1",
+      "DTCompiler": "com.apple.compilers.llvm.clang.1_0",
+      "DTPlatformBuild": "24A430",
+      "DTPlatformName": "iphoneos",
+      "DTPlatformVersion": "27.0",
+      "DTSDKBuild": "24A430",
+      "DTSDKName": "iphoneos27.0",
+      "DTXcode": "2700",
+      "DTXcodeBuild": "27A266a",
+      "LSRequiresIPhoneOS": true,
+      "MinimumOSVersion": "16.3",
+      "UIApplicationSceneManifest": {
+        "UIApplicationSupportsMultipleScenes": false,
+        "UISceneConfigurations": {
+          "UIWindowSceneSessionRoleApplication": [
+            {
+              "UISceneConfigurationName": "Default Configuration",
+              "UISceneDelegateClassName": "UnityScene"
+            }
+          ]
+        }
+      },
+      "UIDeviceFamily": [
+        1
+      ],
+      "UILaunchStoryboardName": "LaunchScreen-iPhone",
+      "UILaunchStoryboardName~iphone": "LaunchScreen-iPhone",
+      "UILaunchStoryboardName~ipod": "LaunchScreen-iPhone",
+      "UIPrerenderedIcon": false,
+      "UIRequiredDeviceCapabilities": [
+        "arm64",
+        "metal"
+      ],
+      "UIRequiresFullScreen": true,
+      "UIRequiresPersistentWiFi": false,
+      "UIStatusBarHidden": true,
+      "UIStatusBarStyle": "UIStatusBarStyleDefault",
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait"
+      ],
+      "UIViewControllerBasedStatusBarAppearance": true,
+      "Unity_LoadingActivityIndicatorStyle": -1
+    },
+    "inventory": {
+      "frameworks": [
+        "Products/Applications/Paws.app/Frameworks/UnityFramework.framework"
+      ],
+      "nativeLibraries": [],
+      "privacyManifests": [
+        {
+          "path": "Products/Applications/Paws.app/Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+          "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+          "declarations": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "35F9.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "E174.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "CA92.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "0A2A.1",
+                  "C617.1"
+                ]
+              }
+            ],
+            "NSPrivacyTracking": false
+          }
+        }
+      ],
+      "entitlementFiles": []
+    },
+    "binaryChecks": [
+      {
+        "binary": "Products/Applications/Paws.app/Paws",
+        "dSYM": "dSYMs/Paws.app.dSYM",
+        "uuids": {
+          "arm64": "4C565CEC-3CB5-3058-AB1D-BDCCF0E3DABE"
+        },
+        "minimumIOS": [
+          "16.3"
+        ],
+        "signed": false,
+        "linkedLibraries": [
+          "\t/System/Library/Frameworks/StoreKit.framework/StoreKit (compatibility version 1.0.0, current version 1.0.0)",
+          "\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5027.0.69)",
+          "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+          "\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)",
+          "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)",
+          "\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)"
+        ]
+      },
+      {
+        "binary": "Products/Applications/Paws.app/Frameworks/UnityFramework.framework/UnityFramework",
+        "dSYM": "dSYMs/UnityFramework.framework.dSYM",
+        "uuids": {
+          "arm64": "30D4C8B2-44DA-3AD6-A7BD-695C8B13EA0D"
+        },
+        "minimumIOS": [
+          "16.3"
+        ],
+        "signed": false,
+        "linkedLibraries": [
+          "\t@rpath/UnityFramework.framework/UnityFramework (compatibility version 0.0.0, current version 0.0.0)",
+          "\t/System/Library/Frameworks/CoreMotion.framework/CoreMotion (compatibility version 1.0.0, current version 3185.0.6, weak)",
+          "\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0, weak)",
+          "\t/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)",
+          "\t/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)",
+          "\t/System/Library/Frameworks/AVFoundation.framework/AVFoundation (compatibility version 1.0.0, current version 2.0.0)",
+          "\t/System/Library/Frameworks/AVKit.framework/AVKit (compatibility version 1.0.0, current version 1.0.0)",
+          "\t/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics (compatibility version 64.0.0, current version 2050.0.0)",
+          "\t/System/Library/Frameworks/CoreMedia.framework/CoreMedia (compatibility version 1.0.0, current version 3350.77.1)",
+          "\t/System/Library/Frameworks/CoreText.framework/CoreText (compatibility version 1.0.0, current version 904.0.0)",
+          "\t/System/Library/Frameworks/CoreVideo.framework/CoreVideo (compatibility version 1.2.0, current version 758.27.0)",
+          "\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5027.0.69)",
+          "\t/System/Library/Frameworks/Metal.framework/Metal (compatibility version 1.0.0, current version 382.5.3)",
+          "\t/System/Library/Frameworks/QuartzCore.framework/QuartzCore (compatibility version 1.2.0, current version 1223.0.18)",
+          "\t/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 62460.2.2)",
+          "\t/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration (compatibility version 1.0.0, current version 1446.0.0)",
+          "\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9127.0.84)",
+          "\t/System/Library/Frameworks/StoreKit.framework/StoreKit (compatibility version 1.0.0, current version 1.0.0)",
+          "\t/System/Library/Frameworks/CryptoKit.framework/CryptoKit (compatibility version 1.0.0, current version 1.0.0)",
+          "\t/System/Library/Frameworks/GameController.framework/GameController (compatibility version 1.0.0, current version 14.0.24, weak)",
+          "\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)",
+          "\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)",
+          "\t/System/Library/Frameworks/AVFAudio.framework/AVFAudio (compatibility version 1.0.0, current version 1.0.0)",
+          "\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)",
+          "\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)",
+          "\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)",
+          "\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 3.0.0, weak)",
+          "\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 57.0.0, weak)",
+          "\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 428.0.10, weak)",
+          "\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.0.2, weak)",
+          "\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 382.5.3, weak)",
+          "\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)",
+          "\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0)",
+          "\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)",
+          "\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)",
+          "\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 919.0.1, weak)",
+          "\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)",
+          "\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)",
+          "\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.0.0, weak)",
+          "\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)",
+          "\t/usr/lib/swift/libswiftUIKit.dylib (compatibility version 1.0.0, current version 1.0.0, weak)"
+        ]
+      }
+    ],
+    "nativeIapAbiSymbols": [
+      "_PawsIapRead",
+      "_PawsIapVerifyCache",
+      "_PawsIapSetDeferred"
+    ],
+    "productionMonetizationEnabled": false,
+    "physicalReview": "pending-owner",
+    "storeKitTestAndAppleSandbox": "pending-owner"
+  }
 }

@@ -41,11 +41,16 @@ The final clean unsigned iOS development export succeeded from `46bee5e`
 composition includes the recovered-Pending correction; production remains disabled.
 [Review receipt](evidence/issue64/apple-iap-review-receipt.json) records actual
 package lock, resolved identity, framework linkage, capabilities and privacy
-manifest. Archive attempts exhausted disk during native assembly/link; on
-2026-10-20 the owner explicitly selected **leave the archive gate pending**.
-The unsigned export is retained under ignored `Builds/Issue64-AppleIapReview/`;
-failed task-only intermediate builds were removed. No full archive pass or runtime
-network observation is claimed. Owner StoreKit Test/sandbox acceptance remains pending.
+manifest. After earlier disk exhaustion and an owner-directed pause, the owner
+resumed the archive gate on 2026-10-20. The **unsigned Release archive passed**
+(`issue64-archive-resume.aoWOQj/xcodebuild.log`) from the unchanged final export.
+Artifact checks verify ARM64 binaries and matching dSYM UUIDs, approved identity
+**com.jweiss.paws / 0.1.0 (1)**, iPhone portrait, minimum iOS **16.3**, unsigned
+executables, native IAP ABI symbols and embedded framework/privacy inventory.
+The receipt records the archive checksum and checks. Export and archive remain
+under ignored `Builds/Issue64-AppleIapReview/` and
+`Builds/Issue64-AppleIapReview.xcarchive/`. No runtime network observation is
+claimed. Owner StoreKit Test/sandbox and physical acceptance remain pending.
 
 ## Issue #63 production iOS configuration
 
