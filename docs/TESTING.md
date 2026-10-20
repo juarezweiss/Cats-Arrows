@@ -107,11 +107,15 @@ plain launch and running process passed on iPhone 17 / iOS 27.0.1, Paws 0.1.0 (1
 [release record](RELEASE.md#76-approved-menu--local-iphone-preparation-2026-10-20)
 retain separate technical evidence. No physical interaction was automated.
 
-Physical iPhone review remains pending. Human checklist: Home/gear balance and
-comfortable targets; Back returns Home; native-language selection and immediate
-localized Settings; tutorial replay/first Play; Menu → Play retains current marks
-and lesson/completion state; compact/tall safe-area fit and list scrolling.
-Desktop checks and captures do not satisfy human physical review.
+Owner physical iPhone review passed on 2026-10-20. The owner reported
+“iphone review finished, pass” for the supplied #76/#77 menu/settings checklist
+on iPhone 17 / iOS 27.0.1, Paws 0.1.0 (1), installed source `f15860d`.
+Scope: approved compact bold Play/gear comfort, Settings/Back, native-language
+selection with immediate localization/persistence, Tutorial replay and Home Play
+resume. This is the owner's human report, separate from automated technical
+readiness and desktop evidence. It closes the pending physical menu review for
+this source/device; broader-device coverage, measured performance and App Store
+distribution acceptance are not inferred.
 
 ## Issue #72 initial menu (historical; superseded by #76)
 
