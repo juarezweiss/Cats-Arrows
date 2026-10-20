@@ -22,10 +22,18 @@ framework linkage and privacy-manifest inventory. No monetization adapter is
 composed. [Full receipt](evidence/issue63/ios-release-receipt.json) and
 [reproduction/physical checklist](RELEASE.md) preserve provenance and scope.
 The archive and dSYMs remain in ignored `Builds/Issue63-Paws-0.1.0-1.xcarchive/`;
-export/logs/receipts are retained, while task-only DerivedData was removed.
+small export metadata/logs/receipts are retained, while task-only export and
+DerivedData were removed after the local installation below.
 
-No signed archive, signature/profile/device readiness, install/launch or human
-physical-iPhone acceptance is claimed. Human review remains **pending** for
+The unsigned archive result does not establish distribution signing or human
+physical-iPhone acceptance. Subsequent owner-authorized local preparation signed
+a copy of its existing Release app with the matching development profile and
+installed/launched **0.1.0 (1)** on **iPhone 17 / iOS 27.0.1**. Strict signatures,
+profile/device/expiry checks and running-process verification passed; no rebuild
+or IPA was needed. This development signature expires 2026-10-27;
+[device-preparation receipt](evidence/issue63/device-preparation.json) records
+separate provenance. No physical interaction tests were automated.
+Human review remains **pending** for
 #63's fresh production sandbox, localized appearance/touch/tutorial/gameplay,
 completion locks, portrait/safe areas and lifecycle/preferences. Account actions,
 signing credentials, purchases and distribution remain owner-controlled.

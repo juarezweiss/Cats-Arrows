@@ -147,12 +147,40 @@ is not evidence that Editor/test code shipped. No real monetization provider
 was added or enabled. This inspection is build evidence, not final App Store
 privacy/compliance approval.
 
-Preserved locally (ignored): `Builds/Issue63-export/`,
+Preserved locally (ignored):
 `Builds/Issue63-Paws-0.1.0-1.xcarchive/` including app/framework dSYMs,
 `.unity-results/ios-export.EPWSZe/` and `.unity-results/ios-archive.6LQRxp/`.
-Only this run's reproducible DerivedData was removed after archive preservation.
+This run's reproducible DerivedData and, after local installation below, full
+export were removed; small export/signing metadata remains with the signed app.
 Repository checks, 36 Python contracts, pinned compilation and **495/495**
 EditMode tests passed; independent QA reports no blocking findings. See
 [TESTING.md](TESTING.md). **Signing/distribution readiness and human physical
-iPhone acceptance remain pending.** No credentials, account/registration,
-purchase, install, upload, submission or release actions were performed for #63.
+iPhone acceptance remain pending.** At this unsigned-archive milestone, no
+credentials, account/registration, purchase, install, upload, submission or release
+actions had been performed. The later owner-authorized local installation follows.
+
+
+## #63 owner-authorized local iPhone preparation — 2026-10-20
+
+The owner completed development provisioning for `com.jweiss.paws` and requested
+installation. The validated archive's existing Release `Paws.app` was copied,
+embedded with the matching local development profile, then signed inside-out
+(UnityFramework followed by the app) using the existing Keychain identity.
+**No Unity/Xcode recompilation, second archive or IPA was needed.** The original
+unsigned archive checksum remains unchanged; Mach-O UUIDs match its dSYMs.
+The application identifier/version/family/minimum OS were not changed.
+
+Strict signature verification, profile/device/certificate/expiry checks, install,
+plain launch and running-process verification passed on **iPhone 17 / iOS 27.0.1**,
+version **0.1.0 (1)**, source `b1dee6a`. This is a **local development signature**
+(`get-task-allow=true`), expiring **2026-10-27 17:36:44 UTC**; it is separate from
+App Store distribution signing/validation. [Device-preparation receipt](evidence/issue63/device-preparation.json)
+records its own signed-app tree hash and scope. No physical interaction,
+appearance, lifecycle or comfort test was automated; human acceptance is pending.
+
+Retained: `Builds/Issue63iPhone/Paws.app` (about 46 MiB), its small
+`ExportMetadata/`, the immutable unsigned archive/dSYMs (about 406 MiB), plus
+small receipts/logs. The temporary full export (about 690 MiB) and archive
+DerivedData (about 1.7 GiB) have been removed. Owner signing settings remain
+outside Git; the committed Unity/release configuration remains authoritative.
+Use the physical handoff checklist above and record the owner's scoped result.
