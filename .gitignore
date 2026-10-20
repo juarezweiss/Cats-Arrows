@@ -9,6 +9,9 @@ UserSettings/
 MemoryCaptures/
 Recordings/
 /.unity-results/
+# Unity IAP recreates its unused Android selector on every editor load.
+UnityProject/Assets/Resources/BillingMode.json
+UnityProject/Assets/Resources/BillingMode.json.meta
 
 # Python script tooling
 __pycache__/

@@ -1,0 +1,8 @@
+{
+  "name": "CatsAndArrows.Purchasing.Apple.BuildTests",
+  "references": ["CatsAndArrows.Purchasing.Apple.Review.Editor", "CatsAndArrows.UI.Editor"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

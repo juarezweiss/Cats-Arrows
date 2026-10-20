@@ -1,0 +1,15 @@
+{
+  "name": "CatsAndArrows.Purchasing.Apple.Review",
+  "references": [
+    "CatsAndArrows.Purchasing.Apple",
+    "CatsAndArrows.Monetization",
+    "CatsAndArrows.UI",
+    "CatsAndArrows.Gameplay",
+    "CatsAndArrows.Core"
+  ],
+  "includePlatforms": [
+    "Editor",
+    "iOS"
+  ],
+  "autoReferenced": false
+}

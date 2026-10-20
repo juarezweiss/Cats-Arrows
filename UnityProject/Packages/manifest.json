@@ -2,6 +2,8 @@
   "dependencies": {
     "com.unity.test-framework": "1.6.0",
     "com.unity.modules.uielements": "1.0.0",
-    "com.unity.modules.screencapture": "1.0.0"
+    "com.unity.modules.screencapture": "1.0.0",
+    "com.unity.purchasing": "5.3.1",
+    "com.unity.services.core": "1.14.0"
   }
 }

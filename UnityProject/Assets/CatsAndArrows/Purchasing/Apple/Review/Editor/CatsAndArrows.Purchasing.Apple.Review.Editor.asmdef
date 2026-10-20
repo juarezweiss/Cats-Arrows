@@ -1,0 +1,6 @@
+{
+  "name": "CatsAndArrows.Purchasing.Apple.Review.Editor",
+  "references": ["CatsAndArrows.Purchasing.Apple.Review", "CatsAndArrows.UI", "CatsAndArrows.UI.Editor"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

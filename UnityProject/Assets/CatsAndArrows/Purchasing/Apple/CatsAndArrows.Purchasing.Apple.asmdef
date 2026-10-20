@@ -1,0 +1,7 @@
+{
+  "name": "CatsAndArrows.Purchasing.Apple",
+  "rootNamespace": "CatsAndArrows.Purchasing.Apple",
+  "references": ["CatsAndArrows.Monetization", "Unity.Purchasing", "Unity.Purchasing.Stores"],
+  "includePlatforms": ["Editor", "iOS"],
+  "autoReferenced": false
+}

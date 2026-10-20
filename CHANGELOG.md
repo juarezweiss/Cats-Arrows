@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Added the isolated Unity IAP 5 Apple Remove All Ads adapter, native verified
+  offline evidence, transaction recovery tests and a separate sandbox review export
+  (#64). Production monetization remains disabled; owner store validation is pending.
 - Established Paws production iOS identity (`com.jweiss.paws`), iPhone-only support,
   minimum iOS 16.3, and initial version 0.1.0 (build 1) with increasing build numbers.
 - Added a production game entry and reproducible iOS export/archive tooling with
