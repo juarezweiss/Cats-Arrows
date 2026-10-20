@@ -31,6 +31,17 @@ touch-comfort or clean-distribution-build evidence.
 
 ## Controls
 
+Issue #72 gives the initial menu a dominant shared board paw and centered Paws
+title, with localized Play and Tutorial side by side near the bottom. Below them
+are only Brazilian, Spanish and British flag selectors (pt-BR, es, en), each with
+a 60×48 target, a native-language tooltip and an outlined selected state. Flags
+are vector artwork so they do not depend on platform emoji support. The intro
+tagline and visible Language heading are removed. How to Play remains a quiet
+top action; a live session adds Back to the Game above the primary actions.
+Configured purchase controls remain above those actions. Content fills the safe
+portrait area and scrolls on unusually short viewports instead of shrinking
+targets. Language persistence and all existing navigation policies are retained.
+
 Issue #43 replaces the menu difficulty controls with a localized Play action,
 alongside Tutorial, How to Play and languages. Play and Next board select
 Easy/Medium/Hard through one shared policy, with no more than two consecutive

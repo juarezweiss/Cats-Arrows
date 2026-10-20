@@ -11,11 +11,13 @@ namespace CatsAndArrows.UI
         public static readonly Color Ink = new Color(.18f, .22f, .20f);
         private BoardCellKind kind;
         private Direction direction;
+        private readonly float artworkScale;
         public BoardCellKind Kind { get => kind; set { kind = value; MarkDirtyRepaint(); } }
         public Direction Direction { get => direction; set { direction = value; MarkDirtyRepaint(); } }
-        public BoardSymbolElement(BoardCellKind kind = BoardCellKind.Empty, Direction direction = Direction.Up)
+        public BoardSymbolElement(BoardCellKind kind = BoardCellKind.Empty, Direction direction = Direction.Up, float artworkScale = 1)
         {
             this.kind = kind; this.direction = direction;
+            this.artworkScale = artworkScale;
             pickingMode = PickingMode.Ignore;
             generateVisualContent += Draw;
         }
@@ -36,7 +38,7 @@ namespace CatsAndArrows.UI
         }
         private void Draw(MeshGenerationContext context)
         {
-            var size = Mathf.Min(contentRect.width, contentRect.height);
+            var size = Mathf.Min(contentRect.width, contentRect.height) * artworkScale;
             if (size <= 0) return;
             var center = contentRect.center;
             var painter = context.painter2D;
