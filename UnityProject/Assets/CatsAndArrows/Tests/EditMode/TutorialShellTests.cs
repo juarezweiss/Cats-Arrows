@@ -32,13 +32,17 @@ namespace CatsAndArrows.Tests
             var seen = false; var writes = 0;
             var shell = PlayTestFactory.Shell(14, "en", tutorialSeen: () => seen, markTutorialSeen: () => { seen = true; writes++; });
             Assert.That(writes, Is.Zero);
-            Assert.That(shell.Q<Button>("menu-tutorial"), Is.Not.Null);
+            Assert.That(shell.Q<Button>("menu-settings"), Is.Not.Null);
             shell.StartPlaying();
             Assert.That(shell.Tutorial.Step, Is.EqualTo(TutorialStep.Welcome));
             Assert.That(shell.ActiveSession, Is.SameAs(shell.Tutorial.Session));
             Assert.That(shell.Loop.Session, Is.Null);
             Assert.That(seen, Is.True); Assert.That(writes, Is.EqualTo(1));
+            var tutorial = shell.Tutorial;
             shell.ShowMenu(); shell.StartPlaying();
+            Assert.That(shell.Tutorial, Is.SameAs(tutorial));
+            Assert.That(shell.Modal, Is.Null);
+            shell.SkipTutorial();
             Assert.That(shell.Modal, Is.EqualTo("loading"));
             Assert.That(writes, Is.EqualTo(1));
             Assert.That(shell.StartNewGame(), Is.True);
@@ -149,7 +153,9 @@ namespace CatsAndArrows.Tests
         {
             var writes = 0;
             var shell = PlayTestFactory.Shell(14, "en", enableTutorial: false, tutorialSeen: () => false, markTutorialSeen: () => writes++);
-            Assert.That(shell.Q<Button>("menu-tutorial"), Is.Null);
+            shell.ShowSettings();
+            Assert.That(shell.Q<Button>("settings-tutorial").enabledSelf, Is.False);
+            shell.ShowMenu();
             shell.StartTutorial(); Assert.That(shell.Tutorial, Is.Null);
             shell.StartPlaying(); Assert.That(shell.Modal, Is.EqualTo("loading"));
             Assert.That(writes, Is.Zero);

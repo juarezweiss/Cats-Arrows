@@ -106,7 +106,8 @@ The shell supplies a Unity preference adapter; tests inject memory storage.
 The tutorial owns its fixed Easy session separately and consumes no generation
 seed. A separate durable first-Play gate routes the first Play to this lesson.
 It migrates existing tutorial-seen state once, before manual Tutorial can affect
-a fresh first-Play gate. Later Plays use the ordinary selector across restarts.
+a fresh first-Play gate. Later Plays without a live session use the ordinary
+selector across restarts; Home Play resumes a live session (#76).
 
 Issue #35 versions the Medium/Hard generator/profile and larger-board options.
 Its optional two-order arrow-pruning phase shares the original solver work
@@ -219,7 +220,10 @@ the session, returns the proof and correction flag, and immediately checks
 completion. Player marks never become solver premises. Clear does not alter
 clues/protection or require a persistent hint cursor.
 
-`GameShellView` manages Menu/Play/Failure and blocking Hint overlays and inline completion.
+`GameShellView` manages Home/Settings/Play/Failure, the compact language selector,
+blocking Hint overlays and inline completion (#76). Settings composes extensible
+rows and delegates purchase/restore intents to the existing monetization
+coordinator; it owns no purchase policy or provider logic.
 It sends gameplay intents and listens for board state changes. The compact play
 layout replaces the persistent legend with a 2×2 control group; the tutorial
 explains the symbols. Local preferences now also include the Issue #43 difficulty

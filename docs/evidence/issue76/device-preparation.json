@@ -1,0 +1,47 @@
+{
+  "schema": "paws-ios-device-preparation-v1",
+  "sourceSha": "f15860d0e5ba8c4b7deb393419e73388e39a05a8",
+  "configuration": {
+    "buildNumber": "1",
+    "bundleIdentifier": "com.jweiss.paws",
+    "deviceFamily": [
+      1
+    ],
+    "displayName": "Paws",
+    "minimumIOS": "16.3",
+    "unityVersion": "6000.3.25f1",
+    "version": "0.1.0"
+  },
+  "sourceArchiveTreeSha256": "8ef7e97975567b4b2e5ee83362fcb4b3edbd8babf01dd02a421455efd4c0819c",
+  "signedAppTreeSha256": "e8036f73dd16265ef1386475bb406a1eda94bb813b76029e773325193c13df72",
+  "signatureVerified": true,
+  "signingPurpose": "local-development-device-only",
+  "getTaskAllow": true,
+  "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
+  "deviceIncludedInProfile": true,
+  "installed": true,
+  "physicalIPhoneReview": "pending-human",
+  "recompiled": true,
+  "originalArchiveUnchanged": true,
+  "launchVerified": true,
+  "runningProcessVerified": true,
+  "device": "iPhone 17",
+  "iOS": "27.0.1",
+  "preparationDate": "2026-10-20",
+  "preserveExistingAppData": true,
+  "monetizationProvidersEnabled": false,
+  "installedVersion": "0.1.0 (1)",
+  "installMode": "in-place-update-no-uninstall",
+  "humanReview": {
+    "result": "pending-human",
+    "scope": [
+      "Approved compact bold Play button on Home",
+      "Settings navigation, locale selector and tutorial replay"
+    ],
+    "automatedPhysicalInteractionTests": false
+  },
+  "removedIntermediates": [
+    "Builds/Issue76iPhone-f15860d-export/",
+    ".unity-results/ios-archive.dPXwVj/DerivedData/"
+  ]
+}

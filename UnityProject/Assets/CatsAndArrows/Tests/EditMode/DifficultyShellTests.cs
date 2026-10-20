@@ -22,16 +22,16 @@ namespace CatsAndArrows.Tests
         [TestCase("en", "Play", "Next board")]
         [TestCase("pt-BR", "Jogar", "Próximo tabuleiro")]
         [TestCase("es", "Jugar", "Siguiente tablero")]
-        public void MenuOffersPlayTutorialLanguagesWithoutDifficultyChoice(string locale, string play, string next)
+        public void HomeOffersPlayAndSettingsWithoutDifficultyChoice(string locale, string play, string next)
         {
             var shell = PlayTestFactory.Shell(14, locale);
             Assert.That(shell.Q<Button>("menu-start").text, Is.EqualTo(play));
-            Assert.That(shell.Q<Button>("menu-tutorial"), Is.Not.Null);
+            Assert.That(shell.Q<Button>("menu-settings"), Is.Not.Null);
             Assert.That(shell.Q<Button>("menu-rules"), Is.Null);
             foreach (var id in new[] { "easy", "medium", "hard" })
                 Assert.That(shell.Q<Button>("menu-difficulty-" + id), Is.Null);
             foreach (var id in new[] { "en", "pt-BR", "es" })
-                Assert.That(shell.Q<Button>("language-" + id), Is.Not.Null);
+                Assert.That(shell.Q<Button>("language-" + id), Is.Null);
             Assert.That(shell.StartNewGame(), Is.True);
             Assert.That(shell.Q<Button>("action-new-game").text, Is.EqualTo(next));
         }
@@ -129,6 +129,9 @@ namespace CatsAndArrows.Tests
             shell.StartPlaying(); var tutorial = shell.Tutorial; shell.StartPlaying();
             Assert.That(shell.Tutorial, Is.SameAs(tutorial)); Assert.That(shell.Modal, Is.Null);
             shell.ShowMenu(); shell.StartPlaying(); shell.StartPlaying();
+            Assert.That(shell.Tutorial, Is.SameAs(tutorial));
+            Assert.That(shell.Modal, Is.Null);
+            shell.SkipTutorial();
             Assert.That(shell.Modal, Is.EqualTo("loading")); Assert.That(shell.NewGameRequestId, Is.Zero);
             Assert.That(shell.StartNewGame(), Is.True); Assert.That(shell.NewGameRequestId, Is.EqualTo(1));
             Assert.That(shell.Loop.DifficultySelection.History.ConsecutiveStarts, Is.EqualTo(1));

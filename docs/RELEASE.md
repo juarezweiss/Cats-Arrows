@@ -56,8 +56,8 @@ code remains excluded. The receipt also checks generated IL2CPP sources.
 
 `PawsBootstrap` starts the ordinary game with saved preferences, real safe area,
 normal tutorial/lifecycle and `monetization: null`. No providers initialize;
-Hints remain free and purchase UI hidden. This is the binary disabled/rollback
-configuration. Future enabled releases require separate approved real adapters
+Hints remain free; Settings shows unavailable purchase/restore rows (#76). This
+is the binary disabled/rollback configuration. Future enabled releases require separate approved real adapters
 and tests; reverting to this composition retains existing monetization storage
 and verified ownership. No remote kill switch is claimed.
 
@@ -202,3 +202,30 @@ unsigned-archive receipt remains a point-in-time build record. Other-device and
 measured-performance coverage are not inferred. This pass does not authorize a
 merge, upload, submission or production release; distribution signing and owner
 release decisions remain separate.
+
+
+## #76 approved menu — local iPhone preparation, 2026-10-20
+
+Owner-approved menu source `f15860d0e5ba8c4b7deb393419e73388e39a05a8` was
+exported with pinned Unity 6000.3.25f1, archived as Release/arm64 and locally
+signed using the existing development provisioning. Production composition,
+provider/diagnostic exclusion, strict app/framework signatures, profile/device/
+expiry, unchanged unsigned archive hash and binary/dSYM UUIDs passed inspection.
+
+Paws **0.1.0 (1)** (`com.jweiss.paws`) was installed over the existing app on
+**iPhone 17 / iOS 27.0.1**, with no uninstall or data reset. Plain launch and the
+running process were verified. Local development signing expires
+**2026-10-27 17:36:44 UTC**; this is not an App Store distribution signature.
+[Sanitized preparation receipt](evidence/issue76/device-preparation.json) records
+source, artifact hashes and the separate pending human review.
+
+Retained locally: `Builds/Issue76iPhone-f15860d.xcarchive/` with dSYMs,
+`Builds/Issue76iPhone-f15860d/Paws.app` and its small export metadata, plus ignored
+technical logs/receipts. This run's export and DerivedData were removed after
+success. No provider integration, upload, store submission or merge was performed.
+
+Human physical review remains pending for this source. Checklist: approved Play
+width/height/bold text and comfortable gear; Settings/Back; native language
+selection with immediate localization and persistence; Tutorial replay and
+Home Play resume. No physical interaction, appearance or lifecycle tests were
+automated; the earlier #63 human pass does not cover this changed menu.

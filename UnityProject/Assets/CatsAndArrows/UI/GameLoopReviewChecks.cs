@@ -72,7 +72,7 @@ namespace CatsAndArrows.UI
             yield return new WaitForEndOfFrame();
             if (!Check(() => { Click(shell, "action-menu"); Require(ReferenceEquals(session, shell.Loop.Session), "Menu keeps board"); })) yield break;
             yield return new WaitForEndOfFrame();
-            if (!Check(() => Click(shell, "menu-back"))) yield break;
+            if (!Check(() => Click(shell, "menu-start"))) yield break;
             yield return new WaitForEndOfFrame();
             if (!Check(() =>
             {

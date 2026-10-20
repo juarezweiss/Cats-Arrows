@@ -15,10 +15,11 @@ namespace CatsAndArrows.UI
     {
         public static IEnumerator Run(GameShellView shell, string directory)
         {
+            shell.ShowSettings();
             yield return Settle();
             if (!Check(() => {
                 Require(shell.panel != null, "mounted panel");
-                CheckButton(shell, "menu-remove-ads"); CheckButton(shell, "menu-restore");
+                CheckButton(shell, "settings-remove-ads"); CheckButton(shell, "settings-restore");
             })) yield break;
             yield return Capture(directory, "unowned-menu");
             if (!Check(() => Require(shell.StartNewGame(), "fresh board"))) yield break;
@@ -34,13 +35,13 @@ namespace CatsAndArrows.UI
                 CheckButton(shell, "action-hint");
             })) yield break;
             yield return Capture(directory, "rewarded-hint");
-            if (!Check(() => shell.ShowMenu())) yield break;
+            if (!Check(() => shell.ShowSettings())) yield break;
             yield return Settle();
             if (!Check(() => shell.PurchaseRemoveAds())) yield break;
             yield return Settle();
             if (!Check(() => {
-                Require(!shell.Q<Button>("menu-remove-ads").enabledSelf, "verified mock owned menu");
-                CheckButton(shell, "menu-remove-ads"); CheckButton(shell, "menu-restore");
+                Require(!shell.Q<Button>("settings-remove-ads").enabledSelf, "verified mock owned menu");
+                CheckButton(shell, "settings-remove-ads"); CheckButton(shell, "settings-restore");
             })) yield break;
             yield return Capture(directory, "owned-menu");
             if (!Check(() => shell.BackToGame())) yield break;

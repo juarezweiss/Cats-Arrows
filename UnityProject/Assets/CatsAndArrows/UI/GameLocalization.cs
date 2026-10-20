@@ -26,6 +26,8 @@ namespace CatsAndArrows.UI
                 { "game.back", new[] { "Back to the Game", "Voltar ao Jogo", "Volver al Juego" } },
                 { "game.close", new[] { "Continue", "Continuar", "Continuar" } },
                 { "game.retry", new[] { "Try Again", "Tentar Novamente", "Intentar de Nuevo" } },
+                { "settings.title", new[] { "Settings", "Configurações", "Ajustes" } },
+                { "settings.back", new[] { "Back", "Voltar", "Volver" } },
                 { "game.language", new[] { "Language", "Idioma", "Idioma" } },
                 { "game.loading", new[] { "Finding a little puzzle…", "Preparando um tabuleiro…", "Preparando un tablero…" } },
                 { "game.victory", new[] { "All paws found!", "Você encontrou todas as patas!", "¡Encontraste todas las patas!" } },

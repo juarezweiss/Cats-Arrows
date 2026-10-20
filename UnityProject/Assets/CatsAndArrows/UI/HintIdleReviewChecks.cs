@@ -131,7 +131,7 @@ namespace CatsAndArrows.UI
             yield return new WaitForEndOfFrame();
             if (!Check(() =>
             {
-                Click(shell, "menu-back"); shell.TickHintAttention(); Require(!Attention(shell), "return starts fresh");
+                Click(shell, "menu-start"); shell.TickHintAttention(); Require(!Attention(shell), "return starts fresh");
                 advance(6); shell.TickHintAttention(); Require(Attention(shell), "return interval");
                 shell.SetApplicationPaused(true); Require(!Attention(shell), "pause immediately removes emphasis");
                 advance(60); shell.TickHintAttention(); shell.SetApplicationPaused(false);

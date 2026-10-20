@@ -88,7 +88,7 @@ namespace CatsAndArrows.UI
                     }
                 })) yield break;
                 for (var i = 0; i < 3; i++) yield return new WaitForEndOfFrame();
-                if (!touch && !Check(() => Click(shell, "menu-back"))) yield break;
+                if (!touch && !Check(() => Click(shell, "menu-start"))) yield break;
                 for (var i = 0; i < 3; i++) yield return new WaitForEndOfFrame();
                 if (!Check(() =>
                 {
@@ -124,7 +124,7 @@ namespace CatsAndArrows.UI
             for (var i = 0; i < 3; i++) yield return new WaitForEndOfFrame();
             if (!Check(() =>
             {
-                Click(shell, "menu-back"); advance(10); shell.TickCompletion();
+                Click(shell, "menu-start"); advance(10); shell.TickCompletion();
                 Require(shell.Q("completion-actions").style.display.value == DisplayStyle.None, "Menu returns to static completed board");
                 Debug.Log("COMPLETION_REVIEW_PASS locale=" + shell.Locale + " viewport=" + Screen.width + "x" + Screen.height + " mouse+touch+Hint");
             })) yield break;
