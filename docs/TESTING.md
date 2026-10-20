@@ -33,10 +33,16 @@ profile/device/expiry checks and running-process verification passed; no rebuild
 or IPA was needed. This development signature expires 2026-10-27;
 [device-preparation receipt](evidence/issue63/device-preparation.json) records
 separate provenance. No physical interaction tests were automated.
-Human review remains **pending** for
-#63's fresh production sandbox, localized appearance/touch/tutorial/gameplay,
-completion locks, portrait/safe areas and lifecycle/preferences. Account actions,
-signing credentials, purchases and distribution remain owner-controlled.
+The owner reported **“all passed” on 2026-10-20**, completing #63's physical
+review checklist on **iPhone 17 / iOS 27.0.1**, **0.1.0 (1)**, source `b1dee6a`.
+Scope: Paws name/icon, portrait/safe areas, EN/pt-BR/es; first Play tutorial,
+replay/Skip and Play/Next across difficulties; tap/drag, protected cells, arrow
+hold, Hint/Clear/Menu; celebration/static return and completion lock;
+background/reopen/restart and saved language/preferences; no ads/purchase prompts.
+The report is the owner's human acceptance, separate from technical install/launch
+checks. It does not establish other-device coverage, measured performance or
+App Store distribution signing/approval. Account actions, signing credentials,
+purchases and distribution remain owner-controlled.
 
 ## Issue #72 initial menu
 

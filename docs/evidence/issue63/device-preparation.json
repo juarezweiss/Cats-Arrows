@@ -20,7 +20,7 @@
   "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
   "deviceIncludedInProfile": true,
   "installed": true,
-  "physicalIPhoneReview": "pending-human",
+  "physicalIPhoneReview": "passed-owner",
   "recompiled": false,
   "originalArchiveUnchanged": true,
   "launchVerified": true,
@@ -32,5 +32,28 @@
   "removedIntermediates": [
     "Builds/Issue63-export/",
     ".unity-results/ios-archive.6LQRxp/DerivedData/"
-  ]
+  ],
+  "humanReview": {
+    "reviewer": "owner",
+    "reportedDate": "2026-10-20",
+    "report": "all passed",
+    "result": "pass",
+    "device": "iPhone 17",
+    "iOS": "27.0.1",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "sourceSha": "b1dee6a6e641e7f026336b319a458dfca4c8483e",
+    "scope": [
+      "Paws name/icon, portrait/safe areas and English/pt-BR/Spanish",
+      "First Play tutorial, replay/Skip and Play/Next across difficulties",
+      "Tap cycle, drag, protected cells, arrow hold, Hint, Clear and Menu",
+      "Win celebration, static return and completed-board lock",
+      "Background/reopen, restart and saved language/preferences",
+      "No ads or purchase prompts"
+    ],
+    "limitations": [
+      "Single reviewed device; no broader-device coverage or measured performance claim",
+      "Development signing only; App Store distribution approval remains separate"
+    ]
+  }
 }

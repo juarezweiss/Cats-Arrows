@@ -154,8 +154,8 @@ This run's reproducible DerivedData and, after local installation below, full
 export were removed; small export/signing metadata remains with the signed app.
 Repository checks, 36 Python contracts, pinned compilation and **495/495**
 EditMode tests passed; independent QA reports no blocking findings. See
-[TESTING.md](TESTING.md). **Signing/distribution readiness and human physical
-iPhone acceptance remain pending.** At this unsigned-archive milestone, no
+[TESTING.md](TESTING.md). Signing/distribution readiness and human physical
+iPhone acceptance were pending at this unsigned-archive milestone. At that point, no
 credentials, account/registration, purchase, install, upload, submission or release
 actions had been performed. The later owner-authorized local installation follows.
 
@@ -176,7 +176,8 @@ version **0.1.0 (1)**, source `b1dee6a`. This is a **local development signature
 (`get-task-allow=true`), expiring **2026-10-27 17:36:44 UTC**; it is separate from
 App Store distribution signing/validation. [Device-preparation receipt](evidence/issue63/device-preparation.json)
 records its own signed-app tree hash and scope. No physical interaction,
-appearance, lifecycle or comfort test was automated; human acceptance is pending.
+appearance, lifecycle or comfort test was automated. The owner's later acceptance
+is recorded below.
 
 Retained: `Builds/Issue63iPhone/Paws.app` (about 46 MiB), its small
 `ExportMetadata/`, the immutable unsigned archive/dSYMs (about 406 MiB), plus
@@ -184,3 +185,20 @@ small receipts/logs. The temporary full export (about 690 MiB) and archive
 DerivedData (about 1.7 GiB) have been removed. Owner signing settings remain
 outside Git; the committed Unity/release configuration remains authoritative.
 Use the physical handoff checklist above and record the owner's scoped result.
+
+
+## #63 owner physical acceptance — 2026-10-20
+
+The owner reported **“all passed”** after testing the handed-off **Paws 0.1.0 (1)**
+on **iPhone 17 / iOS 27.0.1**, source `b1dee6a`. This closes #63's human physical
+review for the supplied checklist: identity/locales/portrait/safe areas;
+tutorial/replay/Skip and Play/Next across difficulties; tap/drag/protected cells,
+arrow hold, Hint/Clear/Menu; celebration/static return and completion lock;
+background/reopen/restart and saved language/preferences; no ads/purchase prompts.
+The [device-preparation receipt](evidence/issue63/device-preparation.json) now
+includes this dated owner report separately from automated technical readiness.
+No new build or device automation was performed to record acceptance. The original
+unsigned-archive receipt remains a point-in-time build record. Other-device and
+measured-performance coverage are not inferred. This pass does not authorize a
+merge, upload, submission or production release; distribution signing and owner
+release decisions remain separate.
