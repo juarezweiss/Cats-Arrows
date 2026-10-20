@@ -58,64 +58,64 @@ namespace CatsAndArrows.UI
                 "Las flechas no se pueden cambiar. Apuntan hacia al menos una pata."
             } },
             { "tutorial.practice", new[] {
-                "Tap the highlighted cell 3 times: Empty → X → Paw → Empty.",
-                "Toque 3 vezes na célula destacada: Vazia → X → Pata → Vazia.",
-                "Toca 3 veces la celda resaltada: Vacía → X → Pata → Vacía."
+                "<b>Tap</b> the highlighted cell 3 times: Empty → X → Paw → Empty.",
+                "<b>Toque</b> 3 vezes na célula destacada: Vazia → X → Pata → Vazia.",
+                "<b>Toca</b> 3 veces la celda resaltada: Vacía → X → Pata → Vacía."
             } },
             { "tutorial.zero-column", new[] {
-                "This column has 0 paws. Swipe its empty cells to mark X.",
-                "Esta coluna tem 0 patas. Arraste pelas células vazias para marcar X.",
-                "Esta columna tiene 0 patas. Desliza por las celdas vacías para marcar X."
+                "This column has 0 paws. <b>Swipe</b> its empty cells to mark X.",
+                "Esta coluna tem 0 patas. <b>Arraste</b> pelas células vazias para marcar X.",
+                "Esta columna tiene 0 patas. <b>Desliza</b> por las celdas vacías para marcar X."
             } },
             { "tutorial.zero-row", new[] {
-                "This row has 0 paws. Swipe its empty cells to mark X.",
-                "Esta linha tem 0 patas. Arraste pelas células vazias para marcar X.",
-                "Esta fila tiene 0 patas. Desliza por las celdas vacías para marcar X."
+                "This row has 0 paws. <b>Swipe</b> its empty cells to mark X.",
+                "Esta linha tem 0 patas. <b>Arraste</b> pelas células vazias para marcar X.",
+                "Esta fila tiene 0 patas. <b>Desliza</b> por las celdas vacías para marcar X."
             } },
             { "tutorial.first-paw", new[] {
-                "This arrow’s only space must be a paw. Tap it twice.",
-                "Só há uma célula à frente da seta. Toque 2 vezes para uma pata.",
-                "Solo hay una celda delante de la flecha. Toca 2 veces para una pata."
+                "This arrow’s only space must be a paw. <b>Tap</b> it twice.",
+                "Só há uma célula à frente da seta. <b>Toque</b> 2 vezes para uma pata.",
+                "Solo hay una celda delante de la flecha. <b>Toca</b> 2 veces para una pata."
             } },
             { "tutorial.first-column-x", new[] {
-                "This column's 1 paw is found. Swipe its empty cells to X.",
-                "A coluna já tem sua única pata. Arraste pelas vazias para X.",
-                "La columna ya tiene su pata. Desliza por las vacías para marcar X."
+                "This column's 1 paw is found. <b>Swipe</b> its empty cells to X.",
+                "A coluna já tem sua única pata. <b>Arraste</b> pelas vazias para X.",
+                "La columna ya tiene su pata. <b>Desliza</b> por las vacías para marcar X."
             } },
             { "tutorial.second-paw", new[] {
-                "This arrow also has just one space ahead. Tap it twice for a paw.",
-                "Outra seta com só uma célula à frente. Toque 2 vezes para uma pata.",
-                "Otra flecha con una sola celda delante. Toca 2 veces para una pata."
+                "This arrow also has just one space ahead. <b>Tap</b> it twice for a paw.",
+                "Outra seta com só uma célula à frente. <b>Toque</b> 2 vezes para uma pata.",
+                "Otra flecha con una sola celda delante. <b>Toca</b> 2 veces para una pata."
             } },
             { "tutorial.second-row-x", new[] {
-                "This row's 1 paw is found. Swipe empty cells to X; the paw stays.",
-                "Esta linha já tem sua única pata. Arraste pelas vazias para X; a pata fica.",
-                "La fila ya tiene su pata. Desliza por las vacías para X; la pata queda."
+                "This row's 1 paw is found. <b>Swipe</b> empty cells to X; the paw stays.",
+                "Esta linha já tem sua única pata. <b>Arraste</b> pelas vazias para X; a pata fica.",
+                "La fila ya tiene su pata. <b>Desliza</b> por las vacías para X; la pata queda."
             } },
             { "tutorial.arrow-hold-intro", new[] {
-                "Press and hold any arrow to highlight its path.",
-                "Pressione e segure qualquer seta para destacar seu caminho.",
-                "Mantén pulsada cualquier flecha para resaltar su camino."
+                "Press and hold any arrow to highlight its path. Tap <b>Continue</b> to try.",
+                "Pressione e segure qualquer seta para destacar seu caminho. Toque em <b>Continuar</b> para testar.",
+                "Mantén pulsada cualquier flecha para resaltar su camino. Toca <b>Continuar</b> para probarlo."
             } },
             { "tutorial.diagonal-paw", new[] {
-                "Hold this 45° arrow, find the only available paw cell, then tap it twice.",
-                "Segure esta seta de 45°, encontre a única célula disponível para pata e toque nela 2 vezes.",
-                "Mantén pulsada esta flecha de 45°, encuentra la única celda disponible para una pata y tócala 2 veces."
+                "<b>Press and hold</b> this 45° arrow, find the only available paw cell, then <b>tap</b> it twice.",
+                "<b>Pressione e segure</b> esta seta de 45°, encontre a única célula disponível para pata e depois <b>toque</b> nela 2 vezes.",
+                "<b>Mantén pulsada</b> esta flecha de 45°, encuentra la única celda disponible para una pata y luego <b>tócala</b> 2 veces."
             } },
             { "tutorial.fourth-paw", new[] {
-                "This row needs 2 paws. One is found; only this cell remains. Tap twice.",
-                "Esta linha pede 2 patas. Já há uma; só resta esta célula. Toque 2 vezes.",
-                "Esta fila pide 2 patas. Ya hay una; solo queda esta celda. Toca 2 veces."
+                "This row needs 2 paws. One is found; only this cell remains. <b>Tap</b> twice.",
+                "Esta linha pede 2 patas. Já há uma; só resta esta célula. <b>Toque</b> 2 vezes.",
+                "Esta fila pide 2 patas. Ya hay una; solo queda esta celda. <b>Toca</b> 2 veces."
             } },
             { "tutorial.single-x", new[] {
-                "This column has its 1 paw. Tap the remaining empty cell once for X.",
-                "Esta coluna já tem sua única pata. Toque uma vez na vazia restante para X.",
-                "Esta columna ya tiene su pata. Toca la última vacía una vez para X."
+                "This column has its 1 paw. <b>Tap</b> the remaining empty cell once for X.",
+                "Esta coluna já tem sua única pata. <b>Toque</b> uma vez na vazia restante para X.",
+                "Esta columna ya tiene su pata. <b>Toca</b> la última vacía una vez para X."
             } },
             { "tutorial.final-paw", new[] {
-                "This column needs 2 paws. One is found. Tap twice for the last paw.",
-                "Esta coluna pede 2 patas. Já há uma. Toque 2 vezes para a última.",
-                "Esta columna pide 2 patas. Ya hay una. Toca 2 veces para la última."
+                "This column needs 2 paws. One is found. <b>Tap</b> twice for the last paw.",
+                "Esta coluna pede 2 patas. Já há uma. <b>Toque</b> 2 vezes para a última.",
+                "Esta columna pide 2 patas. Ya hay una. <b>Toca</b> 2 veces para la última."
             } },
             { "tutorial.independent", new[] {
                 "Now try it yourself! Find all the paws on this same board.",

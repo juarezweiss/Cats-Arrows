@@ -96,8 +96,9 @@ starting a drag. A second pointer cannot take ownership.
 
 Release, capture/cancel, focus loss/background, navigation, suspension, geometry
 changes and rebind remove pending or active hold feedback. The aid does not run
-on completed boards and remains disabled in the fixed tutorial except for its focused
-R1C4 DownLeft arrow-hold lesson; cleanup preserves the lesson's existing outlines.
+on completed boards. During guided tutorial steps it remains disabled except for the
+focused R1C4 DownLeft arrow-hold lesson; the independent same-board stage enables any
+arrow. Cleanup preserves the lesson's existing outlines.
 How to Play describes the gesture in English, pt-BR and Spanish.
 
 ## Issue #48 idle Hint attention

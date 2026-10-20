@@ -82,11 +82,12 @@ namespace CatsAndArrows.Gameplay
             targets.Contains(coordinate) && Session.CanInteract(coordinate);
 
         public bool CanHoldArrow(BoardCoordinate coordinate) =>
-            Step == TutorialStep.DiagonalPaw && coordinate.Equals(Cell(0, 3));
+            (Step == TutorialStep.Independent && Session.Puzzle.Arrows.ContainsKey(coordinate)) ||
+            (Step == TutorialStep.DiagonalPaw && coordinate.Equals(Cell(0, 3)));
 
         public bool RecordArrowHold(BoardCoordinate coordinate)
         {
-            if (!CanHoldArrow(coordinate)) return false;
+            if (Step != TutorialStep.DiagonalPaw || !coordinate.Equals(Cell(0, 3))) return false;
             diagonalArrowHeld = true;
             return true;
         }

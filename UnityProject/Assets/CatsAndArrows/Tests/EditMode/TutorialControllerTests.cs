@@ -227,6 +227,11 @@ namespace CatsAndArrows.Tests
             Assert.That(controller.DemoCoordinate, Is.Null);
             Assert.That(controller.DemoMark, Is.Null);
             Assert.That(controller.EndGesture(), Is.False);
+            foreach (var arrow in controller.Session.Puzzle.Arrows.Keys)
+                Assert.That(controller.CanHoldArrow(arrow), Is.True, arrow.ToString());
+            Assert.That(controller.CanHoldArrow(C(0, 0)), Is.False);
+            Assert.That(controller.RecordArrowHold(C(0, 3)), Is.False,
+                "Independent holds must not mutate the guided-step completion flag.");
             foreach (var cell in controller.Session.Puzzle.SolutionPaws)
             {
                 Assert.That(controller.CanInteract(cell), Is.True);

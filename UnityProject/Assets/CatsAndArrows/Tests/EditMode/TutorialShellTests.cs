@@ -85,14 +85,25 @@ namespace CatsAndArrows.Tests
             foreach (var key in keys) Assert.That(resource[key], Is.Not.Empty, key);
             Assert.That(resource["tutorial.diagonal-paw"], Does.Contain("45°"));
         }
-        [TestCase("en", "hold")]
-        [TestCase("pt-BR", "segure")]
-        [TestCase("es", "pulsada")]
-        public void ArrowHoldLessonIsLocalizedInEverySupportedLocale(string locale, string gestureWord)
+        [TestCase("en", "Press and hold any arrow to highlight its path. Tap <b>Continue</b> to try.",
+            "<b>Tap</b>", "<b>Swipe</b>", "<b>Press and hold</b>", "<b>tap</b>")]
+        [TestCase("pt-BR", "Pressione e segure qualquer seta para destacar seu caminho. Toque em <b>Continuar</b> para testar.",
+            "<b>Toque</b>", "<b>Arraste</b>", "<b>Pressione e segure</b>", "<b>toque</b>")]
+        [TestCase("es", "Mantén pulsada cualquier flecha para resaltar su camino. Toca <b>Continuar</b> para probarlo.",
+            "<b>Toca</b>", "<b>Desliza</b>", "<b>Mantén pulsada</b>", "<b>tócala</b>")]
+        public void GuidedActionsAndArrowHoldIntroAreLocalizedAndBold(string locale, string intro,
+            string tap, string swipe, string hold, string followupTap)
         {
             var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
-            Assert.That(messages["tutorial.arrow-hold-intro"].ToLowerInvariant(), Does.Contain(gestureWord));
-            Assert.That(messages["tutorial.diagonal-paw"].ToLowerInvariant(), Does.Contain(gestureWord));
+            Assert.That(messages["tutorial.arrow-hold-intro"], Is.EqualTo(intro));
+            foreach (var key in new[] { "tutorial.practice", "tutorial.first-paw", "tutorial.second-paw",
+                         "tutorial.fourth-paw", "tutorial.single-x", "tutorial.final-paw" })
+                Assert.That(messages[key], Does.Contain(tap), key);
+            foreach (var key in new[] { "tutorial.zero-column", "tutorial.zero-row",
+                         "tutorial.first-column-x", "tutorial.second-row-x" })
+                Assert.That(messages[key], Does.Contain(swipe), key);
+            Assert.That(messages["tutorial.diagonal-paw"], Does.Contain(hold));
+            Assert.That(messages["tutorial.diagonal-paw"], Does.Contain(followupTap));
         }
         [Test] public void SequentialDemoSymbolsAreBoldReadOnlyAndFixedKindsAreSeparate()
         {

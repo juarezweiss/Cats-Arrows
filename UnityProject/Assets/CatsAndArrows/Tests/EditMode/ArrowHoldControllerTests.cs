@@ -60,9 +60,10 @@ namespace CatsAndArrows.Tests
             var game = new GameSession(puzzle);
             var activations = 0;
             var activatedOrigin = default(BoardCoordinate);
+            var allowAnyArrow = false;
             now = 0;
             var tutorialHold = new ArrowHoldController(game, layout, () => now,
-                canBegin: coordinate => coordinate.Equals(origin),
+                canBegin: coordinate => allowAnyArrow || coordinate.Equals(origin),
                 activated: coordinate => { activations++; activatedOrigin = coordinate; });
 
             Assert.That(tutorialHold.Begin(1, Center(other)), Is.False);
@@ -83,8 +84,19 @@ namespace CatsAndArrows.Tests
             Assert.That(activatedOrigin, Is.EqualTo(origin));
             tutorialHold.End(2);
 
+            allowAnyArrow = true;
+            var before = game.Marks.ToArray();
+            Assert.That(tutorialHold.Begin(3, Center(other)), Is.True);
+            now += ArrowHoldController.HoldSeconds + .001;
+            Assert.That(tutorialHold.Tick(), Is.True);
+            Assert.That(activatedOrigin, Is.EqualTo(other));
+            tutorialHold.End(3);
+            Assert.That(tutorialHold.IsHighlighted, Is.False);
+            Assert.That(tutorialHold.Path, Is.Empty);
+            Assert.That(game.Marks, Is.EquivalentTo(before));
+
             var ordinaryHold = new ArrowHoldController(game, layout, () => now);
-            Assert.That(ordinaryHold.Begin(3, Center(other)), Is.True,
+            Assert.That(ordinaryHold.Begin(4, Center(other)), Is.True,
                 "No eligibility hook must preserve ordinary-board arrow holds.");
         }
 
