@@ -56,8 +56,8 @@ code remains excluded. The receipt also checks generated IL2CPP sources.
 
 `PawsBootstrap` starts the ordinary game with saved preferences, real safe area,
 normal tutorial/lifecycle and `monetization: null`. No providers initialize;
-Hints remain free and purchase UI hidden. This is the binary disabled/rollback
-configuration. Future enabled releases require separate approved real adapters
+Hints remain free; Settings shows unavailable purchase/restore rows (#76). This
+is the binary disabled/rollback configuration. Future enabled releases require separate approved real adapters
 and tests; reverting to this composition retains existing monetization storage
 and verified ownership. No remote kill switch is claimed.
 

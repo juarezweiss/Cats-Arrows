@@ -264,7 +264,11 @@ namespace CatsAndArrows.UI
             footer.style.flexShrink = 0; footer.style.paddingBottom = 64;
             var play = MakeButton("menu-start", "game.start", StartPlaying);
             play.style.backgroundColor = BoardSymbolElement.Ink; play.style.color = PortraitBoardView.Tile;
-            play.style.height = 62;
+            play.style.height = 52;
+            play.style.alignSelf = Align.Center;
+            play.style.unityFontStyleAndWeight = FontStyle.Bold;
+            title.RegisterCallback<GeometryChangedEvent>(_ =>
+                play.style.width = title.MeasureTextSize(title.text, 0, MeasureMode.Undefined, 0, MeasureMode.Undefined).x);
             play.style.borderTopLeftRadius = play.style.borderTopRightRadius = 14;
             play.style.borderBottomLeftRadius = play.style.borderBottomRightRadius = 14;
             footer.Add(play);

@@ -37,6 +37,10 @@ gear at bottom-right. Play resumes an in-memory ordinary/tutorial/completed boar
 with no live board it follows the existing first-Play policy. Next board remains
 the explicit fresh-board action. Navigation does not save boards across restarts.
 
+Owner-approved refinement (2026-10-20): the centered Play button matches the
+rendered Paws title width, uses bold text, and is 52 logical units tall (previously
+62). This preserves the 48-unit minimum target in all three locales.
+
 The gear opens a separate Settings screen with a small top-left Back action to
 Home and an extensible vertical scrolling list. Initial rows, in order: Language,
 Tutorial, Remove Ads, Restore Purchases. Language opens a compact selector whose

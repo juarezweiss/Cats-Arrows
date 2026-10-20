@@ -115,6 +115,14 @@ namespace CatsAndArrows.Tests
                 Assert.That(shell.Q("menu-languages"), Is.Null);
                 Assert.That(shell.Q("menu-paw").worldBound.yMax, Is.LessThan(shell.Q("menu-title").worldBound.yMin));
                 foreach (var name in new[] { "menu-start", "menu-settings" }) AssertTarget(shell.Q<Button>(name), safe);
+                var play = shell.Q<Button>("menu-start");
+                var title = shell.Q<Label>("menu-title");
+                var titleTextWidth = title.MeasureTextSize(title.text, 0, VisualElement.MeasureMode.Undefined,
+                    0, VisualElement.MeasureMode.Undefined).x;
+                Assert.That(play.worldBound.width, Is.EqualTo(titleTextWidth).Within(1), "Play matches Paws text width, excluding label padding");
+                Assert.That(play.worldBound.center.x, Is.EqualTo(title.worldBound.center.x).Within(1), "Play remains centered");
+                Assert.That(play.worldBound.height, Is.EqualTo(52).Within(1));
+                Assert.That(play.resolvedStyle.unityFontStyleAndWeight, Is.EqualTo(FontStyle.Bold));
                 var gear = shell.Q("menu-settings").worldBound;
                 Assert.That(gear.center.x, Is.GreaterThan(safe.center.x));
                 Assert.That(gear.yMax, Is.GreaterThan(safe.yMax - 8));

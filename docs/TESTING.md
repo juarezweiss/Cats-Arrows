@@ -64,6 +64,17 @@ Repository validation, whitespace and all
 **36** Python runner contracts pass. Independent QA reports no blocking findings
 following code and native screenshot review.
 
+Owner-approved Play refinement (2026-10-20): button width matches the rendered
+Paws text, height is 52 logical units and its localized label is bold. Pinned
+compilation passed (`compile.Ys3uSL`), focused **72/72** passed
+(`issue76-focused.2MC6W5`), and required full EditMode **497/497** passed
+(`editmode.WY5AA9`), all with successful editor exits and no failed/skipped/
+inconclusive tests. Existing mounted checks additionally verify text-width match,
+centering, height and bold weight in all nine portrait/locale combinations.
+Independent QA reports no blocking findings. Home screenshots below were refreshed
+using the updated native review player (`issue76-review-build.YsRYyy`); its
+`--game-loop-check=1` smoke passed again, including actual mounted Play clicks.
+
 The macOS development review player built successfully
 (`issue76-review-build.9tLUA1`). Native `--game-loop-check=1`,
 `--tutorial-check=1` and SDK-free `--monetization-mock=1 --monetization-check=1`
