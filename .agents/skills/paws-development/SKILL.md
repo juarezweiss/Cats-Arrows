@@ -1,9 +1,9 @@
 ---
-name: cats-arrows-development
-description: Develop, review, test, plan, or release work for the Cats & Arrows Unity mobile puzzle repository. Use for feature implementation, bug fixes, puzzle generation/solver changes, mobile input and UI work, game-design changes, testing, task decomposition, PR preparation, release planning, analytics, monetization, or marketing work that must follow this repository's traceability, solvability, accessibility, context-hygiene, and production-safety rules.
+name: paws-development
+description: Develop, review, test, plan, or release work for the Paws Unity mobile puzzle repository. Use for feature implementation, bug fixes, puzzle generation/solver changes, mobile input and UI work, game-design changes, testing, task decomposition, PR preparation, release planning, analytics, monetization, or marketing work that must follow this repository's traceability, solvability, accessibility, context-hygiene, and production-safety rules.
 ---
 
-# Cats & Arrows Development
+# Paws Development
 
 ## Operating model
 - Treat root `AGENTS.md` as global governance and safety policy.

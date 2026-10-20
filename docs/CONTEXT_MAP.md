@@ -1,4 +1,4 @@
-# Cats & Arrows Context Map
+# Paws Context Map
 
 Purpose: route agents to the **minimum project context required for the current task**.
 
@@ -14,7 +14,7 @@ For every task:
 4. Inspect only relevant source files and direct dependencies.
 5. Broaden context only when correctness, risk, or an unresolved conflict requires it.
 
-If the repo-local `cats-arrows-development` Skill is active, follow its workflow and load only the reference files it routes for the current task. Do not reload already-understood unchanged context.
+If the repo-local `paws-development` Skill is active, follow its workflow and load only the reference files it routes for the current task. Do not reload already-understood unchanged context.
 
 ## Primary routing
 

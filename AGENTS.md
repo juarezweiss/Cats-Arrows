@@ -1,4 +1,4 @@
-# Cats & Arrows - Codex Operating Rules
+# Paws - Codex Operating Rules
 
 ## Mission
 Build and ship a cozy, accessible mobile logic puzzle game in Unity while keeping every change traceable, testable, reversible, and human-controlled at production boundaries.
