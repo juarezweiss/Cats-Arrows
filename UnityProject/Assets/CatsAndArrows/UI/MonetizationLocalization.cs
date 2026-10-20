@@ -13,7 +13,6 @@ namespace CatsAndArrows.UI
                 { "monetization.restore", new[] { "Restore Purchases", "Restaurar compras", "Restaurar compras" } },
                 { "monetization.explanation", new[] { "Removes ads between puzzles and makes hints available without ads.", "Remove anúncios entre tabuleiros e libera dicas sem anúncios.", "Elimina anuncios entre tableros y permite pistas sin anuncios." } },
                 { "monetization.review", new[] { "Mock review only. No real ads, store or charges.", "Apenas teste simulado. Sem anúncios reais, loja ou cobranças.", "Solo prueba simulada. Sin anuncios reales, tienda ni cargos." } },
-                { "monetization.rules", new[] { "Hints place one correct Paw or X. Without Remove All Ads, each hint requires a rewarded ad. An ad may appear when starting another puzzle after every fourth completed board.", "Dicas colocam uma marca correta de Pata ou X. Sem Remover todos os anúncios, cada dica exige um anúncio recompensado. Um anúncio pode aparecer ao iniciar outro tabuleiro após cada quarto tabuleiro concluído.", "Las pistas colocan una marca correcta de Pata o X. Sin Eliminar todos los anuncios, cada pista requiere un anuncio con recompensa. Puede aparecer un anuncio al comenzar otro tablero después de cada cuarto tablero completado." } },
                 { "monetization.status.None", new[] { "", "", "" } },
                 { "monetization.status.AdUnavailable", new[] { "Ad unavailable. Try Hint again later.", "Anúncio indisponível. Tente a dica mais tarde.", "Anuncio no disponible. Prueba la pista más tarde." } },
                 { "monetization.status.RewardNotEarned", new[] { "No reward earned. You can try again.", "Recompensa não obtida. Você pode tentar de novo.", "No se obtuvo recompensa. Puedes intentarlo de nuevo." } },
@@ -26,11 +25,6 @@ namespace CatsAndArrows.UI
                 { "monetization.status.Busy", new[] { "Please wait…", "Aguarde…", "Espera…" } }
             };
             foreach (var entry in entries) messages.Add(entry.Key, entry.Value[localeIndex]);
-            var freeHintSentence = new[] { "Hints are unlimited and immediately place one correct Paw or X.",
-                "As dicas são ilimitadas e colocam imediatamente uma marca correta de Pata ou X.",
-                "Las pistas son ilimitadas y colocan inmediatamente una marca correcta de Pata o X." };
-            messages.Add("monetization.rules-body", messages["game.rules-body"].Replace(freeHintSentence[localeIndex], "") +
-                "\n\n" + messages["monetization.rules"]);
         }
     }
 }

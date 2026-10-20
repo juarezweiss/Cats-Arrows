@@ -93,7 +93,7 @@ build/distribution readiness in #21.
 
 Begin with the fixed Easy tutorial. After it, `Play` and `Next board` choose among
 Easy, Medium and Hard automatically; report the displayed difficulty with feedback.
-Use How to Play if needed and try Hint when stuck. Test tapping, horizontal/vertical
+Replay Tutorial if needed and try Hint when stuck. Test tapping, horizontal/vertical
 drag, holding an arrow, Clear, Menu and another board. Finish a board and inspect
 both the celebration and static completed board. Try a preferred language and
 briefly background/reopen the app.

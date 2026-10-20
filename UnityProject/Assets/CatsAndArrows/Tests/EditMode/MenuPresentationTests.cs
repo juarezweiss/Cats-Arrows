@@ -48,7 +48,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(shell.Query<Label>().ToList().Any(l => l.text == messages["game.language"]), Is.False);
                 Assert.That(shell.Q("menu-languages").Children().Select(e => e.name),
                     Is.EqualTo(new[] { "language-pt-BR", "language-es", "language-en" }));
-                foreach (var name in new[] { "menu-start", "menu-tutorial", "menu-rules", "language-pt-BR", "language-es", "language-en" })
+                foreach (var name in new[] { "menu-start", "menu-tutorial", "language-pt-BR", "language-es", "language-en" })
                 {
                     var button = shell.Q<Button>(name); var rect = button.worldBound;
                     Assert.That(rect.width, Is.GreaterThanOrEqualTo(48), name);
@@ -73,7 +73,7 @@ namespace CatsAndArrows.Tests
             }
         }
 
-        [Test] public void ResumeRulesAndTutorialRemainAvailableWithoutMutatingBoard()
+        [Test] public void ResumeAndTutorialRemainAvailableWithoutMutatingBoard()
         {
             var shell = new GameShellView(14, "pt-BR", PlayTestFactory.Loop(), tutorialSeen: () => true, markTutorialSeen: () => { });
             shell.StartNewGame();
@@ -82,9 +82,8 @@ namespace CatsAndArrows.Tests
             var marks = session.Marks.ToArray();
             shell.ShowMenu();
             Assert.That(shell.Q<Button>("menu-back"), Is.Not.Null);
-            Assert.That(shell.Q<Button>("menu-rules"), Is.Not.Null);
+            Assert.That(shell.Q<Button>("menu-rules"), Is.Null);
             Assert.That(shell.Q<Button>("menu-tutorial"), Is.Not.Null);
-            shell.ShowRules(); Assert.That(shell.Modal, Is.EqualTo("rules"));
             shell.BackToGame();
             Assert.That(shell.ActiveSession, Is.SameAs(session));
             Assert.That(session.Marks, Is.EquivalentTo(marks));

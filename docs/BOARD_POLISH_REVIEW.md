@@ -39,7 +39,7 @@ These synthetic checks do not establish physical input comfort.
 
 21 rendered PNGs are saved under `.unity-results/issue19-captures`:
 en-320x568 (safe top/bottom 50/34), pt-BR-390x844 (50/34), es-430x932 (59/34),
-covering Menu, Rules, Play, Hint, Last hint, Completed and Completed by tap.
+including Menu, Play, Hint, Last hint, Completed and Completed by tap.
 Narrow phones have smaller tiles because symmetric clue space is necessary;
 QA/UX reviewed all 21 captures and found no blockers or completion layout jump.
 The extreme 320×568/inset preview has approximately 39-pixel tiles, so physical

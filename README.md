@@ -4,7 +4,7 @@ Paws is a cozy mobile logic puzzle about finding every hidden paw. Read the row
 and column totals, follow directional arrows, and mark the board until the exact
 solution is revealed—no guessing required.
 
-## How to play
+## Playing Paws
 
 - Each row and column total gives the exact number of hidden paws in that line.
 - An arrow means at least one hidden paw lies along its forward horizontal,

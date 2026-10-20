@@ -5,7 +5,7 @@ Merge remains pending explicit owner approval.
 
 ## Delivered behavior
 
-Menu offers Easy start, scrollable rules, English/Brazilian Portuguese/Spanish
+Menu offers Easy start, English/Brazilian Portuguese/Spanish
 language selection and Back to the Game when a live session exists. Locale alone
 persists; the current board stays in memory through Menu/background transitions.
 Normal boot picks a fresh initial seed; `--game-seed` pins diagnostic reproduction.
@@ -22,7 +22,7 @@ protection or hidden-answer reveal is introduced.
 Victory appears immediately after exact-cat completion, including from Hint.
 Back to the Game exposes the read-only completed board. Hint/Clear are disabled;
 Menu/New Game stay active. A final Hint merges its explanation into one victory
-dialog. Rules/hint bodies scroll and actions remain reachable; overlays suspend
+dialog. Hint bodies scroll and actions remain reachable; overlays suspend
 board input and cancel capture. Existing deterministic tap/drag remains intact.
 
 ## Validation evidence
@@ -37,7 +37,7 @@ menu/resume, modal guards, retry and immediate victory/action locks.
 macOS builds passed (`issue8-macos-build.log`, `issue8-macos-picking-build.log`).
 Mounted synthetic button flows passed in en/pt-BR/es; final checks also verify
 panel picking resolves each visible button (`issue8-panel-picking.log`). Real
-rendered PNGs cover Menu, Rules, Play, Hint, Victory and Completed in each locale:
+rendered PNGs include Menu, Play, Hint, Victory and Completed in each locale:
 `.unity-results/issue8-captures/en-320x568`, `pt-BR-390x844`, `es-430x932`.
 Simulated safe top/bottom insets are respectively 50/34, 50/34 and 59/34 pixels.
 UX reviewed all 18 captures and found no overlap, clipping or missing actions.
@@ -86,7 +86,7 @@ physical verification remains pending; first delivery is iOS.
 ## Owner playtest
 
 Start Easy; tap/drag; use Hint and read its explanation; dismiss it and Clear.
-Open Menu and return, preserving marks; switch all three languages and read Rules.
+Open Menu and return, preserving marks; switch all three languages.
 Complete a board (Hint may help), inspect it using Back to the Game, confirm
 Hint/Clear are disabled, then start New Game. Check that modal screens block board
 input and background/reopen retains the live board. Restart to check the saved

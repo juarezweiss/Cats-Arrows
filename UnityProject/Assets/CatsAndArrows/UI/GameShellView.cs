@@ -239,13 +239,6 @@ namespace CatsAndArrows.UI
                 scroll.contentContainer.style.minHeight = evt.newRect.height);
             scroll.contentContainer.style.alignItems = Align.Center;
 
-            var navigation = new VisualElement { name = "menu-navigation" };
-            navigation.style.width = Length.Percent(100);
-            navigation.style.alignItems = Align.FlexEnd;
-            var rules = MakeButton("menu-rules", "game.rules", ShowRules);
-            QuietMenuButton(rules); rules.style.fontSize = 14;
-            navigation.Add(rules); scroll.Add(navigation);
-
             var hero = new VisualElement { name = "menu-hero" };
             hero.style.flexGrow = 1; hero.style.flexShrink = 0;
             hero.style.minHeight = 300; hero.style.width = Length.Percent(100);
@@ -631,13 +624,6 @@ namespace CatsAndArrows.UI
             monetization.Changed -= OnMonetizationChanged;
             monetization.HintDelivered -= OnHintDelivered;
             monetization.Dispose();
-        }
-        public void ShowRules()
-        {
-            if (loading || CommercialBusy) return;
-            var returnToMenu = Screen == "menu";
-            ShowModal("rules", text.GetText("game.rules"), text.GetText(monetization?.Enabled == true ? "monetization.rules-body" : "game.rules-body"),
-                MakeButton("modal-back", "game.close", () => { if (returnToMenu) ShowMenu(); else BackToGame(); }));
         }
         private void ShowModal(string kind, string heading, string body, params Button[] actions)
         {

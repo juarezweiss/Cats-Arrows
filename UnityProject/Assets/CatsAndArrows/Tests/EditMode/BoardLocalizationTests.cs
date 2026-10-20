@@ -27,9 +27,7 @@ namespace CatsAndArrows.Tests
             Assert.That(messages["tutorial.welcome"], Does.Contain("Paws"));
             Assert.That(messages["tutorial.paw-state"], Does.Contain("<b>" + paw + "</b>"));
             Assert.That(messages["tutorial.practice"], Does.Contain("→ X → " + paw + " →"));
-            Assert.That(messages["monetization.rules-body"], Does.Contain(messages["monetization.rules"]));
-            Assert.That(messages["monetization.rules-body"], Does.Not.Contain(locale == "en" ? "unlimited" : "ilimitadas"));
-            foreach (var key in new[] { "board.row-total", "board.column-total", "game.rules-body",
+            foreach (var key in new[] { "board.row-total", "board.column-total",
                 "tutorial.goal", "tutorial.independent", "tutorial.complete", "game.victory", "completion.message" })
                 Assert.That(messages[key], Does.Contain(paws), locale + ":" + key);
             foreach (var message in messages)

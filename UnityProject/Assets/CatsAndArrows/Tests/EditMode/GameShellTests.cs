@@ -54,7 +54,6 @@ namespace CatsAndArrows.Tests
                 { { "row", 3 }, { "column", 4 }, { "state", text.GetText("board.paw") } });
             Assert.That(target, Does.Contain("3").And.Contain("4").And.Contain(text.GetText("board.paw")));
             Assert.That(target, Does.Not.Contain("{"));
-            Assert.That(text.GetText("game.rules-body"), Does.Contain("45°"));
         }
 
         [TestCase("fr-CA", "en")]
@@ -91,7 +90,7 @@ namespace CatsAndArrows.Tests
         }
 
         [Test]
-        public void MenuRulesAndLanguagePreserveLiveSessionAndReturnWithoutNewGeneration()
+        public void MenuAndLanguagePreserveLiveSessionAndReturnWithoutNewGeneration()
         {
             var view = PlayTestFactory.Shell(14, "en", useInlineHints: false);
             Assert.That(view.StartNewGame(), Is.True);
@@ -100,8 +99,6 @@ namespace CatsAndArrows.Tests
             var before = session.Marks.ToArray();
             view.ShowMenu();
             Assert.That(view.BoardView.InteractionEnabled, Is.False);
-            view.ShowRules();
-            Assert.That(view.Modal, Is.EqualTo("rules"));
             view.SelectLanguage("pt-BR");
             Assert.That(view.Locale, Is.EqualTo("pt-BR"));
             Assert.That(view.Screen, Is.EqualTo("menu"));

@@ -13,7 +13,7 @@ Allow 15–20 minutes to play, then roughly 5–10 minutes for answers and refer
 Ask for private answers before discussing them as a group. Say: “We’re testing the
 app, not your puzzle skills. Specific problems and things you would change are
 more useful than being polite.” Let the first few minutes happen without coaching;
-the built-in rules and Hint are available. If help is requested, give it and note
+Tutorial and Hint are available. If help is requested, give it and note
 what was needed. Let them try 2–3 boards as time permits, without forcing completion.
 Try Clear on a spare board so valuable progress is not unexpectedly erased.
 
