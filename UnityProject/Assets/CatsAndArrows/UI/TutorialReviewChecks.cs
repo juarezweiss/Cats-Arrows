@@ -72,9 +72,41 @@ namespace CatsAndArrows.UI
             yield return Capture(shell, captures, "second-paw");
             if (!Check(() => { Tap(shell, 4, 2); Tap(shell, 4, 2); Require(shell.Tutorial.Step == TutorialStep.SecondRowX, "second paw"); })) yield break;
             yield return Capture(shell, captures, "row-x");
-            if (!Check(() => { Drag(shell, 4, 1, 4, 3); Require(shell.Tutorial.Step == TutorialStep.DiagonalPaw, "swipe across paw"); Require(shell.ActiveSession.GetMark(new BoardCoordinate(4, 2)) == PlayerMark.Paw, "existing paw preserved"); })) yield break;
+            if (!Check(() =>
+            {
+                Drag(shell, 4, 1, 4, 3);
+                Require(shell.Tutorial.Step == TutorialStep.ArrowHoldIntro, "swipe enters arrow-hold intro");
+                Require(shell.Tutorial.HighlightedCells.SequenceEqual(new[] { new BoardCoordinate(0, 3) }), "intro highlights only the diagonal arrow");
+                Require(shell.ActiveSession.GetMark(new BoardCoordinate(4, 2)) == PlayerMark.Paw, "existing paw preserved");
+            })) yield break;
+            yield return Capture(shell, captures, "arrow-hold-intro");
+            if (!Check(() =>
+            {
+                Click(shell, "action-continue");
+                Require(shell.Tutorial.Step == TutorialStep.DiagonalPaw, "continue enters interactive arrow hold");
+                var grid = Grid(shell); var arrow = Point(shell, 0, 3);
+                Send(grid, arrow, TouchPhase.Began); Send(grid, arrow, TouchPhase.Ended);
+                Tap(shell, 2, 1); Tap(shell, 2, 1);
+                Require(shell.ActiveSession.GetMark(new BoardCoordinate(2, 1)) == PlayerMark.Empty, "short arrow press cannot unlock paw input");
+            })) yield break;
+            var holdGrid = Grid(shell); var holdArrow = Point(shell, 0, 3);
+            Send(holdGrid, holdArrow, TouchPhase.Began);
+            yield return new WaitForSecondsRealtime((float)ArrowHoldController.HoldSeconds + .05f);
+            if (!Check(() =>
+            {
+                foreach (var coordinate in new[] { new BoardCoordinate(0, 3), new BoardCoordinate(1, 2), new BoardCoordinate(2, 1), new BoardCoordinate(3, 0) })
+                    Require(shell.BoardView.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column).style.borderLeftWidth.value == 3, "held diagonal path outlined");
+            })) yield break;
+            Send(holdGrid, holdArrow, TouchPhase.Ended);
+            if (!Check(() =>
+            {
+                Require(shell.BoardView.Q<VisualElement>("cell-0-3").style.borderLeftWidth.value == 3, "tutorial arrow outline restored");
+                foreach (var coordinate in new[] { new BoardCoordinate(1, 2), new BoardCoordinate(2, 1), new BoardCoordinate(3, 0) })
+                    Require(shell.BoardView.Q<VisualElement>("cell-" + coordinate.Row + "-" + coordinate.Column).style.borderLeftWidth.value == 1, "released path cleared");
+                Tap(shell, 2, 1); Tap(shell, 2, 1);
+                Require(shell.Tutorial.Step == TutorialStep.FourthPaw, "held arrow unlocks diagonal paw");
+            })) yield break;
             yield return Capture(shell, captures, "diagonal");
-            if (!Check(() => { Tap(shell, 2, 1); Tap(shell, 2, 1); Require(shell.Tutorial.Step == TutorialStep.FourthPaw, "diagonal paw"); })) yield break;
             yield return Capture(shell, captures, "two-paw-row");
             if (!Check(() => { Tap(shell, 2, 3); Tap(shell, 2, 3); Require(shell.Tutorial.Step == TutorialStep.SingleX, "two paw row"); Tap(shell, 3, 3); Require(shell.Tutorial.Step == TutorialStep.FinalPaw, "single X cleanup"); })) yield break;
             yield return Capture(shell, captures, "last-paw");

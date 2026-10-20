@@ -319,7 +319,9 @@ namespace CatsAndArrows.UI
                 Layout.Gap != nextLayout.Gap || Layout.ClueSize != nextLayout.ClueSize)
             {
                 CancelInteraction();
-                arrowHold = new ArrowHoldController(session, nextLayout, holdClock);
+                arrowHold = new ArrowHoldController(session, nextLayout, holdClock,
+                    canBegin: coordinate => tutorial == null || tutorial.CanHoldArrow(coordinate),
+                    activated: coordinate => tutorial?.RecordArrowHold(coordinate));
                 gesture = new BoardGestureController(session, nextLayout,
                     canInteract: coordinate => tutorial == null ? session.CanInteract(coordinate) : tutorial.CanInteract(coordinate),
                     tap: coordinate => tutorial == null ? session.Tap(coordinate) : tutorial.Tap(coordinate),
@@ -358,7 +360,7 @@ namespace CatsAndArrows.UI
             if (!gesture.TryGetCell(position, out _)) return;
             activityPointerId = evt.pointerId;
             ActivityChanged?.Invoke();
-            if (tutorial == null && arrowHold != null && arrowHold.Begin(evt.pointerId, position))
+            if (arrowHold != null && arrowHold.Begin(evt.pointerId, position))
             {
                 var controller = arrowHold;
                 var pointerId = evt.pointerId;
