@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/IMG_3079.PNG" alt="Paws screenshot" width="800" height="368">
+</p>
+
 # Paws
 
 Paws is a cozy mobile logic puzzle about finding every hidden paw. Read the row
