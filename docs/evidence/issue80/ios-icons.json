@@ -1,0 +1,115 @@
+{
+  "source": {
+    "sourceSha": "4a29c6e593b5b3856e20e7d7f038593decd3dc88",
+    "unityVersion": "6000.3.25f1",
+    "bundleIdentifier": "com.jweiss.paws",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "minimumIOS": "16.3",
+    "productionDefine": "PAWS_PRODUCTION",
+    "deviceFamily": [
+      1
+    ],
+    "monetizationEnabled": false,
+    "developmentBuild": false,
+    "scriptDebugging": false,
+    "profilerEnabled": false
+  },
+  "ghPagesSha": "a9cbaae7f5a9bd053b9fffa5b59e565e5271d188",
+  "originalIconSha256": "b891542a9a84aafcf079f222b3002037ee07f80f9dbd457059f8262fe475a788",
+  "xcodeAssetCatalog": "AppIcon",
+  "images": [
+    {
+      "file": "Icon-iPhone-120.png",
+      "pixels": [
+        120,
+        120
+      ],
+      "sha256": "f0d448b1a2f88da5a648f52b5c35c543be7bf3c88c2bbd4a74146b1dde0a3d9e",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 0.854167
+    },
+    {
+      "file": "Icon-iPhone-180.png",
+      "pixels": [
+        180,
+        180
+      ],
+      "sha256": "a0da4dcd4332b9118998d78aa514e5ad565c12208728f5d4ca36684bce6b366a",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 0.613395
+    },
+    {
+      "file": "Icon-iPhone-Settings-29.png",
+      "pixels": [
+        29,
+        29
+      ],
+      "sha256": "80b85fad300b67d319b5d6835cb4534329a2e2eb37e2fa932f7d93854dacaffc",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 3.123266
+    },
+    {
+      "file": "Icon-iPhone-Settings-58.png",
+      "pixels": [
+        58,
+        58
+      ],
+      "sha256": "3e4d6f84b39a27a5af5bf6a695fa198769dbe98fa42309abe1c7d0bb388f8318",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 1.634265
+    },
+    {
+      "file": "Icon-iPhone-Settings-87.png",
+      "pixels": [
+        87,
+        87
+      ],
+      "sha256": "d852086228c2f5c56ffb1f4d30f8524b1b4c071a5758f0b69b62af41b8472c93",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 1.134056
+    },
+    {
+      "file": "Icon-iPhone-Spotlight-80.png",
+      "pixels": [
+        80,
+        80
+      ],
+      "sha256": "5f72485fe9de9db3fbf74c867d0f54fb47baaac1b1b7c7a4709efc0b4a3ca750",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 1.226823
+    },
+    {
+      "file": "Icon-iPhone-Spotlight-120.png",
+      "pixels": [
+        120,
+        120
+      ],
+      "sha256": "f0d448b1a2f88da5a648f52b5c35c543be7bf3c88c2bbd4a74146b1dde0a3d9e",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 0.854167
+    },
+    {
+      "file": "Icon-iPhone-Notification-40.png",
+      "pixels": [
+        40,
+        40
+      ],
+      "sha256": "7adfdf08a970f88d09d3ce37ce38bdedb404bd5441c99c98e7d1bb3abfa30742",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 2.311875
+    },
+    {
+      "file": "Icon-iPhone-Notification-60.png",
+      "pixels": [
+        60,
+        60
+      ],
+      "sha256": "368b42acda50ee4c88f63517442c3e68f96ffb6dc7bc88a93d400ddf8daeb648",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 1.575185
+    },
+    {
+      "file": "Icon-Store-1024.png",
+      "pixels": [
+        1024,
+        1024
+      ],
+      "sha256": "3beec54ecec09a01efc4e09839e394bafee68b15de82bdae83ce11adf05c2f4f",
+      "meanAbsoluteChannelDifferenceToLanczosResampledReference": 0.233711
+    }
+  ],
+  "xcodeAppIconConfigurations": 4,
+  "scope": "Unsigned Unity export and icon catalog checks; no archive, signing, install or physical review."
+}
