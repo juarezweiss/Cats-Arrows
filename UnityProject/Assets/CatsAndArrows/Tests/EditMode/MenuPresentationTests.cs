@@ -107,7 +107,17 @@ namespace CatsAndArrows.Tests
                 yield return Settle();
                 var safe = shell.Q("game-safe-frame").worldBound;
                 var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
-                Assert.That(shell.Q<BoardSymbolElement>("menu-paw").Kind, Is.EqualTo(BoardCellKind.Paw));
+                var artwork = shell.Q<Image>("menu-paw-artwork");
+                Assert.That(shell.Q<BoardSymbolElement>("menu-paw"), Is.Null, "Menu art is independent of board symbols (#80)");
+                Assert.That(artwork.image, Is.SameAs(Resources.Load<Texture2D>("MenuPaw")));
+                Assert.That(artwork.image, Is.Not.Null);
+                Assert.That(artwork.tintColor, Is.EqualTo(BoardSymbolElement.Ink));
+                Assert.That(artwork.scaleMode, Is.EqualTo(ScaleMode.ScaleToFit));
+                Assert.That(artwork.uv, Is.EqualTo(new Rect(172f / 1254, 215f / 1254, 911f / 1254, 795f / 1254)));
+                Assert.That(artwork.pickingMode, Is.EqualTo(PickingMode.Ignore));
+                Assert.That(artwork.worldBound.height, Is.EqualTo(192).Within(1));
+                Assert.That(artwork.worldBound.width, Is.EqualTo(220).Within(1));
+                Assert.That(artwork.worldBound.center.x, Is.EqualTo(shell.Q("menu-paw").worldBound.center.x).Within(1));
                 Assert.That(shell.Q<Label>("menu-title").text, Is.EqualTo("Paws"));
                 Assert.That(shell.Q<Button>("menu-start").text, Is.EqualTo(messages["game.start"]));
                 Assert.That(shell.Q("game-menu").Query<Button>().ToList().Select(b => b.name),
