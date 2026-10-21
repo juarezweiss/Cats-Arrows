@@ -52,8 +52,8 @@ use 59/34. Desktop review confirms shape, flat ink, centering and no clipping.
   then removed to save storage.
 - Independent QA found no blocking code/configuration or menu-rendering findings.
 
-Physical iPhone appearance review is pending. Human checklist: confirm the new
-Home Screen icon and menu paw appearance/spacing at the usual text/display size.
+Owner physical iPhone appearance review passed on 2026-10-21 ("approved") for
+the installed icon and menu paw shape, color and spacing on iPhone 17 / iOS 27.0.1.
 At PR creation, no archive, signing, installation, upload, production release or
 merge had been done. Owner-authorized installation is recorded below.
 Rollback: revert the branding PR.
@@ -64,8 +64,8 @@ Paws **0.1.0 (1)** was installed in place on **iPhone 17 / iOS 27.0.1** and
 launched normally; its running process and installed identity were verified.
 [Sanitized device receipt](device-preparation.json) records the signed app hash.
 No physical interaction, screenshot, appearance or lifecycle test was automated.
-Human review remains pending for the new Home Screen icon and menu paw shape,
-color and spacing.
+The owner approved the new Home Screen icon and menu paw shape, color and
+spacing on 2026-10-21. This report applies to this installed source/device.
 
 The existing validated Unity export from `4a29c6e` was reused; later PR build-input
 changes are only trailing whitespace in metadata. One **Release arm64** build
@@ -79,5 +79,15 @@ To limit storage, no archive, IPA or external dSYMs were generated; ordinary
 Release local-symbol stripping removed about 24.7 MiB before resigning. Retained
 `Builds/Issue80iPhone/Paws.app` is **53.0 MiB**, with small export metadata and
 technical logs/receipts. Task-owned export, DerivedData and desktop review player
-were removed after success, reclaiming **2.26 GiB**. Existing older review
-artifacts, owner documentation edits, Git history and main remain unchanged.
+were removed after success, reclaiming **2.26 GiB**. Owner documentation edits, Git history and main remain unchanged.
+
+## Owner-approved completion cleanup — 2026-10-21
+
+Following the owner's physical approval and instruction to merge/clean up,
+superseded #76 local review app/archive and inactive generated Unity Library/Logs
+were removed, reclaiming **939.4 MiB** beyond the earlier 2.26 GiB. The approved
+#80 signed app and metadata remain; its recorded tree hash is unchanged. Ongoing
+#64 IAP work/artifacts, small historical metadata, source/evidence and uncommitted
+owner policy documentation are preserved. No release tag or main history is
+changed. Cleanup receipt remains under ignored
+`.unity-results/issue80-device-4a29c6e/final-cleanup.json`.

@@ -36,7 +36,7 @@
   "installMode": "in-place-update-no-uninstall",
   "preserveExistingAppData": true,
   "monetizationProvidersEnabled": false,
-  "physicalIPhoneReview": "pending-human",
+  "physicalIPhoneReview": "passed-owner",
   "automatedPhysicalInteractionTests": false,
   "reusedUnityExport": true,
   "archiveCreated": false,
@@ -53,5 +53,24 @@
     ".unity-results/issue80-device-4a29c6e/DerivedData",
     ".unity-results/issue80/Paws.app"
   ],
-  "reclaimedAllocatedBytes": 2427994112
+  "reclaimedAllocatedBytes": 2427994112,
+  "humanReview": {
+    "result": "pass",
+    "reviewer": "owner",
+    "reportedDate": "2026-10-21",
+    "report": "approved",
+    "scope": [
+      "New Home Screen app icon",
+      "Initial menu paw silhouette, color and spacing"
+    ],
+    "device": "iPhone 17",
+    "iOS": "27.0.1",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "sourceSha": "4a29c6e593b5b3856e20e7d7f038593decd3dc88",
+    "limitations": [
+      "Single device and installed source",
+      "No broader-device or App Store distribution acceptance implied"
+    ]
+  }
 }
