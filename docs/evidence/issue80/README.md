@@ -48,10 +48,36 @@ use 59/34. Desktop review confirms shape, flat ink, centering and no clipping.
   all four Xcode configurations select the included `AppIcon` catalog.
   [Icon report](ios-icons.json) records hashes and pixel comparisons against a
   Lanczos-resized reference (Unity's resampling differs slightly). Original PNG
-  bytes are unchanged. Export remains in ignored `Builds/Issue80-Branding-export/`.
+  bytes are unchanged. The export was reused for the device preparation below,
+  then removed to save storage.
 - Independent QA found no blocking code/configuration or menu-rendering findings.
 
 Physical iPhone appearance review is pending. Human checklist: confirm the new
 Home Screen icon and menu paw appearance/spacing at the usual text/display size.
-No archive, signing, installation, upload, production release or merge was done.
+At PR creation, no archive, signing, installation, upload, production release or
+merge had been done. Owner-authorized installation is recorded below.
 Rollback: revert the branding PR.
+
+## Owner-authorized local iPhone preparation — 2026-10-21
+
+Paws **0.1.0 (1)** was installed in place on **iPhone 17 / iOS 27.0.1** and
+launched normally; its running process and installed identity were verified.
+[Sanitized device receipt](device-preparation.json) records the signed app hash.
+No physical interaction, screenshot, appearance or lifecycle test was automated.
+Human review remains pending for the new Home Screen icon and menu paw shape,
+color and spacing.
+
+The existing validated Unity export from `4a29c6e` was reused; later PR build-input
+changes are only trailing whitespace in metadata. One **Release arm64** build
+with **Xcode 27.1 (27A9275)** succeeded. Existing development profile/certificate,
+device membership, identity/portrait/minimum OS, exact applied entitlements and
+strict app/framework signatures were verified. The compiled 120px icon decodes
+to exactly the validated generated icon pixels. Local development signing expires
+**2026-10-27 17:36:44 UTC**. This is not a distribution signature.
+
+To limit storage, no archive, IPA or external dSYMs were generated; ordinary
+Release local-symbol stripping removed about 24.7 MiB before resigning. Retained
+`Builds/Issue80iPhone/Paws.app` is **53.0 MiB**, with small export metadata and
+technical logs/receipts. Task-owned export, DerivedData and desktop review player
+were removed after success, reclaiming **2.26 GiB**. Existing older review
+artifacts, owner documentation edits, Git history and main remain unchanged.

@@ -1,0 +1,57 @@
+{
+  "schema": "paws-ios-device-preparation-v1",
+  "task": "#80 / PR #81",
+  "preparationDate": "2026-10-21",
+  "sourceSha": "4a29c6e593b5b3856e20e7d7f038593decd3dc88",
+  "prHeadAtPreparation": "2652d86564596b6bad5e8e2cf3fd777c89538479",
+  "currentBuildInputsEquivalentExceptMetadataWhitespace": true,
+  "configuration": {
+    "bundleIdentifier": "com.jweiss.paws",
+    "displayName": "Paws",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "minimumIOS": "16.3",
+    "deviceFamily": [
+      1
+    ],
+    "unityVersion": "6000.3.25f1",
+    "xcodeVersion": "Xcode 27.1\nBuild version 27A9275",
+    "nativeConfiguration": "Release arm64"
+  },
+  "signedAppTreeSha256": "56c1e53e4b7dd9d04a08dcef8bbc9beee912a0e3cb75a53592d515c9ffffc6d2",
+  "checksumAlgorithm": "paws-tree-sha256-v1",
+  "signatureVerified": true,
+  "signingPurpose": "local-development-device-only",
+  "getTaskAllow": true,
+  "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
+  "deviceIncludedInProfile": true,
+  "certificateMatchedProfile": true,
+  "installed": true,
+  "launchVerified": true,
+  "runningProcessVerified": true,
+  "compiledIconPixelsMatchValidated120pxExport": true,
+  "device": "iPhone 17",
+  "iOS": "27.0.1",
+  "installedVersion": "0.1.0 (1)",
+  "installMode": "in-place-update-no-uninstall",
+  "preserveExistingAppData": true,
+  "monetizationProvidersEnabled": false,
+  "physicalIPhoneReview": "pending-human",
+  "automatedPhysicalInteractionTests": false,
+  "reusedUnityExport": true,
+  "archiveCreated": false,
+  "ipaCreated": false,
+  "retainedExternalSymbols": false,
+  "localSymbolsStripped": true,
+  "retained": [
+    "Builds/Issue80iPhone/Paws.app",
+    "Builds/Issue80iPhone/ExportMetadata/"
+  ],
+  "retainedAppAllocatedBytes": 55554048,
+  "removedIntermediates": [
+    "Builds/Issue80-Branding-export",
+    ".unity-results/issue80-device-4a29c6e/DerivedData",
+    ".unity-results/issue80/Paws.app"
+  ],
+  "reclaimedAllocatedBytes": 2427994112
+}
