@@ -334,10 +334,24 @@
     },
     "askToBuyPreparation": {
       "enabled": true,
-      "status": "owner-initial-payment-sheet-confirmation-pending",
+      "status": "owner-requested-pending",
       "environment": "Xcode StoreKit Test / BRA / pt_BR",
       "ownerObservation": "Regular purchase sheet initially appears",
       "expectedFlow": "Confirm simulated payment sheet, then Ask in permission dialog; Pending/Owned result still pending"
+    },
+    "askToBuyDeferred": {
+      "result": "passed-pending-unowned",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Pending appears; no Owned status",
+      "sequence": "Confirm initial test payment sheet, then choose Ask",
+      "approval": "not-yet-approved",
+      "restartTechnicalEvidence": {
+        "processStoppedBeforeLaunch": true,
+        "newProcessIdentifier": 19012,
+        "launchMethod": "Xcode Run Without Building / Paws StoreKit Test",
+        "ownerPendingPersistenceResult": "pending"
+      }
     }
   },
   "technicalLaunchEvidence": {

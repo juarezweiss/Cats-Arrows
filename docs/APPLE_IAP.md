@@ -309,3 +309,9 @@ payment sheet before the Ask Permission dialog appears; select Ask there, then
 check Pending without Owned. A regular initial payment sheet alone is not a
 deferred-flow failure. See [Apple’s StoreKit 2 demonstration](https://developer.apple.com/videos/play/wwdc2021/10114/?time=938).
 Owner reported the initial regular sheet; actual deferred result remains pending.
+
+2026-10-22 owner Ask to Buy request: after confirming the initial simulated payment
+sheet and choosing Ask, **“Pending appears; no Owned status”**. Deferred/unowned UI
+passes. Stopped Paws (device process list empty), then launched through the same
+StoreKit Test scheme and verified a fresh process. Owner pending persistence and
+duplicate-purchase suppression checks remain pending before approval.
