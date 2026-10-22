@@ -15,10 +15,17 @@ or verification relaxation follow. Sandbox initiation is still pending.
 The development-only sandbox simulation preparation passes focused EditMode
 **59/59**, exit 0 (`issue64-ask-final-focused.H3zCru`). Current Python contracts
 **51/51**, native policy **11 assertions**, iOS Swift typecheck, repository and
-whitespace checks pass. Required compilation is blocked by Unity license/package
-registration (`compile.XiesJY`: zero registered packages); the latest full EditMode
-gate and signed sandbox export have not run. Earlier full-gate results below
-apply only to their recorded source, not these follow-up changes.
+whitespace checks pass. Initial compilation failed with zero registered packages
+(`compile.XiesJY`); after owner license refresh, a stale licensing client blocked
+the next attempt (`compile.T5lcfL`, stopped with exit 143). Stopping that stale
+process restored pinned compilation (`compile.9WLAoT`). Source `bf32a15` passes
+full EditMode **556/556**, successful exit and zero failed/skipped/inconclusive
+(`editmode.RuRc4L`), clean sandbox export (`apple-iap-export.FL16oX`) and signed
+development build. Signature/profile, identity, ARM64/dSYMs, IAP ABI, saved UI
+assets and privacy inventory checks pass. [Receipt](evidence/issue64/sandbox-ask-to-buy-preparation.json)
+records the exact retained signed candidate and sandbox-only debugger-free launch.
+Owner reports Sandbox tester signed in; authoritative Restore and Ask to Buy
+initiation/restart remain pending. Earlier results below apply to their source.
 
 Unity **6000.3.25f1** final compilation passed (`compile.IYRpa3`). Focused provider/build
 tests **40/40 passed** (`issue64-final-focused.v0gOQX`), including private-marker

@@ -192,7 +192,13 @@ namespace CatsAndArrows.Purchasing.Apple
             if (disposed || !Matches(order)) return;
             nativePurchaseOpen = true;
             Remember(order);
-            if (restoring && !restoreSucceeded) return;
+            // A store update must not settle Restore through an ordinary (unsynchronized)
+            // read, even after sync succeeds. Wait for its inventory/acknowledgement pair.
+            if (restoring)
+            {
+                if (restoreSucceeded && restoreFetched) Verify(true);
+                return;
+            }
             Verify(false); // PendingOrder is paid-but-unfinished, NOT Ask to Buy and NOT verification.
         }
         private void MarkDeferred() { deferred = true; evidence.SetDeferred(productId, true); }

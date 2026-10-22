@@ -31,6 +31,21 @@ an earlier successful/refunded purchase. This is a plausible integration cause,
 not a causally proven explanation. Preserve the SDK journal and investigate a
 safe boundary fix before unblocking the prior Paws early grant.
 
+Sandbox source `bf32a15` reached the phone; the owner reports Restore leaves
+**All ads removed**, and cannot confirm whether the tester already owns the
+product. That UI also preserves cached access on an unavailable restore, so this
+does not establish synchronized sandbox ownership or an unowned baseline. Keep
+all history intact; a known-unused Sandbox tester is required for initiation.
+
+A separate adapter bug was reproduced deterministically: a paid update after
+Restore's success callback could run `Verify(false)`, settle Restore early and
+discard its synchronization flags before inventory arrived. The fix retains
+Restore authority until both callbacks arrive; later paid updates supersede an
+in-flight read with `Verify(true)`. Regressions cover premature completion and
+stale synchronized absence versus newer verified ownership. This is not yet a
+causal explanation of either physical failure or a resolution of SDK auto-finish.
+The phone's `bf32a15` candidate predates this fix; replacement gates are pending.
+
 The [native reproducer](../tools/apple-iap-probe/README.md) contains no Unity IAP or
 Paws ownership/cache code. One owner-operated native purchase must return Pending;
 record currentEntitlements, unfinished and updates, one pre-approval restart,
@@ -45,9 +60,16 @@ Sandbox initiation is prepared through the actual Paws adapter with explicit,
 default-off `PAWS_APPLE_SIMULATE_ASK_TO_BUY=1`. It requires SandboxReview, the
 review compile define and a development build. The SDK flag is assigned even
 when false, so a cached SDK service cannot retain an earlier simulation opt-in.
-The saved review scene/receipt record the option. The next export is blocked by a
-Unity license session that registered zero packages; owner refresh is pending.
-Export after committed inputs and restored compile/test gates:
+The saved review scene/receipt record the option. Owner license refresh plus
+stopping a stale editor licensing process restored package registration. Source
+`bf32a15` passes compilation and full EditMode **556/556**. Its fresh sandbox-only
+export and signed development build passed identity/signature, ARM64/dSYM, native
+ABI and privacy checks; the exact retained app was installed/launched through
+**Paws Sandbox Ask to Buy**, StoreKit Configuration **None**, debugger off.
+The owner reports their Sandbox tester signed in; authoritative Restore is the
+next requested physical check. [Sandbox preparation receipt](evidence/issue64/sandbox-ask-to-buy-preparation.json)
+distinguishes technical readiness from pending purchase/restore acceptance.
+Reproduce from committed inputs with passing compile/test gates:
 
 ```bash
 PAWS_APPLE_PRODUCT_ID=com.jweiss.paws.removeads PAWS_APPLE_SIMULATE_ASK_TO_BUY=1 \

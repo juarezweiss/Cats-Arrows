@@ -310,6 +310,48 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
                 Assert.That(coordinator.IsOwned, Is.True);
             }
         }
+        [Test] public void PaidUpdateAfterRestoreSuccessCannotSettleBeforeSynchronizedInventory()
+        {
+            using (var coordinator = Coordinator())
+            {
+                Own(); client.EmitInventory();
+                Assert.That(coordinator.IsOwned, Is.True);
+                PurchaseResult restored = null;
+                service.Restore(1, value => restored = value);
+                client.RestoreComplete(true);
+                evidence.Proof = new AppleEvidence(); // Ambiguous ordinary refresh must preserve cached access.
+                var readsBeforeUpdate = evidence.Reads;
+                client.EmitPaid(Paid());
+                Assert.That(restored, Is.Null, "A paid update must not complete the explicit Restore.");
+                Assert.That(evidence.Reads, Is.EqualTo(readsBeforeUpdate));
+                Assert.That(coordinator.IsOwned, Is.True);
+                evidence.Cached = null;
+                evidence.Proof = new AppleEvidence { state = 3, complete = true };
+                client.EmitInventory();
+                Assert.That(evidence.WasSynchronized, Is.True);
+                Assert.That(restored.Outcome, Is.EqualTo(PurchaseOutcome.NotOwned));
+                Assert.That(restored.Verified && restored.CompleteInventory, Is.True);
+            }
+        }
+        [Test] public void PaidUpdateDuringSynchronizedReadSupersedesStaleAbsence()
+        {
+            Refresh(); evidence.Delay = true;
+            PurchaseResult restored = null; var completions = 0;
+            service.Restore(1, value => { restored = value; completions++; });
+            client.RestoreComplete(true); client.EmitInventory();
+            var stale = evidence.Pending;
+            var reads = evidence.Reads;
+            client.EmitPaid(Paid());
+            Assert.That(evidence.Reads, Is.EqualTo(reads + 1));
+            Assert.That(evidence.WasSynchronized, Is.True);
+            var current = evidence.Pending;
+            stale(new AppleEvidence { state = 3, complete = true });
+            Assert.That(restored, Is.Null, "The older synchronized absence predates the paid update.");
+            Own("123"); current(evidence.Proof);
+            Assert.That(restored.Outcome, Is.EqualTo(PurchaseOutcome.Owned));
+            Assert.That(restored.Verified, Is.True);
+            Assert.That(completions, Is.EqualTo(1));
+        }
         [Test] public void AccountChangeSynchronizedAbsenceRevokesWithoutCatchupDebt()
         {
             using (var coordinator = Coordinator())

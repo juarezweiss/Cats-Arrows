@@ -1,0 +1,125 @@
+{
+  "schema": "paws-apple-sandbox-ask-to-buy-preparation-v1",
+  "date": "2026-10-22",
+  "sourceSha": "bf32a157a968fc651e386bdcbf1400b0253e6c90",
+  "unityVersion": "6000.3.25f1",
+  "iapPackage": "5.3.1",
+  "xcodeVersion": "Xcode 27.1\nBuild version 27A9275",
+  "productId": "com.jweiss.paws.removeads",
+  "simulateAskToBuy": true,
+  "developmentBuild": true,
+  "productionMonetizationEnabled": false,
+  "adProviderEnabled": false,
+  "signedAppPath": "Builds/Issue64iPhone/SandboxAskToBuy/Paws.app",
+  "signedAppTreeSha256": "4b4cafa760d4be521e6b9cfee520044e9068a3924c8ea783c5671d9bd0a62dc7",
+  "signatureVerified": true,
+  "getTaskAllow": true,
+  "deviceIncludedInProfile": true,
+  "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
+  "identity": {
+    "CFBundleIdentifier": "com.jweiss.paws",
+    "CFBundleShortVersionString": "0.1.0",
+    "CFBundleVersion": "1",
+    "MinimumOSVersion": "16.3",
+    "UIDeviceFamily": [
+      1
+    ],
+    "UISupportedInterfaceOrientations": [
+      "UIInterfaceOrientationPortrait"
+    ]
+  },
+  "binaryChecks": [
+    {
+      "binary": "Paws",
+      "uuid": {
+        "arm64": "813B055F-1C7C-336E-AB46-B786D8FF214F"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    },
+    {
+      "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+      "uuid": {
+        "arm64": "08AFC469-2264-3665-848F-728F983024C2"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    }
+  ],
+  "inventory": {
+    "frameworks": [
+      "Frameworks/UnityFramework.framework"
+    ],
+    "nativeLibraries": [],
+    "privacyManifests": [
+      {
+        "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+        "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+        "declarations": {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "35F9.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "E174.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "0A2A.1",
+                "C617.1"
+              ]
+            }
+          ],
+          "NSPrivacyTracking": false
+        }
+      }
+    ],
+    "entitlementFiles": []
+  },
+  "scheme": "Paws Sandbox Ask to Buy",
+  "storeKitConfiguration": "None",
+  "debugExecutable": false,
+  "exportLog": ".unity-results/apple-iap-export.FL16oX/Editor.log",
+  "buildLog": ".unity-results/issue64-sandbox-ask/xcodebuild.log",
+  "compileLog": ".unity-results/compile.9WLAoT/Editor.log",
+  "fullEditMode": {
+    "total": 556,
+    "passed": 556,
+    "report": ".unity-results/editmode.RuRc4L/test-results.xml"
+  },
+  "pythonContracts": 51,
+  "nativePolicyAssertions": 11,
+  "iOSSwiftTypecheck": "passed",
+  "physicalReview": "pending-owner",
+  "sandboxInitiation": "blocked: unowned baseline not established",
+  "installed": true,
+  "launchVerified": true,
+  "appStoreConnectActions": "none",
+  "uploadOrSubmission": "none",
+  "accountOrCredentialChanges": "none",
+  "runningProcessVerified": true,
+  "installedIdentityVerified": true,
+  "runningProcessIdentifier": 2534,
+  "launchMethod": "Xcode Run Without Building / Paws Sandbox Ask to Buy",
+  "ownerSandboxAccountReport": "Sandbox tester signed in",
+  "ownerSandboxAccountReportDate": "2026-10-22",
+  "nativeAskToBuyFinding": "inconclusive; no further local reset/reinstall experiments",
+  "canUnblock64": false,
+  "ownerRestoreReport": "Restore finished: Owned remains; UI says All ads removed",
+  "priorSandboxPurchase": "Owner uncertain; multiple earlier exercises, no history reset authorized",
+  "authoritativeUnownedBaseline": false,
+  "confirmedSourceBug": "Independent paid update after restore success can complete an unsynchronized read before inventory; regression/fix in progress, not yet established as physical cause"
+}

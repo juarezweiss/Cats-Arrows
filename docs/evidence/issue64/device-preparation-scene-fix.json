@@ -524,8 +524,15 @@
         "verificationChanged": false,
         "focusedEditModePassed": 59,
         "focusedReport": ".unity-results/issue64-ask-final-focused.H3zCru/test-results.xml",
-        "physicalInitiation": "pending-owner",
-        "buildGate": "blocked: Unity license session registered zero packages; owner refresh requested"
+        "physicalInitiation": "pending-owner; authoritative sandbox Restore requested first",
+        "buildGate": "passed after owner license refresh and stopping stale task/editor licensing process",
+        "compileLog": ".unity-results/compile.9WLAoT/Editor.log",
+        "fullEditMode": {
+          "total": 556,
+          "passed": 556,
+          "report": ".unity-results/editmode.RuRc4L/test-results.xml"
+        },
+        "signedPreparationReceipt": "docs/evidence/issue64/sandbox-ask-to-buy-preparation.json"
       },
       "canUnblock64": false,
       "nativeAnalysis": "docs/evidence/issue64/native-ask-to-buy-analysis.json",
