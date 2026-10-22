@@ -428,7 +428,24 @@
         "generatedNativeSourceRestored": true,
         "launchMethod": "Xcode / Paws StoreKit Test / Run Without Building",
         "launchObserved": true,
-        "ownerRebootTroubleshooting": "requested; pending"
+        "ownerRebootTroubleshooting": "completed; read-only probe still returns pending request as verified current ownership"
+      },
+      "postRebootProbe": {
+        "ownerConfirmed": "Restarted, connected and unlocked",
+        "networking": "owner-confirmed online",
+        "developerMode": "enabled",
+        "ddiServicesAvailable": true,
+        "probeProcessIdentifier": 655,
+        "currentEntitlementsCount": 1,
+        "currentAndLatestMatchPendingTransaction": true,
+        "verified": true,
+        "environment": "Xcode",
+        "revoked": false,
+        "unitySdkIncluded": false,
+        "keychainOrAppStateAccess": false,
+        "transactionMutation": false,
+        "refreshedManagerStatus": "pending-owner-report",
+        "reviewedPawsRelaunchedAfterProbe": true
       }
     }
   },

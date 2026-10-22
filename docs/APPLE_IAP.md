@@ -361,3 +361,11 @@ ignored Builds/`.unity-results`. The generated native source and exact original
 signed Paws candidate/dSYMs have been restored, and Paws launched through the
 original StoreKit Test scheme. No transaction approval/decline/reset was performed.
 Requested owner restart/reconnect with networking on for the next isolation step.
+
+2026-10-22 post-reboot isolation: owner restarted/reconnected/unlocked the online
+iPhone; Developer Mode/DDI readiness passes. The native-only probe runs in a new
+post-reboot process and still returns the same pending request from verified
+`currentEntitlements` and `latest`, Xcode environment, unrevoked. No SDK/cache/state
+access or transaction mutation occurs. Restored and relaunched the exact retained
+Paws candidate through StoreKit Test; refreshed manager status awaits owner report.
+The validation blocker remains open.
