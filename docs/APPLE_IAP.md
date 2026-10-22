@@ -269,3 +269,9 @@ owner step. Other purchase/restore and sandbox acceptance remain pending.
 **“Owned appears”** after confirming the test purchase. Purchase-to-Owned UI passes;
 this does not establish restore, persistence after restart/offline, revocation or
 interrupted finalization. Restore in the same test environment is next.
+
+2026-10-22 owner follow-up in **Xcode StoreKit Test / BRA / pt_BR**: Restore
+finishes with Owned retained and no purchase sheet (existing-owned restore only).
+After Xcode stop/relaunch through the same test scheme, **“Owned remains”** without
+repurchase or restore. Restart persistence passes. Offline ownership, clean-state
+restore and the other scenario gates remain open.
