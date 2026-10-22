@@ -251,8 +251,11 @@ validation gates are resolved; no signing, installation, purchase or upload was
 performed for this archive gate.
 
 2026-10-22 owner Settings check: price is visible and Restore Purchases is visible,
-but the owner reports the price is not localized. Localization acceptance remains
-open. The local StoreKit configuration currently selects locale `en_US` and
-storefront `USA`; exact displayed text and expected currency/language are being
-confirmed before changing the review environment. The adapter forwards Apple's
-`localizedPriceString` unchanged to the existing Settings row.
+the owner observed `$4.99` (the correct USD price) but expected BRL. The initial
+configuration selected `USA` / `en_US`, consistent with that observation. Changed
+only the local StoreKit test storefront/locale to `BRA` / `pt_BR` in Xcode, saved
+and relaunched through the same scheme. Owner price retest is pending. Product
+price/localizations and App Store Connect remain unchanged. The adapter forwards
+Apple's `localizedPriceString` unchanged to Settings. Local StoreKit formatting
+validation does not establish the Brazilian App Store Connect price; verify that
+separately in Apple sandbox.

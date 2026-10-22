@@ -90,13 +90,15 @@
     "productId": "com.jweiss.paws.removeads",
     "type": "NonConsumable",
     "priceAndLocalizationSynced": true,
-    "sha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
+    "sha256": "8f4528602cb47e29ec08f5be7095da0b31fe2e7ddc3a688c11b2e8af5ce24ed6",
     "retainedOnlyInIgnoredExport": true,
     "scheme": "Paws StoreKit Test",
     "liveValidation": "pending-owner",
-    "observedTestLocale": "en_US",
-    "observedTestStorefront": "USA",
-    "localeObservationDate": "2026-10-22"
+    "observedTestLocale": "pt_BR",
+    "observedTestStorefront": "BRA",
+    "localeObservationDate": "2026-10-22",
+    "initialSyncedSha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
+    "localTestSettingsChangedOnly": true
   },
   "appleSandbox": {
     "scheme": "Paws Apple Sandbox",
@@ -251,7 +253,14 @@
     "remainingScope": "Resolve price/storefront expectation, then purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox",
     "settingsRestoreVisible": "passed",
     "priceVisible": true,
-    "localizedPrice": "owner-reports-not-localized-investigating"
+    "localizedPrice": "Brazil-test-retest-pending-owner",
+    "priceObservation": {
+      "displayedText": "$4.99",
+      "expectedCurrency": "BRL",
+      "initialStorefront": "USA",
+      "initialLocale": "en_US",
+      "assessment": "matches configured US test storefront; Brazil retest pending"
+    }
   },
   "technicalLaunchEvidence": {
     "date": "2026-10-22",
