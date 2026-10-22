@@ -90,7 +90,7 @@
     "productId": "com.jweiss.paws.removeads",
     "type": "NonConsumable",
     "priceAndLocalizationSynced": true,
-    "sha256": "8f4528602cb47e29ec08f5be7095da0b31fe2e7ddc3a688c11b2e8af5ce24ed6",
+    "sha256": "89538b958a78186df37af454db01e08b409789340e92bea8f5875382e3fd2bbc",
     "retainedOnlyInIgnoredExport": true,
     "scheme": "Paws StoreKit Test",
     "liveValidation": "pending-owner",
@@ -98,7 +98,8 @@
     "observedTestStorefront": "BRA",
     "localeObservationDate": "2026-10-22",
     "initialSyncedSha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
-    "localTestSettingsChangedOnly": true
+    "localTestSettingsChangedOnly": true,
+    "askToBuyEnabled": true
   },
   "appleSandbox": {
     "scheme": "Paws Apple Sandbox",
@@ -250,7 +251,7 @@
     "buildNumber": "1",
     "startupMenu": "passed",
     "report": "Paws menu appears",
-    "remainingScope": "Restore after revocation, clean-state restore, pending/deferred, lifecycle, finalization interruption, offline cold start and Apple sandbox",
+    "remainingScope": "Clean-state restore, pending/deferred, lifecycle, finalization interruption, offline cold start and Apple sandbox",
     "settingsRestoreVisible": "passed",
     "priceVisible": true,
     "localizedPrice": "passed-local-StoreKit-BRL-formatting",
@@ -324,6 +325,17 @@
       "action": "Owner refunded selected local Remove All Ads transaction in Xcode",
       "report": "Owned disappears; price returns",
       "scope": "Running-app revocation and Settings UI only; restore-after-revocation and restart pending"
+    },
+    "restoreAfterRevocation": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Price remains; no Owned status"
+    },
+    "askToBuyPreparation": {
+      "enabled": true,
+      "status": "pending-owner-request",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR"
     }
   },
   "technicalLaunchEvidence": {

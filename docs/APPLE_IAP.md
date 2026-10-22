@@ -299,3 +299,7 @@ owner refunded the selected local Remove All Ads transaction in Xcode and report
 **“Owned disappears; price returns”** in Paws Settings. Running-app revocation/UI
 passes. Restore after revocation is next; this does not establish cold-start
 revocation, clean-state restore, or Apple sandbox acceptance.
+
+2026-10-22 owner Restore after revocation: **“Price remains; no Owned status”**.
+Restore does not resurrect the refunded local entitlement. Enabled Ask to Buy
+only in the ignored StoreKit configuration; owner deferred-request check pending.
