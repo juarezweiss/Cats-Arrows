@@ -1,0 +1,46 @@
+{
+  "schema": "paws-issue64-owner-environment-observation-v1",
+  "reportedDate": "2026-10-22",
+  "source": "Owner report in implementation chat; notification not independently inspected",
+  "observation": {
+    "recipients": "Members of the owner’s real Apple Family; no identities collected",
+    "channel": "Messages",
+    "requestType": "Ask to Buy",
+    "exactReportedText": "? asked to buy the In-App Purchase ‘Remove All Ads’ for the app ‘Paws Puzzle Game’ for R$ 29,90 from the App Store.",
+    "reportedTitleAndPriceAreConfigurationApproval": false,
+    "originatingAttempt": "unknown; no correlation established",
+    "eventTime": "unknown; report date is not an event timestamp",
+    "originatingStoreEnvironment": "unproven",
+    "sandboxCausationEstablished": false,
+    "approvalCompletedPurchaseOrCharge": "not established by this observation"
+  },
+  "evidenceScope": {
+    "earlierPhysicalAttemptsWithoutExplicitEnvironmentChecks": "environment-unverified; potentially production-account attempts; do not assume Sandbox from intended scheme/signing/flags",
+    "laterExplicitSandboxAttempt": {
+      "receipt": "docs/evidence/issue64/sandbox-restore-fix-preparation.json",
+      "sourceSha": "a68643316132df67bf5bbd9f6b6ca6485c02b585",
+      "ownerReportedFreshSandboxTesterSignIn": true,
+      "ownerReportedSheetExplicitlyIdentifiedSandbox": true,
+      "classification": "separate later owner-verified Sandbox evidence",
+      "outcome": "Pending/unowned initially; unowned after restart but second purchase available; pending-lock failure remains",
+      "familyNotificationCorrelation": "not established; do not attribute notification to this attempt"
+    },
+    "nativeOnlyRun": "Retain journal environment:xcode observations for that run alone; they do not certify other physical attempts",
+    "earlierPendingToOwned": {
+      "ownerReport": "Paws changed from Pending to Owned without owner approval in Xcode",
+      "accountEnvironmentAndTransactionCorrelation": "unresolved",
+      "realFamilyRequestApprovalState": "unknown; not established by absence of owner approval in Xcode",
+      "provenFalseGrantInVerifiedSandboxOrProduction": false
+    }
+  },
+  "futureOwnerPurchaseGate": {
+    "appliesBefore": "Any further owner-operated purchase test",
+    "requiredVisibleAccount": "Intended Sandbox Apple Account under Settings > Developer",
+    "requiredVisibleSheet": "Environment: Sandbox on purchase sheet itself",
+    "ifEitherMissing": "Do not initiate or approve anything",
+    "sufficientFromSchemeSignatureOrSimulationFlagAlone": false,
+    "furtherAttemptAuthorizedNow": false
+  },
+  "actionsThisUpdate": "Evidence/analysis only; no purchase, approval, account/product change, device action, upload, submission or production activation",
+  "canUnblock64": false
+}

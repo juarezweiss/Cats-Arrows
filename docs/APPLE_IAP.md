@@ -11,6 +11,40 @@ submission and production activation remain unauthorized.
 
 ## Current owner gate — bounded investigation, 2026-10-22
 
+### Latest owner evidence correction — real Family notification
+
+The owner reports that members of their **real Apple Family** received an actual
+Messages Ask to Buy request:
+
+> “? asked to buy the In-App Purchase ‘Remove All Ads’ for the app ‘Paws Puzzle Game’ for R$ 29,90 from the App Store.”
+
+The originating attempt, event time and store environment have not been correlated.
+Treat earlier physical purchase/Ask to Buy attempts lacking explicit environment
+checks as **environment-unverified and potentially production-account attempts**,
+even when a test scheme had been selected. Do not infer that Sandbox caused the
+Family notification, or infer an approval, completed purchase or charge. The quoted
+price/title are reported notification text, not new approved pricing/localization.
+The earlier Pending-to-Owned observation was reported without owner approval in
+Xcode; that does not establish the real Family request's approval state. Account,
+environment, approval and transaction correlation remain unresolved. Do not promote
+that earlier observation to a proven false grant in verified Sandbox or production.
+
+The later `a686433` attempt with the fresh tester and an Apple sheet explicitly
+identifying **Sandbox** remains separate verified-sandbox evidence. Native journal
+entries explicitly recording `environment: xcode` retain that measured scope;
+they do not certify the environment of other physical attempts. Earlier broad
+environment labels in review history must be read subject to this correction.
+[Owner observation and evidence scope](evidence/issue64/owner-family-ask-to-buy-observation.json).
+
+**No further purchase attempt is authorized now.** Before any future owner-operated
+purchase test, both must be visibly verified: the intended **Sandbox Apple Account
+under Settings > Developer**, and **Environment: Sandbox on the purchase sheet
+itself**. If either is missing, do not initiate or approve anything. A scheme name,
+development signature, simulation flag, account assumption or app status is
+insufficient. Keep earlier potentially production-account attempts separate from
+the explicitly verified later Sandbox attempt. This is an evidence/analysis
+correction only; no product/account, purchase, approval or runtime changes follow.
+
 **#64 remains blocked.** The one bounded native-only run returned Pending, then
 reported zero current entitlements before approval, including after owner restart.
 The request did appear as verified in unfinished transactions and updates; those
@@ -28,8 +62,9 @@ Static SDK review found a separate finalization hazard: IAP 5.3.1's
 in its journal, bypassing the adapter's durable grant/finalization gate. That
 journal has no product/environment namespace; the local fixture reused ID 0 from
 an earlier successful/refunded purchase. This is a plausible integration cause,
-not a causally proven explanation. Preserve the SDK journal and investigate a
-safe boundary fix before unblocking the prior Paws early grant.
+not a causally proven explanation. Preserve the SDK journal. Its role in the
+earlier environment-unverified Pending-to-Owned observation is unresolved; no
+connection to the real Family notification is established.
 
 Sandbox source `bf32a15` reached the phone; the owner reports Restore leaves
 **All ads removed**, and cannot confirm whether the tester already owns the

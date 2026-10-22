@@ -6,6 +6,22 @@ Dependency #63 is integrated in current develop; owner approved product mapping
 `com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
 [APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
 
+**Latest owner evidence correction (2026-10-22):** real Apple Family members
+received a Messages Ask to Buy request naming Remove All Ads / Paws Puzzle Game /
+R$ 29,90. Its originating attempt/environment is uncorrelated; earlier physical
+Ask to Buy attempts without explicit environment checks are potentially
+production-account attempts, not established Sandbox tests. Do not infer that
+Sandbox caused this notification. The later fresh-tester attempt whose sheet
+explicitly identified Sandbox remains separate evidence; native `environment:
+xcode` observations apply only to their recorded native run. See
+[the observation and scope](evidence/issue64/owner-family-ask-to-buy-observation.json).
+No further purchase attempt now. Before any future owner-operated purchase test,
+require both the intended Sandbox Apple Account visibly present under Settings >
+Developer and **Environment: Sandbox** visibly present on the purchase sheet. If
+either is missing, do not initiate or approve anything. Earlier environment labels
+below do not override this correction; no earlier unverified pass is promoted to
+verified Sandbox evidence.
+
 Latest follow-up source **`a686433`** fixes a reproduced Restore race: a paid
 update after sync success could prematurely settle an unsynchronized read; an
 update during synchronized verification must supersede stale absence with a
@@ -25,7 +41,7 @@ price without Owned and Apple's sheet identified Sandbox. One confirmed request
 showed Pending/unowned. After owner force-quit/Home Screen reopen it stayed
 unowned, but Remove Ads became available for another purchase: **pending-lock
 restart fails**. No second purchase or history reset follows; physical experiments
-stop. The native diagnostic remains inconclusive, and the original early grant,
+stop. The native diagnostic remains inconclusive, and the earlier environment-unverified Pending-to-Owned observation,
 SDK replay hazard and this restart failure keep #64 blocked. The Restore fix is
 not claimed as the physical failures' cause.
 

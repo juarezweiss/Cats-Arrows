@@ -127,5 +127,13 @@
   "boundedSandboxAttempts": 1,
   "furtherPhysicalExperiments": "stopped; do not initiate another purchase or reset history",
   "cause": "unproven; no second buy, reset, reinstall or diagnostic-data copy requested",
-  "independentReviewAfterOwnerFailure": "No concrete clearing defect found statically; recovered pending survives empty/partial/failed inventory. Verified ownership or matching terminal failure can clear it. Cause remains unproven; do not infer SDK auto-finish caused restart unlock."
+  "independentReviewAfterOwnerFailure": "No concrete clearing defect found statically; recovered pending survives empty/partial/failed inventory. Verified ownership or matching terminal failure can clear it. Cause remains unproven; do not infer SDK auto-finish caused restart unlock.",
+  "environmentEvidenceScope": {
+    "source": "docs/evidence/issue64/owner-family-ask-to-buy-observation.json",
+    "classification": "Later owner-verified Sandbox attempt only; fresh tester sign-in and explicit Sandbox sheet reported",
+    "doesNotEstablishEnvironmentOfEarlierAttempts": true,
+    "realFamilyNotificationCausation": "not established; do not infer Sandbox caused it",
+    "futurePurchaseGates": "Intended Sandbox Apple Account visibly present under Settings > Developer AND purchase sheet visibly identifies Environment: Sandbox; if either missing, do not initiate or approve",
+    "furtherPurchaseAttemptAuthorizedNow": false
+  }
 }

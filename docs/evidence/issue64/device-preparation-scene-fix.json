@@ -351,7 +351,8 @@
         "newProcessIdentifier": 19012,
         "launchMethod": "Xcode Run Without Building / Paws StoreKit Test",
         "ownerPendingPersistenceResult": "failed: Owned appears"
-      }
+      },
+      "environmentAssessmentAfterOwnerObservation": "Earlier physical attempt: account/sheet environment not jointly recorded; environment-unverified and potentially production-account. Do not treat intended Xcode test setup as conclusive environment proof."
     },
     "askToBuyRestart": {
       "result": "failed",
@@ -470,7 +471,8 @@
         "ownerRestoreAfterDeletion": "Price shown; no Owned status",
         "next": "New Ask to Buy request followed by owner force-quit/reopen, without Xcode reinstall"
       },
-      "noApprovalBeforeFailure": true
+      "noApprovalBeforeFailure": true,
+      "environmentAssessmentAfterOwnerObservation": "Earlier physical attempt: account/sheet environment not jointly recorded; environment-unverified and potentially production-account. Do not treat intended Xcode test setup as conclusive environment proof."
     },
     "emptyLocalInventoryRestore": {
       "result": "passed-unowned-ui",
@@ -484,7 +486,8 @@
       "deferredRequest": "Pending appears; no Owned status",
       "approval": "not-approved",
       "restartMethod": "Owner force-quit and Home Screen icon reopen; no Xcode install/launch",
-      "restartResult": "failed: Owned appears after owner force-quit/Home Screen reopen"
+      "restartResult": "failed: Owned appears after owner force-quit/Home Screen reopen",
+      "environmentAssessmentAfterOwnerObservation": "Earlier physical attempt: account/sheet environment not jointly recorded; environment-unverified and potentially production-account. Do not treat intended Xcode test setup as conclusive environment proof."
     },
     "boundedInvestigation": {
       "ownerInstruction": "One clean native StoreKit-only pending/currentEntitlements/unfinished/updates observation before and after approval, then sandbox initiation; no reset/reinstall cycling; no production verification weakening",
@@ -565,7 +568,8 @@
         "independentQA": "no blocking findings",
         "explainsPhysicalFailure": false,
         "signedFixedCandidateInstalled": true
-      }
+      },
+      "ownerFamilyNotificationEvidence": "docs/evidence/issue64/owner-family-ask-to-buy-observation.json"
     }
   },
   "technicalLaunchEvidence": {
@@ -580,5 +584,14 @@
     "deviceReadinessLog": ".unity-results/issue64-scene-fix-owner/current-device-details.json",
     "installedIdentityLog": ".unity-results/issue64-scene-fix-owner/installed-app.json",
     "processLog": ".unity-results/issue64-scene-fix-owner/processes.json"
+  },
+  "environmentEvidenceCorrection": {
+    "reportedDate": "2026-10-22",
+    "source": "docs/evidence/issue64/owner-family-ask-to-buy-observation.json",
+    "overridesBroadHistoricalEnvironmentLabels": true,
+    "earlierPhysicalAttempts": "If explicit account/sheet environment checks were not recorded, classify as environment-unverified and potentially production-account attempts; technical scheme configuration alone is insufficient",
+    "nativeOnlyJournalScope": "Measured environment:xcode remains valid only for those journal entries",
+    "laterVerifiedSandboxAttempt": "Keep a686433 fresh-tester/explicit-Sandbox-sheet attempt separate; no causal link to real Family notification established",
+    "furtherPurchaseAttemptAuthorized": false
   }
 }
