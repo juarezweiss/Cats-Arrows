@@ -287,3 +287,9 @@ acceptance remains pending.
 Online retry launches the same signed build successfully without signing/trust
 changes. The next owner check removes phone connectivity while the app is
 running; it cannot establish offline cold-start acceptance.
+
+2026-10-22 owner offline running-app check: with Paws already running, enabled
+Airplane Mode and disabled Wi-Fi, then returned to Settings without closing Paws.
+**“Owned remains while offline”** passes retained ownership during that offline
+background/return scenario. Offline cold-start and clean-state restore remain
+separate pending gates; local StoreKit behavior does not validate Apple sandbox.

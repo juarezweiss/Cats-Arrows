@@ -302,6 +302,20 @@
       "failure": "iOS rejected launch with developer-certificate trust/security error (IDELaunchCoreDevice 0 / CoreDeviceError 10002)",
       "scope": "No app execution; offline entitlement behavior untested; online retry pending",
       "onlineRetry": "same signed build launched successfully after networking restored"
+    },
+    "offlineRunningOwnership": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "ownerConfirmedNetworkState": "Airplane Mode on, Wi-Fi off",
+      "report": "Owned remains while offline",
+      "scope": "Already-running app, background/return to Settings; offline cold start still blocked by iOS trust"
+    },
+    "revocationPreparation": {
+      "status": "pending-owner-open-transaction-manager",
+      "networkRestoredByOwner": true,
+      "testTransactionChanged": false,
+      "blocker": "Xcode Help search locates Manage Transactions but automation cannot activate manager window"
     }
   },
   "technicalLaunchEvidence": {
