@@ -264,3 +264,8 @@ separately in Apple sandbox.
 after cancelling the purchase sheet, the price remains visible and no Owned
 status appears. Cancellation scenario passes; simulated purchase is the next
 owner step. Other purchase/restore and sandbox acceptance remain pending.
+
+2026-10-22 owner simulated purchase in **Xcode StoreKit Test / BRA / pt_BR**:
+**“Owned appears”** after confirming the test purchase. Purchase-to-Owned UI passes;
+this does not establish restore, persistence after restart/offline, revocation or
+interrupted finalization. Restore in the same test environment is next.
