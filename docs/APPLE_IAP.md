@@ -9,6 +9,31 @@ saved in App Store Connect as **Prepare for Submission**, with price/localizatio
 configured and Offer Codes enabled. These are owner-reported account facts;
 submission and production activation remain unauthorized.
 
+## Latest develop synchronization — 2026-10-22
+
+Active #64/PR #79 now includes authoritative develop
+`a4251605878b5d4d1fd169962344ddfd58bf5d8c` (including #80/#81 branding).
+Merge commit: `2603b2561b07d362e1708cfbfa918bb736422fa5`.
+Review/test build source: **`275b20a27a122da1a7f04a5c6446b0933cb72221`**.
+All non-#64 app/game/UI/assets/scenes/ProjectSettings/existing tests match that
+develop tree exactly; only intentional IAP package changes remain in shared
+Unity files. Older #64-only menu-test fixture edits were dropped in favor of
+develop. Root `AGENTS.md` now requires latest develop for future monetization work.
+
+The production icon and MenuPaw source bytes match #80. All ten fresh exported
+icon PNGs match #80's validated output bytes, all four Xcode configurations use
+AppIcon, and the current MenuPaw resource is packed. The review generator reads
+the current production panel and shared `GameShellView`; no old review asset,
+scene or ProjectSettings was copied forward. Previous signed builds and receipts
+remain historical evidence and must not be used as this synchronized candidate.
+
+Pinned compile passed; focused Apple/build/branding/menu tests **68/68**, full
+EditMode **562/562** and Python contracts **51/51** passed, with successful exits.
+The fresh unsigned development review artifact and exact hashes are recorded in
+[synchronization evidence](evidence/issue64/develop-sync.json). No device install,
+launch, purchase, account or transaction operation followed. Production remains
+disabled; #82 stays the Paws 1.0 release blocker. No main change or PR merge.
+
 ## Current scope — foundation complete; release blocker #82
 
 Owner-directed scope split on 2026-10-22: [#64](https://github.com/juarezweiss/Paws/issues/64)

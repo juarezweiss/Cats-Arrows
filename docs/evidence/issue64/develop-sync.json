@@ -1,0 +1,124 @@
+{
+  "schema": "paws-issue64-develop-sync-v1",
+  "date": "2026-10-22",
+  "sourceSha": "275b20a27a122da1a7f04a5c6446b0933cb72221",
+  "mergeSha": "2603b2561b07d362e1708cfbfa918bb736422fa5",
+  "developSha": "a4251605878b5d4d1fd169962344ddfd58bf5d8c",
+  "branchHeadBefore": "967cdc99780abf8ed06fb4bcf788a404258b4bb8",
+  "strategy": "merge origin/develop into existing published feat/64-apple-iap; no history rewrite",
+  "authority": "Current develop retained exactly for all non-64 app/game/UI/assets/ProjectSettings/existing tests; stale #64 safe-area test edits dropped",
+  "non64SharedUnityFileDifferences": [],
+  "packageOnlySharedFileChanges": [
+    "UnityProject/Packages/manifest.json",
+    "UnityProject/Packages/packages-lock.json"
+  ],
+  "sourceHashes": {
+    "UnityProject/Assets/CatsAndArrows/UI/PawsAppIcon.png": "b891542a9a84aafcf079f222b3002037ee07f80f9dbd457059f8262fe475a788",
+    "UnityProject/Assets/Resources/MenuPaw.png": "bf7e5ee38e7b5ab28e6d4d15d8d42d61f77bf30f443a44b71e765ceb34cd2afe",
+    "UnityProject/ProjectSettings/ProjectSettings.asset": "d1e14ff97f0c9d9ecc0f406e65973e59e4ac116ec2e10b087ec32b71204cf3b5",
+    "UnityProject/Assets/CatsAndArrows/UI/GameShellView.cs": "01f0e03ad46c54d07cded57f5979c4f4bcf8774aa505c8eab31bbfa0a5475406",
+    "UnityProject/Assets/CatsAndArrows/Scenes/Paws.unity": "4464faaa6e1577af0b6f0b65843f09cf5ceffceedd799ccbaa37bc66a440e587"
+  },
+  "ownerUncommittedDocumentsPreserved": true,
+  "review": {
+    "reviewReceipt": {
+      "unityVersion": "6000.3.25f1",
+      "productId": "com.jweiss.paws.removeads",
+      "sourceSha": "275b20a27a122da1a7f04a5c6446b0933cb72221",
+      "purpose": "issue64-owner-StoreKit-sandbox-review",
+      "iapPackage": "5.3.1",
+      "purchaseEnvironment": "SandboxReview",
+      "reviewMonetizationEnabled": true,
+      "adProviderEnabled": false,
+      "productionMonetizationEnabled": false,
+      "developmentBuild": true,
+      "simulateAskToBuy": false
+    },
+    "exportedIconCount": 10,
+    "iconFiles": [
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-120.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-180.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Settings-29.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Settings-58.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Settings-87.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Spotlight-80.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Spotlight-120.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Notification-40.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-iPhone-Notification-60.png",
+      "Unity-iPhone/Images.xcassets/AppIcon.appiconset/Icon-Store-1024.png"
+    ],
+    "allIconBytesMatchIssue80": true,
+    "menuPawResourcePacked": true,
+    "xcodeAppIconConfigurations": 4
+  },
+  "checks": {
+    "compile": ".unity-results/compile.xo1jZo/Editor.log",
+    "compilePassed": true,
+    "focused": {
+      "xml": ".unity-results/issue64-develop-sync-focused.BPVSw1/test-results.xml",
+      "passed": 68,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "sha256": "ae3bf024e7c657bd65c80747a86edb9d7726ccc394d7d170b7369242cf347f88",
+      "successfulEditorExit": true
+    },
+    "fullEditMode": {
+      "xml": ".unity-results/editmode.aV2Z2Q/test-results.xml",
+      "passed": 562,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "sha256": "50165a453520772522d2eeaf69d4b042cf37e9a98412651e595616c6f1246a3e",
+      "successfulEditorExit": true
+    },
+    "python": {
+      "log": ".unity-results/issue64-develop-sync/python-tests.log",
+      "passed": 51
+    },
+    "independentQA": "no blocking findings; exact develop app/settings/UI/scene comparisons and current shared review composition verified",
+    "repository": "scripts/validate.sh and git diff --check passed",
+    "xcode": {
+      "result": "BUILD SUCCEEDED",
+      "exitCode": 0,
+      "log": ".unity-results/issue64-develop-sync-xcode/xcodebuild.log",
+      "logSha256": "2451a1c05cf9cfc1ebdc72e9d5d1e055f871f7f286a0e350ed8076fc16656c1f"
+    },
+    "compileSourceSha": "2603b2561b07d362e1708cfbfa918bb736422fa5",
+    "compileVsBuildInputs": "UnityProject/scripts identical between compile merge source2603b25 and build source275b20a; intervening commit is root workflow documentation only"
+  },
+  "staleArtifacts": "Earlier signed/unsigned artifacts and receipts are historical evidence only; new development export supersedes them for future preparation. No old scene/assets/settings copied. No prior physical acceptance transferred.",
+  "physicalReview": "NOT RUN; no install/launch/purchase/account/transaction actions. #82 remains Paws1.0 hard release blocker.",
+  "productionMonetizationEnabled": false,
+  "mainTouched": false,
+  "scope": "No feature/adapter/ownership semantics change. Future monetization baseline rule recorded in root AGENTS.md.",
+  "artifact": {
+    "export": "Builds/Issue64-DevelopSync-275b20a",
+    "exportTreeSha256": "9b17200487472c1b9200d9fe2688a12e2583b6a5996b2efa95d406d52645d876",
+    "app": "Builds/Issue64iPhone/DevelopSync-275b20a/Paws.app",
+    "appTreeSha256": "bae1dad8fec7c09eb0f9fb448d2679432e4c47fe97418227120e3362146dcbb8",
+    "unsigned": true,
+    "installable": false,
+    "binaryModules": [
+      {
+        "binary": "Paws.app/Paws",
+        "architecture": "arm64",
+        "uuid": "7F00BD5E-21E5-3D08-9D72-84A06A593422",
+        "matchingDsym": "Paws.app.dSYM/Contents/Resources/DWARF/Paws"
+      },
+      {
+        "binary": "Paws.app/Frameworks/UnityFramework.framework/UnityFramework",
+        "architecture": "arm64",
+        "uuid": "DB473263-FC32-3EDF-813E-80E6D653AFCF",
+        "matchingDsym": "UnityFramework.framework.dSYM/Contents/Resources/DWARF/UnityFramework"
+      }
+    ],
+    "bundleIdentifier": "com.jweiss.paws",
+    "version": "0.1.0",
+    "build": "1",
+    "minimumIOS": "16.3",
+    "privacyManifests": [
+      "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy"
+    ]
+  }
+}

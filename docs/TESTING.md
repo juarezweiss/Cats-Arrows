@@ -1,5 +1,20 @@
 # Testing Strategy
 
+## Latest #64 / PR #79 integration validation — 2026-10-22
+
+Synchronized source **`275b20a27a122da1a7f04a5c6446b0933cb72221`** includes latest
+develop `a4251605878b5d4d1fd169962344ddfd58bf5d8c` via merge `2603b25`.
+Current develop app/game/UI/scenes/ProjectSettings/existing tests are unchanged;
+#80 icon/menu paw source hashes and all ten exported icon images match exactly.
+Pinned compile passes (`compile.xo1jZo`); focused Apple/build/branding/menu
+**68/68** (`issue64-develop-sync-focused.BPVSw1`), full EditMode **562/562**
+(`editmode.aV2Z2Q`), and Python contracts **51/51** pass, successful exits and
+zero failed/skipped/inconclusive. Fresh review export (`apple-iap-export.6ulBCZ`)
+and unsigned native iOS build pass; ARM64 app/framework dSYM UUIDs match.
+[Source, assets, artifact hashes and limits](evidence/issue64/develop-sync.json).
+No physical/device/purchase test followed. Prior artifacts remain historical;
+#82 still blocks Paws 1.0 release and production monetization remains disabled.
+
 ## Current IAP scope and Paws 1.0 release gate
 
 Owner-directed split (2026-10-22): [#64](https://github.com/juarezweiss/Paws/issues/64)
