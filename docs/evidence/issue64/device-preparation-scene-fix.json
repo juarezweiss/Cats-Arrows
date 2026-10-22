@@ -312,10 +312,10 @@
       "scope": "Already-running app, background/return to Settings; offline cold start still blocked by iOS trust"
     },
     "revocationPreparation": {
-      "status": "pending-owner-open-transaction-manager",
+      "status": "transaction-manager-open-owner-refund-pending",
       "networkRestoredByOwner": true,
       "testTransactionChanged": false,
-      "blocker": "Xcode Help search locates Manage Transactions but automation cannot activate manager window"
+      "blocker": null
     }
   },
   "technicalLaunchEvidence": {
