@@ -250,7 +250,7 @@
     "buildNumber": "1",
     "startupMenu": "passed",
     "report": "Paws menu appears",
-    "remainingScope": "Offline ownership, clean-state restore, pending/deferred, lifecycle, revocation, finalization interruption and Apple sandbox",
+    "remainingScope": "Restore after revocation, clean-state restore, pending/deferred, lifecycle, finalization interruption, offline cold start and Apple sandbox",
     "settingsRestoreVisible": "passed",
     "priceVisible": true,
     "localizedPrice": "passed-local-StoreKit-BRL-formatting",
@@ -312,10 +312,18 @@
       "scope": "Already-running app, background/return to Settings; offline cold start still blocked by iOS trust"
     },
     "revocationPreparation": {
-      "status": "transaction-manager-open-owner-refund-pending",
+      "status": "owner-refund-completed",
       "networkRestoredByOwner": true,
-      "testTransactionChanged": false,
+      "testTransactionChanged": true,
       "blocker": null
+    },
+    "revocation": {
+      "result": "passed-owned-ui-revoked",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "action": "Owner refunded selected local Remove All Ads transaction in Xcode",
+      "report": "Owned disappears; price returns",
+      "scope": "Running-app revocation and Settings UI only; restore-after-revocation and restart pending"
     }
   },
   "technicalLaunchEvidence": {

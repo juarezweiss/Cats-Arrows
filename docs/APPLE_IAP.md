@@ -293,3 +293,9 @@ Airplane Mode and disabled Wi-Fi, then returned to Settings without closing Paws
 **“Owned remains while offline”** passes retained ownership during that offline
 background/return scenario. Offline cold-start and clean-state restore remain
 separate pending gates; local StoreKit behavior does not validate Apple sandbox.
+
+2026-10-22 owner revocation check in **Xcode StoreKit Test / BRA / pt_BR**:
+owner refunded the selected local Remove All Ads transaction in Xcode and reports
+**“Owned disappears; price returns”** in Paws Settings. Running-app revocation/UI
+passes. Restore after revocation is next; this does not establish cold-start
+revocation, clean-state restore, or Apple sandbox acceptance.
