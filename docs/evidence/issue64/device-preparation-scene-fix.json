@@ -372,8 +372,64 @@
         "lastFinishedMatchesRefundedTransaction": false,
         "interpretation": "Real persisted Owned state; finalization reference alone does not identify ownership candidate"
       },
-      "cause": "unresolved; native verification-source diagnostics in preparation",
-      "approvalOrStateResetPerformed": false
+      "cause": "StoreKit Test API/transaction-manager discrepancy independently reproduced without Unity IAP; acceptance remains blocked",
+      "approvalOrStateResetPerformed": false,
+      "nativeDiagnostic": {
+        "baseSourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+        "originalSha256": "162d5c3e3f0130ce870a0276fac6895e35592470b60c8acadd771939e3cb5e57",
+        "diagnosticSha256": "125d2497e5c1b0ae67f62b0bcf199b7e5c27b24f6f79810888324523a33b12c2",
+        "signedAppPath": "Builds/Issue64iPhone/PendingDiagnostic/Paws.app",
+        "signedAppTreeSha256": "b71d8971f79d5f83aeba8c8eeda7ae8133776e762a41cf8755233848f9d0b0e3",
+        "signatureVerified": true,
+        "nativeBuildPassed": true,
+        "nativeTypecheckPassed": true,
+        "logicChanges": false,
+        "observedCandidate": {
+          "matchesPendingTransaction": true,
+          "matchesRefundedTransaction": false,
+          "verified": true,
+          "valid": true,
+          "revoked": false,
+          "environment": "Xcode",
+          "sources": [
+            "cache-check",
+            "current-entitlement",
+            "history",
+            "latest",
+            "grant-owned"
+          ]
+        }
+      },
+      "storeKitOnlyProbe": {
+        "kind": "read-only-native-StoreKit-probe",
+        "bundleIdentifier": "com.jweiss.paws",
+        "signedAppPath": "Builds/Issue64iPhone/StoreKitOnlyProbe/Paws.app",
+        "signedAppTreeSha256": "7fcdc3e8fa4384435ec37e02462a316fb19130041af3a3a8696500225028fc13",
+        "sourceSha256": "c64498e1ae93e177e614254d793fc43e030586343fd5b6f12548707570c84edf",
+        "signatureVerified": true,
+        "unitySdkIncluded": false,
+        "keychainOrAppStateAccess": false,
+        "purchaseSyncFinishOrStateReset": false,
+        "storeKitConfigurationSha256": "89538b958a78186df37af454db01e08b409789340e92bea8f5875382e3fd2bbc",
+        "observedProof": {
+          "currentEntitlementsCount": 1,
+          "currentAndLatestMatchPendingTransaction": true,
+          "verified": true,
+          "environment": "Xcode",
+          "revoked": false
+        },
+        "initialShellAttempt": "failed-before-probe; UIKit required UIScene lifecycle",
+        "finalBuild": "probe-build-scene.log; success"
+      },
+      "managerAfterRefresh": "Still Pending Approval",
+      "independentQA": "environment validation blocker; leave ownership policy unchanged",
+      "reviewedAppRestored": {
+        "exactRetainedCandidate": true,
+        "generatedNativeSourceRestored": true,
+        "launchMethod": "Xcode / Paws StoreKit Test / Run Without Building",
+        "launchObserved": true,
+        "ownerRebootTroubleshooting": "requested; pending"
+      }
     }
   },
   "technicalLaunchEvidence": {

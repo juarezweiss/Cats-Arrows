@@ -336,3 +336,28 @@ A native-only, review-gated diagnostic override is being prepared in the ignored
 export to log verification source, opaque transaction hash, environment and flags.
 Tracked provider logic and the retained signed candidate remain unchanged. No
 approval, decline, reset or other test-transaction mutation has been performed.
+
+#### Native isolation result
+
+The diagnostic native verifier reads the pending transaction itself as a verified,
+valid, unrevoked Xcode `currentEntitlements` candidate and latest transaction. Its
+opaque reference differs from the older refunded transaction. Closing/reopening
+the manager still reports **Pending Approval**.
+
+An independently signed **StoreKit-only native probe**, using the same bundle,
+phone and byte-identical test configuration, reproduces the same verified current
+and latest transaction. It includes no UnityFramework/Unity IAP and reads/writes
+no Keychain or app state; it performs no purchase, sync, finish or reset. Its
+initial shell attempt failed before the probe because the SDK requires UIScene;
+the corrected scene-based probe launches and completes the read-only snapshot.
+This isolates a StoreKit Test API/session-versus-manager discrepancy. It does not
+establish correct pending behavior or prove an Apple sandbox/production defect.
+
+Independent QA recommends keeping this environment gate blocked and leaving
+entitlement policy unchanged; do not override genuine verified ownership merely
+because an earlier deferred marker exists. Diagnostic binaries/source hashes are
+recorded in the corrected receipt; local sources/products are retained under
+ignored Builds/`.unity-results`. The generated native source and exact original
+signed Paws candidate/dSYMs have been restored, and Paws launched through the
+original StoreKit Test scheme. No transaction approval/decline/reset was performed.
+Requested owner restart/reconnect with networking on for the next isolation step.
