@@ -9,6 +9,23 @@ saved in App Store Connect as **Prepare for Submission**, with price/localizatio
 configured and Offer Codes enabled. These are owner-reported account facts;
 submission and production activation remain unauthorized.
 
+## Owner-authorized synchronized installation — 2026-10-22
+
+The owner requested installing the synchronized build before finalizing #79/#64.
+The fresh app from **`275b20a27a122da1a7f04a5c6446b0933cb72221`** was signed
+with the existing valid local development profile and installed in place on
+**iPhone 17 / iOS 27.0.1**. Strict app/framework signature checks, profile device
+membership/expiry, unchanged unsigned-source hash, matching binary UUIDs and
+installed **Paws / com.jweiss.paws / 0.1.0 (1)** identity passed. No old app was
+rebuilt or copied into the new export. [Sanitized install receipt](evidence/issue64/develop-sync-device-install.json).
+
+This supersedes the earlier unsigned/not-installed preparation status below.
+No app data/history reset, launch, physical interaction or purchase test followed.
+The profile expires **2026-10-27 17:36:44 UTC**; this is local development signing.
+Production composition remains disabled; #82 remains the hard Paws 1.0 release
+gate. Existing exact-input compile/test/native-build/QA evidence is reused for
+owner-authorized foundation integration; no speculative debugging or scope growth.
+
 ## Latest develop synchronization — 2026-10-22
 
 Active #64/PR #79 now includes authoritative develop
