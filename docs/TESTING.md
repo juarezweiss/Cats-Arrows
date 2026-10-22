@@ -6,6 +6,18 @@ Dependency #63 is integrated in current develop; owner approved product mapping
 `com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
 [APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
 
+Bounded desktop follow-up (2026-10-22): **1/1 diagnostic passed**, exit 0
+(`issue64-desktop-sdk-pending-replay.f6kQUF`). Real adapter/coordinator/file-store
+recovery retained Pending with empty inventory and a controlled absent private
+marker. Explicitly injecting a same-product UserCancelled failure through the
+real IAP 5.3.1 failure conversion then reproduced an unowned/buyable state. No
+automatic SDK post-deferred failure or occurrence of that callback on the phone
+was established. This is a controlled diagnostic, **not a root-cause finding or
+fix**. [Method, hashes and limits](evidence/issue64/desktop-pending-investigation.json)
+are retained; temporary compiled test changes were removed. No implementation
+change remains, so no broad merge gate was repeated. #64 remains blocked pending
+callback/persistence provenance; no further physical attempt is authorized.
+
 **Latest owner evidence correction (2026-10-22):** real Apple Family members
 received a Messages Ask to Buy request naming Remove All Ads / Paws Puzzle Game /
 R$ 29,90. Its originating attempt/environment is uncorrelated; earlier physical

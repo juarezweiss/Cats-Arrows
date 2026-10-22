@@ -11,6 +11,32 @@ submission and production activation remain unauthorized.
 
 ## Current owner gate — bounded investigation, 2026-10-22
 
+### Bounded desktop follow-up — no supported correction established
+
+One deterministic diagnostic used the real adapter/coordinator, real file store
+and fresh-instance startup recovery. Pending survived empty inventory even when
+the controlled private marker was absent. An explicitly injected same-product
+UserCancelled failure, converted by the actual IAP 5.3.1
+`PurchaseFailureDescription.ConvertToFailedOrder`, then cleared the persisted
+coordinator flag and enabled buying while remaining unowned. Empty failure
+transaction IDs are normal SDK behavior; earlier fakes often retained `123`.
+
+The SDK audit found no automatic terminal failure after `.pending`: it emits
+Deferred and returns. No evidence places the injected cancellation in the failed
+phone sequence. Thus the replay shows a possible terminal-resolution route,
+**not the physical cause**; normal startup did not reproduce the unlock. Blindly
+rejecting empty IDs would reject normal SDK failures. No speculative guard or
+terminal-resolution policy change is justified by this replay alone.
+
+Pinned desktop diagnostic **1/1 passed**, exit 0; exact method and source hashes
+are retained in [desktop evidence](evidence/issue64/desktop-pending-investigation.json).
+The temporary compiled test was restored; runtime/scripts/active test sources
+are unchanged. No broad suite, device action, purchase or reset followed.
+**Stop this bounded investigation; #64 remains blocked.** Missing evidence is the
+actual normalized callback sequence and pending-marker/coordinator commit/reload
+outcomes in the failing environment. Existing evidence, histories and both visible
+Sandbox gates below are preserved; no further physical test is authorized.
+
 ### Latest owner evidence correction — real Family notification
 
 The owner reports that members of their **real Apple Family** received an actual

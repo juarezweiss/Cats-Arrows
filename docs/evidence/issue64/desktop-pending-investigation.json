@@ -1,0 +1,83 @@
+{
+  "schema": "paws-issue64-bounded-desktop-pending-investigation-v1",
+  "date": "2026-10-22",
+  "baselineSourceSha": "8986ae5ed6d0c1cdf947a9f55e6920f664aaa6e8",
+  "focus": "Verified Sandbox Pending before restart -> relaunch -> purchase enabled; no environment-unverified earlier attempts investigated",
+  "versions": {
+    "unity": "6000.3.25f1",
+    "iap": "5.3.1"
+  },
+  "bounds": {
+    "desktopOnly": true,
+    "physicalPurchaseTests": 0,
+    "deviceActions": 0,
+    "reinstallsOrHistoryResets": 0,
+    "broadSuitesRun": 0,
+    "runtimeFix": "none; no supported correction established"
+  },
+  "sdkAudit": {
+    "pendingCallback": "Native .pending emits OnPurchaseDeferred and returns nil; StoreKitManager returns without emitting another failure",
+    "deferredOrder": "AppleStoreImpl resolves product and emits DeferredOrder; empty transaction ID is normal",
+    "terminalFailureShape": "JSONStore -> PurchaseFailureDescription.ConvertToFailedOrder default transaction ID is empty; prior fakes often used an order retaining transaction ID 123",
+    "terminalSources": "Bundled SK2 UserCancelled comes from active Product.purchase result; ProductUnavailable from purchase preflight; no normal post-pending/startup terminal cancellation source found; promotional purchase intents can be separate from adapter Buy",
+    "automaticFailureAfterDeferredEstablished": false,
+    "sourceHashes": {
+      "Plugins/UnityPurchasing/iOS/SK2/UseCases/PurchaseUseCase.swift": "ffe3598dac8ca9fcfd47d35d1d1a2cc7fd8a0f964ad4414dee96a7cd259a2ae4",
+      "Plugins/UnityPurchasing/iOS/SK2/StoreKitManager.swift": "ffec68323ca4a6a4460d15aefb6d215f7da4ffd2220491d6aa7f49ef400a85bd",
+      "Plugins/UnityPurchasing/iOS/SK2/UseCases/TransactionObserverUseCase.swift": "4d6524575f52f62a1d4b2451e79f0726be4846b7519527547986e7230a941645",
+      "Runtime/Stores/BaseStore/JSONStore.cs": "77afa51dec76d553abc4b586565da824b22900f9456300933c92049b98ef96f8",
+      "Runtime/Stores/AppleAppStore/AppleStoreImpl.cs": "ea8fc54fef49278c7e9835623588f060947b3db9465ba80c7220782613c04a90",
+      "Runtime/Purchasing/PurchaseFailureDescription.cs": "95cd3bd4344a69052dcf2eb33a35a47fc7435a170c26861f689fe0d01f8c076e"
+    }
+  },
+  "replay": {
+    "method": "DesktopPendingReplayFileRecoveryThenSdkShapedTerminalCancellation",
+    "executedMethodEvidence": "docs/evidence/issue64/desktop-pending-replay-method.cs.txt",
+    "executedMethodSha256": "a82aac6cb2c7a1a330400989dc730e6bd9bb14c71a6ec13470b8191465d33853",
+    "baselineFixtureSha256": "badf067c70e2b1064389bf28387175183a125d222ab48083ca7ecbfd4431dd5c",
+    "realComponents": [
+      "ApplePurchaseService",
+      "MonetizationCoordinator",
+      "FileMonetizationStateStore primary/backup format and fresh-instance reload",
+      "Unity IAP 5.3.1 PurchaseFailureDescription.ConvertToFailedOrder invoked through reflection"
+    ],
+    "controlledComponents": [
+      "IAppleStoreClient event transport",
+      "IAppleEvidence; restarted private marker intentionally absent"
+    ],
+    "sequence": [
+      "DeferredOrder -> UI Pending/unowned; real state file PendingPurchase=true",
+      "Dispose/recreate service/coordinator/file store using review bootstrap recoveredPendingPurchase; empty complete inventory, private fake marker absent -> Pending retained and purchase disabled",
+      "Explicitly inject same-product UserCancelled FailedOrder from real SDK conversion, assert empty transaction ID; no active purchase in restarted fake client -> coordinator Pending cleared/persisted, purchase enabled, still unowned"
+    ],
+    "limits": [
+      "No actual StoreKit callback emission or native Keychain IO executed",
+      "The terminal cancellation was deliberately injected, not observed in the failed physical run",
+      "Final fake private-marker=false does not prove removal of an already-present native marker",
+      "This is one diagnostic scenario, not proof of a production/Sandbox root cause or a regression fix"
+    ]
+  },
+  "validation": {
+    "editorExitCode": 0,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0,
+    "nunitXml": ".unity-results/issue64-desktop-sdk-pending-replay.f6kQUF/test-results.xml",
+    "nunitXmlSha256": "b64dfdf94a4d054e819f12c67eac2748f52ed70714a4eaca535ec03da9d02f40",
+    "testCase": "CatsAndArrows.Purchasing.Apple.Tests.ApplePurchaseServiceTests.DesktopPendingReplayFileRecoveryThenSdkShapedTerminalCancellation",
+    "preliminarySameScenarioShapePass": ".unity-results/issue64-desktop-pending-replay.5pa8HS/test-results.xml",
+    "temporaryCompiledTestRestored": true,
+    "runtimeAndScriptsDiff": "none"
+  },
+  "conclusion": "Normal file-backed recovery did not reproduce the unlock. An explicitly injected terminal failure reproduces the visible transition but its occurrence/provenance on the phone is unproven. No supported correction to the verified physical failure established; stop bounded investigation, keep #64 blocked.",
+  "whyNoGuard": "Blindly discarding empty transaction IDs would reject normal SDK failures. Broader callback correlation/terminal-resolution policy must not be changed without supported provenance; a speculative unsolicited-failure guard would not establish the phone cause.",
+  "missingEvidence": [
+    "Actual normalized callback order during the failed transition, including any terminal reason",
+    "Private pending-marker write/read outcomes and coordinator pending commit/reload outcomes in the failing environment"
+  ],
+  "physicalEvidenceAndOwnerSandboxGates": "Unchanged; no further attempt authorized. Real Family notification remains uncorrelated; later explicitly identified Sandbox evidence remains separate.",
+  "requiredMergeGate": "Not rerun: no runtime/test implementation change remains. Earlier 558/558 gate is historical for unchanged implementation, not new physical acceptance.",
+  "independentReview": "No blocking findings in bounded desktop conclusion; no runtime fix recommended",
+  "canUnblock64": false
+}
