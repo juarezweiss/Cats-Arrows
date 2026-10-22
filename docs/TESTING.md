@@ -6,6 +6,24 @@ Dependency #63 is integrated in current develop; owner approved product mapping
 `com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
 [APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
 
+Latest follow-up source **`a686433`** fixes a reproduced Restore race: a paid
+update after sync success could prematurely settle an unsynchronized read; an
+update during synchronized verification must supersede stale absence with a
+new synchronized read. Both failing reproductions are retained locally
+(`issue64-restore-race-red.suDuBo`, `issue64-restore-update-red.z8KdLc`). Final
+provider contracts **47/47** pass (`issue64-restore-final-contracts.4HkmOH`),
+pinned compile passes (`compile.iPOQmp`), full EditMode **558/558** passes with
+successful exit and zero failed/skipped/inconclusive (`editmode.o5A1f5`), and
+repository/whitespace checks pass. Independent QA reports no blocking findings.
+Clean export (`apple-iap-export.o6DmaX`) and signed development artifact checks
+pass; the [fixed sandbox candidate](evidence/issue64/sandbox-restore-fix-preparation.json)
+is installed/running with no local StoreKit configuration or debugger. No app
+data, Keychain or transaction history was reset. The owner's earlier Restore
+report (**All ads removed**, prior tester ownership unknown) does not establish
+an unowned baseline. A fresh Sandbox tester is an outstanding owner action;
+pending initiation/restart, the original early grant and SDK replay hazard remain
+unresolved. This fix is not claimed as the physical failure's cause.
+
 2026-10-22 bounded follow-up: the independent native-only Ask to Buy trace is
 **inconclusive**: Pending returned and current entitlements stayed empty before
 approval, but remained empty after approval/restart too. Verified unfinished and

@@ -44,7 +44,15 @@ Restore authority until both callbacks arrive; later paid updates supersede an
 in-flight read with `Verify(true)`. Regressions cover premature completion and
 stale synchronized absence versus newer verified ownership. This is not yet a
 causal explanation of either physical failure or a resolution of SDK auto-finish.
-The phone's `bf32a15` candidate predates this fix; replacement gates are pending.
+Source `a686433` includes this fix: provider contracts **47/47**, full EditMode
+**558/558**, pinned compilation, clean export and signed development artifact
+checks pass; independent QA has no blocking findings. The exact replacement is
+installed/running through **Paws Sandbox Restore Fix**, Configuration **None**,
+debugger off. [Fixed sandbox receipt](evidence/issue64/sandbox-restore-fix-preparation.json)
+retains its signed app/symbol provenance separately from the earlier candidate.
+The owner needs to create a fresh Sandbox tester; sign-in, authoritative unowned
+Restore and one pending initiation/restart are still pending human actions.
+Neither the native diagnostic nor this preparation safely unblocks #64.
 
 The [native reproducer](../tools/apple-iap-probe/README.md) contains no Unity IAP or
 Paws ownership/cache code. One owner-operated native purchase must return Pending;
