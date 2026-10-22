@@ -1,6 +1,25 @@
 # Testing Strategy
 
-## Issue #64 Apple purchase adapter
+## Current IAP scope and Paws 1.0 release gate
+
+Owner-directed split (2026-10-22): [#64](https://github.com/juarezweiss/Paws/issues/64)
+is completed IAP foundation scope; [PR #79](https://github.com/juarezweiss/Paws/pull/79)
+can proceed through normal integration review with production monetization disabled.
+[#82](https://github.com/juarezweiss/Paws/issues/82) owns the unresolved Ask to Buy
+lifecycle and physical acceptance: **HARD BLOCKER for Paws 1.0 App Store release;
+not a blocker for continued development on `develop`.** Enforce the
+[release checklist](RELEASE.md#paws-10-app-store-hard-release-gate--82) independently
+of #64 closure/#79 integration. No merge/closure or physical test occurs in this update.
+
+Prior compile/provider/full-suite results below support the unchanged foundation;
+they do not establish correct physical Pending/restart, approval, entitlement or
+finalization. Preserve verified Sandbox versus environment-unverified evidence.
+The following pre-split snapshots retain historical “#64 blocked” status text;
+that scope decision now belongs to #82, with no failed finding erased. The 5.4.2
+rejection remains in force. This documentation-only split requires repository
+validation/whitespace checks; no new Unity run or purchase attempt is claimed.
+
+## Issue #64 retained foundation validation and pre-split history
 
 Dependency #63 is integrated in current develop; owner approved product mapping
 `com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:

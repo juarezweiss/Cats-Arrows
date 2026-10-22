@@ -9,7 +9,32 @@ saved in App Store Connect as **Prepare for Submission**, with price/localizatio
 configured and Offer Codes enabled. These are owner-reported account facts;
 submission and production activation remain unauthorized.
 
-## Current owner gate — bounded investigation, 2026-10-22
+## Current scope — foundation complete; release blocker #82
+
+Owner-directed scope split on 2026-10-22: [#64](https://github.com/juarezweiss/Paws/issues/64)
+now covers the completed IAP foundation in [PR #79](https://github.com/juarezweiss/Paws/pull/79).
+The unresolved deferred lifecycle/physical acceptance is tracked by
+[#82 — Fix Ask to Buy / deferred IAP lifecycle](https://github.com/juarezweiss/Paws/issues/82):
+**HARD BLOCKER for Paws 1.0 App Store release; not a blocker for continued
+development on `develop`.** Foundation closure/integration remains subject to
+normal checks and owner instructions; neither is performed by this scope update.
+Production composition remains disabled. [Release checklist](RELEASE.md#paws-10-app-store-hard-release-gate--82).
+
+The verified Sandbox Pending/unowned → relaunch/unowned/buy-enabled failure is
+still unresolved. Earlier Pending → Owned remains environment/approval-unverified;
+the native approval/current-entitlement sequence is inconclusive and SDK replay
+finalization remains a hazard. The rejected 5.4.2 comparison stands. Direct
+StoreKit 2 behind `IPurchaseService` is an option requiring separate approval,
+not an implementation authorized here. No new purchase, reset or fix follows.
+
+All sections below retain dated pre-split findings. Their historical “#64 blocked”
+/ “PR #79 draft” scope decisions are superseded by this transfer to #82; the failed
+observations, uncertainty, source receipts and mandatory Sandbox gates are not.
+Immutable evidence files remain unchanged. No passing live lifecycle result is
+implied by accepting the foundation.
+
+<a id="current-owner-gate--bounded-investigation-2026-10-22"></a>
+## Retained pre-split investigation — 2026-10-22
 
 ### Bounded IAP 5.4.2 comparison — rejected at inspection
 
