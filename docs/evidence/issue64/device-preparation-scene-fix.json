@@ -109,11 +109,11 @@
     "offerCodesEnabled": true,
     "submissionAuthorized": false
   },
-  "installed": false,
+  "installed": true,
   "preparedLaunchMethod": "Xcode / Paws StoreKit Test",
-  "launchVerified": false,
-  "runningProcessVerified": false,
-  "physicalReview": "pending-owner",
+  "launchVerified": true,
+  "runningProcessVerified": true,
+  "physicalReview": "partial-owner-startup-menu-pass",
   "runtimeNetworkObservation": "pending-owner",
   "productionMonetizationEnabled": false,
   "adProviderEnabled": false,
@@ -130,9 +130,9 @@
     "cameraEnabled": true
   },
   "debugExecutable": false,
-  "installedIdentityVerified": false,
-  "deviceConnection": "pending-owner-reconnect",
-  "deviceDetailsSource": "last observed readiness; current reconnect required",
+  "installedIdentityVerified": true,
+  "deviceConnection": "connected",
+  "deviceDetailsSource": "devicectl readiness observed 2026-10-22",
   "nativeIapAbiSymbols": [
     "_PawsIapRead",
     "_PawsIapVerifyCache",
@@ -233,5 +233,31 @@
     "panelAssetPresent": true,
     "signed": false,
     "productionMonetizationEnabled": false
+  },
+  "developerMode": "enabled",
+  "ddiServicesAvailable": true,
+  "humanReview": {
+    "reviewer": "owner",
+    "reportedDate": "2026-10-22",
+    "environment": "Xcode StoreKit Test",
+    "sourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "startupMenu": "passed",
+    "report": "Paws menu appears",
+    "remainingScope": "Settings/price, purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox pending"
+  },
+  "technicalLaunchEvidence": {
+    "date": "2026-10-22",
+    "method": "Xcode Run Without Building / Paws StoreKit Test",
+    "debugExecutable": false,
+    "cachedSignedAppHashMatchesRetainedCandidate": true,
+    "installedBundleIdentifier": "com.jweiss.paws",
+    "installedVersion": "0.1.0",
+    "installedBuildNumber": "1",
+    "runningProcessIdentifier": 18935,
+    "deviceReadinessLog": ".unity-results/issue64-scene-fix-owner/current-device-details.json",
+    "installedIdentityLog": ".unity-results/issue64-scene-fix-owner/installed-app.json",
+    "processLog": ".unity-results/issue64-scene-fix-owner/processes.json"
   }
 }

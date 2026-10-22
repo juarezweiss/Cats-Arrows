@@ -217,13 +217,15 @@ framework/privacy inventory and actual panel/theme inclusion. The signed copy
 remains unchanged by unsigned archiving. The [corrected preparation receipt](evidence/issue64/device-preparation-scene-fix.json)
 records both artifacts and the passing automated gates.
 
-The owner will reconnect the iPhone after sleep. This replacement has **not**
-been installed or launched; all physical/store/runtime-data acceptance remains
-pending. Xcode is open on the corrected project with **Paws StoreKit Test** selected
-and Debug executable disabled. On reconnect, recheck profile/device readiness and
-install/launch this exact source through that scheme. The first human check is
-whether the menu appears; proceed to Settings/price only after that explicit
-result. The separate Apple Sandbox scheme still has StoreKit Configuration None.
+2026-10-22: the corrected signed build was installed/launched through Xcode
+**Paws StoreKit Test**, using Run Without Building with Debug executable disabled.
+The cached signed artifact matches the retained candidate hash; strict signature,
+valid profile/device coverage, enabled Developer Mode/DDI services, installed
+identity **0.1.0 (1)** and a running Paws process were verified on **iPhone 17 /
+iOS 27.0.1**. The owner explicitly reported **“Paws menu appears”**. This passes
+startup/menu visibility only. Settings/price is the next owner check;
+purchase/restore, remaining physical scenarios and runtime-data acceptance remain
+pending. The separate Apple Sandbox scheme still has StoreKit Configuration None.
 
 ## Archive gate status — 2026-10-20
 

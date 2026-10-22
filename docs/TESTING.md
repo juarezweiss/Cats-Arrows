@@ -95,8 +95,12 @@ absent from the rejected build. Xcode **27.1 (27A9275)** signed development buil
 and unsigned Release archive pass, including binary/dSYM, identity/minimum iOS,
 native ABI, UI asset and privacy inventory checks. [Corrected receipt](evidence/issue64/device-preparation-scene-fix.json)
 records hashes and provenance. The signed app/dSYMs and archive remain under
-ignored Builds. The owner deferred reconnecting the iPhone until after sleep;
-the replacement is **not installed/launched** and has no physical/store acceptance.
+ignored Builds. After reconnect, this exact signed candidate was installed/launched
+through **Paws StoreKit Test**, debugger disabled. Signature/profile validity,
+artifact hash, current device readiness, installed **0.1.0 (1)** identity and a
+running process pass. The owner explicitly reported **“Paws menu appears”** on
+**iPhone 17 / iOS 27.0.1**: startup/menu visibility passes only. Settings/price,
+purchase/restore, remaining physical scenarios and Apple sandbox are pending.
 
 ## Issue #63 production iOS configuration
 
