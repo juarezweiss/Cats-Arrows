@@ -249,3 +249,10 @@ StoreKit Test/sandbox, runtime network/data observation and physical
 purchase/restore acceptance remain owner actions. Keep the PR draft until these
 validation gates are resolved; no signing, installation, purchase or upload was
 performed for this archive gate.
+
+2026-10-22 owner Settings check: price is visible and Restore Purchases is visible,
+but the owner reports the price is not localized. Localization acceptance remains
+open. The local StoreKit configuration currently selects locale `en_US` and
+storefront `USA`; exact displayed text and expected currency/language are being
+confirmed before changing the review environment. The adapter forwards Apple's
+`localizedPriceString` unchanged to the existing Settings row.

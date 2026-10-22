@@ -93,7 +93,10 @@
     "sha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
     "retainedOnlyInIgnoredExport": true,
     "scheme": "Paws StoreKit Test",
-    "liveValidation": "pending-owner"
+    "liveValidation": "pending-owner",
+    "observedTestLocale": "en_US",
+    "observedTestStorefront": "USA",
+    "localeObservationDate": "2026-10-22"
   },
   "appleSandbox": {
     "scheme": "Paws Apple Sandbox",
@@ -245,7 +248,10 @@
     "buildNumber": "1",
     "startupMenu": "passed",
     "report": "Paws menu appears",
-    "remainingScope": "Settings/price, purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox pending"
+    "remainingScope": "Resolve price/storefront expectation, then purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox",
+    "settingsRestoreVisible": "passed",
+    "priceVisible": true,
+    "localizedPrice": "owner-reports-not-localized-investigating"
   },
   "technicalLaunchEvidence": {
     "date": "2026-10-22",
