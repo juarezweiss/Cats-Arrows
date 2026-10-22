@@ -6,6 +6,14 @@ Dependency #63 is integrated in current develop; owner approved product mapping
 `com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
 [APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
 
+Bounded IAP 5.4.2 comparison (2026-10-22): **stopped at package inspection**.
+The new unconditional Apple Insights transport conflicts with #64's no
+developer-data/backend boundary; no supported opt-out was found for Unity
+6000.3.25f1. Official IAP/Core tarball SHA1 values match the registry. Repository
+and whitespace checks pass. No project upgrade, compile, focused/restart/full
+suite, build or physical attempt followed. Pins remain 5.3.1/Core 1.14.0; no
+claim of a 5.4.2 restart pass/fail. [Exact inspection evidence and source hashes](evidence/issue64/iap-5.4.2-comparison.json).
+
 Bounded desktop follow-up (2026-10-22): **1/1 diagnostic passed**, exit 0
 (`issue64-desktop-sdk-pending-replay.f6kQUF`). Real adapter/coordinator/file-store
 recovery retained Pending with empty inventory and a controlled absent private

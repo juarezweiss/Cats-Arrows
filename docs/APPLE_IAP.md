@@ -11,6 +11,34 @@ submission and production activation remain unauthorized.
 
 ## Current owner gate — bounded investigation, 2026-10-22
 
+### Bounded IAP 5.4.2 comparison — rejected at inspection
+
+The owner authorized one 5.4.2 comparison with a stop on unacceptable SDK/data
+behavior. Official package inspection found a blocking change: the Apple purchase
+service unconditionally injects a new Insights emitter. On Unity 6000.3 it sends
+HTTPS purchase events without Analytics/Auth packages or UGS initialization.
+Payload construction includes IDFV and can include Apple receipt/JWS/transaction
+fields. `DISABLE_RUNTIME_IAP_ANALYTICS` does not guard this new transport; consent
+fields do not stop sending. No supported opt-out was found in the inspected
+5.4.2 source/docs. This conflicts with #64's no developer-data/backend boundary.
+No runtime collection or traffic was exercised to establish this static finding.
+
+5.4.2 requires Core 1.18.0; no new package names are required. Remote Catalog and
+D2C features are present, but the fallback lookup requires an Auth access token
+and project ID; absent those it fails before HTTP. Apple finish timing/failure
+mapping improve, while the unpaid `.pending`/Deferred path and journal replay
+auto-finalization remain. No supported restart correction was identified; **no
+physical result or fix is inferred**.
+
+**Stopped before project upgrade, compile, focused tests or build preparation.**
+Pins remain IAP 5.3.1/Core 1.14.0; runtime, contracts and ownership semantics are
+unchanged. Repository/whitespace checks pass. No owner purchase is requested.
+[Package hashes, source references, limitations and skipped checks](evidence/issue64/iap-5.4.2-comparison.json)
+preserve the comparison. #64 remains blocked / PR #79 draft. Direct StoreKit 2
+behind the existing `IPurchaseService` is a possible separately scoped architecture
+option; this comparison does not authorize implementing it. Future purchase gates
+below remain mandatory; no reset/reinstall or further IAP debugging follows.
+
 ### Bounded desktop follow-up — no supported correction established
 
 One deterministic diagnostic used the real adapter/coordinator, real file store
