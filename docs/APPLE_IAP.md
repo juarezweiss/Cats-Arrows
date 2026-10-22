@@ -208,6 +208,23 @@ Production scene, provider/coordinator/persistence and Settings contracts are
 unchanged. Replacement-build physical and purchase/restore acceptance remain
 pending the owner's explicit report.
 
+2026-10-22: corrected source **`9fa818b`** has a fresh export at
+`Builds/Issue64-AppleIapReview-SceneFix/`, a verified signed development app/dSYMs
+at `Builds/Issue64iPhone/SceneFix/`, and a passing **unsigned** Release archive at
+`Builds/Issue64-AppleIapReview-SceneFix.xcarchive/`. Xcode **27.1 (27A9275)** checks
+cover identity, ARM64, iOS 16.3 minimum, matching dSYMs, native IAP symbols,
+framework/privacy inventory and actual panel/theme inclusion. The signed copy
+remains unchanged by unsigned archiving. The [corrected preparation receipt](evidence/issue64/device-preparation-scene-fix.json)
+records both artifacts and the passing automated gates.
+
+The owner will reconnect the iPhone after sleep. This replacement has **not**
+been installed or launched; all physical/store/runtime-data acceptance remains
+pending. Xcode is open on the corrected project with **Paws StoreKit Test** selected
+and Debug executable disabled. On reconnect, recheck profile/device readiness and
+install/launch this exact source through that scheme. The first human check is
+whether the menu appears; proceed to Settings/price only after that explicit
+result. The separate Apple Sandbox scheme still has StoreKit Configuration None.
+
 ## Archive gate status — 2026-10-20
 
 Final clean unsigned development export: source **`46bee5e`**, Unity 6000.3.25f1 /

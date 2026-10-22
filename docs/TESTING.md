@@ -89,6 +89,15 @@ navigation, retaining every original target-size/bounds assertion. Scene tests
 also drain destroyed runtime panels during teardown. Production safe-area/UI
 behavior is unchanged. Replacement physical/store acceptance remains pending.
 
+2026-10-22: clean corrected export **`9fa818b`** succeeded (`apple-iap-export.LIgZpH`);
+the actual export contains both BoardReviewPanel and UnityDefaultRuntimeTheme,
+absent from the rejected build. Xcode **27.1 (27A9275)** signed development build
+and unsigned Release archive pass, including binary/dSYM, identity/minimum iOS,
+native ABI, UI asset and privacy inventory checks. [Corrected receipt](evidence/issue64/device-preparation-scene-fix.json)
+records hashes and provenance. The signed app/dSYMs and archive remain under
+ignored Builds. The owner deferred reconnecting the iPhone until after sleep;
+the replacement is **not installed/launched** and has no physical/store acceptance.
+
 ## Issue #63 production iOS configuration
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);

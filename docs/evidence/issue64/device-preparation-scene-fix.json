@@ -1,0 +1,237 @@
+{
+  "schema": "paws-apple-iap-device-preparation-v1",
+  "preparationDate": "2026-10-22",
+  "sourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+  "sourceCompatibilityCheckedAtSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+  "unityVersion": "6000.3.25f1",
+  "iapPackage": "5.3.1",
+  "nativeCompilationXcode": "Xcode 27.1\nBuild version 27A9275",
+  "originalArchiveCompilationXcode": "Xcode 27.0\nBuild version 27A266a",
+  "originalArchiveTreeSha256": "7e8e39fe6d2cfeba4e91435e52fda59678339eaf4e094f664fa9d65ef96219b6",
+  "originalArchiveUnchanged": true,
+  "recompiledFromRetainedExport": true,
+  "configuration": "Release",
+  "developmentBuild": true,
+  "bundleIdentifier": "com.jweiss.paws",
+  "version": "0.1.0",
+  "buildNumber": "1",
+  "signedAppPath": "Builds/Issue64iPhone/SceneFix/Paws.app",
+  "signedAppTreeSha256": "98d2ea8983599281c0abca5b6ff118c67b501e672acbd60e0ec3a5ebbf818c64",
+  "signatureVerified": true,
+  "signingPurpose": "local-development-device-only",
+  "getTaskAllow": true,
+  "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
+  "deviceIncludedInProfile": true,
+  "device": "iPhone 17",
+  "iOS": "27.0.1",
+  "binaryChecks": [
+    {
+      "binary": "Paws",
+      "uuid": {
+        "arm64": "FC074BA3-D7BA-347D-9003-1CBF59561A5C"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    },
+    {
+      "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+      "uuid": {
+        "arm64": "5F892304-F68A-3FD0-A73C-21FDA1C05449"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    }
+  ],
+  "inventory": {
+    "frameworks": [
+      "Frameworks/UnityFramework.framework"
+    ],
+    "nativeLibraries": [],
+    "privacyManifests": [
+      {
+        "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+        "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+        "declarations": {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "35F9.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "E174.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "0A2A.1",
+                "C617.1"
+              ]
+            }
+          ],
+          "NSPrivacyTracking": false
+        }
+      }
+    ],
+    "entitlementFiles": []
+  },
+  "storeKitConfiguration": {
+    "source": "Xcode synced App Store Connect configuration",
+    "productId": "com.jweiss.paws.removeads",
+    "type": "NonConsumable",
+    "priceAndLocalizationSynced": true,
+    "sha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
+    "retainedOnlyInIgnoredExport": true,
+    "scheme": "Paws StoreKit Test",
+    "liveValidation": "pending-owner"
+  },
+  "appleSandbox": {
+    "scheme": "Paws Apple Sandbox",
+    "storeKitConfiguration": "None",
+    "liveValidation": "pending-owner",
+    "requiresAuthoritativeRestoreBeforeAcceptingCachedOwnership": true
+  },
+  "ownerReportedASC": {
+    "reportedDate": "2026-10-21",
+    "productId": "com.jweiss.paws.removeads",
+    "status": "Prepare for Submission",
+    "priceAndLocalizationConfigured": true,
+    "offerCodesEnabled": true,
+    "submissionAuthorized": false
+  },
+  "installed": false,
+  "preparedLaunchMethod": "Xcode / Paws StoreKit Test",
+  "launchVerified": false,
+  "runningProcessVerified": false,
+  "physicalReview": "pending-owner",
+  "runtimeNetworkObservation": "pending-owner",
+  "productionMonetizationEnabled": false,
+  "adProviderEnabled": false,
+  "appStoreConnectChanges": "none",
+  "uploadOrSubmission": "none",
+  "accountOrCredentialChanges": "none",
+  "supersedesSourceSha": "46bee5ebc727b2bd9d027776d8f0330b9c810a0b",
+  "originalArchiveBaselineOnly": true,
+  "sceneValidation": {
+    "savedSceneReloadValidated": true,
+    "panelAsset": "Assets/CatsAndArrows/UI/BoardReviewPanel.asset",
+    "panelAndThemePresentInExport": true,
+    "runtimePanelGuard": true,
+    "cameraEnabled": true
+  },
+  "debugExecutable": false,
+  "installedIdentityVerified": false,
+  "deviceConnection": "pending-owner-reconnect",
+  "deviceDetailsSource": "last observed readiness; current reconnect required",
+  "nativeIapAbiSymbols": [
+    "_PawsIapRead",
+    "_PawsIapVerifyCache",
+    "_PawsIapSetDeferred"
+  ],
+  "validation": {
+    "focused": {
+      "total": 7,
+      "passed": 7,
+      "report": ".unity-results/issue64-ui-scene-focused.IrnhBL/test-results.xml"
+    },
+    "fullEditMode": {
+      "total": 539,
+      "passed": 539,
+      "report": ".unity-results/editmode.TqTHXs/test-results.xml"
+    },
+    "compileLog": ".unity-results/compile.U8qfQ2/Editor.log",
+    "pythonContracts": 41,
+    "independentQA": "no blocking findings",
+    "nativeBuildLog": ".unity-results/issue64-scene-fix-owner/xcodebuild.log"
+  },
+  "correctedUnsignedArchive": {
+    "status": "passed-unsigned",
+    "validationDate": "2026-10-22",
+    "sourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+    "path": "Builds/Issue64-AppleIapReview-SceneFix.xcarchive",
+    "treeSha256": "33eb236682d1f421597e83dd5733d26ac6ddf6dce477996ff82bbb1d72bf73dd",
+    "log": ".unity-results/issue64-scene-fix-owner/archive.log",
+    "xcodeVersion": "Xcode 27.1\nBuild version 27A9275",
+    "binaryChecks": [
+      {
+        "binary": "Paws",
+        "uuid": {
+          "arm64": "8E0A555A-E634-34FF-A8C6-9894B3C18D3B"
+        },
+        "dSYMMatches": true,
+        "minimumIOS": "16.3",
+        "signed": false
+      },
+      {
+        "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+        "uuid": {
+          "arm64": "5DCC4FE4-3EB9-3820-A6D8-693C60FC1DD9"
+        },
+        "dSYMMatches": true,
+        "minimumIOS": "16.3",
+        "signed": false
+      }
+    ],
+    "nativeIapAbiSymbols": [
+      "_PawsIapRead",
+      "_PawsIapVerifyCache",
+      "_PawsIapSetDeferred"
+    ],
+    "inventory": {
+      "frameworks": [
+        "Frameworks/UnityFramework.framework"
+      ],
+      "nativeLibraries": [],
+      "privacyManifests": [
+        {
+          "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+          "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+          "declarations": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "35F9.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "E174.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "CA92.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "0A2A.1",
+                  "C617.1"
+                ]
+              }
+            ],
+            "NSPrivacyTracking": false
+          }
+        }
+      ],
+      "entitlementFiles": []
+    },
+    "panelAssetPresent": true,
+    "signed": false,
+    "productionMonetizationEnabled": false
+  }
+}
