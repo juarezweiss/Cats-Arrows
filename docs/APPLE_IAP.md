@@ -275,3 +275,15 @@ finishes with Owned retained and no purchase sheet (existing-owned restore only)
 After Xcode stop/relaunch through the same test scheme, **“Owned remains”** without
 repurchase or restore. Restart persistence passes. Offline ownership, clean-state
 restore and the other scenario gates remain open.
+
+2026-10-22 offline restart attempt: owner enabled Airplane Mode and disabled Wi-Fi
+with USB connected. Xcode Run Without Building was rejected **before app start**
+by iOS developer-certificate trust/security checks (`IDELaunchCoreDevice 0`,
+`CoreDeviceError 10002`). This is a blocked offline-start test, not an entitlement
+failure/pass. Requested networking restored for the same-build retry; no signing
+identity, profile, credential or trust setting was changed. Offline ownership
+acceptance remains pending.
+
+Online retry launches the same signed build successfully without signing/trust
+changes. The next owner check removes phone connectivity while the app is
+running; it cannot establish offline cold-start acceptance.

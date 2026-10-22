@@ -293,6 +293,15 @@
       "environment": "Xcode StoreKit Test / BRA / pt_BR",
       "report": "Owned remains",
       "launchMethod": "Xcode stop then Run Without Building; no repurchase/restore"
+    },
+    "offlineOwnedRelaunch": {
+      "result": "blocked-before-app-start",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "ownerConfirmedNetworkState": "Airplane Mode on, Wi-Fi off; USB connected",
+      "failure": "iOS rejected launch with developer-certificate trust/security error (IDELaunchCoreDevice 0 / CoreDeviceError 10002)",
+      "scope": "No app execution; offline entitlement behavior untested; online retry pending",
+      "onlineRetry": "same signed build launched successfully after networking restored"
     }
   },
   "technicalLaunchEvidence": {
