@@ -444,8 +444,17 @@
         "unitySdkIncluded": false,
         "keychainOrAppStateAccess": false,
         "transactionMutation": false,
-        "refreshedManagerStatus": "pending-owner-report",
+        "refreshedManagerStatus": "Still Pending Approval (owner and desktop inspection)",
         "reviewedPawsRelaunchedAfterProbe": true
+      },
+      "cleanLocalRetestProposal": {
+        "status": "pending-owner-approval",
+        "scope": "Only Xcode StoreKit Test transactions 0 (Refunded) and 1 (Pending Approval) for Paws on this iPhone",
+        "historyDeletionPerformed": false,
+        "nextAfterDeletion": "Owner Restore Purchases for authoritative empty local test inventory before new Ask to Buy request",
+        "appDataOrKeychainDirectReset": false,
+        "appStoreConnectChanges": false,
+        "sandboxOrProductionTransactionsAffected": false
       }
     }
   },

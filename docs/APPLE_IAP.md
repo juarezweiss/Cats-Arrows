@@ -369,3 +369,12 @@ post-reboot process and still returns the same pending request from verified
 access or transaction mutation occurs. Restored and relaunched the exact retained
 Paws candidate through StoreKit Test; refreshed manager status awaits owner report.
 The validation blocker remains open.
+
+Post-reboot manager confirmation: owner and desktop inspection still show the
+newest transaction Pending Approval and the earlier transaction Refunded. The
+contradiction survives reboot. Proposed next isolation is one clean local retest:
+owner-approved deletion of only those two Xcode StoreKit Test records, followed
+by owner Restore to reconcile the empty test inventory before a new Ask to Buy
+request. No deletion/reset has occurred; preserve this evidence and obtain owner
+direction before discarding local test history. No direct Keychain/app-data reset
+or App Store Connect/sandbox/production transaction change is proposed.
