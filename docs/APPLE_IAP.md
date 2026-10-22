@@ -259,3 +259,8 @@ price/localizations and App Store Connect remain unchanged. The adapter forwards
 Apple's `localizedPriceString` unchanged to Settings. Local StoreKit formatting
 validation does not establish the Brazilian App Store Connect price; verify that
 separately in Apple sandbox.
+
+2026-10-22 owner cancellation check in **Xcode StoreKit Test / BRA / pt_BR**:
+after cancelling the purchase sheet, the price remains visible and no Owned
+status appears. Cancellation scenario passes; simulated purchase is the next
+owner step. Other purchase/restore and sandbox acceptance remain pending.

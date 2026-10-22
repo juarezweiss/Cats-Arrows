@@ -250,7 +250,7 @@
     "buildNumber": "1",
     "startupMenu": "passed",
     "report": "Paws menu appears",
-    "remainingScope": "Cancellation, purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox",
+    "remainingScope": "Verified purchase/restore, pending/deferred, lifecycle, offline ownership, revocation and Apple sandbox",
     "settingsRestoreVisible": "passed",
     "priceVisible": true,
     "localizedPrice": "passed-local-StoreKit-BRL-formatting",
@@ -266,6 +266,12 @@
       "currencyFormatting": "passed",
       "productionRegionalPrice": "not-validated; requires Apple sandbox",
       "environment": "Xcode StoreKit Test / BRA / pt_BR"
+    },
+    "cancelPurchase": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Cancelled; price remains; no Owned status"
     }
   },
   "technicalLaunchEvidence": {
