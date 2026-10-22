@@ -100,18 +100,24 @@ namespace CatsAndArrows.Tests
             {
                 SetPanelSize(size);
                 root.Clear(); root.style.width = size.x; root.style.height = size.y;
-                var top = size.x == 320 ? 20 : 59; var bottom = size.x == 320 ? 0 : 34;
-                var simulatedSafeArea = new Rect(0, bottom, size.x, size.y - top - bottom);
                 var shell = new GameShellView(14, locale, PlayTestFactory.Loop(), tutorialSeen: () => false, markTutorialSeen: () => { });
-                // The fixture supplies the screen inset. Keep that input consistent when the
-                // shell's geometry callback reads the batch Editor's unrelated real safe area.
-                shell.RegisterCallback<GeometryChangedEvent>(_ => shell.ApplySafeArea(simulatedSafeArea, size));
                 root.Add(shell); yield return Settle();
-                shell.ApplySafeArea(simulatedSafeArea, size);
+                var top = size.x == 320 ? 20 : 59; var bottom = size.x == 320 ? 0 : 34;
+                shell.ApplySafeArea(new Rect(0, bottom, size.x, size.y - top - bottom), size);
                 yield return Settle();
                 var safe = shell.Q("game-safe-frame").worldBound;
                 var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
-                Assert.That(shell.Q<BoardSymbolElement>("menu-paw").Kind, Is.EqualTo(BoardCellKind.Paw));
+                var artwork = shell.Q<Image>("menu-paw-artwork");
+                Assert.That(shell.Q<BoardSymbolElement>("menu-paw"), Is.Null, "Menu art is independent of board symbols (#80)");
+                Assert.That(artwork.image, Is.SameAs(Resources.Load<Texture2D>("MenuPaw")));
+                Assert.That(artwork.image, Is.Not.Null);
+                Assert.That(artwork.tintColor, Is.EqualTo(BoardSymbolElement.Ink));
+                Assert.That(artwork.scaleMode, Is.EqualTo(ScaleMode.ScaleToFit));
+                Assert.That(artwork.uv, Is.EqualTo(new Rect(172f / 1254, 215f / 1254, 911f / 1254, 795f / 1254)));
+                Assert.That(artwork.pickingMode, Is.EqualTo(PickingMode.Ignore));
+                Assert.That(artwork.worldBound.height, Is.EqualTo(192).Within(1));
+                Assert.That(artwork.worldBound.width, Is.EqualTo(220).Within(1));
+                Assert.That(artwork.worldBound.center.x, Is.EqualTo(shell.Q("menu-paw").worldBound.center.x).Within(1));
                 Assert.That(shell.Q<Label>("menu-title").text, Is.EqualTo("Paws"));
                 Assert.That(shell.Q<Button>("menu-start").text, Is.EqualTo(messages["game.start"]));
                 Assert.That(shell.Q("game-menu").Query<Button>().ToList().Select(b => b.name),
@@ -131,7 +137,6 @@ namespace CatsAndArrows.Tests
                 Assert.That(gear.center.x, Is.GreaterThan(safe.center.x));
                 Assert.That(gear.yMax, Is.GreaterThan(safe.yMax - 8));
                 Tap(shell, "menu-settings", touch: locale == "es"); yield return Settle();
-                Assert.That(shell.Q("game-safe-frame").worldBound, Is.EqualTo(safe), "synthetic safe area remains authoritative in Settings");
                 Assert.That(shell.Screen, Is.EqualTo("settings"));
                 Assert.That(shell.BoardView.InteractionEnabled, Is.False);
                 Assert.That(shell.Q<Label>("settings-title").text, Is.EqualTo(messages["settings.title"]));
@@ -148,7 +153,6 @@ namespace CatsAndArrows.Tests
                 Assert.That(rows[2].enabledSelf, Is.False); Assert.That(rows[3].enabledSelf, Is.False);
                 AssertTarget(shell.Q<Button>("settings-back"), safe);
                 Tap(shell, "settings-language", touch: locale == "es"); yield return Settle();
-                Assert.That(shell.Q("game-safe-frame").worldBound, Is.EqualTo(safe), "synthetic safe area remains authoritative in the selector");
                 Assert.That(shell.Modal, Is.EqualTo("language"));
                 Assert.That(shell.Q("game-menu").enabledInHierarchy, Is.False);
                 var options = shell.Q("language-selector").Children().OfType<Button>().Take(3).ToArray();

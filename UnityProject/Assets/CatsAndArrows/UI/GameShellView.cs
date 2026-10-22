@@ -251,9 +251,22 @@ namespace CatsAndArrows.UI
             hero.style.flexGrow = 1; hero.style.flexShrink = 0;
             hero.style.minHeight = 300; hero.style.width = Length.Percent(100);
             hero.style.alignItems = Align.Center; hero.style.justifyContent = Justify.Center;
-            var paw = new BoardSymbolElement(BoardCellKind.Paw, artworkScale: 2) { name = "menu-paw" };
+            // #80: independent menu silhouette; gameplay keeps its existing vector paw.
+            var paw = new VisualElement { name = "menu-paw", pickingMode = PickingMode.Ignore };
             paw.style.width = Length.Percent(100); paw.style.maxWidth = 340;
             paw.style.height = 230; paw.style.flexShrink = 0;
+            paw.style.alignItems = Align.Center; paw.style.justifyContent = Justify.Center;
+            var artwork = new Image
+            {
+                name = "menu-paw-artwork", pickingMode = PickingMode.Ignore,
+                image = Resources.Load<Texture2D>("MenuPaw"), tintColor = BoardSymbolElement.Ink,
+                // Exclude transparent reference margins; keep the original silhouette aspect ratio.
+                uv = new Rect(172f / 1254, 215f / 1254, 911f / 1254, 795f / 1254),
+                scaleMode = ScaleMode.ScaleToFit
+            };
+            artwork.style.width = Length.Percent(100); artwork.style.maxWidth = 220;
+            artwork.style.height = 192; artwork.style.flexShrink = 0;
+            paw.Add(artwork);
             hero.Add(paw);
             var title = Heading(text.GetText("board.title"), 40); title.name = "menu-title";
             title.style.marginTop = 4; title.style.marginBottom = 24;
