@@ -1,0 +1,48 @@
+{
+  "schema": "paws-native-ask-to-buy-analysis-v1",
+  "runId": "15d5eca0-0fea-4a4e-859e-0d6e1bc71af7",
+  "outcome": "incomplete",
+  "cleanBaseline": true,
+  "purchaseResultPending": true,
+  "ownerRestartRecorded": true,
+  "verificationCleanPreapprovalSnapshots": true,
+  "updatesListenerStartedBeforePurchaseResult": true,
+  "beforeApprovalCheckpointSequence": 41,
+  "verifiedCurrentEntitlementBeforeApproval": false,
+  "beforeApprovalEntitlementReferences": [],
+  "afterOwnerApprovalVerifiedCurrentCount": 0,
+  "postApprovalSnapshots": [
+    {
+      "sequence": 46,
+      "timeUTC": "2026-10-22T15:44:57Z",
+      "phase": "owner-reports-approved",
+      "reason": "owner-after-approval",
+      "verifiedCurrentCount": 0,
+      "verifiedUnfinishedCount": 1
+    },
+    {
+      "sequence": 52,
+      "timeUTC": "2026-10-22T15:48:24Z",
+      "phase": "owner-reports-approved",
+      "reason": "restart-before-approval",
+      "verifiedCurrentCount": 0,
+      "verifiedUnfinishedCount": 0
+    },
+    {
+      "sequence": 56,
+      "timeUTC": "2026-10-22T15:48:25Z",
+      "phase": "owner-reports-approved",
+      "reason": "foreground",
+      "verifiedCurrentCount": 0,
+      "verifiedUnfinishedCount": 0
+    }
+  ],
+  "verifiedUnfinishedOrUpdatesBeforeApproval": true,
+  "firstVerifiedCurrentEntitlement": null,
+  "observedTransactionSources": [
+    "latest",
+    "unfinished",
+    "updates"
+  ],
+  "scope": "Native observation only; approval ordering also requires owner/manager evidence; no Paws or sandbox acceptance inferred"
+}

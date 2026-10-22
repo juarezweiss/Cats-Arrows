@@ -49,6 +49,25 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
             using (new MonetizationCoordinator(false, new MemoryMonetizationStateStore(), new UnavailableAdService(), service)) { }
             Assert.That(creations, Is.Zero); Assert.That(evidence.Reads, Is.Zero);
         }
+        [TestCase(ApplePurchaseEnvironment.Production, false, false, false)]
+        [TestCase(ApplePurchaseEnvironment.Production, false, true, true)]
+        [TestCase(ApplePurchaseEnvironment.SandboxReview, false, false, false)]
+        [TestCase(ApplePurchaseEnvironment.SandboxReview, true, true, true)]
+        public void AskToBuySimulationAllowsOnlyExplicitDevelopmentReviewOrDisabled(ApplePurchaseEnvironment environment,
+            bool requested, bool reviewBuild, bool developmentBuild) => Assert.DoesNotThrow(() =>
+            ApplePurchaseService.ValidateAskToBuySimulation(environment, requested, reviewBuild, developmentBuild));
+
+        [TestCase(ApplePurchaseEnvironment.Production, true, true)]
+        [TestCase(ApplePurchaseEnvironment.SandboxReview, false, true)]
+        [TestCase(ApplePurchaseEnvironment.SandboxReview, true, false)]
+        [TestCase(ApplePurchaseEnvironment.SandboxReview, false, false)]
+        public void AskToBuySimulationRejectsNonReviewOrNonDevelopmentOrProduction(ApplePurchaseEnvironment environment,
+            bool reviewBuild, bool developmentBuild) => Assert.Throws<InvalidOperationException>(() =>
+            ApplePurchaseService.ValidateAskToBuySimulation(environment, true, reviewBuild, developmentBuild));
+
+        [Test] public void ProductionConstructorRejectsSimulationBeforeAnyStoreConnection() =>
+            Assert.Throws<InvalidOperationException>(() => new ApplePurchaseService(ProductId, simulateAskToBuy: true));
+
         [TestCase(null)] [TestCase("")] [TestCase(" ")] [TestCase(" id")]
         public void MissingMappingIsRejected(string id) => Assert.Throws<ArgumentException>(() =>
             new ApplePurchaseService(id, () => client, evidence, () => now));

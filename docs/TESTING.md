@@ -6,6 +6,20 @@ Dependency #63 is integrated in current develop; owner approved product mapping
 `com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
 [APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
 
+2026-10-22 bounded follow-up: the independent native-only Ask to Buy trace is
+**inconclusive**: Pending returned and current entitlements stayed empty before
+approval, but remained empty after approval/restart too. Verified unfinished and
+updates before approval are not ownership. [Trace/analysis](APPLE_IAP.md#current-owner-gate--bounded-investigation-2026-10-22)
+and the prior Paws early-grant failure remain blockers; no reset/reinstall cycles
+or verification relaxation follow. Sandbox initiation is still pending.
+The development-only sandbox simulation preparation passes focused EditMode
+**59/59**, exit 0 (`issue64-ask-final-focused.H3zCru`). Current Python contracts
+**51/51**, native policy **11 assertions**, iOS Swift typecheck, repository and
+whitespace checks pass. Required compilation is blocked by Unity license/package
+registration (`compile.XiesJY`: zero registered packages); the latest full EditMode
+gate and signed sandbox export have not run. Earlier full-gate results below
+apply only to their recorded source, not these follow-up changes.
+
 Unity **6000.3.25f1** final compilation passed (`compile.IYRpa3`). Focused provider/build
 tests **40/40 passed** (`issue64-final-focused.v0gOQX`), including private-marker
 write failure with successfully persisted coordinator Pending state. The final full EditMode gate

@@ -484,7 +484,64 @@
       "deferredRequest": "Pending appears; no Owned status",
       "approval": "not-approved",
       "restartMethod": "Owner force-quit and Home Screen icon reopen; no Xcode install/launch",
-      "restartResult": "pending-owner-report"
+      "restartResult": "failed: Owned appears after owner force-quit/Home Screen reopen"
+    },
+    "boundedInvestigation": {
+      "ownerInstruction": "One clean native StoreKit-only pending/currentEntitlements/unfinished/updates observation before and after approval, then sandbox initiation; no reset/reinstall cycling; no production verification weakening",
+      "status": "one native run completed; inconclusive; no further reset/reinstall experiments",
+      "nativeCandidate": {
+        "runId": "15d5eca0-0fea-4a4e-859e-0d6e1bc71af7",
+        "deviceLogPath": "Documents/issue64-native-diagnostic/15d5eca0-0fea-4a4e-859e-0d6e1bc71af7.jsonl",
+        "resetsUsed": 1,
+        "maximumCleanRuns": 1,
+        "sourcePath": "tools/apple-iap-probe/Probe.swift",
+        "sourceSha256": "195346a553db3b5feea28161f1ea1de95f9bc8066f696befa2ade591d7bd4052",
+        "signedAppPath": "Builds/Issue64iPhone/BoundedNativeProbeFinal/Paws.app",
+        "signedAppTreeSha256": "0be36133d025dbd0fda113a8765dea5aa13a917320fb3e38ae993457401f338e",
+        "signatureVerified": true,
+        "storeKitConfigurationSha256": "89538b958a78186df37af454db01e08b409789340e92bea8f5875382e3fd2bbc",
+        "askToBuyEnabled": true,
+        "debugExecutable": false,
+        "unitySDK": false,
+        "pawsOwnershipLogic": false,
+        "purchase": "owner-button-only",
+        "finishSyncOrTestReset": false,
+        "status": "bounded-run-stopped-inconclusive",
+        "ownerCleanupReport": "Local table shows No Transactions",
+        "independentQA": "no blocking findings",
+        "ownerPurchaseResult": "Native result is Pending",
+        "ownerBeforeApproval": "Before-approval checkpoint saved after restart",
+        "ownerApproval": "Approved; after-approval snapshot saved",
+        "ownerAfterApprovalRestart": "Reopened the same native diagnostic",
+        "journalPath": "docs/evidence/issue64/native-ask-to-buy.jsonl",
+        "journalSha256": "009e83e93af7813ffb4ca11049b1c847b872ec64c3e6e6a7ef013067cfb898aa"
+      },
+      "decision": "Native correct/Paws Owned => app bug; native verified current entitlement before approval => StoreKit Test anomaly with minimal reproducer",
+      "sandboxPreparation": {
+        "explicitOptIn": "PAWS_APPLE_SIMULATE_ASK_TO_BUY=1",
+        "default": false,
+        "productionRequestRejected": true,
+        "verificationChanged": false,
+        "focusedEditModePassed": 59,
+        "focusedReport": ".unity-results/issue64-ask-final-focused.H3zCru/test-results.xml",
+        "physicalInitiation": "pending-owner",
+        "buildGate": "blocked: Unity license session registered zero packages; owner refresh requested"
+      },
+      "canUnblock64": false,
+      "nativeAnalysis": "docs/evidence/issue64/native-ask-to-buy-analysis.json",
+      "findings": {
+        "pendingResult": true,
+        "beforeApprovalVerifiedCurrent": 0,
+        "beforeApprovalVerifiedUnfinished": 1,
+        "beforeApprovalVerifiedUpdates": true,
+        "afterApprovalVerifiedCurrent": 0,
+        "afterApprovalRestartVerifiedCurrent": 0,
+        "afterApprovalRestartVerifiedUnfinished": 0,
+        "managerAfterApproval": "Purchased; unfinished warning",
+        "firstVerifiedCurrentEntitlement": "not observed",
+        "sdkHazard": "IAP 5.3.1 ProcessLoggedPurchase can finish a replay using an SDK journal keyed only by transaction ID; causal correlation is not yet established",
+        "decision": "Neither requested conclusion established: no native preapproval current entitlement, but expected postapproval entitlement never appeared; Paws early grant remains unresolved"
+      }
     }
   },
   "technicalLaunchEvidence": {

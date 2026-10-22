@@ -9,6 +9,57 @@ saved in App Store Connect as **Prepare for Submission**, with price/localizatio
 configured and Offer Codes enabled. These are owner-reported account facts;
 submission and production activation remain unauthorized.
 
+## Current owner gate — bounded investigation, 2026-10-22
+
+**#64 remains blocked.** The one bounded native-only run returned Pending, then
+reported zero current entitlements before approval, including after owner restart.
+The request did appear as verified in unfinished transactions and updates; those
+streams do not establish current ownership. After owner approval, Xcode displayed
+Purchased, but native current entitlements remained empty, including after one
+restart. No approval update arrived; unfinished went from one to zero on restart
+despite this probe never calling finish. No first verified current entitlement was
+observed. This run is **inconclusive**, not evidence of either requested decision.
+See the [sanitized trace](evidence/issue64/native-ask-to-buy.jsonl) and
+[analysis](evidence/issue64/native-ask-to-buy-analysis.json). Stop local experiments;
+do not repeat reset/reinstall cycles or weaken production verification.
+
+Static SDK review found a separate finalization hazard: IAP 5.3.1's
+`ProcessLoggedPurchase` automatically finishes updates whose transaction ID exists
+in its journal, bypassing the adapter's durable grant/finalization gate. That
+journal has no product/environment namespace; the local fixture reused ID 0 from
+an earlier successful/refunded purchase. This is a plausible integration cause,
+not a causally proven explanation. Preserve the SDK journal and investigate a
+safe boundary fix before unblocking the prior Paws early grant.
+
+The [native reproducer](../tools/apple-iap-probe/README.md) contains no Unity IAP or
+Paws ownership/cache code. One owner-operated native purchase must return Pending;
+record currentEntitlements, unfinished and updates, one pre-approval restart,
+then the first verified entitlement after owner approval. The diagnostic records
+only timestamps/flags/opaque hashes in its own journal. A nonclean baseline or
+nonpending result stops this one run. The [analyzer](../scripts/analyze-apple-iap-probe.py)
+refuses incomplete evidence. Native correct/Paws Owned means an app bug to fix;
+native verified current ownership before approval means a StoreKit Test anomaly
+with reproducible evidence. Production verification must remain unchanged.
+
+Sandbox initiation is prepared through the actual Paws adapter with explicit,
+default-off `PAWS_APPLE_SIMULATE_ASK_TO_BUY=1`. It requires SandboxReview, the
+review compile define and a development build. The SDK flag is assigned even
+when false, so a cached SDK service cannot retain an earlier simulation opt-in.
+The saved review scene/receipt record the option. The next export is blocked by a
+Unity license session that registered zero packages; owner refresh is pending.
+Export after committed inputs and restored compile/test gates:
+
+```bash
+PAWS_APPLE_PRODUCT_ID=com.jweiss.paws.removeads PAWS_APPLE_SIMULATE_ASK_TO_BUY=1 \
+  bash scripts/build-apple-iap-review.sh "$PWD/Builds/Issue64-AppleSandbox-AskToBuy"
+```
+
+Use StoreKit Configuration **None** and the owner's Sandbox Apple Account. Reconcile
+Xcode cached review ownership through successful authoritative sandbox Restore
+first. Pending initiation must never grant RemoveAllAds; no approval/decline
+resolution in sandbox is inferred. No credentials, account/product actions,
+upload, submission, main changes or production activation are authorized.
+
 ## Implementation and rollback
 
 `CatsAndArrows.Purchasing.Apple` alone references Unity IAP/StoreKit. Its public
@@ -67,7 +118,9 @@ plus verified complete absence can. A signed refund/revocation invalidates the
 cache with a durable tombstone before notifying the coordinator, preventing
 resurrection through an older state-file backup. No catch-up ad debt is created.
 
-Unpaid deferred requests cannot be enumerated using `Transaction.unfinished`.
+Unpaid deferred requests are not reliably enumerable as pending approval through
+`Transaction.unfinished`; the bounded local run even surfaced a verified unfinished
+entry before approval. Neither unfinished nor updates alone grants ownership.
 The adapter persists a separate private deferred marker before reporting Pending,
 and retains it across ambiguous empty/offline refreshes. Composition must also
 pass the successfully loaded/validated coordinator state's `PendingPurchase` as

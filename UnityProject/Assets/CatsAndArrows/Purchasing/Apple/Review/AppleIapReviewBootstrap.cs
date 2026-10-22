@@ -13,6 +13,7 @@ namespace CatsAndArrows.Purchasing.Apple.Review
     public sealed class AppleIapReviewBootstrap : MonoBehaviour
     {
         [SerializeField] private string appleProductId;
+        [SerializeField] private bool simulateAskToBuy;
         private GameShellView shell;
         private ApplePurchaseService purchases;
 
@@ -26,7 +27,7 @@ namespace CatsAndArrows.Purchasing.Apple.Review
             Debug.Log("APPLE_IAP_REVIEW_STARTUP panel-ready");
             var store = new FileMonetizationStateStore(Path.Combine(Application.persistentDataPath, "apple-iap-review", "state.bin"));
             var recoveredPending = store.TryLoad(out var recovered) && recovered != null && recovered.IsValid() && recovered.PendingPurchase;
-            purchases = new ApplePurchaseService(appleProductId, ApplePurchaseEnvironment.SandboxReview, recoveredPending);
+            purchases = new ApplePurchaseService(appleProductId, ApplePurchaseEnvironment.SandboxReview, recoveredPending, simulateAskToBuy);
             var coordinator = new MonetizationCoordinator(true, store,
                 new UnavailableAdService(), purchases);
             Debug.Log("APPLE_IAP_REVIEW_STARTUP coordinator-created");

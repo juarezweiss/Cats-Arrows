@@ -40,8 +40,11 @@ namespace CatsAndArrows.Purchasing.Apple
         public event Action<string> Revoked;
         public event Action Disconnected;
 
-        public UnityAppleStoreClient()
+        public UnityAppleStoreClient(bool simulateAskToBuy = false)
         {
+            // Issue #64: SDK-supported sandbox initiation only; does not change entitlement verification.
+            // IAP caches this service by store name. Clear a previous review client's flag too.
+            store.AppleStoreExtendedPurchaseService.simulateAskToBuy = simulateAskToBuy;
             store.SetStoreReconnectionRetryPolicyOnDisconnection(null);
             store.OnProductsFetched += OnProducts;
             store.OnProductsFetchFailed += OnProductsFailed;

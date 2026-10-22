@@ -31,7 +31,8 @@ for relative in ['SceneTemplateSettings.json','Packages/com.unity.services.core/
 output=Path(os.environ['PAWS_IOS_EXPORT']);output.mkdir()
 (output/'Unity-iPhone.xcodeproj').mkdir()
 (output/'Unity-iPhone.xcodeproj/project.pbxproj').write_text('fixture')
-(output/'paws-iap-review.json').write_text(json.dumps({'sourceSha':os.environ['PAWS_IAP_SOURCE_SHA']}))
+(output/'paws-iap-review.json').write_text(json.dumps({'sourceSha':os.environ['PAWS_IAP_SOURCE_SHA'],
+ 'simulateAskToBuy':os.environ['PAWS_APPLE_SIMULATE_ASK_TO_BUY']}))
 sys.exit(int(os.environ.get('FIXTURE_EXIT','0')))
 ''')
         self.output = self.base / 'IAP review with spaces'
@@ -45,6 +46,17 @@ sys.exit(int(os.environ.get('FIXTURE_EXIT','0')))
         self.assertEqual(self.run_build().returncode, 2)
         self.assertFalse(Path(self.env['FIXTURE_ARGV']).exists())
 
+    def test_ask_to_buy_simulation_requires_explicit_valid_option(self):
+        self.env['PAWS_APPLE_SIMULATE_ASK_TO_BUY'] = 'true'
+        self.assertEqual(self.run_build().returncode, 2)
+        self.assertFalse(Path(self.env['FIXTURE_ARGV']).exists())
+
+    def test_ask_to_buy_simulation_is_passed_only_by_opt_in(self):
+        self.env['PAWS_APPLE_SIMULATE_ASK_TO_BUY'] = '1'
+        result = self.run_build()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads((self.output/'paws-iap-review.json').read_text())['simulateAskToBuy'], '1')
+
     def test_clean_unsigned_export_uses_explicit_review_entry_and_source_sha(self):
         result = self.run_build()
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -53,6 +65,7 @@ sys.exit(int(os.environ.get('FIXTURE_EXIT','0')))
                          'CatsAndArrows.Purchasing.Apple.Review.Editor.AppleIapReviewBuild.Build')
         self.assertEqual(args[args.index('-buildTarget')+1], 'iOS')
         self.assertEqual(json.loads((self.output/'paws-iap-review.json').read_text())['sourceSha'], 'a'*40)
+        self.assertEqual(json.loads((self.output/'paws-iap-review.json').read_text())['simulateAskToBuy'], '0')
         self.assertFalse((self.repo/'UnityProject/ProjectSettings/SceneTemplateSettings.json').exists())
         self.assertFalse((self.repo/'UnityProject/ProjectSettings/Packages/com.unity.services.core/Settings.json').exists())
         self.assertEqual(self.run_build().returncode, 2)

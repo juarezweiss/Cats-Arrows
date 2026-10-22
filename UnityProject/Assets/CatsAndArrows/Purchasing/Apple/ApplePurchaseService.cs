@@ -38,15 +38,33 @@ namespace CatsAndArrows.Purchasing.Apple
         public event Action<PurchaseResult> Updated;
 
         public ApplePurchaseService(string appleProductId, ApplePurchaseEnvironment environment = ApplePurchaseEnvironment.Production,
-            bool recoveredPendingPurchase = false) : this(appleProductId,
-            CreateNativeClient, new NativeAppleEvidence(environment == ApplePurchaseEnvironment.SandboxReview),
+            bool recoveredPendingPurchase = false, bool simulateAskToBuy = false) : this(appleProductId,
+            CreateNativeClientFactory(environment, simulateAskToBuy), new NativeAppleEvidence(environment == ApplePurchaseEnvironment.SandboxReview),
             () => Time.realtimeSinceStartupAsDouble, recoveredPendingPurchase) { }
 
-        private static IAppleStoreClient CreateNativeClient()
+        private static Func<IAppleStoreClient> CreateNativeClientFactory(ApplePurchaseEnvironment environment, bool simulateAskToBuy)
+        {
+#if PAWS_APPLE_IAP_REVIEW
+            const bool reviewBuild = true;
+#else
+            const bool reviewBuild = false;
+#endif
+            ValidateAskToBuySimulation(environment, simulateAskToBuy, reviewBuild, Debug.isDebugBuild);
+            return () => CreateNativeClient(simulateAskToBuy);
+        }
+
+        internal static void ValidateAskToBuySimulation(ApplePurchaseEnvironment environment, bool requested,
+            bool reviewBuild, bool developmentBuild)
+        {
+            if (requested && (environment != ApplePurchaseEnvironment.SandboxReview || !reviewBuild || !developmentBuild))
+                throw new InvalidOperationException("Ask to Buy simulation requires an explicit sandbox development review build.");
+        }
+
+        private static IAppleStoreClient CreateNativeClient(bool simulateAskToBuy)
         {
             if (Application.platform != RuntimePlatform.IPhonePlayer)
                 throw new InvalidOperationException("The Apple store is available only in an iOS player.");
-            return new UnityAppleStoreClient();
+            return new UnityAppleStoreClient(simulateAskToBuy);
         }
 
         internal ApplePurchaseService(string appleProductId, Func<IAppleStoreClient> createClient,

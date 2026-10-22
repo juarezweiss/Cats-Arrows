@@ -29,6 +29,13 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor.Tests
         [TestCase(null)] [TestCase("")] [TestCase("invented.product")]
         public void UnapprovedProductCannotBeBuilt(string product) => Assert.Throws<ArgumentException>(() =>
             AppleIapReviewBuild.CreateOptions(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N")), product));
+
+        [TestCase(null, false)] [TestCase("", false)] [TestCase("0", false)] [TestCase("1", true)]
+        public void AskToBuyOptionIsExplicitAndOffByDefault(string value, bool expected) =>
+            Assert.That(AppleIapReviewBuild.ReadAskToBuyOption(value), Is.EqualTo(expected));
+        [TestCase("true")] [TestCase(" 1")] [TestCase("2")]
+        public void InvalidAskToBuyOptionIsRejected(string value) => Assert.Throws<ArgumentException>(() =>
+            AppleIapReviewBuild.ReadAskToBuyOption(value));
     }
 
     public sealed class AppleIapReviewSceneTests
@@ -55,9 +62,10 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor.Tests
             yield return null;
             yield return null;
         }
-        [Test] public void SavedSceneRetainsProductionPanelThemeAndReviewComposition()
+        [TestCase(false)] [TestCase(true)]
+        public void SavedSceneRetainsProductionPanelThemeAndReviewComposition(bool simulateAskToBuy)
         {
-            AppleIapReviewBuild.PrepareReviewScene(AppleIapReviewBuild.ApprovedProductId);
+            AppleIapReviewBuild.PrepareReviewScene(AppleIapReviewBuild.ApprovedProductId, simulateAskToBuy);
             // Force another unload/reload: an in-memory reference is insufficient for a player export.
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var saved = EditorSceneManager.OpenScene(AppleIapReviewBuild.ScenePath, OpenSceneMode.Single);
@@ -68,6 +76,7 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor.Tests
             var bootstrap = document.GetComponent<AppleIapReviewBootstrap>();
             Assert.That(bootstrap, Is.Not.Null);
             Assert.That(new SerializedObject(bootstrap).FindProperty("appleProductId").stringValue, Is.EqualTo(AppleIapReviewBuild.ApprovedProductId));
+            Assert.That(new SerializedObject(bootstrap).FindProperty("simulateAskToBuy").boolValue, Is.EqualTo(simulateAskToBuy));
             Assert.That(saved.GetRootGameObjects().Any(go => go.GetComponent<PawsBootstrap>() != null), Is.False);
             Assert.That(saved.GetRootGameObjects().Any(go => go.GetComponent<Camera>()?.enabled == true), Is.True);
         }

@@ -32,6 +32,7 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor
             ProductionIOSBuild.ValidateSettings();
             var output = Environment.GetEnvironmentVariable("PAWS_IOS_EXPORT");
             var product = Environment.GetEnvironmentVariable("PAWS_APPLE_PRODUCT_ID");
+            var simulateAskToBuy = ReadAskToBuyOption(Environment.GetEnvironmentVariable("PAWS_APPLE_SIMULATE_ASK_TO_BUY"));
             var options = CreateOptions(output, product);
             if (File.Exists(ScenePath))
                 throw new InvalidOperationException("Remove the stale generated review scene before rebuilding.");
@@ -39,12 +40,13 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor
             var previousDevelopment = EditorUserBuildSettings.development;
             try
             {
-                PrepareReviewScene(product);
+                PrepareReviewScene(product, simulateAskToBuy);
                 EditorUserBuildSettings.iOSXcodeBuildConfig = XcodeBuildConfig.Release;
                 if (BuildPipeline.BuildPlayer(options).summary.result != BuildResult.Succeeded)
                     throw new InvalidOperationException("Apple IAP review export failed.");
                 File.WriteAllText(Path.Combine(output, "paws-iap-review.json"), JsonUtility.ToJson(new Receipt
                     { unityVersion = Application.unityVersion, productId = product,
+                        simulateAskToBuy = simulateAskToBuy,
                         sourceSha = Environment.GetEnvironmentVariable("PAWS_IAP_SOURCE_SHA") }, true));
             }
             finally
@@ -55,7 +57,14 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor
             }
         }
 
-        public static void PrepareReviewScene(string product)
+        public static bool ReadAskToBuyOption(string value)
+        {
+            if (string.IsNullOrEmpty(value) || value == "0") return false;
+            if (value == "1") return true;
+            throw new ArgumentException("PAWS_APPLE_SIMULATE_ASK_TO_BUY must be 0 or 1.");
+        }
+
+        public static void PrepareReviewScene(string product, bool simulateAskToBuy = false)
         {
             if (product != ApprovedProductId) throw new ArgumentException("Use the owner-approved product mapping.");
             if (File.Exists(ScenePath))
@@ -78,6 +87,7 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor
             var mounted = root.AddComponent<UIDocument>();
             var bootstrap = new SerializedObject(root.AddComponent<AppleIapReviewBootstrap>());
             bootstrap.FindProperty("appleProductId").stringValue = product;
+            bootstrap.FindProperty("simulateAskToBuy").boolValue = simulateAskToBuy;
             bootstrap.ApplyModifiedPropertiesWithoutUndo();
             var panel = AssetDatabase.LoadAssetAtPath<PanelSettings>(panelPath);
             if (panel == null || panel.themeStyleSheet == null)
@@ -108,6 +118,7 @@ namespace CatsAndArrows.Purchasing.Apple.Review.Editor
             public string purchaseEnvironment = "SandboxReview";
             public bool reviewMonetizationEnabled = true, adProviderEnabled = false;
             public bool productionMonetizationEnabled = false, developmentBuild = true;
+            public bool simulateAskToBuy;
         }
     }
 }
