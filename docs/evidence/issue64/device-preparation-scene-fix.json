@@ -373,7 +373,7 @@
         "interpretation": "Real persisted Owned state; finalization reference alone does not identify ownership candidate"
       },
       "cause": "StoreKit Test API/transaction-manager discrepancy independently reproduced without Unity IAP; acceptance remains blocked",
-      "approvalOrStateResetPerformed": false,
+      "approvalOrStateResetPerformed": true,
       "nativeDiagnostic": {
         "baseSourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
         "originalSha256": "162d5c3e3f0130ce870a0276fac6895e35592470b60c8acadd771939e3cb5e57",
@@ -448,14 +448,43 @@
         "reviewedPawsRelaunchedAfterProbe": true
       },
       "cleanLocalRetestProposal": {
-        "status": "pending-owner-approval",
+        "status": "approved-and-history-reset-completed",
         "scope": "Only Xcode StoreKit Test transactions 0 (Refunded) and 1 (Pending Approval) for Paws on this iPhone",
-        "historyDeletionPerformed": false,
+        "historyDeletionPerformed": true,
         "nextAfterDeletion": "Owner Restore Purchases for authoritative empty local test inventory before new Ask to Buy request",
         "appDataOrKeychainDirectReset": false,
         "appStoreConnectChanges": false,
-        "sandboxOrProductionTransactionsAffected": false
-      }
+        "sandboxOrProductionTransactionsAffected": false,
+        "ownerExplicitApproval": "Approve this local test-history reset",
+        "deletedLocalRecords": [
+          {
+            "id": 0,
+            "state": "Refunded"
+          },
+          {
+            "id": 1,
+            "state": "Pending Approval"
+          }
+        ],
+        "managerAfterDeletion": "No Transactions",
+        "ownerRestoreAfterDeletion": "Price shown; no Owned status",
+        "next": "New Ask to Buy request followed by owner force-quit/reopen, without Xcode reinstall"
+      },
+      "noApprovalBeforeFailure": true
+    },
+    "emptyLocalInventoryRestore": {
+      "result": "passed-unowned-ui",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Price shown; no Owned status",
+      "scope": "After owner-approved local history deletion; not clean-install restore of ownership"
+    },
+    "askToBuyCleanRetest": {
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "deferredRequest": "Pending appears; no Owned status",
+      "approval": "not-approved",
+      "restartMethod": "Owner force-quit and Home Screen icon reopen; no Xcode install/launch",
+      "restartResult": "pending-owner-report"
     }
   },
   "technicalLaunchEvidence": {

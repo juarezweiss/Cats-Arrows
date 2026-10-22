@@ -378,3 +378,12 @@ by owner Restore to reconcile the empty test inventory before a new Ask to Buy
 request. No deletion/reset has occurred; preserve this evidence and obtain owner
 direction before discarding local test history. No direct Keychain/app-data reset
 or App Store Connect/sandbox/production transaction change is proposed.
+
+2026-10-22 owner explicitly approved the local test-history reset. Deleted exactly
+Xcode records #0 Refunded and #1 Pending Approval; verified **No Transactions**.
+No direct app-data/Keychain reset or App Store Connect/sandbox/production action.
+Owner then tapped Restore and reports **“Price shown; no Owned status”**, passing
+reconciliation with empty local inventory. The bounded clean retest will request
+Ask to Buy again and use owner force-quit/icon reopen, avoiding a new Xcode app
+installation, to distinguish normal restart from Run Without Building behavior.
+The original discrepancy remains recorded and unresolved.
