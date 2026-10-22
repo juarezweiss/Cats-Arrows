@@ -61,6 +61,13 @@ When delegating, send the smallest viable brief:
 
 Do not copy large project context into subagent prompts. Specialists should retrieve their own relevant context through `AGENTS.md`, `docs/CONTEXT_MAP.md`, the repo-local Skill, and their specialist instructions.
 
+New monetization work must start from the latest fetched `develop`, including
+all already-merged app, asset, UI and Unity ProjectSettings changes. Synchronize
+an older active monetization branch before continuing. Preserve current `develop`
+for unrelated app/game state; generate review/test artifacts from the synchronized
+committed inputs and record the exact source SHA. Never copy stale review scenes,
+assets or ProjectSettings over newer integration state.
+
 Avoid concurrent write-heavy subagents on overlapping files. Parallelize research, review, puzzle analysis, UX analysis, and test analysis before parallelizing code edits.
 
 The repo-local Skill defines repeatable workflow routing; specialist agent files define role-specific behavior. Do not duplicate those instructions in this file unless they are global governance rules.
