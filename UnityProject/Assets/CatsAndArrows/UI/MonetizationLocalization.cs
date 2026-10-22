@@ -8,6 +8,7 @@ namespace CatsAndArrows.UI
         {
             var entries = new Dictionary<string, string[]>
             {
+                { "notification.ok", new[] { "OK", "OK", "OK" } },
                 { "monetization.hint-ads", new[] { "Hint (ads)", "Dica (anúncios)", "Pista (anuncios)" } },
                 { "monetization.remove", new[] { "Remove Ads", "Remover anúncios", "Eliminar anuncios" } },
                 { "monetization.restore", new[] { "Restore Purchases", "Restaurar compras", "Restaurar compras" } },

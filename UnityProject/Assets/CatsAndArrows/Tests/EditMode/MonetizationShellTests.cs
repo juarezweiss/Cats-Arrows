@@ -84,6 +84,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(MountedHint.enabledInHierarchy, Is.False);
                 Advance(60); AssertAttention(false);
                 ads.Close(rewarded); AssertAttention(false);
+                if (!rewarded) yield return DismissAlert();
                 Assert.That(MountedHint.enabledInHierarchy, Is.True);
                 Assert.That(mountedShell.ActiveSession.Marks.Values.Count(mark => mark != PlayerMark.Empty), Is.EqualTo(rewarded ? 1 : 0));
                 Advance(5.999); AssertAttention(false);
@@ -115,6 +116,123 @@ namespace CatsAndArrows.Tests
             Assert.That(ads.HintShows, Is.EqualTo(1));
             Assert.That(coordinator.HasEarnedHint, Is.False);
             Assert.That(mountedShell.ActiveSession.Marks.Values.Count(mark => mark != PlayerMark.Empty), Is.EqualTo(1));
+        }
+
+        private IEnumerator DismissAlert(bool touch = false)
+        {
+            yield return null; yield return null;
+            var ok = mountedShell.Q<Button>("notification-ok");
+            Assert.That(ok, Is.Not.Null);
+            var position = ok.worldBound.center;
+            var picked = mountedShell.panel.Pick(position);
+            Assert.That(picked == ok || (picked != null && ok.Contains(picked)), Is.True, "OK receives input");
+            if (touch)
+            {
+                var input = new Touch { fingerId = 0, position = position, phase = TouchPhase.Began };
+                using (var down = PointerDownEvent.GetPooled(input, EventModifiers.None))
+                { down.target = ok; ok.SendEvent(down); }
+                input.phase = TouchPhase.Ended;
+                using (var up = PointerUpEvent.GetPooled(input, EventModifiers.None))
+                { up.target = ok; ok.SendEvent(up); }
+            }
+            else
+            {
+                using (var down = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, button = 0, mousePosition = position }))
+                { down.target = ok; ok.SendEvent(down); }
+                using (var up = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, button = 0, mousePosition = position }))
+                { up.target = ok; ok.SendEvent(up); }
+            }
+            Assert.That(mountedShell.Modal, Is.Null);
+            Assert.That(mountedShell.Q("notification-alert"), Is.Null, "dismissal removes the alert tree");
+        }
+
+        // Issue #83: message + OK only, localized, scoped to this screen/board, no persistent layout labels.
+        [UnityTest]
+        public IEnumerator AlertsFitPortraitsBlockInputAndDismissWithoutReplayingRetainedStatus()
+        {
+            foreach (var size in new[] { new Vector2(320, 568), new Vector2(390, 844), new Vector2(430, 932) })
+            foreach (var locale in new[] { "en", "pt-BR", "es" })
+            {
+                var ads = new Ads { Availability = AdAvailability.Offline };
+                using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, new Purchases());
+                yield return Mount(coordinator);
+                var root = host.GetComponent<UIDocument>().rootVisualElement;
+                root.style.width = size.x; root.style.height = size.y;
+                mountedShell.SelectLanguage(locale); mountedShell.BackToGame();
+                var session = mountedShell.ActiveSession; var marks = session.Marks.ToArray();
+                var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
+                mountedShell.RequestHint();
+                yield return null; yield return null;
+                Assert.That(mountedShell.Modal, Is.EqualTo("notification"));
+                Assert.That(mountedShell.Q<Label>("notification-message").text, Is.EqualTo(messages["monetization.status.AdUnavailable"]));
+                var card = mountedShell.Q("notification-alert"); var ok = mountedShell.Q<Button>("notification-ok");
+                Assert.That(card.Query<Button>().ToList().Count, Is.EqualTo(1));
+                Assert.That(ok.text, Is.EqualTo(messages["notification.ok"]));
+                Assert.That(ok.worldBound.height, Is.GreaterThanOrEqualTo(48));
+                Assert.That(root.worldBound.Contains(card.worldBound.min), Is.True);
+                Assert.That(root.worldBound.Contains(card.worldBound.max), Is.True);
+                Assert.That(card.worldBound.Contains(ok.worldBound.center), Is.True);
+                Assert.That(mountedShell.focusController.focusedElement, Is.SameAs(ok));
+                Assert.That(mountedShell.BoardView.InteractionEnabled, Is.False);
+                Assert.That(mountedShell.Q("game-controls").enabledInHierarchy, Is.False);
+                mountedShell.RequestHint(); mountedShell.ClearBoard();
+                Assert.That(session.Marks, Is.EquivalentTo(marks));
+                Assert.That(mountedShell.Q<Label>("completion-status").text, Is.Null.Or.Empty);
+                yield return DismissAlert(touch: locale == "es");
+                Assert.That(mountedShell.BoardView.InteractionEnabled, Is.True);
+                Assert.That(mountedShell.focusController.focusedElement, Is.SameAs(MountedHint));
+                mountedShell.ShowMenu(); mountedShell.BackToGame();
+                coordinator.BindSession(session); mountedShell.TickMonetization();
+                Assert.That(mountedShell.Modal, Is.Null);
+                mountedShell.RequestHint();
+                using (var escape = KeyDownEvent.GetPooled('\0', KeyCode.Escape, EventModifiers.None))
+                { escape.target = mountedShell.Q<Button>("notification-ok"); mountedShell.SendEvent(escape); }
+                Assert.That(mountedShell.Modal, Is.Null);
+                Assert.That(mountedShell.BoardView.InteractionEnabled, Is.True);
+                mountedShell.RequestHint();
+                root.Remove(mountedShell);
+                Assert.That(mountedShell.Modal, Is.Null, "detach clears alerts");
+                root.Add(mountedShell); yield return null;
+                mountedShell.RequestHint(); // The same error on a new explicit attempt must still show.
+                Assert.That(mountedShell.Modal, Is.EqualTo("notification"));
+                Assert.That(mountedShell.StartNewGame(), Is.True);
+                Assert.That(mountedShell.Modal, Is.Null);
+                Assert.That(mountedShell.Q("notification-alert"), Is.Null);
+                Assert.That(mountedShell.Q<Label>("completion-status").text, Is.Null.Or.Empty);
+                mountedShell.ShowSettings();
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status"), Is.Null);
+                Assert.That(mountedShell.Q("settings-list").Query<Label>().ToList().Any(label =>
+                    label.text == messages["monetization.explanation"]), Is.False);
+                TearDown(); host = null; panelSettings = null; panelTexture = null;
+            }
+        }
+
+        [Test]
+        public void NavigationRebindAndSuspensionDiscardAlertsAndLateNotifications()
+        {
+            var ads = new Ads { Availability = AdAvailability.Offline };
+            var purchases = new Purchases { HoldPurchase = true };
+            using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, purchases);
+            var shell = new GameShellView(14, "en", PlayTestFactory.Loop(), tutorialSeen: () => true,
+                markTutorialSeen: () => { }, monetization: coordinator);
+            Assert.That(shell.StartNewGame(), Is.True);
+            foreach (Action leave in new Action[] { shell.ShowMenu, shell.ShowSettings, shell.StartTutorial,
+                () => shell.SetApplicationFocus(false), () => shell.SetApplicationPaused(true),
+                () => shell.BoardView.Bind(shell.ActiveSession, shell.Locale) })
+            {
+                shell.RequestHint(); Assert.That(shell.Modal, Is.EqualTo("notification"));
+                leave(); Assert.That(shell.Modal, Is.Null); Assert.That(shell.Q("notification-alert"), Is.Null);
+                shell.SetApplicationFocus(true); shell.SetApplicationPaused(false);
+                Assert.That(shell.StartNewGame(), Is.True);
+            }
+            shell.ShowSettings(); shell.PurchaseRemoveAds();
+            shell.SetApplicationFocus(false); // In-flight completion after lifecycle invalidation must stay quiet.
+            purchases.PurchaseCallback(new PurchaseResult(PurchaseOutcome.Pending));
+            shell.SetApplicationFocus(true); shell.RefreshMonetization();
+            Assert.That(shell.Modal, Is.Null);
+            shell.BackToGame(); shell.ShowSettings();
+            Assert.That(shell.Modal, Is.Null);
+            Assert.That(shell.Q<Label>("monetization-settings-status"), Is.Null);
         }
 
         private sealed class Ads : IAdService
@@ -236,21 +354,24 @@ namespace CatsAndArrows.Tests
                 Assert.That(mountedShell.Screen, Is.EqualTo("settings"));
                 Assert.That(purchases.PurchaseCalls, Is.EqualTo(1)); Assert.That(purchases.RestoreCalls, Is.Zero);
                 var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
-                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(messages["monetization.status.Busy"]));
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status"), Is.Null);
+                Assert.That(mountedShell.Modal, Is.Null, "native operation retains its existing busy lock");
                 purchases.PurchaseCallback(new PurchaseResult(PurchaseOutcome.Pending, transactionReference: "pending-76"));
                 Assert.That(coordinator.IsBusy, Is.False);
-                Assert.That(mountedShell.Q("game-menu").enabledInHierarchy, Is.True);
+                Assert.That(mountedShell.Q("game-menu").enabledInHierarchy, Is.False, "alert blocks underlying settings");
                 Assert.That(mountedShell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
                 Assert.That(mountedShell.Q<Button>("settings-restore").enabledSelf, Is.True);
-                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(messages["monetization.status.PurchasePending"]));
+                Assert.That(mountedShell.Q<Label>("notification-message").text, Is.EqualTo(messages["monetization.status.PurchasePending"]));
+                yield return DismissAlert();
                 mountedShell.ShowLanguageSelector(); mountedShell.SelectLanguage(locale == "en" ? "es" : "en");
                 var changedMessages = GameLocalization.CreateCatalog().GetResource(mountedShell.Locale).Messages;
-                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(changedMessages["monetization.status.PurchasePending"]));
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status"), Is.Null);
+                Assert.That(mountedShell.Modal, Is.Null, "locale changes do not replay dismissed notifications");
                 mountedShell.RestorePurchases();
                 Assert.That(purchases.RestoreCalls, Is.EqualTo(1));
                 Assert.That(coordinator.IsBusy, Is.True);
                 Assert.That(mountedShell.Screen, Is.EqualTo("settings"));
-                Assert.That(mountedShell.Q<Label>("monetization-settings-status").text, Is.EqualTo(changedMessages["monetization.status.Busy"]));
+                Assert.That(mountedShell.Q<Label>("monetization-settings-status"), Is.Null);
                 purchases.RestoreCallback(new PurchaseResult(PurchaseOutcome.NotOwned, verified: true,
                     completeInventory: true, pendingResolved: true, storeNamespace: "test"));
                 Assert.That(coordinator.IsBusy, Is.False);
@@ -281,9 +402,11 @@ namespace CatsAndArrows.Tests
             Assert.That(session.Marks, Is.EquivalentTo(before));
             Assert.That(shell.Screen, Is.EqualTo("play"));
             ads.Close(false);
-            Assert.That(shell.BoardView.InteractionEnabled, Is.True);
+            Assert.That(shell.BoardView.InteractionEnabled, Is.False, "alert owns input until dismissed");
             Assert.That(session.Marks, Is.EquivalentTo(before));
-            Assert.That(shell.Q<Label>("completion-status").text, Is.Not.Empty);
+            Assert.That(shell.Modal, Is.EqualTo("notification"));
+            Assert.That(shell.Q<Label>("notification-message").text, Does.Contain("No reward"));
+            Assert.That(shell.Q<Label>("completion-status").text, Is.Null.Or.Empty);
         }
 
         [Test]
@@ -365,8 +488,10 @@ namespace CatsAndArrows.Tests
             Assert.That(shell.StartNewGame(), Is.True);
             shell.RequestHint();
             Assert.That(shell.ActiveSession.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
-            Assert.That(shell.BoardView.InteractionEnabled, Is.True);
-            Assert.That(shell.Q<Label>("completion-status").text, Does.Contain("unavailable"));
+            Assert.That(shell.BoardView.InteractionEnabled, Is.False);
+            Assert.That(shell.Modal, Is.EqualTo("notification"));
+            Assert.That(shell.Q<Label>("notification-message").text, Does.Contain("unavailable"));
+            Assert.That(shell.Q<Label>("completion-status").text, Is.Null.Or.Empty);
         }
 
         [Test]
@@ -389,7 +514,8 @@ namespace CatsAndArrows.Tests
             freeShell.ShowSettings();
             Assert.That(freeShell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
             Assert.That(freeShell.Q<Button>("settings-restore").enabledSelf, Is.False);
-            Assert.That(freeShell.Q<Label>("monetization-settings-status").text, Does.Contain("unavailable"));
+            Assert.That(freeShell.Q<Label>("monetization-settings-status"), Is.Null);
+            Assert.That(freeShell.Modal, Is.Null);
         }
     }
 }
