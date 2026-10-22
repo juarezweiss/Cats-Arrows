@@ -52,6 +52,23 @@ under ignored `Builds/Issue64-AppleIapReview/` and
 `Builds/Issue64-AppleIapReview.xcarchive/`. No runtime network observation is
 claimed. Owner StoreKit Test/sandbox and physical acceptance remain pending.
 
+2026-10-21: the owner reported the approved App Store Connect product saved in
+Prepare for Submission with price/localization configured and Offer Codes enabled.
+The retained source `46bee5e` export compiled and signed with current Xcode
+**27.1 (27A9275)** using existing development provisioning, then launched through
+the **Paws StoreKit Test** scheme on **iPhone 17 / iOS 27.0.1**. Strict signatures,
+profile/device/expiry, ARM64/dSYM UUIDs, minimum iOS, native IAP symbols and privacy
+inventory passed; the original Xcode 27.0 unsigned archive checksum is unchanged.
+The local StoreKit file was synced read-only from the existing App Store Connect
+product; a separate **Paws Apple Sandbox** scheme has StoreKit Configuration None.
+[Sanitized receipt](evidence/issue64/device-preparation.json) records provenance.
+These are technical preparation checks only: no purchase, restore, physical
+interaction or runtime data-behavior acceptance is claimed. No Unity/source
+changes or repeat of the already passing EditMode gates was needed. The owner
+receives one review step at a time; both environments remain pending explicit
+human results. Review cache must be reconciled when switching environments, as
+documented in [APPLE_IAP.md](APPLE_IAP.md).
+
 ## Issue #63 production iOS configuration
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);

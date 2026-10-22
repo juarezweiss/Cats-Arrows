@@ -1,0 +1,129 @@
+{
+  "schema": "paws-apple-iap-device-preparation-v1",
+  "preparationDate": "2026-10-21",
+  "sourceSha": "46bee5ebc727b2bd9d027776d8f0330b9c810a0b",
+  "sourceCompatibilityCheckedAtSha": "c150924410c8288230797454da2938ff5bc4c7f8",
+  "unityVersion": "6000.3.25f1",
+  "iapPackage": "5.3.1",
+  "nativeCompilationXcode": "Xcode 27.1\nBuild version 27A9275",
+  "originalArchiveCompilationXcode": "Xcode 27.0\nBuild version 27A266a",
+  "originalArchiveTreeSha256": "7e8e39fe6d2cfeba4e91435e52fda59678339eaf4e094f664fa9d65ef96219b6",
+  "originalArchiveUnchanged": true,
+  "recompiledFromRetainedExport": true,
+  "configuration": "Release",
+  "developmentBuild": true,
+  "bundleIdentifier": "com.jweiss.paws",
+  "version": "0.1.0",
+  "buildNumber": "1",
+  "signedAppPath": "Builds/Issue64iPhone/Xcode27.1/Paws.app",
+  "signedAppTreeSha256": "4555129ab98c32a3d49d34bf70c1c98afdbdecf98891bd5cb9c646a5f077a704",
+  "signatureVerified": true,
+  "signingPurpose": "local-development-device-only",
+  "getTaskAllow": true,
+  "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
+  "deviceIncludedInProfile": true,
+  "device": "iPhone 17",
+  "iOS": "27.0.1",
+  "binaryChecks": [
+    {
+      "binary": "Paws",
+      "uuid": {
+        "arm64": "116EF65B-0C75-3AC6-9268-12F9276879C8"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    },
+    {
+      "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+      "uuid": {
+        "arm64": "DBFD0E5A-F6EC-36B7-A408-C7950092BD8F"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    }
+  ],
+  "inventory": {
+    "frameworks": [
+      "Frameworks/UnityFramework.framework"
+    ],
+    "nativeLibraries": [],
+    "privacyManifests": [
+      {
+        "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+        "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+        "declarations": {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "35F9.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "E174.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "0A2A.1",
+                "C617.1"
+              ]
+            }
+          ],
+          "NSPrivacyTracking": false
+        }
+      }
+    ],
+    "entitlementFiles": []
+  },
+  "storeKitConfiguration": {
+    "source": "Xcode synced App Store Connect configuration",
+    "productId": "com.jweiss.paws.removeads",
+    "type": "NonConsumable",
+    "priceAndLocalizationSynced": true,
+    "sha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
+    "retainedOnlyInIgnoredExport": true,
+    "scheme": "Paws StoreKit Test",
+    "liveValidation": "pending-owner"
+  },
+  "appleSandbox": {
+    "scheme": "Paws Apple Sandbox",
+    "storeKitConfiguration": "None",
+    "liveValidation": "pending-owner",
+    "requiresAuthoritativeRestoreBeforeAcceptingCachedOwnership": true
+  },
+  "ownerReportedASC": {
+    "reportedDate": "2026-10-21",
+    "productId": "com.jweiss.paws.removeads",
+    "status": "Prepare for Submission",
+    "priceAndLocalizationConfigured": true,
+    "offerCodesEnabled": true,
+    "submissionAuthorized": false
+  },
+  "installed": true,
+  "launchMethod": "Xcode / Paws StoreKit Test",
+  "launchVerified": true,
+  "runningProcessVerified": true,
+  "physicalReview": "pending-owner",
+  "runtimeNetworkObservation": "pending-owner",
+  "productionMonetizationEnabled": false,
+  "adProviderEnabled": false,
+  "appStoreConnectChanges": "none",
+  "uploadOrSubmission": "none",
+  "accountOrCredentialChanges": "none",
+  "installedIdentityVerified": true,
+  "nativeIapAbiSymbols": [
+    "_PawsIapRead",
+    "_PawsIapVerifyCache",
+    "_PawsIapSetDeferred"
+  ]
+}

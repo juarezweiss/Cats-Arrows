@@ -4,8 +4,10 @@ Authority: [#64](https://github.com/juarezweiss/Paws/issues/64), [#29](https://g
 [#30](https://github.com/juarezweiss/Paws/issues/30), [ADR 0002](decisions/0002-provider-agnostic-monetization.md).
 Dependency #63 is integrated in develop (`10695b018c71bad7bb07b6346b58f99f77d754ee`).
 The owner approved permanent non-consumable ID **`com.jweiss.paws.removeads`** on
-2026-10-20 in the implementation chat. This approves the mapping only. Price,
-storefront localizations, account/product creation and activation remain owner actions.
+2026-10-20 in the implementation chat. On 2026-10-21 the owner reported the product
+saved in App Store Connect as **Prepare for Submission**, with price/localization
+configured and Offer Codes enabled. These are owner-reported account facts;
+submission and production activation remain unauthorized.
 
 ## Implementation and rollback
 
@@ -154,6 +156,39 @@ Record reviewer, device/iOS, source SHA, version/build, Unity/package/Xcode vers
 StoreKit Test versus sandbox, scenario pass/fail and gaps. Physical interaction and
 purchase/restore acceptance stays **pending** until the owner's explicit report;
 unsigned export/archive or automated tests cannot satisfy it. No real charge needed.
+
+## Signed owner-review preparation — 2026-10-21
+
+The retained Unity export from source **`46bee5e`** is the review source, independent
+of later develop changes. Local Xcode **27.1 (27A9275)** recompiles that export;
+the original Xcode 27.0 unsigned archive/dSYMs remain immutable. Existing local
+development provisioning covers **iPhone 17 / iOS 27.0.1** and expires
+**2026-10-27 17:36:44 UTC**. Signing inputs remain in ignored local files/Keychain.
+The [preparation receipt](evidence/issue64/device-preparation.json) records actual
+artifact/signature checks separately from owner acceptance.
+The signed build was installed and launched through **Paws StoreKit Test** in
+Xcode; its running process was verified. No physical interaction was automated.
+
+The ignored Xcode project has two Release development run schemes:
+
+- **Paws StoreKit Test** selects `Paws-RemoveAds-OwnerReview.storekit`, synced
+  read-only from the owner's existing App Store Connect product. The product is
+  the approved non-consumable; price/localization were downloaded, not invented.
+- **Paws Apple Sandbox** selects **None** for StoreKit Configuration. Sandbox
+  account creation/sign-in and physical purchase/restore remain owner actions.
+
+Both environments use the same review state/Keychain namespace. Switching schemes
+does **not** clear ownership from Xcode testing. Before accepting sandbox purchase
+evidence, explicitly Restore with successful authoritative sandbox reconciliation;
+an unknown/failed result or cached Owned state is insufficient. Uninstall alone
+does not guarantee a clean Keychain. Do not reset review evidence without owner
+direction. This applies equally when switching back to Xcode testing.
+
+Give the owner one action at a time using the scenario list above; record each
+explicit pass/fail with its environment and exact build. Preparation, launch and
+product sync do not establish purchase/restore, physical or runtime data behavior
+acceptance. No App Store Connect changes, upload, submission or production
+activation are part of this handoff.
 
 ## Archive gate status — 2026-10-20
 
