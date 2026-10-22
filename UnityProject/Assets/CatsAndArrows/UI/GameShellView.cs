@@ -31,6 +31,11 @@ namespace CatsAndArrows.UI
         private Button clearButton;
         private bool loading;
         private bool nextBoardPending;
+        // #83: notifications belong to an explicit UI request, never the coordinator's retained status.
+        private string notificationScreen;
+        private GameSession notificationSession;
+        private string notificationAction;
+        private string alertReturnFocus;
         private int queuedRequest;
         private readonly MonetizationCoordinator monetization;
         private bool CommercialBusy => monetization?.IsBusy == true;
@@ -75,6 +80,7 @@ namespace CatsAndArrows.UI
             BoardView.ActivityChanged += OnBoardActivity;
             BoardView.InteractionEnded += OnTutorialGestureEnded;
             BoardView.Rebound += CancelCompletion;
+            BoardView.Rebound += ResetNotifications;
             safeFrame.name = "game-safe-frame"; safeFrame.style.position = Position.Absolute;
             safeFrame.pickingMode = PickingMode.Ignore; Add(safeFrame);
             menu.name = "game-menu"; Fill(menu); safeFrame.Add(menu);
@@ -89,7 +95,9 @@ namespace CatsAndArrows.UI
             RegisterCallback<KeyDownEvent>(evt =>
             {
                 if (evt.keyCode != KeyCode.Escape || loading || CommercialBusy) return;
-                if (Modal == "language")
+                if (Modal == "notification")
+                { DismissNotification(); evt.StopPropagation(); }
+                else if (Modal == "language")
                 { ShowSettings(); menu.Q<Button>("settings-language")?.Focus(); evt.StopPropagation(); }
                 else if (Screen == "settings")
                 { ShowMenu(); menu.Q<Button>("menu-settings")?.Focus(); evt.StopPropagation(); }
@@ -100,7 +108,7 @@ namespace CatsAndArrows.UI
                 monetization.HintDelivered += OnHintDelivered;
             }
             RegisterCallback<AttachToPanelEvent>(_ => { ResetHintAttention(); TickHintAttention(); });
-            RegisterCallback<DetachFromPanelEvent>(_ => { hintAttention.Update(false, false); ApplyHintAttention(); CancelCompletion(); });
+            RegisterCallback<DetachFromPanelEvent>(_ => { hintAttention.Update(false, false); ApplyHintAttention(); CancelCompletion(); ResetNotifications(); });
             schedule.Execute(TickHintAttention).Every(50);
             // One view-owned tick; no per-win callbacks survive navigation or rebind.
             schedule.Execute(TickCompletion).Every(16);
@@ -110,13 +118,13 @@ namespace CatsAndArrows.UI
         public void SetApplicationFocus(bool focused)
         {
             applicationFocused = focused;
-            if (!focused) { CancelInteraction(); CancelCompletion(); }
+            if (!focused) { CancelInteraction(); CancelCompletion(); ResetNotifications(); }
             TickHintAttention();
         }
         public void SetApplicationPaused(bool paused)
         {
             applicationPaused = paused;
-            if (paused) { CancelInteraction(); CancelCompletion(); }
+            if (paused) { CancelInteraction(); CancelCompletion(); ResetNotifications(); }
             TickHintAttention();
         }
         // Manual ticking uses the same injected clock and lifecycle decisions as the scheduler.
@@ -230,7 +238,7 @@ namespace CatsAndArrows.UI
         public void ShowMenu()
         {
             if (loading || CommercialBusy) return;
-            CancelCompletion();
+            ResetNotifications(); CancelCompletion();
             BoardView.SetInteractionSuspended(true);
             BoardView.style.display = DisplayStyle.None;
             Screen = "menu"; Modal = null; overlay.style.display = DisplayStyle.None;
@@ -300,7 +308,7 @@ namespace CatsAndArrows.UI
         public void ShowSettings()
         {
             if (loading || CommercialBusy) return;
-            CancelCompletion(); CancelInteraction();
+            ResetNotifications(); CancelCompletion(); CancelInteraction();
             BoardView.SetInteractionSuspended(true); BoardView.style.display = DisplayStyle.None;
             Screen = "settings"; Modal = null; overlay.style.display = DisplayStyle.None;
             controls.style.display = DisplayStyle.None; menu.style.display = DisplayStyle.Flex;
@@ -394,7 +402,7 @@ namespace CatsAndArrows.UI
         public void StartTutorial()
         {
             if (loading || CommercialBusy || !enableTutorial) return;
-            CancelCompletion();
+            ResetNotifications(); CancelCompletion();
             CancelInteraction(); completionHint = null;
             Tutorial = new TutorialController();
             monetization?.BindSession(Tutorial.Session, ordinary: false);
@@ -443,7 +451,7 @@ namespace CatsAndArrows.UI
         public bool StartNewGame()
         {
             if (nextBoardPending || CommercialBusy) return false;
-            CancelCompletion();
+            ResetNotifications(); CancelCompletion();
             // Consume any queued command before an asynchronous next-board transition.
             ResetHintAttention();
             queuedRequest++;
@@ -487,7 +495,7 @@ namespace CatsAndArrows.UI
         private void QueueNewGame()
         {
             if (loading || CommercialBusy) return;
-            CancelCompletion();
+            ResetNotifications(); CancelCompletion();
             NewGameStartedAtTimestamp = Stopwatch.GetTimestamp();
             if (Tutorial != null) LeaveTutorial();
             loading = true; BoardView.SetInteractionSuspended(true);
@@ -500,6 +508,7 @@ namespace CatsAndArrows.UI
         public void BackToGame()
         {
             if (loading || CommercialBusy || ActiveSession == null) return;
+            ResetNotifications();
             Screen = "play"; Modal = null; menu.style.display = overlay.style.display = DisplayStyle.None;
             BoardView.style.display = controls.style.display = DisplayStyle.Flex;
             BoardView.SetInteractionSuspended(ActiveSession.IsCompleted);
@@ -521,7 +530,7 @@ namespace CatsAndArrows.UI
             foreach (var row in new[] { first, second })
                 foreach (var child in row.Children()) { child.style.flexGrow = 1; child.style.flexBasis = 0; }
             controls.Add(first); controls.Add(second);
-            controls.SetEnabled(!CommercialBusy);
+            controls.SetEnabled(!CommercialBusy && Modal == null);
             TickHintAttention();
         }
         private void BuildTutorialControls()
@@ -555,12 +564,14 @@ namespace CatsAndArrows.UI
         {
             if (Tutorial != null || loading || CommercialBusy || Screen != "play" || Modal != null || ActiveSession == null || ActiveSession.IsCompleted) return;
             ResetHintAttention(); CancelInteraction();
-            if (monetization?.Enabled == true) { monetization.RequestHint(); return; }
+            if (monetization?.Enabled == true)
+            { BeginNotification("action-hint"); monetization.RequestHint(); return; }
             PresentHint(ActiveSession.ApplyHint());
         }
         private void OnHintDelivered(HintDelivery delivery)
         {
             if (!ReferenceEquals(ActiveSession, delivery.Session) || Tutorial != null) return;
+            notificationScreen = null;
             PresentHint(delivery.Result);
         }
         private void PresentHint(HintResult result)
@@ -605,7 +616,7 @@ namespace CatsAndArrows.UI
         }
         private void UpdateCompletionFeedback()
         {
-            if (ActiveSession?.IsCompleted != true) { BoardView.SetCompletionFeedback(MonetizationMessage()); return; }
+            if (ActiveSession?.IsCompleted != true) { BoardView.SetCompletionFeedback(null); return; }
             hintButton?.SetEnabled(false); clearButton?.SetEnabled(false);
             TickHintAttention();
             BoardView.SetInteractionSuspended(true);
@@ -631,10 +642,63 @@ namespace CatsAndArrows.UI
             ShowModal("last-hint", text.GetText("game.last-hint"), FormatHint(completionHint),
                 MakeButton("modal-back", "game.close", BackToGame));
         }
-        private string MonetizationMessage()
+        private void BeginNotification(string action)
         {
-            if (monetization?.Enabled != true || monetization.Status == MonetizationStatus.None) return null;
-            return text.GetText("monetization.status." + monetization.Status);
+            notificationScreen = Screen; notificationSession = ActiveSession; notificationAction = action;
+        }
+        private string TakeNotification()
+        {
+            if (notificationScreen != Screen || !ReferenceEquals(notificationSession, ActiveSession) ||
+                CommercialBusy || loading || !applicationFocused || applicationPaused || Modal != null) return null;
+            var status = monetization.Status;
+            if (status == MonetizationStatus.None) { notificationScreen = null; return null; }
+            if (status == MonetizationStatus.Busy) return null;
+            // Successful direct hints may notify with an old purchase status; that is not a new alert.
+            if (notificationAction == "action-hint" &&
+                (status == MonetizationStatus.Owned || status == MonetizationStatus.PurchasePending ||
+                 status == MonetizationStatus.PurchaseUnavailable)) return null;
+            notificationScreen = null;
+            return text.GetText("monetization.status." + status);
+        }
+        private void ResetNotifications()
+        {
+            notificationScreen = null; notificationSession = null;
+            if (Modal != "notification") return;
+            Modal = null; overlay.Clear(); overlay.style.display = DisplayStyle.None;
+            menu.SetEnabled(!CommercialBusy); controls.SetEnabled(!CommercialBusy);
+            BoardView.SetInteractionSuspended(Screen != "play" || CommercialBusy || ActiveSession?.IsCompleted == true);
+            alertReturnFocus = null;
+        }
+        private void DismissNotification()
+        {
+            if (Modal != "notification") return;
+            var focus = alertReturnFocus;
+            ResetNotifications(); TickHintAttention();
+            this.Q<Button>(focus)?.Focus();
+        }
+        private void ShowNotification(string message)
+        {
+            alertReturnFocus = notificationAction;
+            var ok = MakeButton("notification-ok", "notification.ok", DismissNotification);
+            BeginModal("notification");
+            overlay.style.paddingLeft = overlay.style.paddingRight = 12;
+            overlay.style.paddingTop = overlay.style.paddingBottom = 12;
+            // Same scrim and quiet card treatment as the Settings language selector.
+            overlay.style.backgroundColor = new Color(0, 0, 0, .2f);
+            overlay.style.alignItems = Align.Center; overlay.style.justifyContent = Justify.Center;
+            var card = new VisualElement { name = "notification-alert", tooltip = message };
+            card.style.width = Length.Percent(100); card.style.maxWidth = 320;
+            card.style.maxHeight = Length.Percent(100); card.style.flexShrink = 1;
+            card.style.backgroundColor = PortraitBoardView.Background;
+            card.style.paddingLeft = card.style.paddingRight = 16;
+            card.style.paddingTop = card.style.paddingBottom = 12;
+            card.style.borderTopLeftRadius = card.style.borderTopRightRadius = 14;
+            card.style.borderBottomLeftRadius = card.style.borderBottomRightRadius = 14;
+            var scroll = new ScrollView(ScrollViewMode.Vertical);
+            scroll.style.flexShrink = 1; scroll.style.minHeight = 0;
+            var label = Paragraph(message); label.name = "notification-message";
+            scroll.Add(label); card.Add(scroll); card.Add(ok); overlay.Add(card);
+            menu.SetEnabled(false); controls.SetEnabled(false); ok.Focus();
         }
         private void AddMonetizationSettings(VisualElement parent)
         {
@@ -646,61 +710,59 @@ namespace CatsAndArrows.UI
             purchase.SetEnabled(enabled && monetization.CanPurchase && !CommercialBusy);
             var restore = AddSettingsRow(parent, "settings-restore", "monetization.restore", RestorePurchases);
             restore.SetEnabled(enabled && !CommercialBusy);
-            parent.Add(Paragraph(text.GetText("monetization.explanation")));
             if (enabled && monetization.Offer?.IsReviewOffer == true)
                 parent.Add(Paragraph(text.GetText("monetization.review")));
-            var message = MonetizationMessage();
-            if (!enabled || (monetization.Offer?.Available != true && string.IsNullOrEmpty(message)))
-                message = text.GetText("monetization.status.PurchaseUnavailable");
-            var status = Paragraph(message); status.name = "monetization-settings-status"; parent.Add(status);
         }
         public void PurchaseRemoveAds()
         {
             if (loading || CommercialBusy || Screen != "settings" || Modal != null) return;
-            CancelInteraction(); monetization?.PurchaseRemoveAds();
+            CancelInteraction(); BeginNotification("settings-remove-ads"); monetization?.PurchaseRemoveAds();
         }
         public void RestorePurchases()
         {
             if (loading || CommercialBusy || Screen != "settings" || Modal != null) return;
-            CancelInteraction(); monetization?.RestorePurchases();
+            CancelInteraction(); BeginNotification("settings-restore"); monetization?.RestorePurchases();
         }
         private void OnMonetizationChanged()
         {
+            var message = TakeNotification();
             if (loading) return;
             if (Screen == "settings")
             {
                 if (!CommercialBusy && Modal == null) ShowSettings();
-                else if (CommercialBusy)
-                {
-                    menu.SetEnabled(false);
-                    var status = menu.Q<Label>("monetization-settings-status");
-                    if (status != null) status.text = MonetizationMessage();
-                }
-                return;
+                menu.SetEnabled(!CommercialBusy && Modal == null);
             }
-            if (Screen != "play") return;
-            BuildControls();
-            BoardView.SetInteractionSuspended(CommercialBusy || Modal != null || ActiveSession?.IsCompleted == true);
-            if (Tutorial == null) UpdateCompletionFeedback();
+            else if (Screen == "play")
+            {
+                BuildControls();
+                BoardView.SetInteractionSuspended(CommercialBusy || Modal != null || ActiveSession?.IsCompleted == true);
+                if (Tutorial == null) UpdateCompletionFeedback();
+            }
+            if (message != null) ShowNotification(message);
         }
         public void SuspendMonetizationDelivery()
         {
-            CancelInteraction(); monetization?.CancelHintDelivery();
+            ResetNotifications(); CancelInteraction(); monetization?.CancelHintDelivery();
         }
         public void RefreshMonetization() => monetization?.RefreshPurchases();
         public void TickMonetization() => monetization?.Tick();
         public void DisposeMonetization()
         {
+            ResetNotifications();
             if (monetization == null) return;
             monetization.Changed -= OnMonetizationChanged;
             monetization.HintDelivered -= OnHintDelivered;
             monetization.Dispose();
         }
-        private void ShowModal(string kind, string heading, string body, params Button[] actions)
+        private void BeginModal(string kind)
         {
             CancelCompletion();
             BoardView.SetInteractionSuspended(true); Modal = kind; overlay.Clear(); overlay.style.display = DisplayStyle.Flex;
             TickHintAttention();
+        }
+        private void ShowModal(string kind, string heading, string body, params Button[] actions)
+        {
+            BeginModal(kind);
             overlay.style.backgroundColor = PortraitBoardView.Background;
             overlay.style.alignItems = Align.Stretch; overlay.style.justifyContent = Justify.FlexStart;
             overlay.style.paddingLeft = overlay.style.paddingRight = 8;

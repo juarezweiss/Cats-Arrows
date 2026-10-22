@@ -184,7 +184,7 @@ namespace CatsAndArrows.Tests
                 Assert.That(shell.Q<Label>("settings-title").text, Is.EqualTo(messages["settings.title"]));
                 Assert.That(shell.Q<Button>("settings-back").text, Is.EqualTo(messages["settings.back"]));
                 Assert.That(shell.Q<Button>("settings-restore").text, Is.EqualTo(messages["monetization.restore"]));
-                Assert.That(shell.Q<Label>("monetization-settings-status").text, Is.EqualTo(messages["monetization.status.PurchaseUnavailable"]));
+                Assert.That(shell.Q<Label>("monetization-settings-status"), Is.Null);
                 Tap(shell, "settings-language"); yield return Settle();
                 using (var escape = KeyDownEvent.GetPooled('\0', KeyCode.Escape, EventModifiers.None))
                 { escape.target = shell.Q<Button>("language-" + locale); shell.SendEvent(escape); }

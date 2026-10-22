@@ -53,9 +53,15 @@ short Settings viewports scroll without shrinking targets.
 
 Remove Ads and Restore Purchases delegate to the existing provider-agnostic
 coordinator. Rows remain visible but unavailable when monetization is disabled;
-enabled state retains localized store price, owned/pending/unavailable status,
-restore availability and the explanation covering both ad removals. Navigation
-adds no provider, purchase authority or duplicated purchase policy.
+enabled state retains localized store price, ownership and restore availability.
+Issue #83 removes the permanent Remove Ads explanation and inline status labels.
+Settings and gameplay show request feedback in a centered message-and-OK alert,
+using the existing modal layer, localized text and a 48-unit minimum button.
+The alert suspends background input, focuses OK, supports Escape, and restores
+focus on dismissal. Navigation, board rebind/replacement, detach and backgrounding
+discard notifications and suppress late feedback from that request. Retained
+commercial status does not replay when returning to Settings or another board.
+Navigation adds no provider, purchase authority or duplicated purchase policy.
 
 Issue #43 replaces the menu difficulty controls with a localized Play action,
 with Tutorial and languages now in Settings (#76). Play without a live session
