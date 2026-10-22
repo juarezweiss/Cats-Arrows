@@ -50,9 +50,15 @@ checks pass; independent QA has no blocking findings. The exact replacement is
 installed/running through **Paws Sandbox Restore Fix**, Configuration **None**,
 debugger off. [Fixed sandbox receipt](evidence/issue64/sandbox-restore-fix-preparation.json)
 retains its signed app/symbol provenance separately from the earlier candidate.
-The owner needs to create a fresh Sandbox tester; sign-in, authoritative unowned
-Restore and one pending initiation/restart are still pending human actions.
-Neither the native diagnostic nor this preparation safely unblocks #64.
+The owner created and signed into a fresh Sandbox tester. Restore returned the
+price without Owned; the owner confirmed Apple's sheet identified **Sandbox**.
+One confirmed attempt showed **Pending without Owned**. After owner force-quit
+and Home Screen reopen, access stayed unowned but **Remove Ads was available for
+a second purchase**. Pending-lock persistence fails. This single attempt observed
+no false ownership, but sandbox acceptance fails; its cause is unproven.
+**Stop physical experiments:** no second purchase, history reset or reinstall.
+The native diagnostic, SDK replay hazard and sandbox restart failure prevent #64
+from safely unblocking. Production verification remains unchanged.
 
 The [native reproducer](../tools/apple-iap-probe/README.md) contains no Unity IAP or
 Paws ownership/cache code. One owner-operated native purchase must return Pending;
@@ -69,14 +75,11 @@ default-off `PAWS_APPLE_SIMULATE_ASK_TO_BUY=1`. It requires SandboxReview, the
 review compile define and a development build. The SDK flag is assigned even
 when false, so a cached SDK service cannot retain an earlier simulation opt-in.
 The saved review scene/receipt record the option. Owner license refresh plus
-stopping a stale editor licensing process restored package registration. Source
-`bf32a15` passes compilation and full EditMode **556/556**. Its fresh sandbox-only
-export and signed development build passed identity/signature, ARM64/dSYM, native
-ABI and privacy checks; the exact retained app was installed/launched through
-**Paws Sandbox Ask to Buy**, StoreKit Configuration **None**, debugger off.
-The owner reports their Sandbox tester signed in; authoritative Restore is the
-next requested physical check. [Sandbox preparation receipt](evidence/issue64/sandbox-ask-to-buy-preparation.json)
-distinguishes technical readiness from pending purchase/restore acceptance.
+stopping a stale editor licensing process restored package registration. Earlier
+source `bf32a15` and its **556/556** gate are retained in the
+[earlier preparation receipt](evidence/issue64/sandbox-ask-to-buy-preparation.json).
+The fixed `a686433` candidate, **558/558** gate and bounded sandbox results above
+supersede that preparation. Artifact readiness does not establish acceptance.
 Reproduce from committed inputs with passing compile/test gates:
 
 ```bash
@@ -87,7 +90,7 @@ PAWS_APPLE_PRODUCT_ID=com.jweiss.paws.removeads PAWS_APPLE_SIMULATE_ASK_TO_BUY=1
 Use StoreKit Configuration **None** and the owner's Sandbox Apple Account. Reconcile
 Xcode cached review ownership through successful authoritative sandbox Restore
 first. Pending initiation must never grant RemoveAllAds; no approval/decline
-resolution in sandbox is inferred. No credentials, account/product actions,
+resolution in sandbox is inferred. No credential handling or Codex account/product actions,
 upload, submission, main changes or production activation are authorized.
 
 ## Implementation and rollback

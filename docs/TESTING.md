@@ -20,9 +20,14 @@ pass; the [fixed sandbox candidate](evidence/issue64/sandbox-restore-fix-prepara
 is installed/running with no local StoreKit configuration or debugger. No app
 data, Keychain or transaction history was reset. The owner's earlier Restore
 report (**All ads removed**, prior tester ownership unknown) does not establish
-an unowned baseline. A fresh Sandbox tester is an outstanding owner action;
-pending initiation/restart, the original early grant and SDK replay hazard remain
-unresolved. This fix is not claimed as the physical failure's cause.
+an unowned baseline. With a fresh tester signed in, owner Restore returned the
+price without Owned and Apple's sheet identified Sandbox. One confirmed request
+showed Pending/unowned. After owner force-quit/Home Screen reopen it stayed
+unowned, but Remove Ads became available for another purchase: **pending-lock
+restart fails**. No second purchase or history reset follows; physical experiments
+stop. The native diagnostic remains inconclusive, and the original early grant,
+SDK replay hazard and this restart failure keep #64 blocked. The Restore fix is
+not claimed as the physical failures' cause.
 
 2026-10-22 bounded follow-up: the independent native-only Ask to Buy trace is
 **inconclusive**: Pending returned and current entitlements stayed empty before

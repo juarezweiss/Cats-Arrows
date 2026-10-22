@@ -488,7 +488,7 @@
     },
     "boundedInvestigation": {
       "ownerInstruction": "One clean native StoreKit-only pending/currentEntitlements/unfinished/updates observation before and after approval, then sandbox initiation; no reset/reinstall cycling; no production verification weakening",
-      "status": "one native run completed; inconclusive; no further reset/reinstall experiments",
+      "status": "bounded native run inconclusive; one sandbox initiation stayed unowned but pending restart lock failed; investigation stopped",
       "nativeCandidate": {
         "runId": "15d5eca0-0fea-4a4e-859e-0d6e1bc71af7",
         "deviceLogPath": "Documents/issue64-native-diagnostic/15d5eca0-0fea-4a4e-859e-0d6e1bc71af7.jsonl",
@@ -524,7 +524,7 @@
         "verificationChanged": false,
         "focusedEditModePassed": 59,
         "focusedReport": ".unity-results/issue64-ask-final-focused.H3zCru/test-results.xml",
-        "physicalInitiation": "blocked-owner: fresh Sandbox tester creation required; no unowned baseline established",
+        "physicalInitiation": "one Sandbox initiation reported Pending without Owned",
         "buildGate": "passed after owner license refresh and stopping stale task/editor licensing process",
         "compileLog": ".unity-results/compile.iPOQmp/Editor.log",
         "fullEditMode": {
@@ -534,7 +534,12 @@
         },
         "signedPreparationReceipt": "docs/evidence/issue64/sandbox-restore-fix-preparation.json",
         "previousSignedPreparationReceipt": "docs/evidence/issue64/sandbox-ask-to-buy-preparation.json",
-        "ownerPreviousRestore": "All ads removed; owner uncertain if tester previously purchased"
+        "ownerPreviousRestore": "All ads removed; owner uncertain if tester previously purchased",
+        "freshTester": "owner-created and signed in",
+        "freshTesterRestore": "Price returns; no Owned status",
+        "pendingRestart": "failed-owner: unowned but Remove Ads available for another purchase",
+        "physicalAcceptance": "failed pending-lock persistence; no false Owned observed in this one attempt",
+        "furtherPhysicalExperiments": "stopped; no further purchase/reset/reinstall"
       },
       "canUnblock64": false,
       "nativeAnalysis": "docs/evidence/issue64/native-ask-to-buy-analysis.json",
