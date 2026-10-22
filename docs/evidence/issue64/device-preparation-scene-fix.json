@@ -250,16 +250,22 @@
     "buildNumber": "1",
     "startupMenu": "passed",
     "report": "Paws menu appears",
-    "remainingScope": "Resolve price/storefront expectation, then purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox",
+    "remainingScope": "Cancellation, purchase/restore, lifecycle, offline ownership, revocation and Apple sandbox",
     "settingsRestoreVisible": "passed",
     "priceVisible": true,
-    "localizedPrice": "Brazil-test-retest-pending-owner",
+    "localizedPrice": "passed-local-StoreKit-BRL-formatting",
     "priceObservation": {
       "displayedText": "$4.99",
       "expectedCurrency": "BRL",
       "initialStorefront": "USA",
       "initialLocale": "en_US",
       "assessment": "matches configured US test storefront; Brazil retest pending"
+    },
+    "brazilPriceRetest": {
+      "displayedText": "R$ 4,99",
+      "currencyFormatting": "passed",
+      "productionRegionalPrice": "not-validated; requires Apple sandbox",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR"
     }
   },
   "technicalLaunchEvidence": {

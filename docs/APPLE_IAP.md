@@ -254,7 +254,7 @@ performed for this archive gate.
 the owner observed `$4.99` (the correct USD price) but expected BRL. The initial
 configuration selected `USA` / `en_US`, consistent with that observation. Changed
 only the local StoreKit test storefront/locale to `BRA` / `pt_BR` in Xcode, saved
-and relaunched through the same scheme. Owner price retest is pending. Product
+and relaunched through the same scheme. Owner reports **“R$ 4,99”**, passing BRL formatting. Product
 price/localizations and App Store Connect remain unchanged. The adapter forwards
 Apple's `localizedPriceString` unchanged to Settings. Local StoreKit formatting
 validation does not establish the Brazilian App Store Connect price; verify that
