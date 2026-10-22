@@ -334,8 +334,10 @@
     },
     "askToBuyPreparation": {
       "enabled": true,
-      "status": "pending-owner-request",
-      "environment": "Xcode StoreKit Test / BRA / pt_BR"
+      "status": "owner-initial-payment-sheet-confirmation-pending",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "ownerObservation": "Regular purchase sheet initially appears",
+      "expectedFlow": "Confirm simulated payment sheet, then Ask in permission dialog; Pending/Owned result still pending"
     }
   },
   "technicalLaunchEvidence": {

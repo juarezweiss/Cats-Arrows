@@ -303,3 +303,9 @@ revocation, clean-state restore, or Apple sandbox acceptance.
 2026-10-22 owner Restore after revocation: **“Price remains; no Owned status”**.
 Restore does not resurrect the refunded local entitlement. Enabled Ask to Buy
 only in the ignored StoreKit configuration; owner deferred-request check pending.
+
+Ask to Buy handoff detail: Apple’s StoreKit 2 example confirms the initial test
+payment sheet before the Ask Permission dialog appears; select Ask there, then
+check Pending without Owned. A regular initial payment sheet alone is not a
+deferred-flow failure. See [Apple’s StoreKit 2 demonstration](https://developer.apple.com/videos/play/wwdc2021/10114/?time=938).
+Owner reported the initial regular sheet; actual deferred result remains pending.
