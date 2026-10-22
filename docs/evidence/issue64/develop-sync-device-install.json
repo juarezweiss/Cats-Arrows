@@ -1,0 +1,48 @@
+{
+  "schema": "paws-issue64-synchronized-device-install-v1",
+  "date": "2026-10-22",
+  "sourceSha": "275b20a27a122da1a7f04a5c6446b0933cb72221",
+  "unsignedAppUnchanged": true,
+  "unsignedAppTreeSha256": "bae1dad8fec7c09eb0f9fb448d2679432e4c47fe97418227120e3362146dcbb8",
+  "signedApp": "Builds/Issue64iPhone/DevelopSync-275b20a-Signed/Paws.app",
+  "signedAppTreeSha256": "6c4b3b6aeed99524cf616cc993b4b168e138e139d4dec684111e34be26ad5892",
+  "signatureVerified": true,
+  "getTaskAllow": true,
+  "deviceIncludedInProfile": true,
+  "profileExpiresUTC": "2026-10-27T17:36:44+00:00",
+  "bundleIdentifier": "com.jweiss.paws",
+  "version": "0.1.0",
+  "build": "1",
+  "deviceModel": "iPhone 17",
+  "iOS": "27.0.1",
+  "binaryModules": [
+    {
+      "binary": "Paws",
+      "uuid": "7F00BD5E-21E5-3D08-9D72-84A06A593422",
+      "matchingDsym": true
+    },
+    {
+      "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+      "uuid": "DB473263-FC32-3EDF-813E-80E6D653AFCF",
+      "matchingDsym": true
+    }
+  ],
+  "productionMonetizationEnabled": false,
+  "simulateAskToBuy": false,
+  "installed": true,
+  "launchVerified": false,
+  "physicalPurchaseTests": "none authorized or performed",
+  "physicalReview": "not performed; technical preparation only",
+  "releaseBlocker": "#82 remains open; hard Paws1.0 App Store release gate",
+  "installedIdentityVerified": true,
+  "inPlaceInstall": true,
+  "uninstallOrHistoryReset": false,
+  "installedIdentity": {
+    "bundleIdentifier": "com.jweiss.paws",
+    "bundleVersion": "1",
+    "version": "0.1.0",
+    "name": "Paws"
+  },
+  "installLog": ".unity-results/issue64-finalize/install.log",
+  "launchScope": "Not launched; installed identity checked only. No physical interaction, lifecycle or purchase acceptance inferred."
+}

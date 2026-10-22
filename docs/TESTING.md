@@ -1,5 +1,221 @@
 # Testing Strategy
 
+## Latest #64 / PR #79 integration validation — 2026-10-22
+
+Synchronized source **`275b20a27a122da1a7f04a5c6446b0933cb72221`** includes latest
+develop `a4251605878b5d4d1fd169962344ddfd58bf5d8c` via merge `2603b25`.
+Current develop app/game/UI/scenes/ProjectSettings/existing tests are unchanged;
+#80 icon/menu paw source hashes and all ten exported icon images match exactly.
+Pinned compile passes (`compile.xo1jZo`); focused Apple/build/branding/menu
+**68/68** (`issue64-develop-sync-focused.BPVSw1`), full EditMode **562/562**
+(`editmode.aV2Z2Q`), and Python contracts **51/51** pass, successful exits and
+zero failed/skipped/inconclusive. Fresh review export (`apple-iap-export.6ulBCZ`)
+and unsigned native iOS build pass; ARM64 app/framework dSYM UUIDs match.
+[Source, assets, artifact hashes and limits](evidence/issue64/develop-sync.json).
+No physical/device/purchase test followed. Prior artifacts remain historical;
+#82 still blocks Paws 1.0 release and production monetization remains disabled.
+
+## Current IAP scope and Paws 1.0 release gate
+
+Owner-directed split (2026-10-22): [#64](https://github.com/juarezweiss/Paws/issues/64)
+is completed IAP foundation scope; [PR #79](https://github.com/juarezweiss/Paws/pull/79)
+can proceed through normal integration review with production monetization disabled.
+[#82](https://github.com/juarezweiss/Paws/issues/82) owns the unresolved Ask to Buy
+lifecycle and physical acceptance: **HARD BLOCKER for Paws 1.0 App Store release;
+not a blocker for continued development on `develop`.** Enforce the
+[release checklist](RELEASE.md#paws-10-app-store-hard-release-gate--82) independently
+of #64 closure/#79 integration. No merge/closure or physical test occurs in this update.
+
+Prior compile/provider/full-suite results below support the unchanged foundation;
+they do not establish correct physical Pending/restart, approval, entitlement or
+finalization. Preserve verified Sandbox versus environment-unverified evidence.
+The following pre-split snapshots retain historical “#64 blocked” status text;
+that scope decision now belongs to #82, with no failed finding erased. The 5.4.2
+rejection remains in force. This documentation-only split requires repository
+validation/whitespace checks; no new Unity run or purchase attempt is claimed.
+
+## Issue #64 retained foundation validation and pre-split history
+
+Dependency #63 is integrated in current develop; owner approved product mapping
+`com.jweiss.paws.removeads` on 2026-10-20. Implementation and owner handoff:
+[APPLE_IAP.md](APPLE_IAP.md). Production composition remains disabled.
+
+Bounded IAP 5.4.2 comparison (2026-10-22): **stopped at package inspection**.
+The new unconditional Apple Insights transport conflicts with #64's no
+developer-data/backend boundary; no supported opt-out was found for Unity
+6000.3.25f1. Official IAP/Core tarball SHA1 values match the registry. Repository
+and whitespace checks pass. No project upgrade, compile, focused/restart/full
+suite, build or physical attempt followed. Pins remain 5.3.1/Core 1.14.0; no
+claim of a 5.4.2 restart pass/fail. [Exact inspection evidence and source hashes](evidence/issue64/iap-5.4.2-comparison.json).
+
+Bounded desktop follow-up (2026-10-22): **1/1 diagnostic passed**, exit 0
+(`issue64-desktop-sdk-pending-replay.f6kQUF`). Real adapter/coordinator/file-store
+recovery retained Pending with empty inventory and a controlled absent private
+marker. Explicitly injecting a same-product UserCancelled failure through the
+real IAP 5.3.1 failure conversion then reproduced an unowned/buyable state. No
+automatic SDK post-deferred failure or occurrence of that callback on the phone
+was established. This is a controlled diagnostic, **not a root-cause finding or
+fix**. [Method, hashes and limits](evidence/issue64/desktop-pending-investigation.json)
+are retained; temporary compiled test changes were removed. No implementation
+change remains, so no broad merge gate was repeated. #64 remains blocked pending
+callback/persistence provenance; no further physical attempt is authorized.
+
+**Latest owner evidence correction (2026-10-22):** real Apple Family members
+received a Messages Ask to Buy request naming Remove All Ads / Paws Puzzle Game /
+R$ 29,90. Its originating attempt/environment is uncorrelated; earlier physical
+Ask to Buy attempts without explicit environment checks are potentially
+production-account attempts, not established Sandbox tests. Do not infer that
+Sandbox caused this notification. The later fresh-tester attempt whose sheet
+explicitly identified Sandbox remains separate evidence; native `environment:
+xcode` observations apply only to their recorded native run. See
+[the observation and scope](evidence/issue64/owner-family-ask-to-buy-observation.json).
+No further purchase attempt now. Before any future owner-operated purchase test,
+require both the intended Sandbox Apple Account visibly present under Settings >
+Developer and **Environment: Sandbox** visibly present on the purchase sheet. If
+either is missing, do not initiate or approve anything. Earlier environment labels
+below do not override this correction; no earlier unverified pass is promoted to
+verified Sandbox evidence.
+
+Latest follow-up source **`a686433`** fixes a reproduced Restore race: a paid
+update after sync success could prematurely settle an unsynchronized read; an
+update during synchronized verification must supersede stale absence with a
+new synchronized read. Both failing reproductions are retained locally
+(`issue64-restore-race-red.suDuBo`, `issue64-restore-update-red.z8KdLc`). Final
+provider contracts **47/47** pass (`issue64-restore-final-contracts.4HkmOH`),
+pinned compile passes (`compile.iPOQmp`), full EditMode **558/558** passes with
+successful exit and zero failed/skipped/inconclusive (`editmode.o5A1f5`), and
+repository/whitespace checks pass. Independent QA reports no blocking findings.
+Clean export (`apple-iap-export.o6DmaX`) and signed development artifact checks
+pass; the [fixed sandbox candidate](evidence/issue64/sandbox-restore-fix-preparation.json)
+is installed/running with no local StoreKit configuration or debugger. No app
+data, Keychain or transaction history was reset. The owner's earlier Restore
+report (**All ads removed**, prior tester ownership unknown) does not establish
+an unowned baseline. With a fresh tester signed in, owner Restore returned the
+price without Owned and Apple's sheet identified Sandbox. One confirmed request
+showed Pending/unowned. After owner force-quit/Home Screen reopen it stayed
+unowned, but Remove Ads became available for another purchase: **pending-lock
+restart fails**. No second purchase or history reset follows; physical experiments
+stop. The native diagnostic remains inconclusive, and the earlier environment-unverified Pending-to-Owned observation,
+SDK replay hazard and this restart failure keep #64 blocked. The Restore fix is
+not claimed as the physical failures' cause.
+
+2026-10-22 bounded follow-up: the independent native-only Ask to Buy trace is
+**inconclusive**: Pending returned and current entitlements stayed empty before
+approval, but remained empty after approval/restart too. Verified unfinished and
+updates before approval are not ownership. [Trace/analysis](APPLE_IAP.md#current-owner-gate--bounded-investigation-2026-10-22)
+and the prior Paws early-grant failure remain blockers; no reset/reinstall cycles
+or verification relaxation follow. Sandbox initiation is still pending.
+The development-only sandbox simulation preparation passes focused EditMode
+**59/59**, exit 0 (`issue64-ask-final-focused.H3zCru`). Current Python contracts
+**51/51**, native policy **11 assertions**, iOS Swift typecheck, repository and
+whitespace checks pass. Initial compilation failed with zero registered packages
+(`compile.XiesJY`); after owner license refresh, a stale licensing client blocked
+the next attempt (`compile.T5lcfL`, stopped with exit 143). Stopping that stale
+process restored pinned compilation (`compile.9WLAoT`). Source `bf32a15` passes
+full EditMode **556/556**, successful exit and zero failed/skipped/inconclusive
+(`editmode.RuRc4L`), clean sandbox export (`apple-iap-export.FL16oX`) and signed
+development build. Signature/profile, identity, ARM64/dSYMs, IAP ABI, saved UI
+assets and privacy inventory checks pass. [Receipt](evidence/issue64/sandbox-ask-to-buy-preparation.json)
+records the exact retained signed candidate and sandbox-only debugger-free launch.
+Owner reports Sandbox tester signed in; authoritative Restore and Ask to Buy
+initiation/restart remain pending. Earlier results below apply to their source.
+
+Unity **6000.3.25f1** final compilation passed (`compile.IYRpa3`). Focused provider/build
+tests **40/40 passed** (`issue64-final-focused.v0gOQX`), including private-marker
+write failure with successfully persisted coordinator Pending state. The final full EditMode gate
+**537/537 passed**, zero failed/skipped/inconclusive and successful editor exit
+(`editmode.v6sp26`). The preceding full gate also passed 536/536 (`editmode.ijaG8a`). An earlier full run had one existing portrait Settings test
+failure (Back target position); that test passed in isolation and in the full
+rerun without a UI/source change. This transient is recorded, not suppressed.
+All **41** Python runner/inspector contracts (including five new review-export
+contracts), repository validation and whitespace
+checks passed. Native desktop policy regressions passed **11 assertions**, and
+Swift typechecking passed against the iOS 16.3 simulator SDK target. Independent
+QA reports no blocking findings after finalization/refund/refresh corrections.
+
+The provider tests use actual IAP 5 SDK models through the adapter with controlled
+store/native-evidence seams. They cover verified versus unverified success,
+cancel/failure/deferred/restart, duplicate/late updates, restore callback ordering,
+offline cache/reinstall/account change/revocation, store/private-state write
+failures, multiple unfinished transactions, crash after native finish before
+journal clear, timeouts and focus refresh during a native buy. Native regressions
+execute the actual same-transaction refund reconciliation and production versus
+sandbox/Xcode environment policy. Review build tests protect the separate scene,
+development-only define and approved product mapping. Existing #30 coordinator,
+storage and UI coverage remains in the full gate.
+
+These automated checks do not establish live StoreKit/sandbox behavior. Owner
+App Store Connect actions and physical purchase/restore/lifecycle acceptance remain
+pending; use the checklist and provenance fields in [APPLE_IAP.md](APPLE_IAP.md).
+No physical-device tests, account/product creation, signing, purchase or upload
+were automated.
+
+The final clean unsigned iOS development export succeeded from `46bee5e`
+(`apple-iap-export.9OzXMM`) with pinned Unity/Xcode 27.0. Its normal shell Settings
+composition includes the recovered-Pending correction; production remains disabled.
+[Review receipt](evidence/issue64/apple-iap-review-receipt.json) records actual
+package lock, resolved identity, framework linkage, capabilities and privacy
+manifest. After earlier disk exhaustion and an owner-directed pause, the owner
+resumed the archive gate on 2026-10-20. The **unsigned Release archive passed**
+(`issue64-archive-resume.aoWOQj/xcodebuild.log`) from the unchanged final export.
+Artifact checks verify ARM64 binaries and matching dSYM UUIDs, approved identity
+**com.jweiss.paws / 0.1.0 (1)**, iPhone portrait, minimum iOS **16.3**, unsigned
+executables, native IAP ABI symbols and embedded framework/privacy inventory.
+The receipt records the archive checksum and checks. Export and archive remain
+under ignored `Builds/Issue64-AppleIapReview/` and
+`Builds/Issue64-AppleIapReview.xcarchive/`. No runtime network observation is
+claimed. Owner StoreKit Test/sandbox and physical acceptance remain pending.
+
+2026-10-21: the owner reported the approved App Store Connect product saved in
+Prepare for Submission with price/localization configured and Offer Codes enabled.
+The retained source `46bee5e` export compiled and signed with current Xcode
+**27.1 (27A9275)** using existing development provisioning, then launched through
+the **Paws StoreKit Test** scheme on **iPhone 17 / iOS 27.0.1**. Strict signatures,
+profile/device/expiry, ARM64/dSYM UUIDs, minimum iOS, native IAP symbols and privacy
+inventory passed; the original Xcode 27.0 unsigned archive checksum is unchanged.
+The local StoreKit file was synced read-only from the existing App Store Connect
+product; a separate **Paws Apple Sandbox** scheme has StoreKit Configuration None.
+[Sanitized receipt](evidence/issue64/device-preparation.json) records provenance.
+These are technical preparation checks only: no purchase, restore, physical
+interaction or runtime data-behavior acceptance is claimed. No Unity/source
+changes or repeat of the already passing EditMode gates was needed. The owner
+receives one review step at a time; both environments remain pending explicit
+human results. Review cache must be reconciled when switching environments, as
+documented in [APPLE_IAP.md](APPLE_IAP.md).
+
+Owner startup review failed for source `46bee5e`: black screen on three attempts,
+including a debugger-free launch. Replaying the original scene generator against
+the new regression reproduces a saved UIDocument with an empty panel reference
+(`issue64-legacy-scene.owrd9M`, intentionally failing reproduction). The corrected
+generator reloads/persists the panel after component Reset hooks and verifies the
+saved scene's panel/theme/camera before export. Focused scene checks **6/6** pass;
+final combined scene/portrait checks **7/7** pass (`issue64-ui-scene-focused.IrnhBL`).
+Pinned compilation passes (`compile.U8qfQ2`); final full EditMode **539/539** pass,
+zero failed/skipped/inconclusive and successful exit (`editmode.TqTHXs`); Python
+contracts **41/41**, repository/whitespace checks and independent QA pass.
+
+Two earlier full reruns each hit the previously recorded portrait Back target
+failure (`editmode.hbdmzp`, `editmode.MJBywm`); its isolated check passed. The fixture
+mixed synthetic phone insets with GeometryChanged callbacks reading the Editor's
+real safe area. The fixture now consistently reapplies its synthetic input on
+geometry changes and asserts it stays unchanged through Settings/selector
+navigation, retaining every original target-size/bounds assertion. Scene tests
+also drain destroyed runtime panels during teardown. Production safe-area/UI
+behavior is unchanged. Replacement physical/store acceptance remains pending.
+
+2026-10-22: clean corrected export **`9fa818b`** succeeded (`apple-iap-export.LIgZpH`);
+the actual export contains both BoardReviewPanel and UnityDefaultRuntimeTheme,
+absent from the rejected build. Xcode **27.1 (27A9275)** signed development build
+and unsigned Release archive pass, including binary/dSYM, identity/minimum iOS,
+native ABI, UI asset and privacy inventory checks. [Corrected receipt](evidence/issue64/device-preparation-scene-fix.json)
+records hashes and provenance. The signed app/dSYMs and archive remain under
+ignored Builds. After reconnect, this exact signed candidate was installed/launched
+through **Paws StoreKit Test**, debugger disabled. Signature/profile validity,
+artifact hash, current device readiness, installed **0.1.0 (1)** identity and a
+running process pass. The owner explicitly reported **“Paws menu appears”** on
+**iPhone 17 / iOS 27.0.1**: startup/menu visibility passes only. Settings/price,
+purchase/restore, remaining physical scenarios and Apple sandbox are pending.
+
 ## Issue #63 production iOS configuration
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);

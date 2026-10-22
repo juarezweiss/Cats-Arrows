@@ -1,0 +1,48 @@
+        [Test] public void DesktopPendingReplayFileRecoveryThenSdkShapedTerminalCancellation()
+        {
+            // #64 bounded diagnostic: real adapter/file store, SDK-shaped orders; no native store.
+            var directory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "paws-issue64-replay-" + Guid.NewGuid().ToString("N"));
+            var path = System.IO.Path.Combine(directory, "state.bin");
+            try
+            {
+                var persisted = new FileMonetizationStateStore(path);
+                using (var coordinator = Coordinator(persisted))
+                {
+                    coordinator.PurchaseRemoveAds();
+                    Assert.That(client.Buys, Is.EqualTo(1));
+                    client.EmitDeferred(new DeferredOrder(new Cart(product), new Info("")));
+                    Assert.That(coordinator.Status, Is.EqualTo(MonetizationStatus.PurchasePending));
+                    Assert.That(coordinator.IsOwned, Is.False);
+                    Assert.That(coordinator.CanPurchase, Is.False);
+                    Assert.That(persisted.TryLoad(out var saved), Is.True);
+                    Assert.That(saved.PendingPurchase, Is.True);
+                }
+                service.Dispose();
+                // Follow the review bootstrap's actual file reload/recovered-pending injection.
+                var reloaded = new FileMonetizationStateStore(path);
+                Assert.That(reloaded.TryLoad(out var recovered), Is.True);
+                client = new FakeStore { Product = product };
+                evidence = new FakeEvidence(); // No private marker: file fallback alone must suffice.
+                service = new ApplePurchaseService(ProductId, () => client, evidence, () => now, recovered.PendingPurchase);
+                using (var restarted = Coordinator(reloaded))
+                {
+                    Assert.That(restarted.IsOwned, Is.False);
+                    Assert.That(restarted.Snapshot.PendingPurchase, Is.True);
+                    Assert.That(restarted.CanPurchase, Is.False, "Empty startup inventory must retain the recovered lock.");
+                    Assert.That(client.Buys, Is.Zero);
+                    // Execute the actual IAP 5.3.1 conversion used by JSONStore (no native store).
+                    var description = new PurchaseFailureDescription(new CartItem(product), PurchaseFailureReason.UserCancelled, "diagnostic injection only");
+                    var terminal = (FailedOrder)typeof(PurchaseFailureDescription).GetMethod("ConvertToFailedOrder", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(description, new object[] { "" });
+                    Assert.That(terminal.Info.TransactionID, Is.Empty);
+                    client.EmitFailure(terminal);
+                    Assert.That(restarted.IsOwned, Is.False);
+                    Assert.That(restarted.Snapshot.PendingPurchase, Is.False);
+                    Assert.That(restarted.CanPurchase, Is.True, "An injected terminal callback reproduces the observed unlock.");
+                    Assert.That(reloaded.TryLoad(out var terminalState), Is.True);
+                    Assert.That(terminalState.PendingPurchase, Is.False);
+                    Assert.That(evidence.Deferred, Is.False);
+                }
+            }
+            finally { if (System.IO.Directory.Exists(directory)) System.IO.Directory.Delete(directory, true); }
+        }
+

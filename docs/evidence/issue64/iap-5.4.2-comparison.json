@@ -1,0 +1,134 @@
+{
+  "schema": "paws-issue64-iap542-bounded-comparison-v1",
+  "date": "2026-10-22",
+  "baselineSourceSha": "746584ec67e3b801f41bf030fc08f9b9ffc96516",
+  "issue": "https://github.com/juarezweiss/Paws/issues/64",
+  "pr": "https://github.com/juarezweiss/Paws/pull/79",
+  "outcome": "STOP at package inspection: automatic Apple Insights data collection conflicts with #64 no developer-data collection/backend boundary; no supported opt-out found",
+  "candidate": {
+    "iap": "5.4.2",
+    "minimumUnity": "2022.3",
+    "requiredServicesCore": "1.18.0",
+    "currentUnity": "6000.3.25f1",
+    "newPackageNames": [],
+    "coreTransitiveDelta": "newtonsoft minimum 3.2.1 -> 3.2.2; already resolved at 3.2.2 in existing lock; remaining dependency names unchanged",
+    "archives": [
+      {
+        "url": "https://download.packages.unity.com/com.unity.purchasing/-/com.unity.purchasing-5.4.2.tgz",
+        "registrySha1": "290a16a9a099dc14a7beed01beef0e3ac0f6fb0a",
+        "sha256": "f7c516d0b6ee44aead758ac000cbec5fa451086da779c94b92005e52e26bb220"
+      },
+      {
+        "url": "https://download.packages.unity.com/com.unity.services.core/-/com.unity.services.core-1.18.0.tgz",
+        "registrySha1": "3464cb68d7096e9749b8bf60588cfe0568b643fc",
+        "sha256": "38fc4fb1b45b907e934d1c92c0bea4429e72e78dc6435f9744dc8dab428d5c56"
+      }
+    ],
+    "registry": "https://packages.unity.com/com.unity.purchasing",
+    "officialChangelog": "https://docs.unity3d.com/Packages/com.unity.purchasing@5.4/changelog/CHANGELOG.html"
+  },
+  "dataBoundary": {
+    "analyticsAuthPackagesRequired": false,
+    "servicesInitializationRequiredForInsights": false,
+    "newApplePath": "Apple extended purchase service -> PurchaseEventEmitter -> ForwardGateway -> HTTPS POST on Unity6000.3",
+    "endpoint": "https://prd.insights.analytics.unity3d.com/v1/ingest/producer",
+    "fields": "purchase intent/failure/paid/fulfilled events; IDFV, device/app/session metadata; paid/fulfilled Apple payload can include app receipt, JWS and original transaction ID",
+    "consent": "Ads consent gates IDFA, not IDFV or transport; consent states are event fields",
+    "DISABLE_RUNTIME_IAP_ANALYTICS": "does not gate new Insights emitter; only old analytics adapter",
+    "supportedOptOut": "none found in inspected 5.4.2 source/docs for current Unity pin; no SDK patch, reflection replacement, dashboard/account change or firewall workaround attempted",
+    "remoteCatalog": "new fallback lookup exists but requires nonempty Core access token and cloud project; absent Auth/initialized Core it fails locally before HTTP; no automatic sign-in or initialization found",
+    "actualNetworkTrafficMeasured": false,
+    "actualDeviceDataCollected": false
+  },
+  "appleComparison": {
+    "unpaidPending": "native .pending -> OnPurchaseDeferred -> return nil unchanged; no supported restart fix identified",
+    "changed": "more accurate failure reasons; confirmation callback after native finish and DuplicateTransaction on missing unfinished transaction; expired subscription fetch and revoke/finish paths adjusted",
+    "replay": "transaction-ID journal replay and auto-finalization remain; no established cause/correction of verified Sandbox restart failure",
+    "pendingRestartFixed": "unknown: not tested because candidate rejected at data-boundary inspection; do not claim a physical result"
+  },
+  "validation": {
+    "packageIntegrity": "both official tarball SHA1 values match registry",
+    "repository": "scripts/validate.sh passed; git diff --check passed",
+    "editorDiscovery": "scripts/unity.sh resolved 6000.3.25f1",
+    "compile": "NOT RUN: stopped at unacceptable SDK data behavior",
+    "focusedContracts": "NOT RUN for same reason",
+    "deterministicRestartRegression": "NOT RUN for same reason; historical 5.3.1 replay remains separate evidence",
+    "fullSuite": "NOT RUN",
+    "newBuild": "NOT PREPARED",
+    "ownerSandboxAttempt": "NOT REQUESTED/NOT RUN",
+    "independentQA": "blocking data behavior confirmed; stop recommended"
+  },
+  "projectChanges": {
+    "iapPinRetained": "5.3.1",
+    "servicesCorePinRetained": "1.14.0",
+    "manifestSha256": "3c94b67e0c7916b3d49c2a9effdecfeed56835399ce77ef14ebc1c72bcb66e4b",
+    "runtimeScriptsTestsChanged": false,
+    "ownershipSemanticsChanged": false,
+    "productionActivation": false
+  },
+  "nextBoundary": "#64 remains blocked; PR79 stays draft. A direct StoreKit2 adapter behind existing IPurchaseService is an architecture option requiring a separately approved scope, not implemented by this comparison. No further Unity IAP debugging or physical attempt follows.",
+  "evidencePreservation": "Earlier Family notification remains environment-unverified/unrelated to explicitly verified Sandbox observation; all prior records/history retained. Any future separately authorized purchase still requires both visible Sandbox account under Settings > Developer and purchase-sheet Environment: Sandbox.",
+  "sourceAudit": {
+    "Runtime/Stores/Core/Purchasing/PurchaseServiceFactory.cs": {
+      "sha256": "06a42bec52a72f7b00d272df2a8051a8d6cb6cefe19433049a7bbd1255877e82",
+      "reference": "109-129,165: unconditional Apple data dependency registration; Analytics disable flag gates only old analytics adapter",
+      "baseline531Sha256": "0f63b881a7d085c72d05a8be3d843a3e6a21b5b6aafdde90f0e23724bf9b9740"
+    },
+    "Runtime/Purchasing/Core/Purchasing/AppleAppStore/Extensions/AppleStoreExtendedPurchaseService.cs": {
+      "sha256": "40f3bd586c50100cbbec70c015d82490a7ad9b0addbaed701bf05186f8c77c34",
+      "reference": "84-121: unguarded event forwarding and Apple payload construction",
+      "baseline531Sha256": "fc8ab1e21d0794852462b21ba24dc5257cc8e3043d0e698f7900771f10124697"
+    },
+    "Runtime/Purchasing/Core/Purchasing/PurchaseService.cs": {
+      "sha256": "83697430897c1f23abcc3bd19c6480175bf418719f557b973893b93474eaf8e7",
+      "reference": "216,270,321,419,533: purchase intent/paid/failed/fulfilled event calls",
+      "baseline531Sha256": "af22497835e05cef2ba5582e696c4ffc63370327aafb53eccbdd2bb2e14c46db"
+    },
+    "Runtime/Stores/Data/Insights/PurchaseEventEmitter.cs": {
+      "sha256": "5344331305b0841605d1bfef6b3e5a93e1efb73550641d842a68f51639efd715",
+      "reference": "169-188,193-245: Apple payload mapping, unconditional pre6000.5 HTTPS upload; consent fields are not a transport gate"
+    },
+    "Runtime/Stores/Data/PlayerData.cs": {
+      "sha256": "97fd354d38cfa9f6694039a3c47972de1c58a32a1a7b11d8a4ef050ac033783f",
+      "reference": "105-121: IDFA consent guard versus unconditional Apple IDFV read"
+    },
+    "Runtime/Stores/ServicesCore/CoreRegistryHelper.cs": {
+      "sha256": "8a4124bd31bd129f4ec77d8e87cd700cb8622ecb97bd451296cca78728b49831",
+      "reference": "40-50: missing uninitialized optional Core components yield null, do not block sending"
+    },
+    "Runtime/Stores/Core/Resolvers/StoreOverrideLookupClient.cs": {
+      "sha256": "e326d702850c3df72a63c5e5881f0136ed668a5d3f58cc845919dfddb26dcd5e",
+      "reference": "34-42,58-99: remote lookup needs access token and project ID; otherwise fails before HTTP"
+    },
+    "Plugins/UnityPurchasing/iOS/SK2/UseCases/PurchaseUseCase.swift": {
+      "sha256": "fe623f018db29b390296a16513e7ac4c25408ec70358414de850f10970e07d78",
+      "reference": "pending branches emit Deferred/return nil unchanged; error mapping uses correct named reasons",
+      "baseline531Sha256": "ffe3598dac8ca9fcfd47d35d1d1a2cc7fd8a0f964ad4414dee96a7cd259a2ae4"
+    },
+    "Plugins/UnityPurchasing/iOS/SK2/StoreKitManager.swift": {
+      "sha256": "6a64aa056cad099469a84ec525a108fbd1c8e8ea73c8ca46a100f545fd9e2b99",
+      "reference": "finishTransaction now reports native finish success/failure",
+      "baseline531Sha256": "ffec68323ca4a6a4460d15aefb6d215f7da4ffd2220491d6aa7f49ef400a85bd"
+    },
+    "Plugins/UnityPurchasing/iOS/SK2/UseCases/TransactionObserverUseCase.swift": {
+      "sha256": "95a7fdadf548f79c47958b60e560dfe07441c769f06a9a8c93a37bc9428a7488",
+      "reference": "expired/upgraded subscriptions and revoked transactions get separate finishing paths; not an unpaid non-consumable recovery fix",
+      "baseline531Sha256": "4d6524575f52f62a1d4b2451e79f0726be4846b7519527547986e7230a941645"
+    },
+    "Runtime/Stores/AppleAppStore/AppleStoreImpl.cs": {
+      "sha256": "52316090c1364e81bb2eb29e8e9b85d2a5e24f0f5d4b7f1a5bd229b7102c24d5",
+      "reference": "1004-1058: journal replay still calls ProcessLoggedPurchase -> EnsureConfirmedOrderIsFinished",
+      "baseline531Sha256": "ea8fc54fef49278c7e9835623588f060947b3db9465ba80c7220782613c04a90"
+    },
+    "CHANGELOG.md": {
+      "sha256": "87749b10e0e0252e7b874b5c85c7d918cefa56b49ad0796bc7344f19ca088ff7",
+      "reference": "5.4.0 through 5.4.2 release notes; no unpaid Ask to Buy restart correction identified",
+      "baseline531Sha256": "3a702bb0a78960e472614fc86f52860a7cd884f3d978ba851788f02dbd9a34ae"
+    },
+    "package.json": {
+      "sha256": "5da9b26467fdbb61a259c0bc522c79220f6d25d46f43e25e3cc74bc505d3594b",
+      "reference": "exact package dependencies and Unity minimum version",
+      "baseline531Sha256": "5cb47c6c285ee2ed26faf0863045ce245ac9c9a07adc9c7a46d5bd41743bffc9"
+    }
+  }
+}

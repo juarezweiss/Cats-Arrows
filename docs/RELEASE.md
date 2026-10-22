@@ -8,6 +8,39 @@
 
 Environments should differ through build profiles/configuration, not divergent code copies.
 
+## Paws 1.0 App Store hard release gate — #82
+
+**HARD BLOCKER:** [#82 — Fix Ask to Buy / deferred IAP lifecycle](https://github.com/juarezweiss/Paws/issues/82)
+must pass before Paws 1.0 is declared release-ready, its release is merged to
+`main`, uploaded/submitted to App Store Connect or released. Keeping monetization
+disabled does not waive this owner-required Paws 1.0 gate. Release validation
+[#67](https://github.com/juarezweiss/Paws/issues/67) must record the evidence.
+
+Release checklist (all remain pending):
+
+- [ ] Pending/deferred never grants ownership.
+- [ ] Pending survives force-quit/relaunch and blocks duplicate purchases.
+- [ ] Verified approval grants once with durable ownership and correct finalization.
+- [ ] Cancellation/decline/revocation and ambiguous/offline recovery resolve safely.
+- [ ] Owner physical Sandbox validation passes on the exact candidate; record
+  device/OS/build/source, environment checks, explicit pass/fail and coverage in #82.
+- [ ] Review all #82 acceptance evidence and resolve the blocker before approving
+  Paws 1.0 readiness; obtain separate explicit owner approval for production actions.
+
+This is **not a blocker for continued development on `develop`**. The completed
+[#64 IAP foundation](https://github.com/juarezweiss/Paws/issues/64) / [PR #79](https://github.com/juarezweiss/Paws/pull/79)
+may be reviewed/integrated under normal checks and owner instructions without
+claiming lifecycle acceptance. Production monetization stays disabled. Closing
+#64 or merging #79 does not resolve #82 or authorize production.
+
+No new purchase test follows this scope split. Any separately authorized future
+purchase requires both the intended Sandbox Apple Account visibly present under
+Settings > Developer and **Environment: Sandbox on the purchase sheet itself**.
+If either is missing, do not initiate or approve anything. Historical unverified
+attempts remain separate from verified Sandbox evidence. See [Apple evidence and
+handoff](APPLE_IAP.md); direct StoreKit 2 is only a future architecture option,
+not an approved implementation.
+
 ## Production control
 Agents may prepare lower-environment artifacts only when explicitly instructed. Production actions require explicit human instruction in the current task.
 

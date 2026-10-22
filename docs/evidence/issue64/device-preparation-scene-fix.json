@@ -1,0 +1,597 @@
+{
+  "schema": "paws-apple-iap-device-preparation-v1",
+  "preparationDate": "2026-10-22",
+  "sourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+  "sourceCompatibilityCheckedAtSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+  "unityVersion": "6000.3.25f1",
+  "iapPackage": "5.3.1",
+  "nativeCompilationXcode": "Xcode 27.1\nBuild version 27A9275",
+  "originalArchiveCompilationXcode": "Xcode 27.0\nBuild version 27A266a",
+  "originalArchiveTreeSha256": "7e8e39fe6d2cfeba4e91435e52fda59678339eaf4e094f664fa9d65ef96219b6",
+  "originalArchiveUnchanged": true,
+  "recompiledFromRetainedExport": true,
+  "configuration": "Release",
+  "developmentBuild": true,
+  "bundleIdentifier": "com.jweiss.paws",
+  "version": "0.1.0",
+  "buildNumber": "1",
+  "signedAppPath": "Builds/Issue64iPhone/SceneFix/Paws.app",
+  "signedAppTreeSha256": "98d2ea8983599281c0abca5b6ff118c67b501e672acbd60e0ec3a5ebbf818c64",
+  "signatureVerified": true,
+  "signingPurpose": "local-development-device-only",
+  "getTaskAllow": true,
+  "provisioningExpiresUTC": "2026-10-27T17:36:44Z",
+  "deviceIncludedInProfile": true,
+  "device": "iPhone 17",
+  "iOS": "27.0.1",
+  "binaryChecks": [
+    {
+      "binary": "Paws",
+      "uuid": {
+        "arm64": "FC074BA3-D7BA-347D-9003-1CBF59561A5C"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    },
+    {
+      "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+      "uuid": {
+        "arm64": "5F892304-F68A-3FD0-A73C-21FDA1C05449"
+      },
+      "dSYMMatches": true,
+      "minimumIOS": "16.3"
+    }
+  ],
+  "inventory": {
+    "frameworks": [
+      "Frameworks/UnityFramework.framework"
+    ],
+    "nativeLibraries": [],
+    "privacyManifests": [
+      {
+        "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+        "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+        "declarations": {
+          "NSPrivacyAccessedAPITypes": [
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "35F9.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "E174.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "CA92.1"
+              ]
+            },
+            {
+              "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+              "NSPrivacyAccessedAPITypeReasons": [
+                "0A2A.1",
+                "C617.1"
+              ]
+            }
+          ],
+          "NSPrivacyTracking": false
+        }
+      }
+    ],
+    "entitlementFiles": []
+  },
+  "storeKitConfiguration": {
+    "source": "Xcode synced App Store Connect configuration",
+    "productId": "com.jweiss.paws.removeads",
+    "type": "NonConsumable",
+    "priceAndLocalizationSynced": true,
+    "sha256": "89538b958a78186df37af454db01e08b409789340e92bea8f5875382e3fd2bbc",
+    "retainedOnlyInIgnoredExport": true,
+    "scheme": "Paws StoreKit Test",
+    "liveValidation": "pending-owner",
+    "observedTestLocale": "pt_BR",
+    "observedTestStorefront": "BRA",
+    "localeObservationDate": "2026-10-22",
+    "initialSyncedSha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
+    "localTestSettingsChangedOnly": true,
+    "askToBuyEnabled": true
+  },
+  "appleSandbox": {
+    "scheme": "Paws Apple Sandbox",
+    "storeKitConfiguration": "None",
+    "liveValidation": "pending-owner",
+    "requiresAuthoritativeRestoreBeforeAcceptingCachedOwnership": true
+  },
+  "ownerReportedASC": {
+    "reportedDate": "2026-10-21",
+    "productId": "com.jweiss.paws.removeads",
+    "status": "Prepare for Submission",
+    "priceAndLocalizationConfigured": true,
+    "offerCodesEnabled": true,
+    "submissionAuthorized": false
+  },
+  "installed": true,
+  "preparedLaunchMethod": "Xcode / Paws StoreKit Test",
+  "launchVerified": true,
+  "runningProcessVerified": true,
+  "physicalReview": "partial-owner-failed-deferred-restart",
+  "runtimeNetworkObservation": "pending-owner",
+  "productionMonetizationEnabled": false,
+  "adProviderEnabled": false,
+  "appStoreConnectChanges": "none",
+  "uploadOrSubmission": "none",
+  "accountOrCredentialChanges": "none",
+  "supersedesSourceSha": "46bee5ebc727b2bd9d027776d8f0330b9c810a0b",
+  "originalArchiveBaselineOnly": true,
+  "sceneValidation": {
+    "savedSceneReloadValidated": true,
+    "panelAsset": "Assets/CatsAndArrows/UI/BoardReviewPanel.asset",
+    "panelAndThemePresentInExport": true,
+    "runtimePanelGuard": true,
+    "cameraEnabled": true
+  },
+  "debugExecutable": false,
+  "installedIdentityVerified": true,
+  "deviceConnection": "connected",
+  "deviceDetailsSource": "devicectl readiness observed 2026-10-22",
+  "nativeIapAbiSymbols": [
+    "_PawsIapRead",
+    "_PawsIapVerifyCache",
+    "_PawsIapSetDeferred"
+  ],
+  "validation": {
+    "focused": {
+      "total": 7,
+      "passed": 7,
+      "report": ".unity-results/issue64-ui-scene-focused.IrnhBL/test-results.xml"
+    },
+    "fullEditMode": {
+      "total": 539,
+      "passed": 539,
+      "report": ".unity-results/editmode.TqTHXs/test-results.xml"
+    },
+    "compileLog": ".unity-results/compile.U8qfQ2/Editor.log",
+    "pythonContracts": 41,
+    "independentQA": "no blocking findings",
+    "nativeBuildLog": ".unity-results/issue64-scene-fix-owner/xcodebuild.log"
+  },
+  "correctedUnsignedArchive": {
+    "status": "passed-unsigned",
+    "validationDate": "2026-10-22",
+    "sourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+    "path": "Builds/Issue64-AppleIapReview-SceneFix.xcarchive",
+    "treeSha256": "33eb236682d1f421597e83dd5733d26ac6ddf6dce477996ff82bbb1d72bf73dd",
+    "log": ".unity-results/issue64-scene-fix-owner/archive.log",
+    "xcodeVersion": "Xcode 27.1\nBuild version 27A9275",
+    "binaryChecks": [
+      {
+        "binary": "Paws",
+        "uuid": {
+          "arm64": "8E0A555A-E634-34FF-A8C6-9894B3C18D3B"
+        },
+        "dSYMMatches": true,
+        "minimumIOS": "16.3",
+        "signed": false
+      },
+      {
+        "binary": "Frameworks/UnityFramework.framework/UnityFramework",
+        "uuid": {
+          "arm64": "5DCC4FE4-3EB9-3820-A6D8-693C60FC1DD9"
+        },
+        "dSYMMatches": true,
+        "minimumIOS": "16.3",
+        "signed": false
+      }
+    ],
+    "nativeIapAbiSymbols": [
+      "_PawsIapRead",
+      "_PawsIapVerifyCache",
+      "_PawsIapSetDeferred"
+    ],
+    "inventory": {
+      "frameworks": [
+        "Frameworks/UnityFramework.framework"
+      ],
+      "nativeLibraries": [],
+      "privacyManifests": [
+        {
+          "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+          "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a",
+          "declarations": {
+            "NSPrivacyAccessedAPITypes": [
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "35F9.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "E174.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "CA92.1"
+                ]
+              },
+              {
+                "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+                "NSPrivacyAccessedAPITypeReasons": [
+                  "0A2A.1",
+                  "C617.1"
+                ]
+              }
+            ],
+            "NSPrivacyTracking": false
+          }
+        }
+      ],
+      "entitlementFiles": []
+    },
+    "panelAssetPresent": true,
+    "signed": false,
+    "productionMonetizationEnabled": false
+  },
+  "developerMode": "enabled",
+  "ddiServicesAvailable": true,
+  "humanReview": {
+    "reviewer": "owner",
+    "reportedDate": "2026-10-22",
+    "environment": "Xcode StoreKit Test",
+    "sourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+    "version": "0.1.0",
+    "buildNumber": "1",
+    "startupMenu": "passed",
+    "report": "Paws menu appears",
+    "remainingScope": "Clean-state restore, pending/deferred, lifecycle, finalization interruption, offline cold start and Apple sandbox",
+    "settingsRestoreVisible": "passed",
+    "priceVisible": true,
+    "localizedPrice": "passed-local-StoreKit-BRL-formatting",
+    "priceObservation": {
+      "displayedText": "$4.99",
+      "expectedCurrency": "BRL",
+      "initialStorefront": "USA",
+      "initialLocale": "en_US",
+      "assessment": "matches configured US test storefront; Brazil retest pending"
+    },
+    "brazilPriceRetest": {
+      "displayedText": "R$ 4,99",
+      "currencyFormatting": "passed",
+      "productionRegionalPrice": "not-validated; requires Apple sandbox",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR"
+    },
+    "cancelPurchase": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Cancelled; price remains; no Owned status"
+    },
+    "simulatedPurchase": {
+      "result": "passed-owned-ui",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Owned appears",
+      "scope": "Owner-confirmed simulated purchase and Owned UI only; restore/restart/offline/finalization interruption not yet accepted"
+    },
+    "restoreWhileOwned": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Restore finishes; Owned remains; no purchase sheet",
+      "scope": "Existing-owned restore only; clean-state restore not yet accepted"
+    },
+    "ownedRelaunch": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Owned remains",
+      "launchMethod": "Xcode stop then Run Without Building; no repurchase/restore"
+    },
+    "offlineOwnedRelaunch": {
+      "result": "blocked-before-app-start",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "ownerConfirmedNetworkState": "Airplane Mode on, Wi-Fi off; USB connected",
+      "failure": "iOS rejected launch with developer-certificate trust/security error (IDELaunchCoreDevice 0 / CoreDeviceError 10002)",
+      "scope": "No app execution; offline entitlement behavior untested; online retry pending",
+      "onlineRetry": "same signed build launched successfully after networking restored"
+    },
+    "offlineRunningOwnership": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "ownerConfirmedNetworkState": "Airplane Mode on, Wi-Fi off",
+      "report": "Owned remains while offline",
+      "scope": "Already-running app, background/return to Settings; offline cold start still blocked by iOS trust"
+    },
+    "revocationPreparation": {
+      "status": "owner-refund-completed",
+      "networkRestoredByOwner": true,
+      "testTransactionChanged": true,
+      "blocker": null
+    },
+    "revocation": {
+      "result": "passed-owned-ui-revoked",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "action": "Owner refunded selected local Remove All Ads transaction in Xcode",
+      "report": "Owned disappears; price returns",
+      "scope": "Running-app revocation and Settings UI only; restore-after-revocation and restart pending"
+    },
+    "restoreAfterRevocation": {
+      "result": "passed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Price remains; no Owned status"
+    },
+    "askToBuyPreparation": {
+      "enabled": true,
+      "status": "owner-requested-pending",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "ownerObservation": "Regular purchase sheet initially appears",
+      "expectedFlow": "Confirm simulated payment sheet, then Ask in permission dialog; Pending/Owned result still pending"
+    },
+    "askToBuyDeferred": {
+      "result": "passed-pending-unowned",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Pending appears; no Owned status",
+      "sequence": "Confirm initial test payment sheet, then choose Ask",
+      "approval": "not-yet-approved",
+      "restartTechnicalEvidence": {
+        "processStoppedBeforeLaunch": true,
+        "newProcessIdentifier": 19012,
+        "launchMethod": "Xcode Run Without Building / Paws StoreKit Test",
+        "ownerPendingPersistenceResult": "failed: Owned appears"
+      },
+      "environmentAssessmentAfterOwnerObservation": "Earlier physical attempt: account/sheet environment not jointly recorded; environment-unverified and potentially production-account. Do not treat intended Xcode test setup as conclusive environment proof."
+    },
+    "askToBuyRestart": {
+      "result": "failed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Owned appears",
+      "ownerConfirmsStoreStatus": "Pending Ask to Buy / Pending Approval",
+      "desktopInspection": "newest test transaction Pending Approval; earlier transaction Refunded",
+      "authorizedStateDiagnostic": {
+        "exactFile": "Documents/apple-iap-review/state.bin",
+        "ownerExplicitlyApprovedCopy": true,
+        "retainedOnlyInIgnoredDiagnostics": true,
+        "access": "Owned",
+        "pendingPurchase": false,
+        "hasEvidenceReference": true,
+        "hasUnfinishedTransaction": false,
+        "lastFinishedMatchesPendingTransaction": true,
+        "lastFinishedMatchesRefundedTransaction": false,
+        "interpretation": "Real persisted Owned state; finalization reference alone does not identify ownership candidate"
+      },
+      "cause": "StoreKit Test API/transaction-manager discrepancy independently reproduced without Unity IAP; acceptance remains blocked",
+      "approvalOrStateResetPerformed": true,
+      "nativeDiagnostic": {
+        "baseSourceSha": "9fa818bd7c8f22cb01f046021361ce0ba5fbd82f",
+        "originalSha256": "162d5c3e3f0130ce870a0276fac6895e35592470b60c8acadd771939e3cb5e57",
+        "diagnosticSha256": "125d2497e5c1b0ae67f62b0bcf199b7e5c27b24f6f79810888324523a33b12c2",
+        "signedAppPath": "Builds/Issue64iPhone/PendingDiagnostic/Paws.app",
+        "signedAppTreeSha256": "b71d8971f79d5f83aeba8c8eeda7ae8133776e762a41cf8755233848f9d0b0e3",
+        "signatureVerified": true,
+        "nativeBuildPassed": true,
+        "nativeTypecheckPassed": true,
+        "logicChanges": false,
+        "observedCandidate": {
+          "matchesPendingTransaction": true,
+          "matchesRefundedTransaction": false,
+          "verified": true,
+          "valid": true,
+          "revoked": false,
+          "environment": "Xcode",
+          "sources": [
+            "cache-check",
+            "current-entitlement",
+            "history",
+            "latest",
+            "grant-owned"
+          ]
+        }
+      },
+      "storeKitOnlyProbe": {
+        "kind": "read-only-native-StoreKit-probe",
+        "bundleIdentifier": "com.jweiss.paws",
+        "signedAppPath": "Builds/Issue64iPhone/StoreKitOnlyProbe/Paws.app",
+        "signedAppTreeSha256": "7fcdc3e8fa4384435ec37e02462a316fb19130041af3a3a8696500225028fc13",
+        "sourceSha256": "c64498e1ae93e177e614254d793fc43e030586343fd5b6f12548707570c84edf",
+        "signatureVerified": true,
+        "unitySdkIncluded": false,
+        "keychainOrAppStateAccess": false,
+        "purchaseSyncFinishOrStateReset": false,
+        "storeKitConfigurationSha256": "89538b958a78186df37af454db01e08b409789340e92bea8f5875382e3fd2bbc",
+        "observedProof": {
+          "currentEntitlementsCount": 1,
+          "currentAndLatestMatchPendingTransaction": true,
+          "verified": true,
+          "environment": "Xcode",
+          "revoked": false
+        },
+        "initialShellAttempt": "failed-before-probe; UIKit required UIScene lifecycle",
+        "finalBuild": "probe-build-scene.log; success"
+      },
+      "managerAfterRefresh": "Still Pending Approval",
+      "independentQA": "environment validation blocker; leave ownership policy unchanged",
+      "reviewedAppRestored": {
+        "exactRetainedCandidate": true,
+        "generatedNativeSourceRestored": true,
+        "launchMethod": "Xcode / Paws StoreKit Test / Run Without Building",
+        "launchObserved": true,
+        "ownerRebootTroubleshooting": "completed; read-only probe still returns pending request as verified current ownership"
+      },
+      "postRebootProbe": {
+        "ownerConfirmed": "Restarted, connected and unlocked",
+        "networking": "owner-confirmed online",
+        "developerMode": "enabled",
+        "ddiServicesAvailable": true,
+        "probeProcessIdentifier": 655,
+        "currentEntitlementsCount": 1,
+        "currentAndLatestMatchPendingTransaction": true,
+        "verified": true,
+        "environment": "Xcode",
+        "revoked": false,
+        "unitySdkIncluded": false,
+        "keychainOrAppStateAccess": false,
+        "transactionMutation": false,
+        "refreshedManagerStatus": "Still Pending Approval (owner and desktop inspection)",
+        "reviewedPawsRelaunchedAfterProbe": true
+      },
+      "cleanLocalRetestProposal": {
+        "status": "approved-and-history-reset-completed",
+        "scope": "Only Xcode StoreKit Test transactions 0 (Refunded) and 1 (Pending Approval) for Paws on this iPhone",
+        "historyDeletionPerformed": true,
+        "nextAfterDeletion": "Owner Restore Purchases for authoritative empty local test inventory before new Ask to Buy request",
+        "appDataOrKeychainDirectReset": false,
+        "appStoreConnectChanges": false,
+        "sandboxOrProductionTransactionsAffected": false,
+        "ownerExplicitApproval": "Approve this local test-history reset",
+        "deletedLocalRecords": [
+          {
+            "id": 0,
+            "state": "Refunded"
+          },
+          {
+            "id": 1,
+            "state": "Pending Approval"
+          }
+        ],
+        "managerAfterDeletion": "No Transactions",
+        "ownerRestoreAfterDeletion": "Price shown; no Owned status",
+        "next": "New Ask to Buy request followed by owner force-quit/reopen, without Xcode reinstall"
+      },
+      "noApprovalBeforeFailure": true,
+      "environmentAssessmentAfterOwnerObservation": "Earlier physical attempt: account/sheet environment not jointly recorded; environment-unverified and potentially production-account. Do not treat intended Xcode test setup as conclusive environment proof."
+    },
+    "emptyLocalInventoryRestore": {
+      "result": "passed-unowned-ui",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Price shown; no Owned status",
+      "scope": "After owner-approved local history deletion; not clean-install restore of ownership"
+    },
+    "askToBuyCleanRetest": {
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "deferredRequest": "Pending appears; no Owned status",
+      "approval": "not-approved",
+      "restartMethod": "Owner force-quit and Home Screen icon reopen; no Xcode install/launch",
+      "restartResult": "failed: Owned appears after owner force-quit/Home Screen reopen",
+      "environmentAssessmentAfterOwnerObservation": "Earlier physical attempt: account/sheet environment not jointly recorded; environment-unverified and potentially production-account. Do not treat intended Xcode test setup as conclusive environment proof."
+    },
+    "boundedInvestigation": {
+      "ownerInstruction": "One clean native StoreKit-only pending/currentEntitlements/unfinished/updates observation before and after approval, then sandbox initiation; no reset/reinstall cycling; no production verification weakening",
+      "status": "bounded native run inconclusive; one sandbox initiation stayed unowned but pending restart lock failed; investigation stopped",
+      "nativeCandidate": {
+        "runId": "15d5eca0-0fea-4a4e-859e-0d6e1bc71af7",
+        "deviceLogPath": "Documents/issue64-native-diagnostic/15d5eca0-0fea-4a4e-859e-0d6e1bc71af7.jsonl",
+        "resetsUsed": 1,
+        "maximumCleanRuns": 1,
+        "sourcePath": "tools/apple-iap-probe/Probe.swift",
+        "sourceSha256": "195346a553db3b5feea28161f1ea1de95f9bc8066f696befa2ade591d7bd4052",
+        "signedAppPath": "Builds/Issue64iPhone/BoundedNativeProbeFinal/Paws.app",
+        "signedAppTreeSha256": "0be36133d025dbd0fda113a8765dea5aa13a917320fb3e38ae993457401f338e",
+        "signatureVerified": true,
+        "storeKitConfigurationSha256": "89538b958a78186df37af454db01e08b409789340e92bea8f5875382e3fd2bbc",
+        "askToBuyEnabled": true,
+        "debugExecutable": false,
+        "unitySDK": false,
+        "pawsOwnershipLogic": false,
+        "purchase": "owner-button-only",
+        "finishSyncOrTestReset": false,
+        "status": "bounded-run-stopped-inconclusive",
+        "ownerCleanupReport": "Local table shows No Transactions",
+        "independentQA": "no blocking findings",
+        "ownerPurchaseResult": "Native result is Pending",
+        "ownerBeforeApproval": "Before-approval checkpoint saved after restart",
+        "ownerApproval": "Approved; after-approval snapshot saved",
+        "ownerAfterApprovalRestart": "Reopened the same native diagnostic",
+        "journalPath": "docs/evidence/issue64/native-ask-to-buy.jsonl",
+        "journalSha256": "009e83e93af7813ffb4ca11049b1c847b872ec64c3e6e6a7ef013067cfb898aa"
+      },
+      "decision": "Native correct/Paws Owned => app bug; native verified current entitlement before approval => StoreKit Test anomaly with minimal reproducer",
+      "sandboxPreparation": {
+        "explicitOptIn": "PAWS_APPLE_SIMULATE_ASK_TO_BUY=1",
+        "default": false,
+        "productionRequestRejected": true,
+        "verificationChanged": false,
+        "focusedEditModePassed": 59,
+        "focusedReport": ".unity-results/issue64-ask-final-focused.H3zCru/test-results.xml",
+        "physicalInitiation": "one Sandbox initiation reported Pending without Owned",
+        "buildGate": "passed after owner license refresh and stopping stale task/editor licensing process",
+        "compileLog": ".unity-results/compile.iPOQmp/Editor.log",
+        "fullEditMode": {
+          "total": 558,
+          "passed": 558,
+          "report": ".unity-results/editmode.o5A1f5/test-results.xml"
+        },
+        "signedPreparationReceipt": "docs/evidence/issue64/sandbox-restore-fix-preparation.json",
+        "previousSignedPreparationReceipt": "docs/evidence/issue64/sandbox-ask-to-buy-preparation.json",
+        "ownerPreviousRestore": "All ads removed; owner uncertain if tester previously purchased",
+        "freshTester": "owner-created and signed in",
+        "freshTesterRestore": "Price returns; no Owned status",
+        "pendingRestart": "failed-owner: unowned but Remove Ads available for another purchase",
+        "physicalAcceptance": "failed pending-lock persistence; no false Owned observed in this one attempt",
+        "furtherPhysicalExperiments": "stopped; no further purchase/reset/reinstall"
+      },
+      "canUnblock64": false,
+      "nativeAnalysis": "docs/evidence/issue64/native-ask-to-buy-analysis.json",
+      "findings": {
+        "pendingResult": true,
+        "beforeApprovalVerifiedCurrent": 0,
+        "beforeApprovalVerifiedUnfinished": 1,
+        "beforeApprovalVerifiedUpdates": true,
+        "afterApprovalVerifiedCurrent": 0,
+        "afterApprovalRestartVerifiedCurrent": 0,
+        "afterApprovalRestartVerifiedUnfinished": 0,
+        "managerAfterApproval": "Purchased; unfinished warning",
+        "firstVerifiedCurrentEntitlement": "not observed",
+        "sdkHazard": "IAP 5.3.1 ProcessLoggedPurchase can finish a replay using an SDK journal keyed only by transaction ID; causal correlation is not yet established",
+        "decision": "Neither requested conclusion established: no native preapproval current entitlement, but expected postapproval entitlement never appeared; Paws early grant remains unresolved"
+      },
+      "restoreRaceFix": {
+        "sourceSha": "a68643316132df67bf5bbd9f6b6ca6485c02b585",
+        "reproduced": "Restore success -> independent Paid -> unsynchronized read completes before inventory; also stale synchronized absence after newer paid update",
+        "fix": "Wait for both restore callbacks; paid updates after both supersede with Verify(true)",
+        "providerContracts": 47,
+        "fullEditMode": 558,
+        "independentQA": "no blocking findings",
+        "explainsPhysicalFailure": false,
+        "signedFixedCandidateInstalled": true
+      },
+      "ownerFamilyNotificationEvidence": "docs/evidence/issue64/owner-family-ask-to-buy-observation.json"
+    }
+  },
+  "technicalLaunchEvidence": {
+    "date": "2026-10-22",
+    "method": "Xcode Run Without Building / Paws StoreKit Test",
+    "debugExecutable": false,
+    "cachedSignedAppHashMatchesRetainedCandidate": true,
+    "installedBundleIdentifier": "com.jweiss.paws",
+    "installedVersion": "0.1.0",
+    "installedBuildNumber": "1",
+    "runningProcessIdentifier": 18935,
+    "deviceReadinessLog": ".unity-results/issue64-scene-fix-owner/current-device-details.json",
+    "installedIdentityLog": ".unity-results/issue64-scene-fix-owner/installed-app.json",
+    "processLog": ".unity-results/issue64-scene-fix-owner/processes.json"
+  },
+  "environmentEvidenceCorrection": {
+    "reportedDate": "2026-10-22",
+    "source": "docs/evidence/issue64/owner-family-ask-to-buy-observation.json",
+    "overridesBroadHistoricalEnvironmentLabels": true,
+    "earlierPhysicalAttempts": "If explicit account/sheet environment checks were not recorded, classify as environment-unverified and potentially production-account attempts; technical scheme configuration alone is insufficient",
+    "nativeOnlyJournalScope": "Measured environment:xcode remains valid only for those journal entries",
+    "laterVerifiedSandboxAttempt": "Keep a686433 fresh-tester/explicit-Sandbox-sheet attempt separate; no causal link to real Family notification established",
+    "furtherPurchaseAttemptAuthorized": false
+  }
+}
