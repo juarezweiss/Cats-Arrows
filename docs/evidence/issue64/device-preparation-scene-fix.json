@@ -119,7 +119,7 @@
   "preparedLaunchMethod": "Xcode / Paws StoreKit Test",
   "launchVerified": true,
   "runningProcessVerified": true,
-  "physicalReview": "partial-owner-startup-menu-pass",
+  "physicalReview": "partial-owner-failed-deferred-restart",
   "runtimeNetworkObservation": "pending-owner",
   "productionMonetizationEnabled": false,
   "adProviderEnabled": false,
@@ -350,8 +350,30 @@
         "processStoppedBeforeLaunch": true,
         "newProcessIdentifier": 19012,
         "launchMethod": "Xcode Run Without Building / Paws StoreKit Test",
-        "ownerPendingPersistenceResult": "pending"
+        "ownerPendingPersistenceResult": "failed: Owned appears"
       }
+    },
+    "askToBuyRestart": {
+      "result": "failed",
+      "reportedDate": "2026-10-22",
+      "environment": "Xcode StoreKit Test / BRA / pt_BR",
+      "report": "Owned appears",
+      "ownerConfirmsStoreStatus": "Pending Ask to Buy / Pending Approval",
+      "desktopInspection": "newest test transaction Pending Approval; earlier transaction Refunded",
+      "authorizedStateDiagnostic": {
+        "exactFile": "Documents/apple-iap-review/state.bin",
+        "ownerExplicitlyApprovedCopy": true,
+        "retainedOnlyInIgnoredDiagnostics": true,
+        "access": "Owned",
+        "pendingPurchase": false,
+        "hasEvidenceReference": true,
+        "hasUnfinishedTransaction": false,
+        "lastFinishedMatchesPendingTransaction": true,
+        "lastFinishedMatchesRefundedTransaction": false,
+        "interpretation": "Real persisted Owned state; finalization reference alone does not identify ownership candidate"
+      },
+      "cause": "unresolved; native verification-source diagnostics in preparation",
+      "approvalOrStateResetPerformed": false
     }
   },
   "technicalLaunchEvidence": {

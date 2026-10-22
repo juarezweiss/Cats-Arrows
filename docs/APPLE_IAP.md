@@ -315,3 +315,24 @@ sheet and choosing Ask, **“Pending appears; no Owned status”**. Deferred/uno
 passes. Stopped Paws (device process list empty), then launched through the same
 StoreKit Test scheme and verified a fresh process. Owner pending persistence and
 duplicate-purchase suppression checks remain pending before approval.
+
+### Blocked owner gate: deferred request becomes Owned after restart — 2026-10-22
+
+After a verified fresh-process restart with no approval, owner reports **“Owned
+appears”**. Owner and desktop transaction-manager inspection both show the newest
+request still **Pending Approval**; the prior transaction remains Refunded. This
+**fails** deferred restart acceptance; do not proceed to sandbox or treat #64 as
+complete. Existing earlier scenario passes do not override this failure.
+
+Owner explicitly approved copying only `Documents/apple-iap-review/state.bin` to
+ignored local diagnostics. Its checksum-valid normalized state is Owned, pending
+false, evidence present, no unfinished journal; last-finished reference matches
+the pending transaction. That reference does not prove which native ownership
+candidate was accepted. No raw store/Keychain payload is copied or committed.
+Automatic approval review rejected directory/single-file copies before the owner
+gave explicit permission; only the approved single file was subsequently read.
+
+A native-only, review-gated diagnostic override is being prepared in the ignored
+export to log verification source, opaque transaction hash, environment and flags.
+Tracked provider logic and the retained signed candidate remain unchanged. No
+approval, decline, reset or other test-transaction mutation has been performed.
