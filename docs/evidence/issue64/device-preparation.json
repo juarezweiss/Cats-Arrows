@@ -93,7 +93,7 @@
     "sha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1",
     "retainedOnlyInIgnoredExport": true,
     "scheme": "Paws StoreKit Test",
-    "liveValidation": "pending-owner"
+    "liveValidation": "blocked-owner-startup-black-screen"
   },
   "appleSandbox": {
     "scheme": "Paws Apple Sandbox",
@@ -113,7 +113,7 @@
   "launchMethod": "Xcode / Paws StoreKit Test",
   "launchVerified": true,
   "runningProcessVerified": true,
-  "physicalReview": "pending-owner",
+  "physicalReview": "failed-owner-startup-black-screen",
   "runtimeNetworkObservation": "pending-owner",
   "productionMonetizationEnabled": false,
   "adProviderEnabled": false,
@@ -125,5 +125,20 @@
     "_PawsIapRead",
     "_PawsIapVerifyCache",
     "_PawsIapSetDeferred"
-  ]
+  ],
+  "humanReview": {
+    "reviewer": "owner",
+    "reportedDate": "2026-10-21",
+    "result": "fail",
+    "scope": "launch/menu visibility only",
+    "report": "screen is black",
+    "attempts": 3,
+    "debuggerFreeAttemptAlsoFailed": true,
+    "purchaseOrRestoreTested": false
+  },
+  "debuggerDiagnostic": {
+    "lldbRpcServerStalled": true,
+    "debugExecutableDisabledInLocalStoreKitScheme": true,
+    "resolvedBlackScreen": false
+  }
 }

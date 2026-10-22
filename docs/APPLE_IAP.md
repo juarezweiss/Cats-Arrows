@@ -190,6 +190,24 @@ product sync do not establish purchase/restore, physical or runtime data behavio
 acceptance. No App Store Connect changes, upload, submission or production
 activation are part of this handoff.
 
+## Owner startup failure and correction — 2026-10-21
+
+The owner rejected the `46bee5e` review app's startup: a black screen on all three
+attempts, including a debugger-free launch. Xcode also reported a stalled LLDB RPC
+server; disabling attachment did not resolve the UI failure. The original
+preparation receipt now records **failed owner startup**, not acceptance.
+
+The original generator lost the UIDocument's panel reference across preview/scene
+replacement and component Reset hooks. Replaying that sequence against the new
+saved-scene regression reproduces an empty panel reference. The generator now
+reloads the production panel after scene/component creation, persists its native
+backing field and reopens the saved scene to require a panel, runtime theme and
+camera before exporting. The review bootstrap fails visibly in logs for missing
+panel/theme and emits bounded startup phase markers without store payloads.
+Production scene, provider/coordinator/persistence and Settings contracts are
+unchanged. Replacement-build physical and purchase/restore acceptance remain
+pending the owner's explicit report.
+
 ## Archive gate status — 2026-10-20
 
 Final clean unsigned development export: source **`46bee5e`**, Unity 6000.3.25f1 /

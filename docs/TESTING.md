@@ -69,6 +69,26 @@ receives one review step at a time; both environments remain pending explicit
 human results. Review cache must be reconciled when switching environments, as
 documented in [APPLE_IAP.md](APPLE_IAP.md).
 
+Owner startup review failed for source `46bee5e`: black screen on three attempts,
+including a debugger-free launch. Replaying the original scene generator against
+the new regression reproduces a saved UIDocument with an empty panel reference
+(`issue64-legacy-scene.owrd9M`, intentionally failing reproduction). The corrected
+generator reloads/persists the panel after component Reset hooks and verifies the
+saved scene's panel/theme/camera before export. Focused scene checks **6/6** pass;
+final combined scene/portrait checks **7/7** pass (`issue64-ui-scene-focused.IrnhBL`).
+Pinned compilation passes (`compile.U8qfQ2`); final full EditMode **539/539** pass,
+zero failed/skipped/inconclusive and successful exit (`editmode.TqTHXs`); Python
+contracts **41/41**, repository/whitespace checks and independent QA pass.
+
+Two earlier full reruns each hit the previously recorded portrait Back target
+failure (`editmode.hbdmzp`, `editmode.MJBywm`); its isolated check passed. The fixture
+mixed synthetic phone insets with GeometryChanged callbacks reading the Editor's
+real safe area. The fixture now consistently reapplies its synthetic input on
+geometry changes and asserts it stays unchanged through Settings/selector
+navigation, retaining every original target-size/bounds assertion. Scene tests
+also drain destroyed runtime panels during teardown. Production safe-area/UI
+behavior is unchanged. Replacement physical/store acceptance remains pending.
+
 ## Issue #63 production iOS configuration
 
 2026-10-20: pinned Unity **6000.3.25f1** compilation passed (`compile.O8favA`);
