@@ -69,6 +69,58 @@ establish VoiceOver or physical comfort acceptance.
 
 ## Owner-only StoreKit Test and Sandbox acceptance
 
+### Minimal owner handoff — 2026-10-23
+
+The exact reviewed implementation **`87772f2`** has been development-signed and
+installed **in place** on iPhone 17 / iOS 27.0.1, Paws **0.1.0 (1)**. The original
+unsigned app is unchanged; strict signatures, device/profile coverage and matching
+ARM64 dSYMs pass. The existing local profile expires **2026-10-27 17:36:44 UTC**.
+No rebuild or code change was needed. No broad automated tests were repeated.
+[Preparation receipt](evidence/issue65/owner-preparation.json).
+
+The app has **not been launched** for this handoff. No app-state/Keychain access,
+reset, uninstall, account action or transaction action was performed. Physical
+acceptance and both test environments remain pending. #82 remains open and is a
+separate hard Paws 1.0 release blocker; its investigations are outside this run.
+
+Open the ignored local project `Builds/Issue65-OfferCodes-87772f2/Unity-iPhone.xcodeproj`.
+Select the connected iPhone, then use **Product > Perform Action > Run Without
+Building** (Control-Command-R). Both prepared schemes use Release with Debug
+executable off and resolve to the exact signed app under
+`Builds/Issue65iPhone-87772f2/Build/Products/Release-iphoneos/Paws.app`.
+Only ignored local launch settings were adjusted; compiled inputs are unchanged.
+
+| Environment | Scheme and owner setup | Evidence scope |
+| --- | --- | --- |
+| Xcode StoreKit Test | **Paws 65 StoreKit Test** references the retained existing `Builds/Issue64-AppleIapReview/Paws-RemoveAds-OwnerReview.storekit`. Ask to Buy is off; product metadata/history were not changed. The owner must configure/select a local free Offer Code for the same non-consumable in Xcode before redemption. If the synced configuration prevents that, stop and report rather than resetting/converting existing history. | Simulated StoreKit only; never label this an actual Sandbox code result. |
+| Apple Sandbox | **Paws 65 Sandbox**, StoreKit Configuration **None**. Owner verifies the intended Sandbox Apple Account in Settings > Developer, and **Environment: Sandbox** on any payment sheet. Owner supplies/enters a test-only Sandbox code for `com.jweiss.paws.removeads`. | Actual Sandbox redemption only after these environment checks; a cached Owned label is not a new redemption. |
+
+Keep existing app/account/transaction history. Record the starting state first:
+unowned, already Owned or Pending. If already Owned/Pending prevents a new grant,
+report that baseline; do not reset state, initiate another purchase or investigate
+Ask to Buy. Switching test environments shares the same review cache: use a
+successful authoritative Restore to reconcile ownership in the selected
+environment, and report an unavailable/failed reconciliation without inferring
+fresh ownership. Account/code setup and all physical actions belong to the owner.
+
+For each environment, prioritize this short sequence:
+
+1. Open **Settings > Redeem Offer Code**, cancel, and confirm ordinary play works.
+2. Redeem **one free offer** in the correct native test flow; confirm the prior
+   unowned state changes to **All ads removed**. Dismissal alone is not success.
+3. Force-quit/reopen using the same environment and confirm ownership remains.
+4. Tap **Restore Purchases**; confirm ownership remains without another purchase.
+
+Report `environment; starting state; cancellation; redemption/Owned transition;
+restart; Restore` with pass/fail or blocked for each, plus any native error text
+without codes/account details. Results are currently empty. After the owner
+report, record scoped evidence in #65 and PR #85. If accepted, run the required
+merge gates and prepare integration into develop; otherwise retain the blocker
+without expanding scope. No merge, main change, production activation or App Store
+submission is authorized by this preparation.
+
+### Full RC matrix
+
 **Pending. No physical redemption or purchase acceptance is claimed.** Build
 preparation and automated contracts are separate evidence. Record the exact source
 SHA, app build, OS, Xcode version, locale and environment with each explicit human
