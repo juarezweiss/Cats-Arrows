@@ -137,6 +137,31 @@ for its own native ad overlay: the application's presentation guard suspends inp
 while the dispatcher continues. Actual OS background/focus loss still cancels
 automatic Hint delivery and retains earned authorization for explicit recovery.
 
+## Validation result — 2026-10-23
+
+Committed implementation **aefda544c15a43d77f8dfc2160437ebb387be63c**: focused
+**167/167**, full EditMode **668/668**, Python **51/51**, pinned compile,
+repository checks and **322-file** SDK integrity gate pass. Independent final QA:
+no blocking findings. [Exact reports, hashes and CI](evidence/issue66/validation.json).
+
+The [unsigned native iOS development build](evidence/issue66/native-build.json)
+passes Google bridge/GMA/UMP symbol, SDK privacy-resource and matching ARM64 app/
+framework dSYM checks. The [ordinary disabled export](evidence/issue66/disabled-export.json)
+contains no Google managed/native SDK, Google review assembly or AdMob/UMP/ATT
+configuration. The SDK-independent adapter assembly can remain compiled; the
+production bootstrap never constructs it. No native build/launch is claimed for
+that disabled export. The exporter generated an empty Services Core settings file;
+removing only that empty file allowed the unchanged export's provenance check.
+
+Nine SDK-free desktop Settings captures cover all three locales at all three
+portrait sizes. Examples: [EN compact](evidence/issue66/settings-privacy-en-320x568.png),
+[pt-BR standard](evidence/issue66/settings-privacy-pt-BR-390x844.png),
+[ES tall](evidence/issue66/settings-privacy-es-430x932.png).
+The reference lock uses the existing #76 Settings list: same typography, outlined
+rows, spacing, scroll, focus and localized alert treatment. No new visual system.
+Mounted tests also exercise native-form suspension/recovery using controlled fakes.
+These captures and automated tests do not establish actual native ad/form behavior.
+
 ## Build and owner review
 
 Run focused `bash scripts/test-admob.sh`, full `bash scripts/test.sh`, pinned

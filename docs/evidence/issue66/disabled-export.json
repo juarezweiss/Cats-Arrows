@@ -1,0 +1,14 @@
+{
+  "sourceSha": "aefda544c15a43d77f8dfc2160437ebb387be63c",
+  "exportReceipt": ".unity-results/ios-export.ManEom/export-receipt.json",
+  "exportReceiptSha256": "2aaefea579f2955f5b9e0039cb0b45ef513206fc0346e75bc62b20f8b07236c3",
+  "googleAssemblies": [],
+  "newGoogleReviewAssemblies": [],
+  "googleNativeFrameworks": [],
+  "googleUMPATTKeys": [],
+  "sdkIndependentAdapterAssemblyPresent": true,
+  "composition": "PawsBootstrap monetization:null; no provider instance or SDK reference. SDK-independent adapter types may remain compiled but cannot initialize any provider.",
+  "nativeBuildPerformedForThisDisabledExport": false,
+  "productionActivation": false,
+  "inspectorNote": "Original post-export inspection rejected a newly generated empty Services Core settings file; only that empty generated file was removed, then unchanged export passed inspection."
+}

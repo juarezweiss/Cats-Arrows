@@ -9,6 +9,13 @@ iOS review build are separate required evidence. Physical ad/consent/lifecycle
 acceptance remains owner-operated and pending until an explicit report.
 No #66 result closes #82 or enables production.
 
+2026-10-23 source `aefda544c15a43d77f8dfc2160437ebb387be63c`: focused **167/167**,
+full **668/668**, Python **51/51**, pinned compile, SDK integrity and independent QA
+pass. Unsigned iOS native link/privacy/dSYM checks and disabled production-export
+SDK exclusion pass. Nine localized desktop Settings captures pass visual review.
+[Evidence and validation limits](evidence/issue66/validation.json). Physical native
+consent/test-ad acceptance is pending; no installation, launch or purchase occurred.
+
 ## Issue #65 Apple Offer Code gate
 
 The [implementation, OS/API limits and owner-only test matrix](APPLE_OFFER_CODES.md)
