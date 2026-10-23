@@ -69,36 +69,48 @@ establish VoiceOver or physical comfort acceptance.
 
 ## Owner-only StoreKit Test and Sandbox acceptance
 
-### Owner results — 2026-10-23
+### Corrected owner results — 2026-10-23
 
-The owner explicitly reported the following for source **`87772f2`**, with **no
-purchase-history reset**. Preserve the starting **Owned** baseline in both runs.
-[Exact reported results and scope assessment](evidence/issue65/owner-validation-2026-10-23.json).
+The owner corrected the actual Sandbox sequence for **`87772f2`**. The app
+**initially started Owned**; it was not an initially Unowned installation. After
+sheet/cancellation and an Owned restart, the **first Restore changed it to Unowned**.
+The owner then redeemed one real Sandbox Offer Code and observed **Unowned → Owned**,
+followed by an Owned restart and a **second Restore retaining Owned**. No purchase
+history was reset. This supersedes the prior assessment that no fresh grant had
+been demonstrated; the Xcode StoreKit Test report is unchanged.
+[Corrected sequence, original summary and assessment](evidence/issue65/owner-validation-2026-10-23.json).
 
-| Check | Xcode StoreKit Test (simulated) | Apple Sandbox (owner-reported actual Sandbox) |
+| Check | Xcode StoreKit Test (simulated) | Apple Sandbox (corrected owner report) |
 | --- | --- | --- |
 | Starting ownership | Owned | Owned |
-| Native redemption sheet opens | PASS | PASS |
-| Cancellation returns to gameplay | PASS | PASS |
-| Code redemption succeeds | NOT TESTED | PASS |
-| Verified ownership appears | NOT TESTED | PASS |
-| Ownership survives restart | PASS | PASS |
-| Restore preserves ownership | PASS | PASS |
-| Notes | None | None |
+| Native redemption sheet / cancellation | PASS / PASS | PASS / PASS |
+| Ownership immediately before code redemption | No code attempted | Unowned after first Restore |
+| Code redemption | NOT TESTED | PASS: real Sandbox code |
+| Unowned → Owned via code | NOT TESTED | PASS |
+| Restart / Restore | PASS: retained pre-existing Owned | PASS: post-redemption restart and second Restore retain Owned |
+| Notes | None | Corrected nine-step sequence recorded in evidence |
 
-These reports pass native presentation/cancellation and retained-ownership
-restart/Restore in each named environment. Sandbox code redemption and Owned UI
-are passed **as reported by the owner**. Because both sessions started Owned,
-neither demonstrates the minimal handoff's **unowned → Owned grant**. Do not
-relabel the local NOT TESTED results or infer a new verified transaction from an
-already-Owned label. No separate transaction/finalization evidence was supplied.
+**Restore assessment:** the initial Owned → Unowned change is compatible with the
+existing reconciliation contract, which preserves usable cached ownership until
+authoritative store evidence resolves it. A successful synchronized, complete
+absence may remove cached ownership; transport/verification/partial failures must
+not. `PawsAppleEvidence.snapshot`, `ApplePurchaseService.OnRestore/OnPurchases` and
+`MonetizationCoordinator.HandlePurchase` implement this distinction. Existing
+restore-failure, synchronized-absence and callback-order tests cover it.
 
-Fresh-grant owner coverage remains pending. Keep #65 open and PR #85 draft;
-defer broad merge gates/integration preparation until this acceptance gap is
-resolved. Preserve existing app/account/transaction history; no reset or new
-purchase is requested/performed by this evidence update. Remaining RC scenarios
-are not covered by these two reports. #82 stays open as the separate hard Paws
-1.0 release blocker. Production remains disabled; main is unchanged.
+The actual store/account/cache cause in this run is **unknown**: no normalized
+native evidence or account/cache provenance was supplied. Do not assert that an
+account switch or stale Xcode cache caused it, or label it a separate defect from
+this UI sequence alone. Independent QA found no new functional blocker. No code
+change or further purchase test is justified by the report.
+
+The corrected actual Sandbox grant removes the previously stated fresh-grant
+blocker for **disabled develop integration**, subject to normal merge gates.
+Local free-offer redemption remains **NOT TESTED**; unreported RC scenarios remain
+open under #65 and the #67 RC gate. This assessment does not claim all acceptance
+criteria/physical RC scenarios passed or close #65. #82 stays open as the separate
+hard Paws 1.0 release blocker. Production remains disabled; no main change or merge
+is performed by this evidence update.
 
 ### Minimal owner handoff — 2026-10-23
 
@@ -260,5 +272,5 @@ change or upload had followed. Later preparation and owner results are above.
 
 [Exact source, check results and artifact provenance](evidence/issue65/validation.json)
 record the candidate and ignored local build paths. The later explicit owner
-reports are recorded separately above. Fresh-grant coverage remains pending;
-automated verified-evidence fakes cannot replace that physical result.
+reports are recorded separately above. The corrected actual Sandbox report establishes the fresh grant after Restore;
+local free-offer and remaining RC coverage stay explicitly unclaimed.

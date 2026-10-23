@@ -1,5 +1,5 @@
 {
-  "schema": "paws-issue65-owner-validation-v1",
+  "schema": "paws-issue65-owner-validation-v2",
   "date": "2026-10-23",
   "reviewer": "repository owner (juarezweiss)",
   "evidenceSource": "explicit human reports in #65 implementation chat",
@@ -32,14 +32,116 @@
       "cancellationReturnsToGameplay": "PASS",
       "codeRedemptionSucceeds": "PASS",
       "verifiedOwnershipAppears": "PASS",
-      "ownershipSurvivesRestart": "PASS",
-      "restorePreservesOwnership": "PASS",
+      "ownershipSurvivesRestart": "PASS after redemption",
+      "restorePreservesOwnership": "PASS on the second Restore after redemption",
       "notes": "None",
       "reportedBuild": "87772f2",
-      "purchaseHistoryReset": false
+      "purchaseHistoryReset": false,
+      "ownershipImmediatelyBeforeRedemption": "unowned after the first explicit Restore",
+      "firstRestoreOwnershipTransition": "Owned -> Unowned",
+      "unownedToOwnedViaSandboxCode": "PASS",
+      "sequence": [
+        {
+          "step": 1,
+          "action": "App starts",
+          "observation": "Owned (All ads removed)"
+        },
+        {
+          "step": 2,
+          "action": "Tap Redeem Offer Code",
+          "observation": "Apple native redemption sheet opens"
+        },
+        {
+          "step": 3,
+          "action": "Cancel",
+          "observation": "Returns to Paws normally"
+        },
+        {
+          "step": 4,
+          "action": "Restart Paws",
+          "observation": "Still Owned"
+        },
+        {
+          "step": 5,
+          "action": "First Restore Purchases",
+          "observation": "Unowned; Remove Ads becomes available"
+        },
+        {
+          "step": 6,
+          "action": "Redeem Offer Code",
+          "observation": "One real Sandbox Offer Code successfully redeemed"
+        },
+        {
+          "step": 7,
+          "action": "Return to Paws",
+          "observation": "Owned (All ads removed)"
+        },
+        {
+          "step": 8,
+          "action": "Restart Paws",
+          "observation": "Ownership persists"
+        },
+        {
+          "step": 9,
+          "action": "Second Restore Purchases",
+          "observation": "Ownership remains Owned"
+        }
+      ]
     }
   ],
   "assessment": {
+    "xcodeStoreKitTest": "Unchanged owner report: initially Owned; sheet/cancellation/play/restart/Restore retained-ownership PASS; local code redemption and new grant NOT TESTED. Simulated evidence only.",
+    "appleSandbox": "Corrected owner report: initially Owned; first explicit Restore changed it to Unowned before redemption; real Sandbox code then changed Unowned to Owned; post-redemption restart and second Restore retain Owned. Actual Sandbox environment as explicitly reported by owner.",
+    "freshGrantFromUnowned": "PASS: demonstrated after the first Restore. This is not an initially Unowned/fresh installation.",
+    "minimumFreshGrantGate": "previous stated blocker resolved by owner correction",
+    "initialRestoreTransition": {
+      "observation": "Owned -> Unowned after the first explicit Restore",
+      "contractAssessment": "Permitted if successful synchronization returns complete verified absence, or authoritative revocation. Ordinary transport/unverified/partial results must preserve previous ownership.",
+      "actualCause": "undetermined; no native callback/evidence/account/cache provenance was supplied",
+      "possibleCompatibleExplanation": "Reconciliation of previously cached review ownership against current store/account inventory; this is a possibility, not a finding about this run.",
+      "defectAssessment": "No separate defect established by the UI sequence; no supported reason for an implementation change or another purchase test.",
+      "sourceEvidence": [
+        "PawsAppleEvidence.swift snapshot: empty inventory with cached evidence stays Unknown unless synchronized; synchronized complete absence may invalidate cache and return NotOwned.",
+        "ApplePurchaseService.OnRestore/OnPurchases: Verify(true) waits for successful Restore and inventory.",
+        "MonetizationCoordinator.HandlePurchase: removes Owned only on verified Revoked or verified complete NotOwned."
+      ],
+      "existingRegressionTests": [
+        "RestoreFailurePreservesCachedAccess",
+        "PartialOrEmptyUnverifiedInventoryCannotRevoke",
+        "PaidUpdateAfterRestoreSuccessCannotSettleBeforeSynchronizedInventory",
+        "AccountChangeSynchronizedAbsenceRevokesWithoutCatchupDebt"
+      ]
+    },
+    "transactionFinalization": "No separate native finalization trace is claimed; unchanged automated durability/finalization tests remain separate, and #82 remains open.",
+    "remainingCoverage": [
+      "Local Xcode free-offer redemption/new grant NOT TESTED",
+      "Unreported external/pre-first-launch, invalid/expired/duplicate, offline/late, revocation and interrupted-finalization physical RC scenarios remain unclaimed"
+    ],
+    "acceptanceAssessment": "Implementation and corrected minimal actual Sandbox flow support disabled develop integration. This does not mark all #65 acceptance/RC coverage complete; local/RC gaps remain recorded under #65 and the #67 RC gate. No issue closure is implied.",
+    "independentQA": "No blocking findings. Initial Restore transition is permitted reconciliation but its actual cause is unknown. Corrected Sandbox sequence resolves the stated fresh-grant develop blocker.",
+    "mergePreparation": "Run/verify normal merge gates on unchanged reviewed inputs, retain remaining coverage explicitly, and report readiness. No merge has been authorized or performed."
+  },
+  "agentsPerformedNoDeviceOrStoreActions": true,
+  "codeChanged": false,
+  "productionMonetizationEnabled": false,
+  "issue82": "open; independent hard Paws 1.0 release blocker",
+  "issue65": "open",
+  "pr85": "draft during assessment; no merge performed",
+  "noPurchaseHistoryReset": true,
+  "supersededInitialSandboxReport": {
+    "environment": "Apple Sandbox",
+    "startingOwnership": "owned",
+    "nativeRedemptionSheetOpens": "PASS",
+    "cancellationReturnsToGameplay": "PASS",
+    "codeRedemptionSucceeds": "PASS",
+    "verifiedOwnershipAppears": "PASS",
+    "ownershipSurvivesRestart": "PASS",
+    "restorePreservesOwnership": "PASS",
+    "notes": "None",
+    "reportedBuild": "87772f2",
+    "purchaseHistoryReset": false
+  },
+  "supersededInitialAssessment": {
     "xcodeStoreKitTest": "Owner-passed native sheet opening, cancellation/play, retained ownership after restart and Restore; code redemption and new verified grant not tested. Simulated environment only.",
     "appleSandbox": "Owner-passed native sheet opening, cancellation/play, code redemption and Owned UI, retained ownership after restart and Restore. Actual Sandbox environment as explicitly reported by owner; no simulated result is substituted.",
     "freshGrantFromUnowned": "NOT DEMONSTRATED: both reports explicitly start owned; Sandbox Owned PASS is retained as reported but cannot establish a new unowned-to-Owned transition.",
@@ -48,11 +150,71 @@
     "fullRCMatrix": "remaining unreported scenarios stay pending; these reports do not establish external/pre-first-launch, invalid/expired, offline/late, revocation or interrupted-finalization physical acceptance",
     "mergePreparation": "deferred until the fresh-grant coverage/acceptance gap is resolved; broad merge gates not rerun"
   },
-  "agentsPerformedNoDeviceOrStoreActions": true,
-  "codeChanged": false,
-  "productionMonetizationEnabled": false,
-  "issue82": "open; independent hard Paws 1.0 release blocker",
-  "issue65": "open",
-  "pr85": "draft; no merge authorized/performed",
-  "noPurchaseHistoryReset": true
+  "correction": {
+    "date": "2026-10-23",
+    "source": "explicit owner correction in the same chat",
+    "reason": "Original summary omitted the first Restore changing Owned to Unowned before code redemption. The initial-ownership field remains Owned. Earlier conclusion that no fresh grant was demonstrated is superseded.",
+    "initiallyUnownedInstallation": false
+  },
+  "acceptanceCriteriaAssessment": [
+    {
+      "criterion": 1,
+      "area": "Localized accessible Settings native redemption UI",
+      "evidence": "Implemented; EN/pt-BR/es mounted contracts/captures and owner native-sheet PASS."
+    },
+    {
+      "criterion": 2,
+      "area": "OS/API gate and unsupported guidance",
+      "evidence": "Implemented; iOS16.3 floor, Swift compatibility checks and controlled unsupported-result UI contracts. Unsupported physical runtime is not claimed."
+    },
+    {
+      "criterion": 3,
+      "area": "Launch/resume/external/pre-first-launch entitlement discovery",
+      "evidence": "Implemented through existing refresh/store updates; deterministic fresh-state/pre-first-launch/resume coverage. External/pre-first-launch physical RC results unreported."
+    },
+    {
+      "criterion": 4,
+      "area": "Verified configured non-consumable grants only",
+      "evidence": "Source/contract verification retained; corrected actual Sandbox Unowned-after-Restore -> code -> Owned owner PASS."
+    },
+    {
+      "criterion": 5,
+      "area": "Reuse persistence/finalization/offline/revocation/no-catch-up",
+      "evidence": "Unchanged shared path and existing deterministic/fault tests; owner post-redemption restart/Restore PASS. Native finalization proof not separately claimed; #82 unchanged."
+    },
+    {
+      "criterion": 6,
+      "area": "Success/cancel/invalid/expired/duplicate/external/late/unsupported outcomes",
+      "evidence": "App-boundary automated contracts and native system validation; core Sandbox success/cancel owner PASS. Unreported native RC edge cases remain unclaimed."
+    },
+    {
+      "criterion": 7,
+      "area": "Xcode StoreKit Test and actual Sandbox validation / RC gate",
+      "evidence": "Xcode presentation/cancel/retained-ownership PASS; local offer redemption NOT TESTED. Actual Sandbox fresh grant/persistence/Restore PASS. Full RC matrix is not marked complete."
+    },
+    {
+      "criterion": 8,
+      "area": "Production prerequisites documented",
+      "evidence": "Documented Ready for Distribution + Approved IAP; no production/account/store changes."
+    }
+  ],
+  "mergeGateEvidence": {
+    "reviewedRuntimeSha": "87772f283bf5ca14dcd477ca26b404a02faf9725",
+    "runtimeSourceHashesMatch": true,
+    "latestFetchedDevelopSha": "646acfe3f294dcb472144bd97197254a26d6cac5",
+    "developUnchangedSinceReviewedBase": true,
+    "retainedCompileEvidenceVerified": true,
+    "retainedFocusedResults": {
+      "passed": 80,
+      "xmlHashMatches": true
+    },
+    "retainedFullEditModeResults": {
+      "passed": 578,
+      "xmlHashMatches": true
+    },
+    "repeatedUnityOrDeviceTests": false,
+    "independentQA": "No blocking findings.",
+    "repositoryValidation": "scripts/validate.sh and git diff --check pass",
+    "finalHeadCI": "Verify after this documentation-only evidence commit; exact status/link recorded in PR #85."
+  }
 }

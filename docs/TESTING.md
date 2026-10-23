@@ -9,13 +9,20 @@ restore/revocation and interrupted finalization. Automated fake-driven contracts
 are separate from owner StoreKit Test and Apple Sandbox acceptance.
 Production remains disabled; #82 remains an independent hard release blocker.
 
-2026-10-23 owner reports for `87772f2`: both environments started **Owned**.
-Native sheet/cancellation/play, ownership after restart and Restore pass in each;
-actual Sandbox code redemption and Owned UI pass as reported. Xcode code redemption
-and verified ownership appearance are **NOT TESTED**. Neither run demonstrates a
-new unowned → Owned grant. That owner coverage remains pending, so #65 stays open,
-PR #85 stays draft and broad merge gates are deferred. No history reset occurred.
-[Exact reports and limitations](evidence/issue65/owner-validation-2026-10-23.json).
+2026-10-23 corrected owner report for `87772f2`: Sandbox **started Owned**;
+a first explicit Restore changed it to **Unowned before redemption**. A real
+Sandbox code then changed **Unowned → Owned**, retained after restart and a second
+Restore. Native sheet/cancellation pass. No purchase-history reset occurred.
+This resolves the previously stated fresh-grant integration blocker. The initial
+Restore transition is permitted by the reconciliation contract; its actual
+store/account/cache cause is unknown, and no separate defect is established.
+Independent QA found no new functional blocker.
+
+Local Xcode code redemption/new grant remain **NOT TESTED**; its sheet/cancellation
+and retained-ownership restart/Restore passes remain distinct from actual Sandbox
+evidence. Remaining physical RC coverage is unclaimed under #65/#67. Assess normal
+merge gates for disabled develop integration without closing #65 or waiving #82.
+[Corrected exact sequence and assessment](evidence/issue65/owner-validation-2026-10-23.json).
 
 Candidate `87772f283bf5ca14dcd477ca26b404a02faf9725`: pinned compile,
 focused **80/80**, full EditMode **578/578**, Python **51/51**, Swift compatibility
