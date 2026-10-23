@@ -15,6 +15,7 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
         private const string ProductId = "test.paws.removeads";
         private FakeStore client;
         private FakeEvidence evidence;
+        private FakeOfferCodeSheet sheet;
         private ApplePurchaseService service;
         private double now;
         private int creations;
@@ -25,10 +26,11 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
             product = CreateProduct();
             client = new FakeStore { Product = product };
             evidence = new FakeEvidence();
+            sheet = new FakeOfferCodeSheet();
             service = CreateService();
         }
         private ApplePurchaseService CreateService() => new ApplePurchaseService(ProductId,
-            () => { creations++; return client; }, evidence, () => now);
+            () => { creations++; return client; }, evidence, () => now, offerCodeSheet: sheet);
         [TearDown] public void Teardown() => service.Dispose();
         private PurchaseResult Refresh()
         {
@@ -43,6 +45,146 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
         }
         private MonetizationCoordinator Coordinator(IMonetizationStateStore store = null) => new MonetizationCoordinator(true,
             store ?? new MemoryMonetizationStateStore(), new UnavailableAdService(), service, () => now);
+
+        // Issue #65: sheet outcomes never establish ownership or fabricate a pending purchase.
+        [TestCase(OfferCodeRedemptionResult.Closed)]
+        [TestCase(OfferCodeRedemptionResult.Unsupported)]
+        [TestCase(OfferCodeRedemptionResult.Unavailable)]
+        public void RedemptionPresentationOutcomesDoNotGrantOrBlockPlay(OfferCodeRedemptionResult result)
+        {
+            using var coordinator = Coordinator();
+            coordinator.RedeemOfferCode(); coordinator.RedeemOfferCode();
+            Assert.That(sheet.Presentations, Is.EqualTo(1));
+            Assert.That(coordinator.IsBusy, Is.False);
+            Assert.That(coordinator.CanPurchase, Is.False);
+            coordinator.RestorePurchases();
+            Assert.That(client.RestoreComplete, Is.Null);
+            now = 100; service.Tick(); coordinator.Tick();
+            Assert.That(coordinator.IsBusy, Is.False, "waiting for system UI is not a gameplay lock");
+            sheet.Close(result);
+            Assert.That(coordinator.IsOwned, Is.False);
+            Assert.That(coordinator.Snapshot.PendingPurchase, Is.False);
+            Assert.That(coordinator.CanRedeemOfferCode, Is.True);
+            Assert.That(client.Buys, Is.Zero); Assert.That(client.Confirms, Is.Zero);
+            Assert.That(coordinator.Status, Is.EqualTo(result == OfferCodeRedemptionResult.Closed ? MonetizationStatus.None :
+                result == OfferCodeRedemptionResult.Unsupported ? MonetizationStatus.OfferCodeUnsupported : MonetizationStatus.OfferCodeUnavailable));
+        }
+
+        [Test] public void DisabledRedemptionDoesNotPresentInitializeOrRead()
+        {
+            using var coordinator = new MonetizationCoordinator(false, new MemoryMonetizationStateStore(), new UnavailableAdService(), service);
+            coordinator.RedeemOfferCode();
+            Assert.That(sheet.Presentations, Is.Zero); Assert.That(creations, Is.Zero); Assert.That(evidence.Reads, Is.Zero);
+        }
+
+        [Test] public void FailedPresentationAndDuplicateCallbacksLeaveCachedOwnershipUntouched()
+        {
+            Own();
+            using var coordinator = Coordinator();
+            coordinator.RedeemOfferCode();
+            var callback = sheet.Complete;
+            sheet.Close(OfferCodeRedemptionResult.Unavailable);
+            callback(OfferCodeRedemptionResult.Closed);
+            Assert.That(coordinator.IsOwned, Is.True);
+            Assert.That(coordinator.Status, Is.EqualTo(MonetizationStatus.OfferCodeUnavailable));
+            Assert.That(client.Fetches, Is.EqualTo(1));
+        }
+
+        [Test] public void OldSheetCallbackCannotCloseNewRedemptionIntent()
+        {
+            using var coordinator = Coordinator();
+            coordinator.RedeemOfferCode(); var old = sheet.Complete;
+            sheet.Close(OfferCodeRedemptionResult.Closed);
+            coordinator.RedeemOfferCode();
+            old(OfferCodeRedemptionResult.Unavailable);
+            Assert.That(coordinator.IsRedeemingOfferCode, Is.True);
+            Assert.That(coordinator.Status, Is.EqualTo(MonetizationStatus.Busy));
+            sheet.Close(OfferCodeRedemptionResult.Closed);
+            Assert.That(coordinator.IsRedeemingOfferCode, Is.False);
+        }
+
+        [Test] public void SuccessfulRedemptionUsesVerifiedGrantAndDurableFinalizationOnly()
+        {
+            var store = new MemoryMonetizationStateStore();
+            using var coordinator = Coordinator(store);
+            coordinator.RedeemOfferCode();
+            client.EmitPaid(Paid());
+            Assert.That(coordinator.IsOwned, Is.False, "unverified system/store success never grants");
+            Own("123");
+            client.BeforeConfirm = _ => {
+                Assert.That(store.TryLoad(out var saved), Is.True);
+                Assert.That(saved.Access, Is.EqualTo(AccessState.Owned));
+                Assert.That(saved.UnfinishedTransaction, Is.Not.Empty);
+            };
+            client.EmitPaid(Paid());
+            Assert.That(coordinator.IsOwned, Is.True);
+            Assert.That(client.Confirms, Is.EqualTo(1));
+            sheet.Close(OfferCodeRedemptionResult.Closed);
+            client.EmitPaid(Paid());
+            Assert.That(client.Confirms, Is.EqualTo(1), "duplicate delivery cannot finish twice while confirmation is outstanding");
+            Own();
+            client.EmitConfirmed(new ConfirmedOrder(new Cart(new CartItem(product)), new Info("123")));
+            Assert.That(coordinator.Snapshot.UnfinishedTransaction, Is.Empty);
+            Assert.That(coordinator.Snapshot.LastFinishedTransaction, Is.Not.Empty);
+        }
+
+        [Test] public void OfflineClosedSheetAndLateRedemptionReuseLiveStoreUpdates()
+        {
+            using var coordinator = Coordinator();
+            coordinator.RedeemOfferCode();
+            client.FetchFailure = true;
+            sheet.Close(OfferCodeRedemptionResult.Closed);
+            Assert.That(coordinator.IsOwned, Is.False); Assert.That(coordinator.IsBusy, Is.False);
+            Assert.That(coordinator.Snapshot.PendingPurchase, Is.False);
+            Own("123"); client.EmitPaid(Paid());
+            Assert.That(coordinator.IsOwned, Is.True); Assert.That(client.Confirms, Is.EqualTo(1));
+        }
+
+        [Test] public void PreFirstLaunchRedemptionUsesFreshStateRefreshAndExistingJournal()
+        {
+            Own("123");
+            client.Inventory = new Orders(Array.Empty<ConfirmedOrder>(), new[] { Paid() }, Array.Empty<DeferredOrder>());
+            var store = new MemoryMonetizationStateStore();
+            using var coordinator = Coordinator(store);
+            Assert.That(coordinator.IsOwned, Is.True); Assert.That(sheet.Presentations, Is.Zero);
+            Assert.That(client.Confirms, Is.EqualTo(1));
+            Assert.That(store.TryLoad(out var saved), Is.True);
+            Assert.That(saved.StoreNamespace, Is.EqualTo(ApplePurchaseService.StoreNamespace));
+            Assert.That(saved.EvidenceReference, Is.EqualTo("opaque-proof"));
+        }
+
+        [Test] public void ExternalResumeRefreshPreservesOfflineCacheAndHonorsRevocation()
+        {
+            using var coordinator = Coordinator();
+            Own(); coordinator.RefreshPurchases();
+            Assert.That(coordinator.IsOwned, Is.True); Assert.That(sheet.Presentations, Is.Zero);
+            client.FetchFailure = true; coordinator.RefreshPurchases();
+            Assert.That(coordinator.IsOwned, Is.True, "offline errors do not revoke externally redeemed ownership");
+            client.FetchFailure = false;
+            evidence.Proof = new AppleEvidence { state = 2, complete = true };
+            client.EmitRevoked(ProductId);
+            Assert.That(coordinator.IsOwned, Is.False);
+            Assert.That(coordinator.Snapshot.Access, Is.EqualTo(AccessState.Revoked));
+        }
+
+        [Test] public void ClosedSheetDoesNotEraseDeferredPurchaseReleaseBlocker()
+        {
+            using var coordinator = Coordinator();
+            client.EmitDeferred(new DeferredOrder(new Cart(new CartItem(product)), new Info("deferred")));
+            coordinator.RedeemOfferCode(); sheet.Close(OfferCodeRedemptionResult.Closed);
+            Assert.That(coordinator.Snapshot.PendingPurchase, Is.True);
+            Assert.That(coordinator.CanPurchase, Is.False); Assert.That(coordinator.IsOwned, Is.False);
+        }
+
+        [Test] public void DisposedRedemptionIgnoresLateSheetAndStoreCallbacks()
+        {
+            var coordinator = Coordinator(); coordinator.RedeemOfferCode();
+            var callback = sheet.Complete;
+            coordinator.Dispose(); service.Dispose();
+            callback(OfferCodeRedemptionResult.Closed);
+            Assert.That(sheet.Disposed, Is.True);
+            Assert.That(client.Fetches, Is.EqualTo(1));
+        }
 
         [Test] public void DisabledCompositionDoesNotInitializeStoreOrEvidence()
         {
@@ -446,6 +588,15 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
             public bool Fail;
             public bool TryLoad(out MonetizationState state) => store.TryLoad(out state);
             public bool TryCommit(MonetizationState state, long revision) => !Fail && store.TryCommit(state, revision);
+        }
+        private sealed class FakeOfferCodeSheet : IAppleOfferCodeSheet
+        {
+            public int Presentations;
+            public bool Disposed;
+            public Action<OfferCodeRedemptionResult> Complete;
+            public void Present(Action<OfferCodeRedemptionResult> complete) { Presentations++; Complete = complete; }
+            public void Close(OfferCodeRedemptionResult result) { var callback = Complete; Complete = null; callback(result); }
+            public void Dispose() { Disposed = true; Complete = null; }
         }
         private sealed class FakeEvidence : IAppleEvidence
         {

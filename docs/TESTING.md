@@ -1,5 +1,36 @@
 # Testing Strategy
 
+## Issue #65 Apple Offer Code gate
+
+The [implementation, OS/API limits and owner-only test matrix](APPLE_OFFER_CODES.md)
+extend the monetization RC gate with native sheet and external/pre-first-launch
+redemption, invalid/expired/duplicate/cancelled codes, delayed/offline delivery,
+restore/revocation and interrupted finalization. Automated fake-driven contracts
+are separate from owner StoreKit Test and Apple Sandbox acceptance.
+Production remains disabled; #82 remains an independent hard release blocker.
+
+2026-10-23 corrected owner report for `87772f2`: Sandbox **started Owned**;
+a first explicit Restore changed it to **Unowned before redemption**. A real
+Sandbox code then changed **Unowned → Owned**, retained after restart and a second
+Restore. Native sheet/cancellation pass. No purchase-history reset occurred.
+This resolves the previously stated fresh-grant integration blocker. The initial
+Restore transition is permitted by the reconciliation contract; its actual
+store/account/cache cause is unknown, and no separate defect is established.
+Independent QA found no new functional blocker.
+
+Local Xcode code redemption/new grant remain **NOT TESTED**; its sheet/cancellation
+and retained-ownership restart/Restore passes remain distinct from actual Sandbox
+evidence. Remaining physical RC coverage is unclaimed under #65/#67. Assess normal
+merge gates for disabled develop integration without closing #65 or waiving #82.
+[Corrected exact sequence and assessment](evidence/issue65/owner-validation-2026-10-23.json).
+
+Candidate `87772f283bf5ca14dcd477ca26b404a02faf9725`: pinned compile,
+focused **80/80**, full EditMode **578/578**, Python **51/51**, Swift compatibility
+typechecks, repository/whitespace checks and independent QA pass. Fresh unsigned
+native iOS build passes with linked bridge and matching ARM64 dSYMs. Desktop
+captures cover EN/pt-BR/es. These automated results predate the scoped owner reports
+above and do not expand their coverage. [Exact evidence and limits](evidence/issue65/validation.json).
+
 ## Latest #64 / PR #79 integration validation — 2026-10-22
 
 Synchronized source **`275b20a27a122da1a7f04a5c6446b0933cb72221`** includes latest

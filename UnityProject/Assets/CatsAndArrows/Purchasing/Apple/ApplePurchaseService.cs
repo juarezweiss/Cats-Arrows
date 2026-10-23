@@ -12,13 +12,14 @@ namespace CatsAndArrows.Purchasing.Apple
 {
     public enum ApplePurchaseEnvironment { Production, SandboxReview }
     // Issue #64. Application-thread adapter. Constructing it never connects to a store.
-    public sealed class ApplePurchaseService : PurchasePort, IDisposable
+    public sealed class ApplePurchaseService : PurchasePort, IOfferCodeRedemptionService, IDisposable
     {
         public const string LogicalProduct = "RemoveAllAds";
         public const string StoreNamespace = "apple-storekit2-v1";
         private readonly string productId;
         private readonly Func<IAppleStoreClient> createClient;
         private readonly IAppleEvidence evidence;
+        private readonly IAppleOfferCodeSheet offerCodeSheet;
         private readonly Func<double> clock;
         private readonly Dictionary<string, PendingOrder> unfinished = new Dictionary<string, PendingOrder>();
         private readonly HashSet<string> verifiedUnfinished = new HashSet<string>();
@@ -68,7 +69,7 @@ namespace CatsAndArrows.Purchasing.Apple
         }
 
         internal ApplePurchaseService(string appleProductId, Func<IAppleStoreClient> createClient,
-            IAppleEvidence evidence, Func<double> clock, bool recoveredPendingPurchase = false)
+            IAppleEvidence evidence, Func<double> clock, bool recoveredPendingPurchase = false, IAppleOfferCodeSheet offerCodeSheet = null)
         {
             if (string.IsNullOrWhiteSpace(appleProductId) || appleProductId.Trim() != appleProductId)
                 throw new ArgumentException("An owner-approved Apple product mapping is required.", nameof(appleProductId));
@@ -76,6 +77,7 @@ namespace CatsAndArrows.Purchasing.Apple
             this.createClient = createClient ?? throw new ArgumentNullException(nameof(createClient));
             this.evidence = evidence ?? throw new ArgumentNullException(nameof(evidence));
             this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
+            this.offerCodeSheet = offerCodeSheet ?? new NativeAppleOfferCodeSheet();
             // Native inventory cannot enumerate unpaid Ask to Buy. Recover the coordinator's
             // normalized pending flag too, so a failed private-marker write cannot erase it.
             deferred = recoveredPendingPurchase;
@@ -85,6 +87,12 @@ namespace CatsAndArrows.Purchasing.Apple
             !string.IsNullOrWhiteSpace(product.metadata?.localizedPriceString), product?.metadata?.localizedPriceString);
         public bool VerifyCachedOwnership(string storeNamespace, string reference) => !disposed &&
             storeNamespace == StoreNamespace && !string.IsNullOrEmpty(reference) && evidence.VerifyCached(productId, reference);
+
+        public void RedeemOfferCode(Action<OfferCodeRedemptionResult> complete)
+        {
+            if (disposed) { complete(OfferCodeRedemptionResult.Unavailable); return; }
+            offerCodeSheet.Present(complete);
+        }
 
         public void Refresh(Action<PurchaseResult> complete)
         {
@@ -338,7 +346,7 @@ namespace CatsAndArrows.Purchasing.Apple
         {
             if (disposed) return;
             disposed = true; generation++;
-            client?.Dispose(); evidence.Dispose(); queries.Clear(); purchase = null; finish = null; Updated = null;
+            client?.Dispose(); evidence.Dispose(); offerCodeSheet.Dispose(); queries.Clear(); purchase = null; finish = null; Updated = null;
         }
     }
 }

@@ -649,7 +649,7 @@ namespace CatsAndArrows.UI
         private string TakeNotification()
         {
             if (notificationScreen != Screen || !ReferenceEquals(notificationSession, ActiveSession) ||
-                CommercialBusy || loading || !applicationFocused || applicationPaused || Modal != null) return null;
+                CommercialBusy || monetization.IsRedeemingOfferCode || loading || !applicationFocused || applicationPaused || Modal != null) return null;
             var status = monetization.Status;
             if (status == MonetizationStatus.None) { notificationScreen = null; return null; }
             if (status == MonetizationStatus.Busy) return null;
@@ -709,7 +709,10 @@ namespace CatsAndArrows.UI
                 purchase.text += " · " + monetization.Offer.LocalizedPrice;
             purchase.SetEnabled(enabled && monetization.CanPurchase && !CommercialBusy);
             var restore = AddSettingsRow(parent, "settings-restore", "monetization.restore", RestorePurchases);
-            restore.SetEnabled(enabled && !CommercialBusy);
+            restore.SetEnabled(enabled && !CommercialBusy && !monetization.IsRedeemingOfferCode);
+            var redeem = AddSettingsRow(parent, "settings-redeem-offer-code", "monetization.redeem", RedeemOfferCode);
+            redeem.tooltip = redeem.text;
+            redeem.SetEnabled(enabled && monetization.CanRedeemOfferCode);
             if (enabled && monetization.Offer?.IsReviewOffer == true)
                 parent.Add(Paragraph(text.GetText("monetization.review")));
         }
@@ -723,13 +726,26 @@ namespace CatsAndArrows.UI
             if (loading || CommercialBusy || Screen != "settings" || Modal != null) return;
             CancelInteraction(); BeginNotification("settings-restore"); monetization?.RestorePurchases();
         }
+        public void RedeemOfferCode()
+        {
+            if (loading || CommercialBusy || Screen != "settings" || Modal != null || monetization?.CanRedeemOfferCode != true) return;
+            CancelInteraction(); BeginNotification("settings-redeem-offer-code"); monetization.RedeemOfferCode();
+        }
         private void OnMonetizationChanged()
         {
             var message = TakeNotification();
             if (loading) return;
             if (Screen == "settings")
             {
-                if (!CommercialBusy && Modal == null) ShowSettings();
+                // Keep the originating notification intent while Apple's sheet is open.
+                // Rebuilding Settings would reset it before unsupported/error dismissal.
+                if (monetization.IsRedeemingOfferCode)
+                {
+                    menu.Q<Button>("settings-remove-ads")?.SetEnabled(false);
+                    menu.Q<Button>("settings-restore")?.SetEnabled(false);
+                    menu.Q<Button>("settings-redeem-offer-code")?.SetEnabled(false);
+                }
+                else if (!CommercialBusy && Modal == null) ShowSettings();
                 menu.SetEnabled(!CommercialBusy && Modal == null);
             }
             else if (Screen == "play")

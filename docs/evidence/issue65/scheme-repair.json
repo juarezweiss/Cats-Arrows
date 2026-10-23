@@ -1,0 +1,102 @@
+{
+  "schema": "paws-issue65-xcode-scheme-repair-v1",
+  "date": "2026-10-23",
+  "sourceSha": "87772f283bf5ca14dcd477ca26b404a02faf9725",
+  "project": "Builds/Issue65-OfferCodes-87772f2/Unity-iPhone.xcodeproj",
+  "crashReports": [
+    {
+      "file": "Xcode-2026-10-23-102645.ips",
+      "sha256": "19eeb7df34ca483425a313cf3102a4411e6de3ce293b617dafa7ae29b08f948e",
+      "exception": "EXC_CRASH",
+      "signal": "SIGABRT",
+      "relevantStack": [
+        "-[NSString(DVTFoundationClassAdditions) dvt_stringByMakingAbsolutePathWithBasePath:].cold.2",
+        "-[NSString(DVTFoundationClassAdditions) dvt_stringByMakingAbsolutePathWithBasePath:]",
+        "-[IDEStoreKitLaunchActionOptionViewController _computeAbsolutePathForWorkspaceRelativePath:]",
+        "-[IDEStoreKitLaunchActionOptionViewController _updateMenuSelection:]",
+        "__55-[IDEStoreKitLaunchActionOptionViewController loadView]_block_invoke.38"
+      ]
+    },
+    {
+      "file": "Xcode-2026-10-23-102352.ips",
+      "sha256": "bb83c44673478487d66926bea4e755182f9b50aa7ff200f31fb8c80030e1d39e",
+      "exception": "EXC_CRASH",
+      "signal": "SIGABRT",
+      "relevantStack": [
+        "-[NSString(DVTFoundationClassAdditions) dvt_stringByMakingAbsolutePathWithBasePath:].cold.2",
+        "-[NSString(DVTFoundationClassAdditions) dvt_stringByMakingAbsolutePathWithBasePath:]",
+        "-[IDEStoreKitLaunchActionOptionViewController _computeAbsolutePathForWorkspaceRelativePath:]",
+        "-[IDEStoreKitLaunchActionOptionViewController _updateMenuSelection:]",
+        "__55-[IDEStoreKitLaunchActionOptionViewController loadView]_block_invoke.38"
+      ]
+    },
+    {
+      "file": "Xcode-2026-10-23-102235.ips",
+      "sha256": "058d10ae79b41edbfadec3f65588d9b835fc269becea71aad50216ba9069defe",
+      "exception": "EXC_CRASH",
+      "signal": "SIGABRT",
+      "relevantStack": [
+        "-[NSString(DVTFoundationClassAdditions) dvt_stringByMakingAbsolutePathWithBasePath:].cold.2",
+        "-[NSString(DVTFoundationClassAdditions) dvt_stringByMakingAbsolutePathWithBasePath:]",
+        "-[IDEStoreKitLaunchActionOptionViewController _computeAbsolutePathForWorkspaceRelativePath:]",
+        "-[IDEStoreKitLaunchActionOptionViewController _updateMenuSelection:]",
+        "__55-[IDEStoreKitLaunchActionOptionViewController loadView]_block_invoke.38"
+      ]
+    }
+  ],
+  "cause": "Agent-generated absolute StoreKitConfigurationFileReference was supplied to Xcode workspace-relative path resolution; all three crashes share that assertion stack. Replacing it with the standard relative reference allows both scheme editors to open.",
+  "localScheme": {
+    "name": "Paws 65 StoreKit Test",
+    "reference": "../../Paws65-FreeOffer.storekit",
+    "configuration": "Builds/Issue65-OfferCodes-87772f2/Paws65-FreeOffer.storekit",
+    "configurationSha256": "00a367df5fe4c836ac746d4fd6251c7d236995ba7a823b744b6068aeb96e11f1",
+    "productId": "com.jweiss.paws.removeads",
+    "productType": "NonConsumable",
+    "freeOffer": {
+      "internalID": "9098D8EE",
+      "paymentMode": "free",
+      "referenceName": "Paws65-Free-Local"
+    },
+    "askToBuy": false,
+    "createdUsing": "Xcode native new local StoreKit template (sync unchecked); existing approved product metadata copied; free offer created/saved with Xcode Offer Codes editor",
+    "nativeEditorVerifiedFreeOffer": true,
+    "schemeEditorVerifiedConfiguration": true
+  },
+  "sandboxScheme": {
+    "name": "Paws 65 Sandbox",
+    "storeKitConfiguration": "None",
+    "noStoreKitFileReference": true,
+    "schemeEditorVerifiedNone": true,
+    "actualRuntimeSandboxEnvironment": "not exercised; owner account/sheet environment checks still required"
+  },
+  "configurationValidation": {
+    "xmlWellFormed": true,
+    "allBlueprintTargetReferencesExist": true,
+    "relativeReferenceResolvesToLocalFile": true,
+    "bothUseRelease": true,
+    "debugExecutable": false,
+    "bothResolveToSignedApp": true,
+    "signedApp": "Builds/Issue65iPhone-87772f2/Build/Products/Release-iphoneos/Paws.app",
+    "noPreOrPostLaunchActions": true,
+    "noStateRestorationReset": true,
+    "bothSchemeEditorsOpenedWithoutCrash": true
+  },
+  "preservation": {
+    "signedAppTreeSha256": "ac5afdb2747eeb70a28b7f29989da0fb2691be767509c4868fe937bddf48fbc3",
+    "originalStoreKitSha256": "6be165487ef9292dfc58f1240e9cda79395e4410104876d01b0078f90dad9fb1"
+  },
+  "signedAppUnchanged": true,
+  "originalStoreKitConfigurationUnchanged": true,
+  "transactionHistoryNote": "New local configuration does not establish a fresh/unowned baseline. Existing StoreKit test history and app ownership cache are not reset.",
+  "performed": {
+    "rebuild": false,
+    "reinstall": false,
+    "appLaunch": false,
+    "accountActions": false,
+    "transactionReadOrReset": false,
+    "realPurchases": false,
+    "redemptionTest": false,
+    "physicalReview": "pending owner"
+  },
+  "releaseBlocker82": "open; no change"
+}
