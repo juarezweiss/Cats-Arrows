@@ -137,7 +137,16 @@ physical review): [EN Settings](evidence/issue65/settings-en.png),
 [unsupported pt-BR](evidence/issue65/OfferCodeUnsupported-pt-BR.png),
 [unavailable ES](evidence/issue65/OfferCodeUnavailable-es.png).
 
-Automated results and exact candidate/artifact provenance are recorded in
-`docs/evidence/issue65/validation.json` after validation. Owner-operated Xcode
-StoreKit Test and Apple Sandbox code redemption remain pending until an explicit
-human result is recorded; automated verified-evidence fakes cannot satisfy them.
+Candidate **`87772f283bf5ca14dcd477ca26b404a02faf9725`** passes pinned Unity
+6000.3.25f1 compilation, focused **80/80**, full EditMode **578/578**, Python
+runner contracts **51/51**, repository validation/whitespace and independent QA.
+Swift typechecks against the installed iOS 27.1 SDK at deployment targets 15.0
+and 16.3. Fresh development export and **unsigned** Xcode 27.1 native build pass;
+the new bridge symbol is linked, ARM64 app/framework dSYMs match, iOS 16.3 and all
+current scene/settings/branding/package inputs are retained. No signing, install,
+launch, purchase, code redemption, App Store change or upload followed.
+
+[Exact source, check results and artifact provenance](evidence/issue65/validation.json)
+record the candidate and ignored local build paths. Owner-operated Xcode StoreKit
+Test and Apple Sandbox code redemption remain pending until an explicit human
+result is recorded; automated verified-evidence fakes cannot satisfy them.

@@ -9,6 +9,13 @@ restore/revocation and interrupted finalization. Automated fake-driven contracts
 are separate from pending owner StoreKit Test and Apple Sandbox acceptance.
 Production remains disabled; #82 remains an independent hard release blocker.
 
+Candidate `87772f283bf5ca14dcd477ca26b404a02faf9725`: pinned compile,
+focused **80/80**, full EditMode **578/578**, Python **51/51**, Swift compatibility
+typechecks, repository/whitespace checks and independent QA pass. Fresh unsigned
+native iOS build passes with linked bridge and matching ARM64 dSYMs. Desktop
+captures cover EN/pt-BR/es; physical/native sheet and real code acceptance remain
+pending. [Exact evidence and limits](evidence/issue65/validation.json).
+
 ## Latest #64 / PR #79 integration validation — 2026-10-22
 
 Synchronized source **`275b20a27a122da1a7f04a5c6446b0933cb72221`** includes latest

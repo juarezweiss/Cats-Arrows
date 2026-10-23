@@ -1,0 +1,227 @@
+{
+  "schema": "paws-issue65-offer-codes-v1",
+  "date": "2026-10-22",
+  "issue": 65,
+  "foundationIssue": 64,
+  "independentReleaseBlocker": 82,
+  "sourceSha": "87772f283bf5ca14dcd477ca26b404a02faf9725",
+  "developSha": "646acfe3f294dcb472144bd97197254a26d6cac5",
+  "branch": "feat/65-apple-offer-codes",
+  "productionMonetizationEnabled": false,
+  "sourceHashes": {
+    "UnityProject/Assets/CatsAndArrows/Monetization/MonetizationContracts.cs": "45ce12a5571b1966d671da08cef1715cebbde18f7a12a0a026888e31e0c99867",
+    "UnityProject/Assets/CatsAndArrows/Monetization/MonetizationCoordinator.cs": "928b542a9aeb0897864683272e1a7d939723121f7dda1c1bcb9b7d6e03fa086a",
+    "UnityProject/Assets/CatsAndArrows/Purchasing/Apple/AppleOfferCodeSheet.cs": "2a0feb87c2a7d3835c3ec7cabf138bc9f55223b91a3dfadedc542592d04810d2",
+    "UnityProject/Assets/CatsAndArrows/Purchasing/Apple/AppleOfferCodeSheet.cs.meta": "8e9c5a1a87a591ce6f372070a8211da3581b858024615c74ea7c0ae3dfd6763a",
+    "UnityProject/Assets/CatsAndArrows/Purchasing/Apple/ApplePurchaseService.cs": "54b5015928df464f462f9a088e40230881319b7ae97853817bc41ac4700aad3b",
+    "UnityProject/Assets/CatsAndArrows/Purchasing/Apple/Plugins/iOS/PawsAppleOfferCode.swift": "4f3cdb85079a2b88053f4710413bea10db0709bb1850248e495bdfe25b9d134a",
+    "UnityProject/Assets/CatsAndArrows/Purchasing/Apple/Plugins/iOS/PawsAppleOfferCode.swift.meta": "973ee3be87864a6fba1c29660ae2e3b2093e2dda47c70290a094d64c1976e870",
+    "UnityProject/Assets/CatsAndArrows/Purchasing/Apple/Tests/Editor/ApplePurchaseServiceTests.cs": "ae29556361ecd42e8154a62bddcc3f3e41fa8921aaec82aed09c3c1008236746",
+    "UnityProject/Assets/CatsAndArrows/Tests/EditMode/MenuPresentationTests.cs": "0377d5fd81c42f78979b3cd0b60928a27559f9977333046effacbf0361cb829a",
+    "UnityProject/Assets/CatsAndArrows/Tests/EditMode/MonetizationShellTests.cs": "6b9146b1e268e8f782cc105265ff3e3235693be9ef33ec3ab8c6b37528943b5a",
+    "UnityProject/Assets/CatsAndArrows/UI/GameShellView.cs": "aa7d2dacc4cb285bcc323071493556678be768407b1acc3c5deffbc3b410178f",
+    "UnityProject/Assets/CatsAndArrows/UI/MonetizationLocalization.cs": "04d76fbf006c278b3cdffa167e71106d50754ac6540d22c4a9489f1455e46d4b"
+  },
+  "unchangedDevelopInputs": {
+    "UnityProject/ProjectSettings/ProjectSettings.asset": {
+      "sha256": "d1e14ff97f0c9d9ecc0f406e65973e59e4ac116ec2e10b087ec32b71204cf3b5",
+      "matchesDevelop": true
+    },
+    "UnityProject/Assets/CatsAndArrows/Scenes/Paws.unity": {
+      "sha256": "4464faaa6e1577af0b6f0b65843f09cf5ceffceedd799ccbaa37bc66a440e587",
+      "matchesDevelop": true
+    },
+    "UnityProject/Assets/CatsAndArrows/UI/PawsAppIcon.png": {
+      "sha256": "b891542a9a84aafcf079f222b3002037ee07f80f9dbd457059f8262fe475a788",
+      "matchesDevelop": true
+    },
+    "UnityProject/Assets/Resources/MenuPaw.png": {
+      "sha256": "bf7e5ee38e7b5ab28e6d4d15d8d42d61f77bf30f443a44b71e765ceb34cd2afe",
+      "matchesDevelop": true
+    },
+    "UnityProject/Packages/manifest.json": {
+      "sha256": "3c94b67e0c7916b3d49c2a9effdecfeed56835399ce77ef14ebc1c72bcb66e4b",
+      "matchesDevelop": true
+    },
+    "UnityProject/Packages/packages-lock.json": {
+      "sha256": "796b99659f218a618e112e512234278701cce587ccf873edd993b217162eb362",
+      "matchesDevelop": true
+    },
+    "UnityProject/Assets/CatsAndArrows/UI/PawsBootstrap.cs": {
+      "sha256": "62c6e348ae1e6957126bb0b5c4f578165e3b0dd900ef11700f8f67a998d9af10",
+      "matchesDevelop": true
+    }
+  },
+  "ownerUncommittedDocumentsPreserved": true,
+  "ownerDocumentPatchSha256": "fb838f90be2af051d886fdd839da20952d66af5e55c5149c1d5a9e659741a3f6",
+  "checks": {
+    "compile": {
+      "path": ".unity-results/compile.cIJrRM/Editor.log",
+      "sha256": "289cf9a8c0804b6c64a66788f3fd740d79aa20936da84136ae634c19135ec94b",
+      "exitCode": 0
+    },
+    "focused": {
+      "path": ".unity-results/issue65-focused.TcCLTv/test-results.xml",
+      "sha256": "db2aeaf098f9a04a718a776e16a74a734cd2d29ae2170f2ac5fb70c0f6d3f2a6",
+      "successfulEditorExit": true,
+      "total": 80,
+      "passed": 80,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "fullEditMode": {
+      "path": ".unity-results/editmode.U5I7CZ/test-results.xml",
+      "sha256": "86dcdb51fae436e2684bed0d4f9dd2695a0912c729ac425777b02e61c1472ace",
+      "successfulEditorExit": true,
+      "total": 578,
+      "passed": 578,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "python": {
+      "command": "python3 -m unittest discover -s scripts/tests -v",
+      "passed": 51,
+      "exitCode": 0,
+      "evidence": "tool output in implementation chat; runner scripts unchanged"
+    },
+    "swift": {
+      "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS27.1.sdk",
+      "checks": [
+        {
+          "target": "arm64-apple-ios15.0",
+          "exit_code": 0
+        },
+        {
+          "target": "arm64-apple-ios16.3",
+          "exit_code": 0
+        }
+      ]
+    },
+    "independentQA": "No blocking findings.",
+    "repository": "scripts/validate.sh and git diff --check passed",
+    "supersededFocusedAttempt": {
+      "path": ".unity-results/issue65-focused.rl7Vw2/test-results.xml",
+      "passed": 78,
+      "failed": 1,
+      "resolution": "Settings redraw erased notification intent while redemption was open; corrected and passing in final focused/full suites"
+    }
+  },
+  "reviewExport": {
+    "path": "Builds/Issue65-OfferCodes-87772f2",
+    "log": ".unity-results/apple-iap-export.1IbU0K/Editor.log",
+    "logSha256": "38ab63681e8249c8b78e28d3d4c902a00f51631638d6414fb3b90b49f4e7a762",
+    "receipt": {
+      "unityVersion": "6000.3.25f1",
+      "productId": "com.jweiss.paws.removeads",
+      "sourceSha": "87772f283bf5ca14dcd477ca26b404a02faf9725",
+      "purpose": "issue64-owner-StoreKit-sandbox-review",
+      "iapPackage": "5.3.1",
+      "purchaseEnvironment": "SandboxReview",
+      "reviewMonetizationEnabled": true,
+      "adProviderEnabled": false,
+      "productionMonetizationEnabled": false,
+      "developmentBuild": true,
+      "simulateAskToBuy": false
+    },
+    "exitCode": 0
+  },
+  "uiEvidence": {
+    "kind": "desktop mounted UI with controlled purchase/sheet outcomes, not physical/native sheet acceptance",
+    "functionalPortraits": [
+      "320x568",
+      "390x844",
+      "430x932"
+    ],
+    "capturedResolution": "390x844",
+    "locales": [
+      "en",
+      "pt-BR",
+      "es"
+    ],
+    "captureRun": ".unity-results/issue65-focused.TcCLTv",
+    "files": {
+      "docs/evidence/issue65/OfferCodeUnavailable-en.png": "3670fdbbd2522fe104012e9e3caf368f853f54c2e8c4c093ed41878f812595ec",
+      "docs/evidence/issue65/OfferCodeUnavailable-es.png": "712b4b9c4a95d29e3ab4490c5347feac3938d1e9daf130d31d9cb8bb7d788524",
+      "docs/evidence/issue65/OfferCodeUnavailable-pt-BR.png": "e607d95cb2decb6c76396e82ffc1b293af53522a4decce24e636e7504758fc58",
+      "docs/evidence/issue65/OfferCodeUnsupported-en.png": "7ca4890607f7f91b742d8a74726047dd123c011f072a186dc583231cca4f3ae0",
+      "docs/evidence/issue65/OfferCodeUnsupported-es.png": "bceae69d31c98aba4528b37b31f4eeddb0d941a3691b1463e9176d97d80c668c",
+      "docs/evidence/issue65/OfferCodeUnsupported-pt-BR.png": "e288f41a76a1fea192b0486ca312d8e14f389da3d7ab3586b743694491a8ff37",
+      "docs/evidence/issue65/settings-en.png": "e0c5f750b4cdfec92f04cfeb5a8cf73f8f99eef37ca8d0ad8c6675bb3c20999e",
+      "docs/evidence/issue65/settings-es.png": "f8041f4d78fd4f8f27b4f909aeb8acc0ead350e63ed1da136ac90221b5123c02",
+      "docs/evidence/issue65/settings-pt-BR.png": "4fb3819f771488d6c77fd1c7b616e907f0576d5a3b20714ccd7981773cc3dc70"
+    },
+    "visualInspection": "all nine captures inspected; localized row and error messages fit"
+  },
+  "coverageLimits": {
+    "presentationOutcomes": "Controlled Closed/Unsupported/Unavailable; system cancellation/invalid/expired/duplicate are intentionally indistinguishable at the compatible sheet boundary and cannot grant ownership",
+    "verifiedFlow": "Real adapter/coordinator with controlled verified evidence: success, duplicate update, pre-first-launch inventory, external resume, offline/late update, revocation, deferred preservation, durable finalization and disposal",
+    "inheritedRegressionTests": [
+      "PaidOfflineCacheBypassesBothPlacementsAfterRestart",
+      "VerifiedRevocationCreatesNoCatchupDebtOnlySubsequentFourthWin",
+      "FailedStateCommitRetainsVerifiedMemoryAccessWithoutFinishing",
+      "FinishFailureKeepsJournalAndRestartReplays",
+      "CrashAfterNativeFinishBeforeJournalClearRecoversIdempotently"
+    ],
+    "nativeSheetInteraction": "pending owner",
+    "xcodeStoreKitOfferRedemption": "pending owner",
+    "sandboxOfferCodeRedemption": "pending owner",
+    "physicalIphoneReview": "pending owner",
+    "runtimeNetworkObservation": "not performed",
+    "signed": false,
+    "installed": false,
+    "launchedOnDevice": false,
+    "appStoreChanges": false,
+    "productionCodeGenerationOrDistribution": false,
+    "uploadedOrReleased": false,
+    "releaseBlocker82": "open; no Ask to Buy lifecycle fix or acceptance inferred"
+  },
+  "nativeBuild": {
+    "result": "BUILD SUCCEEDED",
+    "exitCode": 0,
+    "xcodeVersion": "27.1 (27A9275)",
+    "log": ".unity-results/issue65-xcode-87772f2/xcodebuild.log",
+    "logSha256": "bcb48806638a039c7b49e23b589c5e65c8e3e36dd030dc89db8b4085286187cd",
+    "app": "Builds/Issue65-iOS-87772f2/Build/Products/Release-iphoneos/Paws.app",
+    "unsigned": true,
+    "identity": {
+      "CFBundleIdentifier": "com.jweiss.paws",
+      "CFBundleDisplayName": "Paws",
+      "CFBundleShortVersionString": "0.1.0",
+      "CFBundleVersion": "1",
+      "MinimumOSVersion": "16.3",
+      "UIDeviceFamily": [
+        1
+      ],
+      "UISupportedInterfaceOrientations": [
+        "UIInterfaceOrientationPortrait"
+      ]
+    },
+    "binaries": [
+      {
+        "path": "Builds/Issue65-iOS-87772f2/Build/Products/Release-iphoneos/Paws.app/Paws",
+        "sha256": "f322066b50dcc9f5f8257433cfeabbc6f8033e46d78a0e18e76f7bf8a597cb7b",
+        "dsym": "Builds/Issue65-iOS-87772f2/Build/Products/Release-iphoneos/Paws.app.dSYM/Contents/Resources/DWARF/Paws",
+        "dsymSha256": "0c35748b992bb7c7790173e0a0e1936a46f762bdfae1f052da4db92693032b07",
+        "uuid": "3CFD83D0-123B-34A7-BD0B-A41B8DE9CDBE",
+        "architecture": "arm64"
+      },
+      {
+        "path": "Builds/Issue65-iOS-87772f2/Build/Products/Release-iphoneos/Paws.app/Frameworks/UnityFramework.framework/UnityFramework",
+        "sha256": "9bba2e2bf69e2ee935fc9f7f392cdcb999aeb705da4df01712a956c5fef9065a",
+        "dsym": "Builds/Issue65-iOS-87772f2/Build/Products/Release-iphoneos/UnityFramework.framework.dSYM/Contents/Resources/DWARF/UnityFramework",
+        "dsymSha256": "0a7e7a63c0fff697f2e817884e67d382a0dd540f1d2bf355d50f0174ee537fbe",
+        "uuid": "B3E60EA5-BB39-349F-9C4D-1373153F71AF",
+        "architecture": "arm64"
+      }
+    ],
+    "requiredNativeSymbols": [
+      "PawsIapPresentOfferCodeSheet",
+      "PawsIapRead",
+      "PawsIapVerifyCache"
+    ],
+    "exportedNativeSourceMatches": true,
+    "exportedIconCount": 10
+  }
+}
