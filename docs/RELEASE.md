@@ -1,5 +1,11 @@
 # Environments, Releases, and Rollback
 
+Apple Offer Code integration (#65) adds the [owner-only redemption matrix](APPLE_OFFER_CODES.md#owner-only-storekit-test-and-sandbox-acceptance)
+to the monetization RC gate (#67). Native sheet, Xcode StoreKit Test and Sandbox
+code results must be recorded before activation; automated contracts or launch
+readiness cannot satisfy physical acceptance. #82 remains a separate hard Paws
+1.0 release blocker, including a release with monetization disabled.
+
 ## Branch/environment model
 - Feature branches: isolated development.
 - `develop`: integration branch; produces internal/dev artifacts.

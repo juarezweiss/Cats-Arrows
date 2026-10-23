@@ -1,5 +1,14 @@
 # Testing Strategy
 
+## Issue #65 Apple Offer Code gate
+
+The [implementation, OS/API limits and owner-only test matrix](APPLE_OFFER_CODES.md)
+extend the monetization RC gate with native sheet and external/pre-first-launch
+redemption, invalid/expired/duplicate/cancelled codes, delayed/offline delivery,
+restore/revocation and interrupted finalization. Automated fake-driven contracts
+are separate from pending owner StoreKit Test and Apple Sandbox acceptance.
+Production remains disabled; #82 remains an independent hard release blocker.
+
 ## Latest #64 / PR #79 integration validation — 2026-10-22
 
 Synchronized source **`275b20a27a122da1a7f04a5c6446b0933cb72221`** includes latest

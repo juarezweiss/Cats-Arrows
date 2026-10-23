@@ -142,16 +142,18 @@ namespace CatsAndArrows.Tests
                 Assert.That(shell.Q<Label>("settings-title").text, Is.EqualTo(messages["settings.title"]));
                 var rows = shell.Q("settings-list").Children().OfType<Button>().ToArray();
                 Assert.That(rows.Select(b => b.name), Is.EqualTo(new[] {
-                    "settings-language", "settings-tutorial", "settings-remove-ads", "settings-restore" }));
+                    "settings-language", "settings-tutorial", "settings-remove-ads", "settings-restore", "settings-redeem-offer-code" }));
                 Assert.That(rows.Select(b => b.text), Is.EqualTo(new[] {
-                    messages["game.language"], messages["tutorial.title"], messages["monetization.remove"], messages["monetization.restore"] }));
+                    messages["game.language"], messages["tutorial.title"], messages["monetization.remove"], messages["monetization.restore"], messages["monetization.redeem"] }));
                 for (var i = 0; i < rows.Length; i++)
                 {
+                    shell.Q<ScrollView>("settings-scroll").ScrollTo(rows[i]); yield return Settle();
                     AssertTarget(rows[i], safe);
                     if (i > 0) Assert.That(rows[i].worldBound.yMin, Is.GreaterThan(rows[i - 1].worldBound.yMax));
                 }
                 Assert.That(rows[2].enabledSelf, Is.False); Assert.That(rows[3].enabledSelf, Is.False);
                 AssertTarget(shell.Q<Button>("settings-back"), safe);
+                shell.Q<ScrollView>("settings-scroll").ScrollTo(rows[0]); yield return Settle();
                 Tap(shell, "settings-language", touch: locale == "es"); yield return Settle();
                 Assert.That(shell.Modal, Is.EqualTo("language"));
                 Assert.That(shell.Q("game-menu").enabledInHierarchy, Is.False);

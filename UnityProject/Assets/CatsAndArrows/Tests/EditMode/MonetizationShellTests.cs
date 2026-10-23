@@ -255,11 +255,13 @@ namespace CatsAndArrows.Tests
                 callback(new AdSignal(AdSignalKind.Closed));
             }
         }
-        private sealed class Purchases : IPurchaseService
+        private sealed class Purchases : IPurchaseService, IOfferCodeRedemptionService
         {
             public event Action<PurchaseResult> Updated { add { } remove { } }
             public bool Owned, OfferAvailable = true;
-            public int Refreshes, PurchaseCalls, RestoreCalls;
+            public int Refreshes, PurchaseCalls, RestoreCalls, Redemptions;
+            public Action<OfferCodeRedemptionResult> RedemptionCallback;
+            public void RedeemOfferCode(Action<OfferCodeRedemptionResult> complete) { Redemptions++; RedemptionCallback = complete; }
             public bool HoldPurchase, HoldRestore;
             public Action<PurchaseResult> PurchaseCallback, RestoreCallback;
             public PurchaseOffer GetOffer() => new PurchaseOffer(OfferAvailable, "review-price", true);
@@ -319,6 +321,95 @@ namespace CatsAndArrows.Tests
             var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
             foreach (var key in messages.Keys.Where(key => key.StartsWith("monetization.status.") && !key.EndsWith("None")))
                 Assert.That(messages[key], Is.Not.Empty, key);
+        }
+
+        private void CaptureOfferCodeEvidence(string name)
+        {
+            var directory = Environment.GetEnvironmentVariable("PAWS_OFFER_CODE_CAPTURE");
+            if (string.IsNullOrEmpty(directory) || SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) return;
+            System.IO.Directory.CreateDirectory(directory);
+            var previous = RenderTexture.active;
+            var image = new Texture2D(panelTexture.width, panelTexture.height, TextureFormat.RGB24, false);
+            try
+            {
+                RenderTexture.active = panelTexture;
+                image.ReadPixels(new Rect(0, 0, image.width, image.height), 0, 0); image.Apply();
+                System.IO.File.WriteAllBytes(System.IO.Path.Combine(directory, name + ".png"), image.EncodeToPNG());
+            }
+            finally { RenderTexture.active = previous; UnityEngine.Object.DestroyImmediate(image); }
+        }
+
+        // Issue #65: retain the Settings row system and accessible targets in every locale/portrait.
+        [UnityTest]
+        public IEnumerator OfferCodeRowFitsPortraitsAndForwardsOneIntentWithoutMutatingBoard()
+        {
+            foreach (var size in new[] { new Vector2(320, 568), new Vector2(390, 844), new Vector2(430, 932) })
+            foreach (var locale in new[] { "en", "pt-BR", "es" })
+            {
+                var purchases = new Purchases { OfferAvailable = false };
+                using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), new Ads(), purchases);
+                yield return Mount(coordinator);
+                var root = host.GetComponent<UIDocument>().rootVisualElement;
+                root.style.width = size.x; root.style.height = size.y;
+                var session = mountedShell.ActiveSession; var marks = session.Marks.ToArray();
+                mountedShell.ShowSettings(); mountedShell.SelectLanguage(locale);
+                yield return null; yield return null;
+                var button = mountedShell.Q<Button>("settings-redeem-offer-code");
+                var messages = GameLocalization.CreateCatalog().GetResource(locale).Messages;
+                Assert.That(button.text, Is.EqualTo(messages["monetization.redeem"]));
+                Assert.That(button.tooltip, Is.EqualTo(button.text));
+                Assert.That(button.enabledInHierarchy, Is.True, "redemption does not require product pricing");
+                Assert.That(button.worldBound.height, Is.GreaterThanOrEqualTo(56));
+                var scroll = mountedShell.Q<ScrollView>("settings-scroll");
+                scroll.ScrollTo(button);
+                yield return null; yield return null;
+                Assert.That(button.worldBound.xMin, Is.GreaterThanOrEqualTo(root.worldBound.xMin));
+                Assert.That(button.worldBound.xMax, Is.LessThanOrEqualTo(root.worldBound.xMax));
+                if (size.x == 390) CaptureOfferCodeEvidence("settings-" + locale);
+                var position = button.worldBound.center;
+                var picked = mountedShell.panel.Pick(position);
+                Assert.That(picked == button || (picked != null && button.Contains(picked)), Is.True, "reachable after scroll");
+                using (var down = PointerDownEvent.GetPooled(new Event { type = EventType.MouseDown, button = 0, mousePosition = position }))
+                { down.target = button; button.SendEvent(down); }
+                using (var up = PointerUpEvent.GetPooled(new Event { type = EventType.MouseUp, button = 0, mousePosition = position }))
+                { up.target = button; button.SendEvent(up); }
+                mountedShell.RedeemOfferCode();
+                Assert.That(purchases.Redemptions, Is.EqualTo(1));
+                Assert.That(mountedShell.Q<Button>("settings-redeem-offer-code").enabledSelf, Is.False);
+                Assert.That(mountedShell.Modal, Is.Null);
+                purchases.RedemptionCallback(OfferCodeRedemptionResult.Closed);
+                Assert.That(mountedShell.Modal, Is.Null, "closure/cancellation alone is not a success or error alert");
+                Assert.That(coordinator.IsOwned, Is.False);
+                Assert.That(coordinator.IsBusy, Is.False);
+                Assert.That(session.Marks, Is.EquivalentTo(marks));
+                mountedShell.BackToGame(); Assert.That(mountedShell.BoardView.InteractionEnabled, Is.True);
+                TearDown(); host = null; panelSettings = null; panelTexture = null;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator UnsupportedAndFailedOfferSheetsUseLocalizedDismissibleAlerts()
+        {
+            foreach (var locale in new[] { "en", "pt-BR", "es" })
+            foreach (var result in new[] { OfferCodeRedemptionResult.Unsupported, OfferCodeRedemptionResult.Unavailable })
+            {
+                var purchases = new Purchases();
+                using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), new Ads(), purchases);
+                yield return Mount(coordinator);
+                mountedShell.ShowSettings(); mountedShell.SelectLanguage(locale);
+                mountedShell.RedeemOfferCode();
+                purchases.RedemptionCallback(result);
+                var key = result == OfferCodeRedemptionResult.Unsupported ? "OfferCodeUnsupported" : "OfferCodeUnavailable";
+                Assert.That(mountedShell.Q<Label>("notification-message").text,
+                    Is.EqualTo(GameLocalization.CreateCatalog().GetResource(locale).Messages["monetization.status." + key]));
+                yield return null; yield return null;
+                CaptureOfferCodeEvidence(key + "-" + locale);
+                yield return DismissAlert();
+                Assert.That(mountedShell.focusController.focusedElement,
+                    Is.SameAs(mountedShell.Q<Button>("settings-redeem-offer-code")));
+                mountedShell.BackToGame(); Assert.That(mountedShell.BoardView.InteractionEnabled, Is.True);
+                TearDown(); host = null; panelSettings = null; panelTexture = null;
+            }
         }
 
         // Issue #76: UI only forwards settings intents; coordinator owns pending/verification state.
@@ -514,6 +605,8 @@ namespace CatsAndArrows.Tests
             freeShell.ShowSettings();
             Assert.That(freeShell.Q<Button>("settings-remove-ads").enabledSelf, Is.False);
             Assert.That(freeShell.Q<Button>("settings-restore").enabledSelf, Is.False);
+            Assert.That(freeShell.Q<Button>("settings-redeem-offer-code").enabledSelf, Is.False);
+            Assert.That(unusedPurchases.Redemptions, Is.Zero);
             Assert.That(freeShell.Q<Label>("monetization-settings-status"), Is.Null);
             Assert.That(freeShell.Modal, Is.Null);
         }

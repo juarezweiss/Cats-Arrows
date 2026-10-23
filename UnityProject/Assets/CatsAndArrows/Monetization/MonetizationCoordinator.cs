@@ -37,6 +37,8 @@ namespace CatsAndArrows.Monetization
         private long refreshGeneration;
         private bool pendingResolved;
         private bool finishing;
+        private bool redeemingOfferCode;
+        private long redemptionGeneration;
         public const double OperationTimeoutSeconds = 30;
 
         public bool Enabled { get; }
@@ -44,7 +46,9 @@ namespace CatsAndArrows.Monetization
         public bool IsBusy => Enabled && (ad != null || ads.IsPresenting || purchaseRequest != 0);
         public bool HasEarnedHint => Enabled && !IsOwned && state.RewardOperation != 0;
         public bool CanPurchase => Enabled && !IsOwned && pendingResolved && state.Access != AccessState.Unknown &&
-            !state.PendingPurchase && purchaseRequest == 0 && Offer.Available;
+            !state.PendingPurchase && purchaseRequest == 0 && !redeemingOfferCode && Offer.Available;
+        public bool IsRedeemingOfferCode => redeemingOfferCode;
+        public bool CanRedeemOfferCode => !disposed && Enabled && !IsBusy && !redeemingOfferCode && purchases is IOfferCodeRedemptionService;
         public MonetizationStatus Status { get; private set; }
         public PurchaseOffer Offer { get { try { return Enabled ? purchases.GetOffer() : new PurchaseOffer(false); }
             catch { return new PurchaseOffer(false); } } }
@@ -214,8 +218,32 @@ namespace CatsAndArrows.Monetization
         }
         public void RestorePurchases()
         {
-            if (disposed || !Enabled || purchaseRequest != 0) return;
+            if (disposed || !Enabled || purchaseRequest != 0 || redeemingOfferCode) return;
             BeginPurchase(true);
+        }
+        public void RedeemOfferCode()
+        {
+            if (!CanRedeemOfferCode) return;
+            redeemingOfferCode = true;
+            var generation = ++redemptionGeneration;
+            SetStatus(MonetizationStatus.Busy);
+            try { ((IOfferCodeRedemptionService)purchases).RedeemOfferCode(result => CompleteOfferCode(generation, result)); }
+            catch { CompleteOfferCode(generation, OfferCodeRedemptionResult.Unavailable); }
+        }
+        private void CompleteOfferCode(long generation, OfferCodeRedemptionResult result)
+        {
+            if (disposed || !redeemingOfferCode || generation != redemptionGeneration) return;
+            redeemingOfferCode = false;
+            if (result == OfferCodeRedemptionResult.Closed)
+            {
+                // The system handles cancellation/invalid/expired/duplicate codes. A closed
+                // sheet never grants or marks a purchase Pending; delayed updates remain live.
+                Status = MonetizationStatus.None;
+                RefreshPurchases();
+                Notify();
+            }
+            else SetStatus(result == OfferCodeRedemptionResult.Unsupported ?
+                MonetizationStatus.OfferCodeUnsupported : MonetizationStatus.OfferCodeUnavailable);
         }
         private void BeginPurchase(bool restore)
         {

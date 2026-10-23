@@ -39,6 +39,7 @@ If the repo-local `paws-development` Skill is active, follow its workflow and lo
 | iOS/Android signing or store preparation | `docs/RELEASE.md` | `docs/TESTING.md`; architecture/ADR only when build structure is relevant |
 | Monetization / ads / IAP | `docs/MONETIZATION.md` | `docs/ANALYTICS.md` for instrumentation; `docs/UX.md` for player-facing impact; `docs/PRODUCT.md` for product fit |
 | Apple purchase adapter / StoreKit validation | `docs/APPLE_IAP.md`, `docs/MONETIZATION.md`, ADR 0002 | `docs/TESTING.md`, `docs/RELEASE.md` for build/review gates |
+| Apple Offer Code redemption | `docs/APPLE_OFFER_CODES.md`, `docs/APPLE_IAP.md`, ADR 0002 | `docs/TESTING.md`, `docs/RELEASE.md` for owner/RC gates |
 | Analytics / telemetry | `docs/ANALYTICS.md` | Affected feature spec; `docs/MONETIZATION.md` if measuring monetization |
 | Marketing / ASO / acquisition | `docs/MARKETING.md`, `docs/PRODUCT.md` | `docs/ANALYTICS.md` for measurable experiments |
 | Roadmap / sequencing / current priorities | `planning/ROADMAP.md`, `planning/CURRENT_SPRINT.md` | GitHub Issues; `planning/MASTER_PROJECT_PLAN.md` only for scope/budget/milestone constraints |

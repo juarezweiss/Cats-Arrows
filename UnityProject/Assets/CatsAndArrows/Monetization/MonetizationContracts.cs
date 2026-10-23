@@ -8,7 +8,9 @@ namespace CatsAndArrows.Monetization
     public enum AdSignalKind { Presented, RewardEarned, Closed, Failed }
     public enum AccessState { Unknown, NotOwned, Owned, Revoked }
     public enum PurchaseOutcome { Owned, NotOwned, Revoked, Pending, Cancelled, Unavailable, Failed }
-    public enum MonetizationStatus { None, AdUnavailable, RewardNotEarned, EarnedHint, RestoreRequired, PurchasePending, PurchaseUnavailable, Owned, StorageRecovery, Busy }
+    public enum MonetizationStatus { None, AdUnavailable, RewardNotEarned, EarnedHint, RestoreRequired, PurchasePending, PurchaseUnavailable, Owned, StorageRecovery, Busy, OfferCodeUnsupported, OfferCodeUnavailable }
+    // Sheet closure is not proof of redemption. Ownership comes only through IPurchaseService.
+    public enum OfferCodeRedemptionResult { Closed, Unsupported, Unavailable }
 
     public readonly struct AdSignal
     {
@@ -65,6 +67,12 @@ namespace CatsAndArrows.Monetization
         void Purchase(long requestId, Action<PurchaseResult> complete);
         void Restore(long requestId, Action<PurchaseResult> complete);
         void Finish(string transactionReference, Action<bool> complete);
+    }
+
+    // Optional platform capability; no code values or store types cross this port (#65).
+    public interface IOfferCodeRedemptionService
+    {
+        void RedeemOfferCode(Action<OfferCodeRedemptionResult> complete);
     }
 
     public interface IMonetizationStateStore
