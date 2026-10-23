@@ -5,7 +5,7 @@ namespace CatsAndArrows.Monetization
 {
     public enum AdPlacement { Progression, Hint }
     public enum AdAvailability { Ready, Unavailable, Offline, Restricted }
-    public enum AdSignalKind { Presented, RewardEarned, Closed, Failed }
+    public enum AdSignalKind { Presented, RewardEarned, Closed, Failed, InfrastructureUnavailable }
     public enum AccessState { Unknown, NotOwned, Owned, Revoked }
     public enum PurchaseOutcome { Owned, NotOwned, Revoked, Pending, Cancelled, Unavailable, Failed }
     public enum MonetizationStatus { None, AdUnavailable, RewardNotEarned, EarnedHint, RestoreRequired, PurchasePending, PurchaseUnavailable, Owned, StorageRecovery, Busy, OfferCodeUnsupported, OfferCodeUnavailable }
@@ -20,12 +20,24 @@ namespace CatsAndArrows.Monetization
 
     // Callbacks must be marshalled to the application thread. Closed is sent only
     // after native dismissal AND the provider has settled its reward callbacks.
+    // InfrastructureUnavailable is confirmed provider/consent/load/show failure,
+    // never a voluntary close. Failed remains ambiguous after presentation (#66).
     public interface IAdService
     {
         AdAvailability GetAvailability(AdPlacement placement);
+        // Remains true until native dismissal is safe and queued rewards settle.
         bool IsPresenting { get; }
         void Show(long requestId, AdPlacement placement, Action<AdSignal> receive);
         void Cancel(long requestId);
+    }
+
+    // Optional provider privacy capability; SDK consent types stay adapter-private (#66).
+    public interface IAdPrivacyService
+    {
+        event Action Changed;
+        bool PrivacyOptionsRequired { get; }
+        bool IsPrivacyFormPresenting { get; }
+        void ShowPrivacyOptions(Action<bool> complete);
     }
 
     public sealed class PurchaseOffer

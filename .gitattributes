@@ -1,0 +1,4 @@
+
+# #66: retain official SDK/license bytes verbatim; SHA-256 inventory gates integrity.
+UnityProject/ThirdParty~/GoogleMobileAds/** -whitespace
+UnityProject/Assets/ThirdParty/GoogleMobileAds/** -whitespace

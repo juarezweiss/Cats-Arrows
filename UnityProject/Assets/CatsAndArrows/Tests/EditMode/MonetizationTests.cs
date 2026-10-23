@@ -120,15 +120,141 @@ namespace CatsAndArrows.Tests
             Assert.That(service.HasEarnedHint,Is.False); Assert.That(service.IsBusy,Is.False);
         }
         [TestCase(AdSignalKind.Closed)] [TestCase(AdSignalKind.Failed)]
-        public void ClosedFailedAndLateUnconfirmedRewardDoNotApplyHint(AdSignalKind signal)
+        public void PresentedCloseOrAmbiguousFailureAndLateUnconfirmedRewardDoNotApplyHint(AdSignalKind signal)
         {
-            var session=Bind(); var before=session.Marks.ToArray(); service.RequestHint(); ads.Send(signal);
+            var session=Bind(); var before=session.Marks.ToArray(); service.RequestHint(); ads.Send(AdSignalKind.Presented);
+            ads.Send(signal); if(signal==AdSignalKind.Failed)ads.Send(AdSignalKind.Closed);
             ads.Send(AdSignalKind.RewardEarned);
             Assert.That(Changes(session,before),Is.Zero); Assert.That(service.HasEarnedHint,Is.False);
         }
+        [Test] public void AmbiguousCloseWithoutPresentedSignalDoesNotImplyInfrastructureFailure()
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();ads.Send(AdSignalKind.Closed);
+            Assert.That(Changes(session,before),Is.Zero);Assert.That(service.HasEarnedHint,Is.False);
+        }
         [TestCase(AdAvailability.Offline)] [TestCase(AdAvailability.Unavailable)] [TestCase(AdAvailability.Restricted)]
-        public void UnavailableRewardDoesNotGrantFreeHint(AdAvailability availability)
-        { var session=Bind();var before=session.Marks.ToArray();ads.Availability=availability;service.RequestHint();Assert.That(Changes(session,before),Is.Zero);Assert.That(ads.Shows,Is.Empty); }
+        public void UnavailableRewardGrantsOneEligibleHintDirectlyWithoutRewardDebt(AdAvailability availability)
+        {
+            var session=Bind();var before=session.Marks.ToArray();var delivered=0;service.HintDelivered+=_=>delivered++;
+            ads.Availability=availability;service.RequestHint();
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(delivered,Is.EqualTo(1));
+            Assert.That(ads.Shows,Is.Empty);Assert.That(service.HasEarnedHint,Is.False);
+            Assert.That(service.Snapshot.ProcessedRewardOperation,Is.Zero);Assert.That(service.IsBusy,Is.False);
+        }
+        [TestCase(AdSignalKind.Failed)] [TestCase(AdSignalKind.InfrastructureUnavailable)]
+        public void PrePresentationFailureGrantsOneFreeHintAndIgnoresDuplicateOrLateRewards(AdSignalKind failure)
+        {
+            var session=Bind();var before=session.Marks.ToArray();var delivered=0;service.HintDelivered+=_=>delivered++;
+            service.RequestHint();ads.Send(failure);ads.Send(failure);ads.Send(AdSignalKind.RewardEarned);ads.Send(AdSignalKind.Closed);
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(delivered,Is.EqualTo(1));
+            Assert.That(service.HasEarnedHint,Is.False);Assert.That(service.IsBusy,Is.False);
+        }
+        [TestCase(true)] [TestCase(false)]
+        public void AvailabilityOrShowExceptionUsesDirectFreeHint(bool availabilityException)
+        {
+            var session=Bind();var before=session.Marks.ToArray();
+            ads.ThrowOnAvailability=availabilityException;ads.ThrowOnShow=!availabilityException;service.RequestHint();
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(service.IsBusy,Is.False);
+            Assert.That(service.HasEarnedHint,Is.False);
+        }
+        [TestCase(true)] [TestCase(false)]
+        public void AvailabilityReentrancyCannotDeliverPreparedHintToChangedSessionOrRevision(bool replaceSession)
+        {
+            var original=Bind();GameSession replacement=null;ads.Availability=AdAvailability.Unavailable;
+            ads.OnAvailability=()=>{if(replaceSession)replacement=Bind();else original.Tap(original.Marks.Keys.First());};
+            var deliveries=0;service.HintDelivered+=_=>deliveries++;service.RequestHint();
+            Assert.That(deliveries,Is.Zero);Assert.That(ads.Shows,Is.Empty);Assert.That(service.HasEarnedHint,Is.False);
+            if(replacement!=null)Assert.That(replacement.Marks.Values.All(mark=>mark==PlayerMark.Empty),Is.True);
+        }
+        [Test] public void OwnershipResolvedDuringAvailabilityBypassesRewardedPresentation()
+        {
+            var session=Bind();var before=session.Marks.ToArray();ads.OnAvailability=()=>purchases.Emit(TestPurchases.Owned());
+            service.RequestHint();Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(ads.Shows,Is.Empty);
+        }
+        [Test] public void OwnershipResolvedByBusyNotificationSuppressesQueuedNativePresentation()
+        {
+            var session=Bind();var before=session.Marks.ToArray();var resolved=false;
+            service.Changed+=()=>{if(service.Status==MonetizationStatus.Busy&&!resolved){resolved=true;purchases.Emit(TestPurchases.Owned());}};
+            service.RequestHint();Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(ads.Shows,Is.Empty);
+            Assert.That(service.IsBusy,Is.False);
+        }
+        [Test] public void ReplacedBoardDuringBusyNotificationCannotReceiveQueuedHintOrAd()
+        {
+            Bind();GameSession replacement=null;var rebinding=false;
+            service.Changed+=()=>{if(service.Status==MonetizationStatus.Busy&&!rebinding){rebinding=true;replacement=Bind();}};
+            service.RequestHint();Assert.That(ads.Shows,Is.Empty);Assert.That(service.IsBusy,Is.False);
+            Assert.That(replacement.Marks.Values.All(mark=>mark==PlayerMark.Empty),Is.True);
+        }
+        [TestCase(false)] [TestCase(true)]
+        public void ConfirmedInfrastructureFailureAfterPresentationWaitsForSafeClosure(bool pollClosure)
+        {
+            var session=Bind();var before=session.Marks.ToArray();var delivered=0;service.HintDelivered+=_=>delivered++;
+            service.RequestHint();ads.Send(AdSignalKind.Presented);ads.Send(AdSignalKind.InfrastructureUnavailable);
+            service.Tick();Assert.That(service.IsBusy,Is.True);Assert.That(Changes(session,before),Is.Zero);
+            if(pollClosure){ads.Presenting=false;service.Tick();}else ads.Send(AdSignalKind.Closed);
+            service.Tick();ads.Send(AdSignalKind.Closed);ads.Send(AdSignalKind.RewardEarned);
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(delivered,Is.EqualTo(1));
+            Assert.That(service.IsBusy,Is.False);Assert.That(service.HasEarnedHint,Is.False);
+        }
+        [TestCase(false)] [TestCase(true)]
+        public void ConfirmedInfrastructureFailureRemainsEligibleAcrossPresentedTimeout(bool failureAfterTimeout)
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();ads.Send(AdSignalKind.Presented);
+            if(!failureAfterTimeout)ads.Send(AdSignalKind.InfrastructureUnavailable);
+            now=31;service.Tick();if(failureAfterTimeout)ads.Send(AdSignalKind.InfrastructureUnavailable);
+            Assert.That(Changes(session,before),Is.Zero);Assert.That(service.IsBusy,Is.True);
+            ads.Send(AdSignalKind.Closed);Assert.That(Changes(session,before),Is.EqualTo(1));
+        }
+        [Test] public void InfrastructureFailureWithConfirmedRewardConsumesOnlyOneDurableGrant()
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();ads.Send(AdSignalKind.Presented);
+            ads.Send(AdSignalKind.InfrastructureUnavailable);ads.Send(AdSignalKind.RewardEarned);ads.Send(AdSignalKind.Closed);
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(service.HasEarnedHint,Is.False);
+            Assert.That(service.Snapshot.ProcessedRewardOperation,Is.GreaterThan(0));
+        }
+        [TestCase(true)] [TestCase(false)]
+        public void InfrastructureFailOpenRevalidatesSessionAndMarksAfterNativeClosure(bool replaceSession)
+        {
+            var original=Bind();service.RequestHint();ads.Send(AdSignalKind.Presented);
+            ads.Send(AdSignalKind.InfrastructureUnavailable);GameSession target;
+            if(replaceSession)target=Bind();else{target=original;target.Tap(target.Marks.Keys.First());}
+            var before=target.Marks.ToArray();ads.Send(AdSignalKind.Closed);
+            Assert.That(Changes(target,before),Is.Zero);Assert.That(service.HasEarnedHint,Is.False);Assert.That(service.IsBusy,Is.False);
+        }
+        [Test] public void PrePresentationTimeoutGrantsOneFreeHintAndRejectsLateCallbacks()
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();now=31;service.Tick();service.Tick();
+            ads.Send(AdSignalKind.InfrastructureUnavailable);ads.Send(AdSignalKind.RewardEarned);ads.Send(AdSignalKind.Closed);
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(service.IsBusy,Is.False);
+            Assert.That(service.HasEarnedHint,Is.False);
+        }
+        [Test] public void SynchronousTimeoutCancellationCannotRepeatDeliveryOrOverwriteSuccessfulStatus()
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();
+            ads.OnCancel=()=>ads.Send(AdSignalKind.Closed);now=31;service.Tick();service.Tick();
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(service.Status,Is.EqualTo(MonetizationStatus.None));
+            Assert.That(service.IsBusy,Is.False);
+        }
+        [Test] public void PresentedTimeoutWithoutInfrastructureEvidenceNeverGrantsFreeHint()
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();ads.Send(AdSignalKind.Presented);
+            now=31;service.Tick();ads.Presenting=false;service.Tick();ads.Send(AdSignalKind.InfrastructureUnavailable);
+            Assert.That(Changes(session,before),Is.Zero);Assert.That(service.IsBusy,Is.False);Assert.That(service.HasEarnedHint,Is.False);
+        }
+        [Test] public void CancelledHintRequestCannotFailOpenOnPrePresentationTimeout()
+        {
+            var session=Bind();var before=session.Marks.ToArray();service.RequestHint();service.CancelHintDelivery();
+            now=31;service.Tick();Assert.That(Changes(session,before),Is.Zero);Assert.That(service.IsBusy,Is.False);
+        }
+        [Test] public void OldOperationCallbacksCannotFailOpenOrRewardAReplacementRequest()
+        {
+            var session=Bind();service.RequestHint();ads.Send(AdSignalKind.InfrastructureUnavailable);
+            var before=session.Marks.ToArray();service.RequestHint();ads.Send(AdSignalKind.InfrastructureUnavailable,0);
+            ads.Send(AdSignalKind.RewardEarned,0);ads.Send(AdSignalKind.Closed,0);
+            Assert.That(Changes(session,before),Is.Zero);Assert.That(service.IsBusy,Is.True);
+            ads.Send(AdSignalKind.RewardEarned);ads.Send(AdSignalKind.Closed);
+            Assert.That(Changes(session,before),Is.EqualTo(1));Assert.That(service.HasEarnedHint,Is.False);
+        }
         [Test] public void CompletedAndTutorialBoardsNeverRequestReward()
         { Complete(Bind()); service.RequestHint(); Bind(false);service.RequestHint();Assert.That(ads.Shows,Is.Empty); }
         [Test] public void StaleBoardRewardRequiresExplicitRedemptionOnNewBoard()
@@ -290,11 +416,12 @@ namespace CatsAndArrows.Tests
         private sealed class TestAds : IAdService
         {
             public AdAvailability Availability=AdAvailability.Ready;public bool Presenting;public bool IsPresenting=>Presenting;
-            public readonly List<AdPlacement> Shows=new List<AdPlacement>();private Action<AdSignal> receive;
-            public AdAvailability GetAvailability(AdPlacement placement)=>Availability;
-            public void Show(long requestId,AdPlacement placement,Action<AdSignal> callback){Shows.Add(placement);receive=callback;}
-            public void Send(AdSignalKind kind){if(kind==AdSignalKind.Presented)Presenting=true;if(kind==AdSignalKind.Closed)Presenting=false;receive(new AdSignal(kind));}
-            public void Cancel(long requestId){}
+            public bool ThrowOnAvailability,ThrowOnShow;public Action OnAvailability,OnCancel;
+            public readonly List<AdPlacement> Shows=new List<AdPlacement>();private readonly List<Action<AdSignal>> callbacks=new List<Action<AdSignal>>();
+            public AdAvailability GetAvailability(AdPlacement placement){OnAvailability?.Invoke();if(ThrowOnAvailability)throw new InvalidOperationException();return Availability;}
+            public void Show(long requestId,AdPlacement placement,Action<AdSignal> callback){Shows.Add(placement);callbacks.Add(callback);if(ThrowOnShow)throw new InvalidOperationException();}
+            public void Send(AdSignalKind kind,int operation=-1){if(kind==AdSignalKind.Presented)Presenting=true;if(kind==AdSignalKind.Closed)Presenting=false;callbacks[operation<0?callbacks.Count-1:operation](new AdSignal(kind));}
+            public void Cancel(long requestId)=>OnCancel?.Invoke();
         }
         private sealed class TestPurchases : IPurchaseService
         {

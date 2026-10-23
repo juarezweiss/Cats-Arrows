@@ -83,7 +83,9 @@ namespace CatsAndArrows.UI
 #endif
                 var reviewSeen = false;
                 MonetizationCoordinator monetization = null;
+                IAdPrivacyService adPrivacy = null;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+                if (Argument("--admob-privacy-mock=") == "1") adPrivacy = new ReviewAdPrivacyService();
                 if (Argument("--monetization-mock=") == "1")
                 {
                     var reviewDirectory = Path.Combine(Application.persistentDataPath, "monetization-mock-review");
@@ -112,7 +114,7 @@ namespace CatsAndArrows.UI
                     markTutorialSeen: isolatedReview ? (Action)(() => reviewSeen = true) : null,
                     difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null,
                     idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null, monetization: monetization,
-                    completionClock: completionCheck ? (Func<double>)(() => holdReviewTime) : null);
+                    completionClock: completionCheck ? (Func<double>)(() => holdReviewTime) : null, adPrivacy: adPrivacy);
                 root.Add(shell);
                 shell.SetApplicationFocus(applicationFocused);
                 shell.SetApplicationPaused(applicationPaused);

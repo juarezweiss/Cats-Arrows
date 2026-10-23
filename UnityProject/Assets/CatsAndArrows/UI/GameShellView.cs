@@ -38,7 +38,10 @@ namespace CatsAndArrows.UI
         private string alertReturnFocus;
         private int queuedRequest;
         private readonly MonetizationCoordinator monetization;
-        private bool CommercialBusy => monetization?.IsBusy == true;
+        private readonly IAdPrivacyService adPrivacy;
+        private bool privacyRequest;
+        private bool disposed;
+        private bool CommercialBusy => monetization?.IsBusy == true || privacyRequest || adPrivacy?.IsPrivacyFormPresenting == true;
         private readonly bool enableTutorial;
         private readonly Func<bool> tutorialSeen;
         private readonly Action markTutorialSeen;
@@ -56,10 +59,12 @@ namespace CatsAndArrows.UI
         public int NewGameRequestId { get; private set; }
 
         public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true,
-            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null, MonetizationCoordinator monetization = null, Func<double> completionClock = null)
+            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null, MonetizationCoordinator monetization = null, Func<double> completionClock = null, IAdPrivacyService adPrivacy = null)
         {
             name = "game-shell";
             this.monetization = monetization;
+            this.adPrivacy = adPrivacy;
+            if (adPrivacy != null) adPrivacy.Changed += OnAdPrivacyChanged;
             var clock = idleClock ?? (() => Time.realtimeSinceStartupAsDouble);
             hintAttention = new HintIdleAttention(clock);
             celebration = new CompletionCelebration(completionClock ?? (() => Time.realtimeSinceStartupAsDouble));
@@ -329,6 +334,8 @@ namespace CatsAndArrows.UI
             var tutorial = AddSettingsRow(list, "settings-tutorial", "tutorial.title", StartTutorial);
             tutorial.SetEnabled(enableTutorial);
             AddMonetizationSettings(list);
+            if (adPrivacy?.PrivacyOptionsRequired == true)
+                AddSettingsRow(list, "settings-privacy-options", "privacy.options", ShowPrivacyOptions);
         }
         private Button AddSettingsRow(VisualElement parent, string name, string key, Action action)
         {
@@ -716,6 +723,32 @@ namespace CatsAndArrows.UI
             if (enabled && monetization.Offer?.IsReviewOffer == true)
                 parent.Add(Paragraph(text.GetText("monetization.review")));
         }
+        // #66: the Settings list owns only the entry point; the provider owns native consent.
+        public void ShowPrivacyOptions()
+        {
+            if (disposed || loading || CommercialBusy || Screen != "settings" || Modal != null || adPrivacy?.PrivacyOptionsRequired != true) return;
+            CancelInteraction(); privacyRequest = true; OnAdPrivacyChanged();
+            try
+            {
+                adPrivacy.ShowPrivacyOptions(success =>
+                {
+                    if (disposed || !privacyRequest) return;
+                    privacyRequest = false; OnAdPrivacyChanged();
+                    if (!success && Screen == "settings" && !CommercialBusy && Modal == null && applicationFocused && !applicationPaused)
+                    { notificationAction = "settings-privacy-options"; ShowNotification(text.GetText("privacy.unavailable")); }
+                    else this.Q<Button>("settings-privacy-options")?.Focus();
+                });
+            }
+            catch { privacyRequest = false; OnAdPrivacyChanged(); }
+        }
+        private void OnAdPrivacyChanged()
+        {
+            if (disposed || loading) return;
+            if (Screen == "settings" && !CommercialBusy && Modal == null) ShowSettings();
+            menu.SetEnabled(!CommercialBusy && Modal == null);
+            controls.SetEnabled(!CommercialBusy && Modal == null);
+            BoardView.SetInteractionSuspended(Screen != "play" || CommercialBusy || Modal != null || ActiveSession?.IsCompleted == true);
+        }
         public void PurchaseRemoveAds()
         {
             if (loading || CommercialBusy || Screen != "settings" || Modal != null) return;
@@ -764,6 +797,9 @@ namespace CatsAndArrows.UI
         public void TickMonetization() => monetization?.Tick();
         public void DisposeMonetization()
         {
+            if (disposed) return;
+            disposed = true;
+            if (adPrivacy != null) adPrivacy.Changed -= OnAdPrivacyChanged;
             ResetNotifications();
             if (monetization == null) return;
             monetization.Changed -= OnMonetizationChanged;

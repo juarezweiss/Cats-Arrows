@@ -7,6 +7,15 @@ using CatsAndArrows.Monetization;
 namespace CatsAndArrows.UI
 {
     // Opt-in lower-environment simulation. No SDK, network or real store identity.
+    // #66: mounted desktop Settings capture only; never calls Google or native UI.
+    public sealed class ReviewAdPrivacyService : IAdPrivacyService
+    {
+        public event Action Changed { add { } remove { } }
+        public bool PrivacyOptionsRequired => true;
+        public bool IsPrivacyFormPresenting => false;
+        public void ShowPrivacyOptions(Action<bool> complete) => complete(true);
+    }
+
     public sealed class ReviewAdService : IAdService
     {
         private readonly Func<double> clock;

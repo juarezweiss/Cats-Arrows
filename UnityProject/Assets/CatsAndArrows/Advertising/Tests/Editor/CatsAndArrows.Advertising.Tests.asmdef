@@ -1,0 +1,8 @@
+{
+  "name": "CatsAndArrows.Advertising.Tests",
+  "references": ["CatsAndArrows.Advertising", "CatsAndArrows.Monetization"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

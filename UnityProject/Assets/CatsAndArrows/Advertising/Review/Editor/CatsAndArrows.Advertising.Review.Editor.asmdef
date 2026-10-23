@@ -1,0 +1,6 @@
+{
+  "name": "CatsAndArrows.Advertising.Review.Editor",
+  "references": ["CatsAndArrows.Advertising.Review", "CatsAndArrows.Advertising.Google", "CatsAndArrows.UI", "CatsAndArrows.UI.Editor"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

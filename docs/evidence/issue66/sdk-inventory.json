@@ -1,0 +1,1338 @@
+{
+  "plugin": "11.6.0",
+  "gmaIOS": "13.11.0",
+  "umpIOS": "3.1.0",
+  "baseSha": "1acb87c0e6c1fae156b24baffd9419b84cc41ea6",
+  "installation": "Selective official iOS runtime import; no SDK byte modifications, vendor editor installers, Android payloads or external dependency manager. Native binaries outside Assets are copied only by explicit AdMob development export.",
+  "files": [
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/1024x768.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/1024x768.png",
+      "sha256": "a5584befb9daba2316815bca96759150dc66a29e162767b1fbff6603e530e802"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/300x250.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/300x250.png",
+      "sha256": "6fb6b899a6d6e0ec3832977f3bb239d22e93f3e7af2dd0bc126fed6f6b91a559"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/320x100.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/320x100.png",
+      "sha256": "46d0ad09e5a2c38af5a3260a6edb0c63012c5b6417b8ba8f529b0f7af3039e1a"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/320x480.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/320x480.png",
+      "sha256": "17baccb5a637faf668e3530f94846471439b8b02d803754a9c511498710d0a99"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/320x50.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/320x50.png",
+      "sha256": "e2ee5967c1572a96c5b04cea89a4e0e36ae258fc3ff8fea7a9f7bf840128afe8"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/468x60.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/468x60.png",
+      "sha256": "b4cdef8001cfa58aff70b00dc3b3460b069c100f52ea1d7f9fd6cdb4eda70a5e"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/480x320.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/480x320.png",
+      "sha256": "d45de85fa6698d11b9a195bd19b2d4052b3ac83dfddb85e5305236afb0e94bac"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/728x90.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/728x90.png",
+      "sha256": "c4bad770f6af169b405ae6f3a6d1d3291565418b610b2802e4016303c1733896"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/768x1024.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/768x1024.png",
+      "sha256": "c3c91ec895887fa5bb59d5bce3734f8c0161da932444720dc2c3f7ee0c9a9351"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/AdInspectorHome.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdImages/AdInspectorHome.png",
+      "sha256": "7ab29f4fb516e1c8c174a3a84b455457113a3cedc6aa30f4939704ba357fe45a"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdInspector/768x1024.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AdInspector/768x1024.prefab",
+      "sha256": "8ac258603912f3efba89a654657d60732008ed5bacd0cc83b33ffd0c2a64d630"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AppOpen/1024x768.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AppOpen/1024x768.prefab",
+      "sha256": "6d51109fbf1545dfd8c6b3b273fb1f219c8e55c5462d67f9b076f3b6a5a78a20"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/AppOpen/768x1024.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/AppOpen/768x1024.prefab",
+      "sha256": "e83bf466723cb6236b7c0b04a7c8ba43ad9a6d996e723b2e65e47b13e4618b49"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/ADAPTIVE.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/ADAPTIVE.prefab",
+      "sha256": "ff8fcf8e8a617b52326b00d3137657f3870a64c5368826e954544ce0681b0e14"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/BANNER.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/BANNER.prefab",
+      "sha256": "a77ce995a33ad88f070a27a82bb665e8e870281894567eb85022b4dac068b6ee"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/CENTER.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/CENTER.prefab",
+      "sha256": "3a28214cc587b631d90558dbd33dc5b7e4b643ad75c71e82531707f459411763"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/FULL_BANNER.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/FULL_BANNER.prefab",
+      "sha256": "e74e42e61428a08e5f91ff1556adb9fa35d3d31b12f682c621796b38d8ceaaba"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/LARGE_BANNER.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/LARGE_BANNER.prefab",
+      "sha256": "c9e9c46c73aad1849ee6e55d33cd168d29d5bcea428cf8cac24396bc2d04ca4f"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/LEADERBOARD.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/LEADERBOARD.prefab",
+      "sha256": "9b633d62a099990ce287c58af1472382551ea1b7646b90516dac2ea87f1d0239"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/MEDIUM_RECTANGLE.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/MEDIUM_RECTANGLE.prefab",
+      "sha256": "698fbd5e02f209984d7d069d42f7f7ef9c1fa07aec3cd05588946347da72d58d"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/SMART_BANNER.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Banners/SMART_BANNER.prefab",
+      "sha256": "3420717540f3d74e5da1e2234abd94bf3d80b9f1053112cbbc841095340862b1"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Interstitials/1024x768.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Interstitials/1024x768.prefab",
+      "sha256": "6d51109fbf1545dfd8c6b3b273fb1f219c8e55c5462d67f9b076f3b6a5a78a20"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Interstitials/768x1024.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Interstitials/768x1024.prefab",
+      "sha256": "e83bf466723cb6236b7c0b04a7c8ba43ad9a6d996e723b2e65e47b13e4618b49"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Rewarded/1024x768.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Rewarded/1024x768.prefab",
+      "sha256": "ba3b63963972b0d418f2ba4fd136181f156f32356bdedfced036c405a8e892c0"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/PlaceholderAds/Rewarded/768x1024.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/PlaceholderAds/Rewarded/768x1024.prefab",
+      "sha256": "5f9619a0e67df1fff8a4da3ea7b5a9982fcafd0f8e513daebc80442424a4147c"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/Ump/ConsentForm.png",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/Ump/ConsentForm.png",
+      "sha256": "588f9a5c418b2b032792e3c971cf17aed2b0d402172713f5bb98720d3b5dbf6e"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/Editor/Resources/Ump/ConsentForm.prefab",
+      "source": "Assets/GoogleMobileAds/Editor/Resources/Ump/ConsentForm.prefab",
+      "sha256": "b0c5690cb21601f98cbc864566ccad80334dfca625f5fa15342d1d32dfb7d41f"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.Common.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.Common.dll",
+      "sha256": "2db66c429803bc78fbdc54ca1dbd69f5975dd2a8090ee42cc5819aabf55f9a07"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.Core.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.Core.dll",
+      "sha256": "f74c7479d033a5c0772ea3bf323a6d3eefa6939d1db3e466dcd2aa6465862a8d"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.Ump.Unity.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.Ump.Unity.dll",
+      "sha256": "b5e4109a1107105bf426c4282cc6c2708b056639757f1e794cd28c39ee6218d3"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.Ump.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.Ump.dll",
+      "sha256": "c1f812606e18263a0b32ba482031b9fe24f1cdc4d9614d4c14c08681948d91a9"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.Ump.iOS.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.Ump.iOS.dll",
+      "sha256": "b69b04d1392a199ccd503ef64ad0c963277cdfe1476a13d018ba3da3f78863a8"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.Unity.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.Unity.dll",
+      "sha256": "c9a60d0c56d0c4b212260758e7e605b77db49085cc20bc61afed111e6d304dd6"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.dll",
+      "sha256": "475296afca236aa7d3c9dcc5f25fb39510823386a349aa2fbf56d13e116046cc"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/GoogleMobileAds.iOS.dll",
+      "source": "Assets/GoogleMobileAds/GoogleMobileAds.iOS.dll",
+      "sha256": "18efe2202b6602632e13c351bb89873bcc8350c7d2e6ffbd96b0e2c885caf3f9"
+    },
+    {
+      "path": "UnityProject/Assets/ThirdParty/GoogleMobileAds/LICENSE",
+      "source": "Assets/GoogleMobileAds/LICENSE",
+      "sha256": "eb5d0724b2ae76a94ae804c44b3d6cfaaca822b7d42907aefa9256cb93db6fe0"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/Info.plist",
+      "sha256": "6c2e01be53b6060a8bb2c9c0cd2daff07a0c499829da038d813a00d436663632"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/_CodeSignature/CodeDirectory",
+      "sha256": "87930e07ef070295c813e021d36cff171692713722b0d1a3cd18f263b46b7b20"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/_CodeSignature/CodeRequirements",
+      "sha256": "ab51bcbfe8722658780dce1c9362b32b26dca595e49624bcd1a550d0222bc85b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/_CodeSignature/CodeRequirements-1",
+      "sha256": "3f8b25d9b36407d1df4f2826e72dd4b31dcaea966c0681259c8649cf3ae88755"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/_CodeSignature/CodeResources",
+      "sha256": "30bec7217c8f606d8ddaba9097c800a9a173965b47e02abcf751212401ff0251"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/_CodeSignature/CodeSignature",
+      "sha256": "9f8978bf66283012cc7b34de92e4cc1ce55d779d7cf9fcaf8257c4f1b981c090"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/GoogleMobileAds",
+      "sha256": "c33cd73866a927d58bdc9405ba9e9f87063c759ab5ebb62886050de8af25fa70"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdChoicesPosition.h",
+      "sha256": "6a330ecfbbdba1407e26d308d1c59d93c95fde930778ae000156c64cd25bda43"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdChoicesView.h",
+      "sha256": "0b819cfea3640bea37c39edc85dc4c2158c6ded911294806e5f8bac9d6a59af9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdFormat.h",
+      "sha256": "df6176bbf8e21c5a96853732e5d7365744e39117847c505dd0c3175de34fc4f5"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdLoader+ServerToServer.h",
+      "sha256": "49fb3c05b011d9350e6b152dcd68c7a2278343fa02620c091db07f9e334a50aa"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdLoader.h",
+      "sha256": "5d3ca0a806f15a9f5c2a4328059e3002b66865769e8a4f85be963dbe8cf13211"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdLoaderAdTypes.h",
+      "sha256": "63ba40d02670fce52c689aa07323976dabb6870401cdbdf14ea878222b6987db"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdLoaderDelegate.h",
+      "sha256": "c6a6b9059a7a4c4c0d55b89725692d9b12367b403f5b910a96026c8e2a4f08bb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdMetadata.h",
+      "sha256": "659c3fa88297fc4c10793c140d857d3fa55c54c56ecdf1f1fdc712a31324b060"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdNetworkExtras.h",
+      "sha256": "2e72eb03b113e8067c1f4eedc6a09cdb50140c0e65ceb0a0d3a62d084655ca6c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdReward.h",
+      "sha256": "6257d0c0f11204b0c82d8a3c73a57229e0e92ec54651707055030346cfa0465e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdSize.h",
+      "sha256": "afbe95e25f7349be90c3f58994e6eefcdc456c8963f931ee1b1b5d00481047d9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdSizeDelegate.h",
+      "sha256": "066c303c579ea3c96bd8d74188f16904db08c57ed64dbb3b0aff5bd2db8873b4"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAdValue.h",
+      "sha256": "6d82f4cf963672e283e94cf2b92bf5ce7dd00f23b43a03f9422e142776ae408d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAppEventDelegate.h",
+      "sha256": "d07508a534329be45a2be4e04935be66ec97adeab3e34316166630776ca66184"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAppOpenAd.h",
+      "sha256": "a008e13c3d3c516b5908cb7f8b6f3aeb21a37f6a180a01fd9f27f3ad8d25c86a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAudioVideoManager.h",
+      "sha256": "f16da42ee2f3e1560d9e7c4b8e94cc97271178dcc9d27817b5bb51406ee721af"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADAudioVideoManagerDelegate.h",
+      "sha256": "0be8529206f6a7e54f6eca244a1cb951f7c3c7805442bf2984bd2d30b9e36e0a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADBannerView.h",
+      "sha256": "48a25798db72fdc4ce3fc97520509040a926b33e36dee9772beb7d05d1e38458"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADBannerViewDelegate.h",
+      "sha256": "e48a3ada73ad7518503023a19811af3cc79db0ac322679d9c9e90047322f6655"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventBanner.h",
+      "sha256": "fcab773f0155f13b1e12f875f711976af9abc1e6a2a2c2cb82497bc893a6c376"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventBannerDelegate.h",
+      "sha256": "8d0417e5ffd34e8edc200aa57487a0ff72d2b4e0d4e8b5924251da2a43b21cac"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventExtras.h",
+      "sha256": "982d253ad4c766884b07aaae3235743e7186f35dc6b44894d231de51ccff993c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventInterstitial.h",
+      "sha256": "cbc86a1654b01a64131953c9935e4767d53ce601952f461d09ab7d86a6497afb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventInterstitialDelegate.h",
+      "sha256": "fbcb0c30de9be0c64244e6a1a63668546319580d8e83b890b64fe5050124e98c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventNativeAd.h",
+      "sha256": "bc11ca5fef0c1d9dc02b5e8896f91ed1c3f5371fc2de1064a02ca9352b09613f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventNativeAdDelegate.h",
+      "sha256": "0c742ce94d5c82853b7d270f613974f04dc36473c6609de809f714e4752099f1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventParameters.h",
+      "sha256": "42c4d7fd56c7adbd4d2f3fe69701638812e50b4d15f73f7e0f44484efd0b57eb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomEventRequest.h",
+      "sha256": "366621c414889567702b7f4d2aa25b9a42b24b9a1518737c72c564eb6b5acd8a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomNativeAd.h",
+      "sha256": "c9944ef2e2eed12ac8110b799d74fa18eb508d39087f7a63cb1d5021b1ffd231"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADCustomNativeAdDelegate.h",
+      "sha256": "68252355da43f17519c315658bfb3edacc228e9418c0e716b51ea939987f3205"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADDebugOptionsViewController.h",
+      "sha256": "1f3d95a6bee2465a64ae86792ebc281549487bb840ea94becfc1c29eaf425ac9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADDisplayAdMeasurement.h",
+      "sha256": "4331d6ae104a16630b84dad1c0cf560cf08960791f24f9e660942f14f1988b12"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADExtras.h",
+      "sha256": "09e124fd424ff148712e4dae8af0e84ec1ea8b06523fb6a124825e6e058e62b1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADFullScreenContentDelegate.h",
+      "sha256": "27cc270a88a89b077a9f9876e70ff288979e21659763224218a5904a1dbaedfc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADInitializationStatus.h",
+      "sha256": "989be3939d96b8b82eacc3518ba08790a9d2e0b849c6d032144d0875717ed37a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADInterstitialAd.h",
+      "sha256": "06f72eb8d7e9d26ad85067ba4cc5745051e414c480267bd6653229197d50dd1a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADMediaAspectRatio.h",
+      "sha256": "9ed9fde76ebd84f85f3e2ce9aff2b0ad1ede63d6434d935b420d02f326f752e6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADMediaContent.h",
+      "sha256": "1b7ef09ea41f5148754afb0c68ff285257442375326bb4f229bd31a69b4fbb80"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADMediaView.h",
+      "sha256": "da962f809d7bd9807094534c82ac47325d52ce7ebca621b85ad35b5f4cfe5d57"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADMobileAds.h",
+      "sha256": "9092cb804727db8f9fa9b1100f127694d558da532f4c9687e94a01f0e1458dda"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADMultipleAdsAdLoaderOptions.h",
+      "sha256": "e9cc4207e5dc714e366fcee84ef5039f6bc08d073c4944ee5860fbe1ec16b0fa"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADMuteThisAdReason.h",
+      "sha256": "5962049ed6ac7ba4692f996ca47fe15eb2cd869fba5714c871c1d66af048e879"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAd+ConfirmationClick.h",
+      "sha256": "97c5ccf4f41666cc122c9795d242c6a302c61ebc3be31c5024cf40e7c75ca156"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAd+CustomClickGesture.h",
+      "sha256": "3e035fba694205434e7e18f7b9c5dc4425bcd3de5c16a7fe5c3f037388447b69"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAd.h",
+      "sha256": "8c77d2439ac6b58a2a072c1d2eb0487015e11d0a434b7b6d3e9dbc9aa5e5bf4d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdAssetIdentifiers.h",
+      "sha256": "fefd719f37fcebe97c59af83c48a6ea71aca9985380b0415991e54150a3991d5"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdCustomClickGestureOptions.h",
+      "sha256": "aa1db1abd1c00e5c4d94ebf0ac70ce90b7ec0e2a1768826a7d2aa542627b4203"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdDelegate.h",
+      "sha256": "e9a7e72faaecf8b1b598ac8298fc2ff32e83f7d4b8364fcefd8bf1ad80ce9437"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdImage+Mediation.h",
+      "sha256": "688c4dc2761ae0ad4b95cd066ce69f1bf5dc75d0262514cb19d495a3bba7b266"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdImage.h",
+      "sha256": "bfc1da43b33e33ae2d02eb6f7c5461aece8bfc2c43e1c0f4b3f4d3d0a461f801"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdImageAdLoaderOptions.h",
+      "sha256": "fa1d3efb41c01bc6b529b5c35b61c05d6edf0a61dab9ca58154ab2c411b7f845"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdMediaAdLoaderOptions.h",
+      "sha256": "3620f129377f9c9d7491ec18c0e3f95b21509488ce6675d3cab49e5aa88a8e19"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdUnconfirmedClickDelegate.h",
+      "sha256": "dc29e26b93b00cd8bcc6d3f98d7e91fa26128e3e7da260d6eaac6ae82bcf7104"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeAdViewAdOptions.h",
+      "sha256": "b6abc07b73c7b9dd4c624b3ce8a2ec862a67f5aacb1a56da659b67c8e4b0772c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADNativeMuteThisAdLoaderOptions.h",
+      "sha256": "e4f6c189ba0d141d82e8636f546033a4e62703b4c17f5d9a13c2155eece76b50"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADPresentationError.h",
+      "sha256": "7bd00f35974d9314f0f846f3d1ffbd655e42e04756032924c6cd58c661c5cd87"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADRequest.h",
+      "sha256": "f2980a8381580de9d8e52df97a6824c0fba280c4217c384b6b63b8280ced4683"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADRequestConfiguration.h",
+      "sha256": "699f5a817da1bab58f66ae97467e608143c558780642c23a5e49c927ffddc74b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADRequestError.h",
+      "sha256": "356f5cbdf76c23569eda6a65cc00184802b03d6b4644df6659b624a8452c959d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADResponseInfo.h",
+      "sha256": "958d70d0aeaab5bf649fa9ce01a9df879057364a4d3e9a4dcfa805735973acdf"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADRewardedAd.h",
+      "sha256": "43a2c56d9c0103dfcfb596872ee0166014a6a23bf1b236aa924925df5b4bd22a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADRewardedInterstitialAd.h",
+      "sha256": "f2aef4ee2042eae26d4f8444417e2ac2f169537023cc1dff4db38fefbe134019"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADServerSideVerificationOptions.h",
+      "sha256": "cf1cf054a87c603f9dac1b0f976cc4f66e28f2907d97ef477593de83482ce0ed"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADVideoController.h",
+      "sha256": "bedd9c1f7a48eb132ff8be1e0c16f4b0d300df3e748a32cdf9b108dc918aa68d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADVideoControllerDelegate.h",
+      "sha256": "e857850c69ea86bdd1725f5457cd66ec52ccee02949328416ff1b825cb2bdd31"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GADVideoOptions.h",
+      "sha256": "9233b6856476f60e91a6283247db0236351cd2a5879a3b1d95e91fd5d041d5d9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GAMBannerView.h",
+      "sha256": "902634d0b8717f0966da38e5e6551c0779ae1b58f91fad0ed62bca4ea7aca564"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GAMBannerViewOptions.h",
+      "sha256": "6c4d61e580e692623bd12c37240cad9268577b044c8a01676d4a735996897342"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GAMInterstitialAd.h",
+      "sha256": "6c2821c9f70c9a9c99f0f5d9fb34d082b2244b94280c8d6d1dca50351bf4acfc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GAMRequest.h",
+      "sha256": "5f7d7468ae02e327f775493105e3b633c48c8b5a0de1f7344fec6ab8e22dd351"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GoogleMobileAds.h",
+      "sha256": "20ff3e1add4523c5c7476cff82a3a36941955796213f9c734fa6926d42032598"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/GoogleMobileAdsDefines.h",
+      "sha256": "bd4d05b617bce5075bb8d88fa821f4d758cee247cac9592c0ba1058218e248ac"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMAdNetworkAdapterProtocol.h",
+      "sha256": "b12e832814b75b54a001a70f332bb26be35952208c9f198207031e613351ce92"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMAdNetworkConnectorProtocol.h",
+      "sha256": "b215493e1d77d8aa1d044fb0d2962e2978a524dab86d11817def321156cd633e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMEnums.h",
+      "sha256": "7f92255ae941b907447c0482b107d1c86a23960f230ad3687ea1e6fef5196a77"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediatedUnifiedNativeAd.h",
+      "sha256": "dccbdf7fb18e1da9f745f5ec42a6b84765768e10bd6a4c1217368224e2ea5a42"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediatedUnifiedNativeAdNotificationSource.h",
+      "sha256": "34d2ae2b302e95276f76272d5a0cec12d7dcf653f09229aa411688e9421c35c1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAd.h",
+      "sha256": "4b4daf23b57bd6b672ef25dcbf69ebd8e2db260066e68eec6b050d4b7985001b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdConfiguration.h",
+      "sha256": "3c4ef651040cddcb1c4f2c54d370f93c7942a8c9655323dba144a775b33e7e9b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdEventDelegate.h",
+      "sha256": "532b00b7cbead6a1e82cb7f0ca14cb50977194935c07b57fc230def7ffb8e60f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdRequest.h",
+      "sha256": "2343eb5f96061c6c181e50586c72248e864c1140f0ae449344fdcc8faf116257"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdSize.h",
+      "sha256": "38f6ba868d73a7d4ec86ff4de9876678a542c0ccd7e3f593ac7f3df1ec98cc1c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdapter.h",
+      "sha256": "77ac16fa9c658d7324493a74e44476383651f54dcaf842f0f3ba6cf8b53c3b1e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationAppOpenAd.h",
+      "sha256": "63d2f45845f37ef587104424573a67cc728b6fe8cda6f310d327dd97a41b5f6a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationBannerAd.h",
+      "sha256": "fc252bde66e4e57ef85c98f2fa0ddeb0da201b73e24ddce8a3647970c68ef462"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationInterstitialAd.h",
+      "sha256": "9f5c2849d7f9c3602884773a82b144ce642550887611962c0c46258f42dfd8e5"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationNativeAd.h",
+      "sha256": "eeee489d02fefd6a75dd553e2a65d2dd0f7193630093845125aa92ac1d85b556"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationRewardedAd.h",
+      "sha256": "43646011a3f63ecf12df0c057a4417116d9e14a19020b59345e5d19c5f415bc6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADMediationServerConfiguration.h",
+      "sha256": "b1708462d20510ee577b73f5d8195bac116005c32b5b021cac91317aca67d015"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Mediation/GADVersionNumber.h",
+      "sha256": "7d3870b7b069fabd40085d851e2da1da1b075ac972a5b6df1b983a1bfc301611"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/RTBMediation/GADRTBAdapter.h",
+      "sha256": "762510a94d6bf07a6db9034b38ecfbf3a38b74fa2273fa689c93e7c608f4faa1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/RTBMediation/GADRTBRequestParameters.h",
+      "sha256": "34725b15adb0b70bdaae584000cac960984a3b46bfd73de404ae206521919d19"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADAppOpenSignalRequest.h",
+      "sha256": "39f525c4295f3c4aac3559c9af0e6a0549ba47b7de65e1071b41fba83d14f34c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADBannerSignalRequest.h",
+      "sha256": "2caeca217eb9c7e45b8d67106dde3177430ec0b6d94c125189c9795b1fccad7f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADInterstitialSignalRequest.h",
+      "sha256": "315c83ede0be47c13b0cf98d79b10d6577948e8cd97626f8f8e14f7c1c2d3e00"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADNativeSignalRequest.h",
+      "sha256": "dd326e70f7b17e5b7cec65ea5e44b2651a4c072d269105e8a98b77ce36824f0b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADRewardedInterstitialSignalRequest.h",
+      "sha256": "d284ee5bc0a92e7be36c495d6583a1fe14b7dfec2c40f6706c6e8365baedcff2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADRewardedSignalRequest.h",
+      "sha256": "cf34d7f4f14f53e5f5a3c81fdd1e4a5219c34d8fca3694ef21217e9343db4d9d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADSignal.h",
+      "sha256": "274816de414d70d4e9bfd944d51438f9af0abf28f3da08162f4693895768b0d7"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Headers/Request/GADSignalRequest.h",
+      "sha256": "b86ed2515dc62254278565c0bf99c52e2b27ab5aa272e1be7176d02116ece85e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Info.plist",
+      "sha256": "1af1ea5641cabdbfa35fb7dbe1e60391cf2b30375dce5169851bb6a5614385b2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Modules/module.modulemap",
+      "sha256": "5c7a943510958df0fdb29d89ab6e5744fb8846ae28d9d54870f2d0fbbfe1d7f2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/Modules/module.private.modulemap",
+      "sha256": "e548aa40769d9f13fbd49c14bccc004946c4529ab1c8840510f394e1e0587e53"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivacyInfo.xcprivacy",
+      "sha256": "69fb112582fc23fc06c635c961d262a3f7b4b5654d284787491de3000dadf9d2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADAppOpenAdPreloader_Beta.h",
+      "sha256": "b5b8957d1973bbadf903a3da1274628b6c32bc6adcaf1ec03b09fa120b99cc40"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADInterstitialAdPreloader_Beta.h",
+      "sha256": "951d2c3d0939ccce2b19c8f21ecea717c2835de8aca58f79904467902ad3f61b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADMobileAds_Beta.h",
+      "sha256": "915016e348b4ab0db989ea08ccf63f1bad67e8f81a708a30e7751b968fd2c23f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADPictureInPictureAdDelegate_Beta.h",
+      "sha256": "cf6c0b581776d3626d97e592f1a73bdb2c15be7bd6adb77ec21c4667e69f2ba0"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADPictureInPictureAdOptions_Beta.h",
+      "sha256": "f6a768929bb3b60680e4c5a54bbb95541fe4a538adc54dbea671bdbac1d009d8"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADPictureInPictureAd_Beta.h",
+      "sha256": "ea239bb9c801ef26dfac8be87d98adb44c9461451a84b21feb5458dd1b3c0f82"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADPreloadConfigurationV2_Beta.h",
+      "sha256": "0cc1ccec8b3e7a8d326626deb2ff81d9c30154f38b05cc74e28baa18a4b1c8df"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADPreloadDelegate_Beta.h",
+      "sha256": "b593a33e295219dfcb79f0a3e3c5bb7b03aed3d7f1f1f515e8b0903185ff26bd"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADRequest_Beta.h",
+      "sha256": "1240f3eff1d5e571b4b3028b93d1f5dcea9b59f591d8edfaae7fd8f4026fa47b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADRewardedAdPreloader_Beta.h",
+      "sha256": "5185fad58afa893cb48691f944504c0b68b4e31a3b2b716c71437ac91f97b801"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADRewardedInterstitialAdPreloader_Beta.h",
+      "sha256": "d57adce0c1b77613ffd304ad7de91aba97a8937ef78814ea088f5053f1dbb7f6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADSwipeableInterstitialAdDelegate_Beta.h",
+      "sha256": "50df83d2927fab5b35de5e473f4ed6c893001d3481c245f0f6565ff78b1c81c3"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADSwipeableInterstitialAdOptions_Beta.h",
+      "sha256": "4a4fdc2e1c023a8df15dddc500bc4d3dc12ce46fdc9621a411cb526c056c7fea"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GADSwipeableInterstitialAd_Beta.h",
+      "sha256": "97296a82c9e3f03f435334e4ebe086ab118f88b109359fdfba7021e1f1bda707"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/GoogleMobileAds_Beta.h",
+      "sha256": "052d57889749544606ef9c47df3a975200786560a9cafaf5cd97f83ec7a5fbcc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/Mediation/GADMediationInitializationConfiguration_Beta.h",
+      "sha256": "2385c8fe7ddb1ff5792b33af8bc1bc94ff9551eec91b363052dd736ad1f71231"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64/GoogleMobileAds.framework/PrivateHeaders/Request/GADSwipeableInterstitialSignalRequest_Beta.h",
+      "sha256": "3d85a8873d58e9061a3139de405d8dde9021c7652acec8e9a037e79c7a26158c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/GoogleMobileAds",
+      "sha256": "d5fb1a6385e3e27aaf03d6c09a9e7b242dc64760ad51b79787cad8aa7c0555d1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdChoicesPosition.h",
+      "sha256": "6a330ecfbbdba1407e26d308d1c59d93c95fde930778ae000156c64cd25bda43"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdChoicesView.h",
+      "sha256": "0b819cfea3640bea37c39edc85dc4c2158c6ded911294806e5f8bac9d6a59af9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdFormat.h",
+      "sha256": "df6176bbf8e21c5a96853732e5d7365744e39117847c505dd0c3175de34fc4f5"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdLoader+ServerToServer.h",
+      "sha256": "49fb3c05b011d9350e6b152dcd68c7a2278343fa02620c091db07f9e334a50aa"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdLoader.h",
+      "sha256": "5d3ca0a806f15a9f5c2a4328059e3002b66865769e8a4f85be963dbe8cf13211"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdLoaderAdTypes.h",
+      "sha256": "63ba40d02670fce52c689aa07323976dabb6870401cdbdf14ea878222b6987db"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdLoaderDelegate.h",
+      "sha256": "c6a6b9059a7a4c4c0d55b89725692d9b12367b403f5b910a96026c8e2a4f08bb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdMetadata.h",
+      "sha256": "659c3fa88297fc4c10793c140d857d3fa55c54c56ecdf1f1fdc712a31324b060"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdNetworkExtras.h",
+      "sha256": "2e72eb03b113e8067c1f4eedc6a09cdb50140c0e65ceb0a0d3a62d084655ca6c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdReward.h",
+      "sha256": "6257d0c0f11204b0c82d8a3c73a57229e0e92ec54651707055030346cfa0465e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdSize.h",
+      "sha256": "afbe95e25f7349be90c3f58994e6eefcdc456c8963f931ee1b1b5d00481047d9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdSizeDelegate.h",
+      "sha256": "066c303c579ea3c96bd8d74188f16904db08c57ed64dbb3b0aff5bd2db8873b4"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAdValue.h",
+      "sha256": "6d82f4cf963672e283e94cf2b92bf5ce7dd00f23b43a03f9422e142776ae408d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAppEventDelegate.h",
+      "sha256": "d07508a534329be45a2be4e04935be66ec97adeab3e34316166630776ca66184"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAppOpenAd.h",
+      "sha256": "a008e13c3d3c516b5908cb7f8b6f3aeb21a37f6a180a01fd9f27f3ad8d25c86a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAudioVideoManager.h",
+      "sha256": "f16da42ee2f3e1560d9e7c4b8e94cc97271178dcc9d27817b5bb51406ee721af"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADAudioVideoManagerDelegate.h",
+      "sha256": "0be8529206f6a7e54f6eca244a1cb951f7c3c7805442bf2984bd2d30b9e36e0a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADBannerView.h",
+      "sha256": "48a25798db72fdc4ce3fc97520509040a926b33e36dee9772beb7d05d1e38458"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADBannerViewDelegate.h",
+      "sha256": "e48a3ada73ad7518503023a19811af3cc79db0ac322679d9c9e90047322f6655"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventBanner.h",
+      "sha256": "fcab773f0155f13b1e12f875f711976af9abc1e6a2a2c2cb82497bc893a6c376"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventBannerDelegate.h",
+      "sha256": "8d0417e5ffd34e8edc200aa57487a0ff72d2b4e0d4e8b5924251da2a43b21cac"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventExtras.h",
+      "sha256": "982d253ad4c766884b07aaae3235743e7186f35dc6b44894d231de51ccff993c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventInterstitial.h",
+      "sha256": "cbc86a1654b01a64131953c9935e4767d53ce601952f461d09ab7d86a6497afb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventInterstitialDelegate.h",
+      "sha256": "fbcb0c30de9be0c64244e6a1a63668546319580d8e83b890b64fe5050124e98c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventNativeAd.h",
+      "sha256": "bc11ca5fef0c1d9dc02b5e8896f91ed1c3f5371fc2de1064a02ca9352b09613f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventNativeAdDelegate.h",
+      "sha256": "0c742ce94d5c82853b7d270f613974f04dc36473c6609de809f714e4752099f1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventParameters.h",
+      "sha256": "42c4d7fd56c7adbd4d2f3fe69701638812e50b4d15f73f7e0f44484efd0b57eb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomEventRequest.h",
+      "sha256": "366621c414889567702b7f4d2aa25b9a42b24b9a1518737c72c564eb6b5acd8a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomNativeAd.h",
+      "sha256": "c9944ef2e2eed12ac8110b799d74fa18eb508d39087f7a63cb1d5021b1ffd231"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADCustomNativeAdDelegate.h",
+      "sha256": "68252355da43f17519c315658bfb3edacc228e9418c0e716b51ea939987f3205"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADDebugOptionsViewController.h",
+      "sha256": "1f3d95a6bee2465a64ae86792ebc281549487bb840ea94becfc1c29eaf425ac9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADDisplayAdMeasurement.h",
+      "sha256": "4331d6ae104a16630b84dad1c0cf560cf08960791f24f9e660942f14f1988b12"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADExtras.h",
+      "sha256": "09e124fd424ff148712e4dae8af0e84ec1ea8b06523fb6a124825e6e058e62b1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADFullScreenContentDelegate.h",
+      "sha256": "27cc270a88a89b077a9f9876e70ff288979e21659763224218a5904a1dbaedfc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADInitializationStatus.h",
+      "sha256": "989be3939d96b8b82eacc3518ba08790a9d2e0b849c6d032144d0875717ed37a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADInterstitialAd.h",
+      "sha256": "06f72eb8d7e9d26ad85067ba4cc5745051e414c480267bd6653229197d50dd1a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADMediaAspectRatio.h",
+      "sha256": "9ed9fde76ebd84f85f3e2ce9aff2b0ad1ede63d6434d935b420d02f326f752e6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADMediaContent.h",
+      "sha256": "1b7ef09ea41f5148754afb0c68ff285257442375326bb4f229bd31a69b4fbb80"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADMediaView.h",
+      "sha256": "da962f809d7bd9807094534c82ac47325d52ce7ebca621b85ad35b5f4cfe5d57"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADMobileAds.h",
+      "sha256": "9092cb804727db8f9fa9b1100f127694d558da532f4c9687e94a01f0e1458dda"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADMultipleAdsAdLoaderOptions.h",
+      "sha256": "e9cc4207e5dc714e366fcee84ef5039f6bc08d073c4944ee5860fbe1ec16b0fa"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADMuteThisAdReason.h",
+      "sha256": "5962049ed6ac7ba4692f996ca47fe15eb2cd869fba5714c871c1d66af048e879"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAd+ConfirmationClick.h",
+      "sha256": "97c5ccf4f41666cc122c9795d242c6a302c61ebc3be31c5024cf40e7c75ca156"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAd+CustomClickGesture.h",
+      "sha256": "3e035fba694205434e7e18f7b9c5dc4425bcd3de5c16a7fe5c3f037388447b69"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAd.h",
+      "sha256": "8c77d2439ac6b58a2a072c1d2eb0487015e11d0a434b7b6d3e9dbc9aa5e5bf4d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdAssetIdentifiers.h",
+      "sha256": "fefd719f37fcebe97c59af83c48a6ea71aca9985380b0415991e54150a3991d5"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdCustomClickGestureOptions.h",
+      "sha256": "aa1db1abd1c00e5c4d94ebf0ac70ce90b7ec0e2a1768826a7d2aa542627b4203"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdDelegate.h",
+      "sha256": "e9a7e72faaecf8b1b598ac8298fc2ff32e83f7d4b8364fcefd8bf1ad80ce9437"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdImage+Mediation.h",
+      "sha256": "688c4dc2761ae0ad4b95cd066ce69f1bf5dc75d0262514cb19d495a3bba7b266"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdImage.h",
+      "sha256": "bfc1da43b33e33ae2d02eb6f7c5461aece8bfc2c43e1c0f4b3f4d3d0a461f801"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdImageAdLoaderOptions.h",
+      "sha256": "fa1d3efb41c01bc6b529b5c35b61c05d6edf0a61dab9ca58154ab2c411b7f845"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdMediaAdLoaderOptions.h",
+      "sha256": "3620f129377f9c9d7491ec18c0e3f95b21509488ce6675d3cab49e5aa88a8e19"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdUnconfirmedClickDelegate.h",
+      "sha256": "dc29e26b93b00cd8bcc6d3f98d7e91fa26128e3e7da260d6eaac6ae82bcf7104"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeAdViewAdOptions.h",
+      "sha256": "b6abc07b73c7b9dd4c624b3ce8a2ec862a67f5aacb1a56da659b67c8e4b0772c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADNativeMuteThisAdLoaderOptions.h",
+      "sha256": "e4f6c189ba0d141d82e8636f546033a4e62703b4c17f5d9a13c2155eece76b50"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADPresentationError.h",
+      "sha256": "7bd00f35974d9314f0f846f3d1ffbd655e42e04756032924c6cd58c661c5cd87"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADRequest.h",
+      "sha256": "f2980a8381580de9d8e52df97a6824c0fba280c4217c384b6b63b8280ced4683"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADRequestConfiguration.h",
+      "sha256": "699f5a817da1bab58f66ae97467e608143c558780642c23a5e49c927ffddc74b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADRequestError.h",
+      "sha256": "356f5cbdf76c23569eda6a65cc00184802b03d6b4644df6659b624a8452c959d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADResponseInfo.h",
+      "sha256": "958d70d0aeaab5bf649fa9ce01a9df879057364a4d3e9a4dcfa805735973acdf"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADRewardedAd.h",
+      "sha256": "43a2c56d9c0103dfcfb596872ee0166014a6a23bf1b236aa924925df5b4bd22a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADRewardedInterstitialAd.h",
+      "sha256": "f2aef4ee2042eae26d4f8444417e2ac2f169537023cc1dff4db38fefbe134019"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADServerSideVerificationOptions.h",
+      "sha256": "cf1cf054a87c603f9dac1b0f976cc4f66e28f2907d97ef477593de83482ce0ed"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADVideoController.h",
+      "sha256": "bedd9c1f7a48eb132ff8be1e0c16f4b0d300df3e748a32cdf9b108dc918aa68d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADVideoControllerDelegate.h",
+      "sha256": "e857850c69ea86bdd1725f5457cd66ec52ccee02949328416ff1b825cb2bdd31"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GADVideoOptions.h",
+      "sha256": "9233b6856476f60e91a6283247db0236351cd2a5879a3b1d95e91fd5d041d5d9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GAMBannerView.h",
+      "sha256": "902634d0b8717f0966da38e5e6551c0779ae1b58f91fad0ed62bca4ea7aca564"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GAMBannerViewOptions.h",
+      "sha256": "6c4d61e580e692623bd12c37240cad9268577b044c8a01676d4a735996897342"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GAMInterstitialAd.h",
+      "sha256": "6c2821c9f70c9a9c99f0f5d9fb34d082b2244b94280c8d6d1dca50351bf4acfc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GAMRequest.h",
+      "sha256": "5f7d7468ae02e327f775493105e3b633c48c8b5a0de1f7344fec6ab8e22dd351"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GoogleMobileAds.h",
+      "sha256": "20ff3e1add4523c5c7476cff82a3a36941955796213f9c734fa6926d42032598"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/GoogleMobileAdsDefines.h",
+      "sha256": "bd4d05b617bce5075bb8d88fa821f4d758cee247cac9592c0ba1058218e248ac"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMAdNetworkAdapterProtocol.h",
+      "sha256": "b12e832814b75b54a001a70f332bb26be35952208c9f198207031e613351ce92"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMAdNetworkConnectorProtocol.h",
+      "sha256": "b215493e1d77d8aa1d044fb0d2962e2978a524dab86d11817def321156cd633e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMEnums.h",
+      "sha256": "7f92255ae941b907447c0482b107d1c86a23960f230ad3687ea1e6fef5196a77"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediatedUnifiedNativeAd.h",
+      "sha256": "dccbdf7fb18e1da9f745f5ec42a6b84765768e10bd6a4c1217368224e2ea5a42"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediatedUnifiedNativeAdNotificationSource.h",
+      "sha256": "34d2ae2b302e95276f76272d5a0cec12d7dcf653f09229aa411688e9421c35c1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAd.h",
+      "sha256": "4b4daf23b57bd6b672ef25dcbf69ebd8e2db260066e68eec6b050d4b7985001b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdConfiguration.h",
+      "sha256": "3c4ef651040cddcb1c4f2c54d370f93c7942a8c9655323dba144a775b33e7e9b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdEventDelegate.h",
+      "sha256": "532b00b7cbead6a1e82cb7f0ca14cb50977194935c07b57fc230def7ffb8e60f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdRequest.h",
+      "sha256": "2343eb5f96061c6c181e50586c72248e864c1140f0ae449344fdcc8faf116257"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdSize.h",
+      "sha256": "38f6ba868d73a7d4ec86ff4de9876678a542c0ccd7e3f593ac7f3df1ec98cc1c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdapter.h",
+      "sha256": "77ac16fa9c658d7324493a74e44476383651f54dcaf842f0f3ba6cf8b53c3b1e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationAppOpenAd.h",
+      "sha256": "63d2f45845f37ef587104424573a67cc728b6fe8cda6f310d327dd97a41b5f6a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationBannerAd.h",
+      "sha256": "fc252bde66e4e57ef85c98f2fa0ddeb0da201b73e24ddce8a3647970c68ef462"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationInterstitialAd.h",
+      "sha256": "9f5c2849d7f9c3602884773a82b144ce642550887611962c0c46258f42dfd8e5"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationNativeAd.h",
+      "sha256": "eeee489d02fefd6a75dd553e2a65d2dd0f7193630093845125aa92ac1d85b556"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationRewardedAd.h",
+      "sha256": "43646011a3f63ecf12df0c057a4417116d9e14a19020b59345e5d19c5f415bc6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADMediationServerConfiguration.h",
+      "sha256": "b1708462d20510ee577b73f5d8195bac116005c32b5b021cac91317aca67d015"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Mediation/GADVersionNumber.h",
+      "sha256": "7d3870b7b069fabd40085d851e2da1da1b075ac972a5b6df1b983a1bfc301611"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/RTBMediation/GADRTBAdapter.h",
+      "sha256": "762510a94d6bf07a6db9034b38ecfbf3a38b74fa2273fa689c93e7c608f4faa1"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/RTBMediation/GADRTBRequestParameters.h",
+      "sha256": "34725b15adb0b70bdaae584000cac960984a3b46bfd73de404ae206521919d19"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADAppOpenSignalRequest.h",
+      "sha256": "39f525c4295f3c4aac3559c9af0e6a0549ba47b7de65e1071b41fba83d14f34c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADBannerSignalRequest.h",
+      "sha256": "2caeca217eb9c7e45b8d67106dde3177430ec0b6d94c125189c9795b1fccad7f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADInterstitialSignalRequest.h",
+      "sha256": "315c83ede0be47c13b0cf98d79b10d6577948e8cd97626f8f8e14f7c1c2d3e00"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADNativeSignalRequest.h",
+      "sha256": "dd326e70f7b17e5b7cec65ea5e44b2651a4c072d269105e8a98b77ce36824f0b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADRewardedInterstitialSignalRequest.h",
+      "sha256": "d284ee5bc0a92e7be36c495d6583a1fe14b7dfec2c40f6706c6e8365baedcff2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADRewardedSignalRequest.h",
+      "sha256": "cf34d7f4f14f53e5f5a3c81fdd1e4a5219c34d8fca3694ef21217e9343db4d9d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADSignal.h",
+      "sha256": "274816de414d70d4e9bfd944d51438f9af0abf28f3da08162f4693895768b0d7"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Headers/Request/GADSignalRequest.h",
+      "sha256": "b86ed2515dc62254278565c0bf99c52e2b27ab5aa272e1be7176d02116ece85e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Info.plist",
+      "sha256": "b414aff3f03e0f49b9c8fa2e1ebd158cb9ea90c34fc12cff0e8dec223e8a0358"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Modules/module.modulemap",
+      "sha256": "5c7a943510958df0fdb29d89ab6e5744fb8846ae28d9d54870f2d0fbbfe1d7f2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/Modules/module.private.modulemap",
+      "sha256": "e548aa40769d9f13fbd49c14bccc004946c4529ab1c8840510f394e1e0587e53"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivacyInfo.xcprivacy",
+      "sha256": "69fb112582fc23fc06c635c961d262a3f7b4b5654d284787491de3000dadf9d2"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADAppOpenAdPreloader_Beta.h",
+      "sha256": "b5b8957d1973bbadf903a3da1274628b6c32bc6adcaf1ec03b09fa120b99cc40"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADInterstitialAdPreloader_Beta.h",
+      "sha256": "951d2c3d0939ccce2b19c8f21ecea717c2835de8aca58f79904467902ad3f61b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADMobileAds_Beta.h",
+      "sha256": "915016e348b4ab0db989ea08ccf63f1bad67e8f81a708a30e7751b968fd2c23f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADPictureInPictureAdDelegate_Beta.h",
+      "sha256": "cf6c0b581776d3626d97e592f1a73bdb2c15be7bd6adb77ec21c4667e69f2ba0"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADPictureInPictureAdOptions_Beta.h",
+      "sha256": "f6a768929bb3b60680e4c5a54bbb95541fe4a538adc54dbea671bdbac1d009d8"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADPictureInPictureAd_Beta.h",
+      "sha256": "ea239bb9c801ef26dfac8be87d98adb44c9461451a84b21feb5458dd1b3c0f82"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADPreloadConfigurationV2_Beta.h",
+      "sha256": "0cc1ccec8b3e7a8d326626deb2ff81d9c30154f38b05cc74e28baa18a4b1c8df"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADPreloadDelegate_Beta.h",
+      "sha256": "b593a33e295219dfcb79f0a3e3c5bb7b03aed3d7f1f1f515e8b0903185ff26bd"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADRequest_Beta.h",
+      "sha256": "1240f3eff1d5e571b4b3028b93d1f5dcea9b59f591d8edfaae7fd8f4026fa47b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADRewardedAdPreloader_Beta.h",
+      "sha256": "5185fad58afa893cb48691f944504c0b68b4e31a3b2b716c71437ac91f97b801"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADRewardedInterstitialAdPreloader_Beta.h",
+      "sha256": "d57adce0c1b77613ffd304ad7de91aba97a8937ef78814ea088f5053f1dbb7f6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADSwipeableInterstitialAdDelegate_Beta.h",
+      "sha256": "50df83d2927fab5b35de5e473f4ed6c893001d3481c245f0f6565ff78b1c81c3"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADSwipeableInterstitialAdOptions_Beta.h",
+      "sha256": "4a4fdc2e1c023a8df15dddc500bc4d3dc12ce46fdc9621a411cb526c056c7fea"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GADSwipeableInterstitialAd_Beta.h",
+      "sha256": "97296a82c9e3f03f435334e4ebe086ab118f88b109359fdfba7021e1f1bda707"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/GoogleMobileAds_Beta.h",
+      "sha256": "052d57889749544606ef9c47df3a975200786560a9cafaf5cd97f83ec7a5fbcc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/Mediation/GADMediationInitializationConfiguration_Beta.h",
+      "sha256": "2385c8fe7ddb1ff5792b33af8bc1bc94ff9551eec91b363052dd736ad1f71231"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator/GoogleMobileAds.framework/PrivateHeaders/Request/GADSwipeableInterstitialSignalRequest_Beta.h",
+      "sha256": "3d85a8873d58e9061a3139de405d8dde9021c7652acec8e9a037e79c7a26158c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/Licenses/CCTZ-LICENSE",
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/Licenses/NanoPB-LICENSE",
+      "sha256": "e2f2fc8fe3faa7dcb09dbe995db48c6ec5c1f72705db915101e4a83fed44f66d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/Licenses/OpenMeasurement-LICENSE",
+      "sha256": "91348f7d73834c36e12a515ff4d70191ad3106747c7e7ec116aab915a52b1b8b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/Licenses/OpenSSL-LICENSE",
+      "sha256": "827c8d8fc207c2392794eef9e00fe246f9f61fdcc132556c275be3dd8c3cd97f"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/Licenses/TCMalloc-LICENSE",
+      "sha256": "aac73b3148f6d1d7111dbca32099f68d26c644c6813ae1e4f05f6579aa2663fe"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/Info.plist",
+      "sha256": "401309b4e58e10c4eacbc4cd93c6aa7fa4986006f8a50e2e002518406766850b"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/_CodeSignature/CodeDirectory",
+      "sha256": "28b97cacde6629ae78b8e79087b9ce6873c6aa46e7d018e7cd4b4521aeefda5a"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/_CodeSignature/CodeRequirements",
+      "sha256": "86c3f44269b41d2ac886c4a738e9ebaee999b14ccf6ee774f0d17d07ae188c00"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/_CodeSignature/CodeRequirements-1",
+      "sha256": "87f142c839a04f6e8c2ef965a079d7fde466cbe06abf4f96113f6d0e30fe5cf6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/_CodeSignature/CodeResources",
+      "sha256": "e5448abdf2be2f67aa2e45f691da5327f3b4d9be0337e651ae352e7fa1fe46d9"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/_CodeSignature/CodeSignature",
+      "sha256": "23eb668a19363bcddaf92f4780db0d966be9c2f3f6f79cb40192462582835bc6"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Headers/UMPConsentForm.h",
+      "sha256": "38647709545e0c6761178efa3c78ec400f9d9e6075a979564ec86da6435b2ec4"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Headers/UMPConsentInformation.h",
+      "sha256": "8c492538503207aa36e7f5026546d0d97d55b6bec521eca68535b991ca5a4d2e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Headers/UMPDebugSettings.h",
+      "sha256": "9f196c92d4c362812a2e96ef3f36ff743ba488b554b5d5a604d97065ee976eb8"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Headers/UMPError.h",
+      "sha256": "7f6999a520737109d6838b9bfa9dbc026ed92ce773482efb38da08e9f710f5cc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Headers/UMPRequestParameters.h",
+      "sha256": "78a83e384a17f9404c28bb91882b72275c7749b74fd40bd8a4649c14271a265d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Headers/UserMessagingPlatform.h",
+      "sha256": "a087cea39dacccd0e1a16eff936c1e82aa4b6e6fe08787a1625804f6293a3365"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Info.plist",
+      "sha256": "dac509a65c31cbee9981b5a9a1cd721c78b3e31c8b53162eee87225c9b21d5eb"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/Modules/module.modulemap",
+      "sha256": "e7c849fa90c06860f024f394e88f537b856fd8efe85f2543f97410c93c1d93de"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/PrivacyInfo.xcprivacy",
+      "sha256": "45b7adb99fcd2d962a1c800fbfcc1325b57a7fa4165f416182323bb5ffe9c900"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64/UserMessagingPlatform.framework/UserMessagingPlatform",
+      "sha256": "32214befb78e624bddc5205ff469f0126a3df8b56765fa4410a0c374ff616f67"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Headers/UMPConsentForm.h",
+      "sha256": "38647709545e0c6761178efa3c78ec400f9d9e6075a979564ec86da6435b2ec4"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Headers/UMPConsentInformation.h",
+      "sha256": "8c492538503207aa36e7f5026546d0d97d55b6bec521eca68535b991ca5a4d2e"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Headers/UMPDebugSettings.h",
+      "sha256": "9f196c92d4c362812a2e96ef3f36ff743ba488b554b5d5a604d97065ee976eb8"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Headers/UMPError.h",
+      "sha256": "7f6999a520737109d6838b9bfa9dbc026ed92ce773482efb38da08e9f710f5cc"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Headers/UMPRequestParameters.h",
+      "sha256": "78a83e384a17f9404c28bb91882b72275c7749b74fd40bd8a4649c14271a265d"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Headers/UserMessagingPlatform.h",
+      "sha256": "a087cea39dacccd0e1a16eff936c1e82aa4b6e6fe08787a1625804f6293a3365"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Info.plist",
+      "sha256": "22a8ed9d28ce82a4934e6a23ecbfc33c5317b74be90016163f1c111c2da4b474"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/Modules/module.modulemap",
+      "sha256": "e7c849fa90c06860f024f394e88f537b856fd8efe85f2543f97410c93c1d93de"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/PrivacyInfo.xcprivacy",
+      "sha256": "45b7adb99fcd2d962a1c800fbfcc1325b57a7fa4165f416182323bb5ffe9c900"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator/UserMessagingPlatform.framework/UserMessagingPlatform",
+      "sha256": "48ba0477ff0fd380b825306aeeba6492c547f160417352cdf68ecdf59555f555"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/unity-plugin-library.xcframework/Info.plist",
+      "source": "Assets/Plugins/iOS/unity-plugin-library.xcframework/Info.plist",
+      "sha256": "9ddb6136023b7f2832b20ebb75fafa8e300458bd55c0e0680f0d93d1e9c58025"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/unity-plugin-library.xcframework/ios-arm64/unity-plugin-library.framework/Info.plist",
+      "source": "Assets/Plugins/iOS/unity-plugin-library.xcframework/ios-arm64/unity-plugin-library.framework/Info.plist",
+      "sha256": "1b6a0a59f57840419f6c2554f33a5a1c52adf12a2e633267eac883888023f0f0"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/unity-plugin-library.xcframework/ios-arm64/unity-plugin-library.framework/unity-plugin-library",
+      "source": "Assets/Plugins/iOS/unity-plugin-library.xcframework/ios-arm64/unity-plugin-library.framework/unity-plugin-library",
+      "sha256": "ba7ba365cbd01d07d10c9f650cea8e7bf971f8389789f26ddd2f5810975dcd9c"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/unity-plugin-library.xcframework/ios-arm64_x86_64-simulator/unity-plugin-library.framework/Info.plist",
+      "source": "Assets/Plugins/iOS/unity-plugin-library.xcframework/ios-arm64_x86_64-simulator/unity-plugin-library.framework/Info.plist",
+      "sha256": "5bf283e1ec3cc675f9933a11ad1c03be52130f1bcbd67f3a67cff7456125e883"
+    },
+    {
+      "path": "UnityProject/ThirdParty~/GoogleMobileAds/unity-plugin-library.xcframework/ios-arm64_x86_64-simulator/unity-plugin-library.framework/unity-plugin-library",
+      "source": "Assets/Plugins/iOS/unity-plugin-library.xcframework/ios-arm64_x86_64-simulator/unity-plugin-library.framework/unity-plugin-library",
+      "sha256": "893df1af5d93155194060e001d4a5070dbb04648523cb4023de55402d2b61e00"
+    }
+  ]
+}

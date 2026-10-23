@@ -17,6 +17,9 @@ namespace CatsAndArrows.Monetization
             public bool AllowDelivery = true;
             public bool TimedOut;
             public bool Rewarded;
+            public bool Presented;
+            public bool InfrastructureUnavailable;
+            public bool AwaitingClosure;
             public Action Proceed;
         }
         private readonly IMonetizationStateStore store;
@@ -125,29 +128,43 @@ namespace CatsAndArrows.Monetization
         public void RequestHint()
         {
             if (disposed || IsBusy || session == null || !ordinary || session.IsCompleted) return;
-            var prepared = session.PrepareHint();
+            var request = new AdOperation { Placement = AdPlacement.Hint, Session = session,
+                BoardId = boardId, MarkRevision = session.MarkRevision };
+            var prepared = request.Session.PrepareHint();
             if (prepared.Status != HintStatus.Applied) return;
             if (!Enabled || IsOwned) { DeliverHint(session); return; }
             if (HasEarnedHint) { RedeemReward(); return; }
             if (state.Access == AccessState.Unknown) { SetStatus(MonetizationStatus.RestoreRequired); return; }
             if (dirty && !Persist()) return;
             if (!storageLoaded) { SetStatus(MonetizationStatus.StorageRecovery); return; }
-            if (Availability(AdPlacement.Hint) != AdAvailability.Ready) { SetStatus(MonetizationStatus.AdUnavailable); return; }
-            StartAd(AdPlacement.Hint, null);
+            var availability = Availability(AdPlacement.Hint);
+            if (!MatchesHint(request)) return;
+            if (IsOwned || availability != AdAvailability.Ready)
+            { Status = MonetizationStatus.None; DeliverHint(request.Session); return; }
+            StartAd(AdPlacement.Hint, null, request);
         }
 
         private AdAvailability Availability(AdPlacement placement)
         { try { return ads.GetAvailability(placement); } catch { return AdAvailability.Unavailable; } }
 
-        private void StartAd(AdPlacement placement, Action proceed)
+        private void StartAd(AdPlacement placement, Action proceed, AdOperation prepared = null)
         {
             var id = AllocateOperation();
             if (id == 0) { proceed?.Invoke(); return; }
-            ad = new AdOperation { Id = id, Placement = placement, Session = session,
-                BoardId = boardId, MarkRevision = session?.MarkRevision ?? 0, Started = clock(), Proceed = proceed };
+            if (prepared != null && !MatchesHint(prepared)) return;
+            if (IsOwned)
+            { if (prepared != null) DeliverHint(prepared.Session); else proceed?.Invoke(); return; }
+            ad = prepared ?? new AdOperation { Placement = placement, Session = session,
+                BoardId = boardId, MarkRevision = session?.MarkRevision ?? 0 };
+            ad.Id = id; ad.Started = clock(); ad.Proceed = proceed;
             SetStatus(MonetizationStatus.Busy);
+            // Changed listeners can replace the board or resolve ownership before
+            // the provider is entered. Never present an obsolete queued request.
+            if (disposed || ad == null || ad.Id != id) return;
+            if (IsOwned || !ad.AllowDelivery || (placement == AdPlacement.Hint && !MatchesHint(ad)))
+            { OnAdSignal(id, new AdSignal(AdSignalKind.Closed)); return; }
             try { ads.Show(id, placement, signal => OnAdSignal(id, signal)); }
-            catch { OnAdSignal(id, new AdSignal(AdSignalKind.Failed)); }
+            catch { OnAdSignal(id, new AdSignal(AdSignalKind.InfrastructureUnavailable)); }
         }
 
         private void OnAdSignal(long id, AdSignal signal)
@@ -163,18 +180,33 @@ namespace CatsAndArrows.Monetization
                 if (!IsOwned) { state.RewardOperation = id; state.RewardOriginBoard = current.BoardId; }
                 dirty = true; Persist(); Notify(); return;
             }
-            if (signal.Kind == AdSignalKind.Presented) { Notify(); return; }
-            if (signal.Kind != AdSignalKind.Closed && signal.Kind != AdSignalKind.Failed) return;
+            if (signal.Kind == AdSignalKind.Presented) { current.Presented = true; Notify(); return; }
+            if (signal.Kind != AdSignalKind.Closed && signal.Kind != AdSignalKind.Failed &&
+                signal.Kind != AdSignalKind.InfrastructureUnavailable) return;
+            current.Presented |= ads.IsPresenting;
+            if (signal.Kind == AdSignalKind.InfrastructureUnavailable ||
+                (signal.Kind == AdSignalKind.Failed && !current.Presented)) current.InfrastructureUnavailable = true;
+            else if (signal.Kind == AdSignalKind.Failed) current.AllowDelivery = false;
             // A failure cannot unlock underneath an existing native presentation.
-            if (ads.IsPresenting) { current.AllowDelivery = false; Notify(); return; }
+            if (ads.IsPresenting) { current.AwaitingClosure = true; Notify(); return; }
+            CompleteAd(current);
+        }
+
+        private bool MatchesHint(AdOperation current) => ReferenceEquals(session, current.Session) &&
+            boardId == current.BoardId && session != null && session.MarkRevision == current.MarkRevision &&
+            !session.IsCompleted && ordinary;
+
+        private void CompleteAd(AdOperation current)
+        {
             ad = null;
             if (current.Placement == AdPlacement.Progression)
             { SetStatus(MonetizationStatus.None); current.Proceed?.Invoke(); return; }
-            var matches = ReferenceEquals(session, current.Session) && boardId == current.BoardId &&
-                session != null && session.MarkRevision == current.MarkRevision && !session.IsCompleted && ordinary;
-            if (current.AllowDelivery && matches && (current.Rewarded || IsOwned))
+            if (current.AllowDelivery && (!current.TimedOut || current.InfrastructureUnavailable || IsOwned) && MatchesHint(current) &&
+                (current.Rewarded || IsOwned || current.InfrastructureUnavailable))
             {
-                if (IsOwned) DeliverHint(session); else RedeemReward();
+                if (IsOwned || !current.Rewarded)
+                { Status = MonetizationStatus.None; DeliverHint(session); }
+                else RedeemReward();
             }
             else SetStatus(HasEarnedHint ? MonetizationStatus.EarnedHint : MonetizationStatus.RewardNotEarned);
             Notify();
@@ -347,21 +379,20 @@ namespace CatsAndArrows.Monetization
         public void Tick()
         {
             if (disposed || !Enabled) return;
-            if (ad != null && (ad.TimedOut || clock() - ad.Started >= OperationTimeoutSeconds))
+            if (ad != null && (ad.AwaitingClosure || ad.TimedOut || clock() - ad.Started >= OperationTimeoutSeconds))
             {
                 var current = ad;
-                if (!current.TimedOut)
+                if (!current.TimedOut && clock() - current.Started >= OperationTimeoutSeconds)
                 {
-                    current.TimedOut = true; current.AllowDelivery = false;
+                    current.TimedOut = true;
+                    if (!current.Presented && !ads.IsPresenting) current.InfrastructureUnavailable = true;
                     try { ads.Cancel(current.Id); } catch { }
                 }
-                if (ReferenceEquals(ad, current) && !ads.IsPresenting)
+                if (ReferenceEquals(ad, current))
                 {
-                    ad = null;
-                    SetStatus(HasEarnedHint ? MonetizationStatus.EarnedHint : MonetizationStatus.AdUnavailable);
-                    current.Proceed?.Invoke();
+                    if (!ads.IsPresenting) CompleteAd(current);
+                    else if (current.TimedOut && Status != MonetizationStatus.AdUnavailable) SetStatus(MonetizationStatus.AdUnavailable);
                 }
-                else if (Status != MonetizationStatus.AdUnavailable) SetStatus(MonetizationStatus.AdUnavailable);
             }
             if (purchaseRequest != 0 && clock() - purchaseStarted >= OperationTimeoutSeconds)
             { purchaseRequest = 0; pendingResolved = false; SetStatus(MonetizationStatus.PurchaseUnavailable); }

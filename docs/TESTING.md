@@ -1,5 +1,14 @@
 # Testing Strategy
 
+## Issue #66 AdMob / UMP gate
+
+[Exact SDK inspection, development-only privacy policy and owner checklist](ADMOB.md).
+Focused gate: `bash scripts/test-admob.sh`; SDK byte/installation gate:
+`python3 scripts/check-admob-sdk.py`. Full EditMode/compile and a clean native
+iOS review build are separate required evidence. Physical ad/consent/lifecycle
+acceptance remains owner-operated and pending until an explicit report.
+No #66 result closes #82 or enables production.
+
 ## Issue #65 Apple Offer Code gate
 
 The [implementation, OS/API limits and owner-only test matrix](APPLE_OFFER_CODES.md)
