@@ -206,3 +206,35 @@ Record runtime privacy/SDK network evidence before #67 production declarations.
 No native request/no-request behavior or physical acceptance follows merely from
 a successful unsigned build. No main merge, upload, store submission or release.
 Rollback removes the development opt-in; retain entitlement/cadence state.
+
+
+## Owner-authorized iPhone preparation — 2026-10-23
+
+Source **f3539dae9db084ea4cd97159167c8d6b1a87b83c**, synchronized with latest
+fetched develop, was exported with **one registered UMP test-device identifier**
+and **EEA** debug geography. The owner authorized a bounded technical discovery
+install/launch to obtain the identifier directly from Google's SDK log, followed
+by the final registered build. The identifier remains only in local/ignored
+configuration and serialized review artifacts; it is omitted from Git evidence.
+
+The final Google-test-only app is development-signed using the existing Paws
+profile and identical application/keychain identities, installed **in place** as
+`com.jweiss.paws` **0.1.0 (1)** on **iPhone 17 / iOS 27.0.1**, and plain-launched.
+Signature/profile, embedded registration, native linkage/privacy resources,
+matching ARM64 dSYMs and the running process pass technical readiness checks.
+[Signed artifact and preparation evidence](evidence/issue66/device-preparation.json).
+The local development profile expires **2026-10-27 17:36 UTC**.
+
+The app uses only `admob-review` and simulated Remove Ads. Existing Apple review
+state remains separate. iOS relocated its data-container path during update;
+pre-existing state directories remain and Apple state/backup/lock metadata is
+unchanged across the final install and launch. No uninstall, data/consent reset,
+account action, purchase, redemption, transaction-history operation or Keychain
+content access occurred. This is a metadata-only preservation check, not a full
+pre-discovery data backup or a revalidation of Sandbox ownership/history.
+
+No native consent form, ad or game interaction was automated. Physical UMP/ad/
+lifecycle acceptance is **pending the owner's explicit report** using the checklist
+above. #82 and production gates remain unchanged. Runtime source, shared scenes,
+assets and ProjectSettings were not changed for this preparation; broad suites
+were not repeated because compiled implementation inputs are unchanged.

@@ -1,0 +1,123 @@
+{
+  "schema": "paws-issue66-device-preparation-v1",
+  "date": "2026-10-23",
+  "sourceSha": "f3539dae9db084ea4cd97159167c8d6b1a87b83c",
+  "baseDevelopSha": "1acb87c0e6c1fae156b24baffd9419b84cc41ea6",
+  "sourceSynchronizedWithLatestFetchedDevelop": true,
+  "signedApp": "Builds/Issue66/f3539da-registered-eea-device/Paws.app",
+  "export": "Builds/Issue66/f3539da-registered-eea-export",
+  "signedAppTreeSha256": "15eef786c361c128b283c0ce160b17dbd72fe298c63dcec1ad188615399c250e",
+  "treeHashAlgorithm": "Sorted relative POSIX path, NUL, file SHA256 hex, newline; symlinks followed.",
+  "appExecutableSha256": "a88a6c26818ec289dd768ab1128fe31e2246d24e493b93ec85de4042c9732f04",
+  "frameworkSha256": "03a4326ce20ca8f4674e8a41b7ebee7a1b310816b3a59554977ba03565b59a82",
+  "bundleIdentifier": "com.jweiss.paws",
+  "version": "0.1.0",
+  "build": "1",
+  "deviceModel": "iPhone 17",
+  "iOS": "27.0.1",
+  "signatureVerified": true,
+  "profileDeviceIncluded": true,
+  "profileExpiresUTC": "2026-10-27T17:36:44Z",
+  "sameApplicationIdentifierAndKeychainGroupsAsPreviousPaws": true,
+  "matchingDsyms": {
+    "app": "F3E11FAD-C580-34A9-BDE9-B30F7C448E67",
+    "framework": "FEA69CB5-7B57-3B85-9ECE-C2565A3C1367"
+  },
+  "privacyManifests": [
+    "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+    "Frameworks/UnityFramework.framework/UserMessagingPlatformResources.bundle/PrivacyInfo.xcprivacy",
+    "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/PrivacyInfo.xcprivacy"
+  ],
+  "reviewConfiguration": {
+    "sourceSha": "f3539dae9db084ea4cd97159167c8d6b1a87b83c",
+    "unityVersion": "6000.3.25f1",
+    "geography": "EEA",
+    "testDeviceCount": 1,
+    "purpose": "issue66-google-test-ads-development-review",
+    "plugin": "11.6.0",
+    "gmaIOS": "13.11.0",
+    "umpIOS": "3.1.0",
+    "developmentBuild": true,
+    "productionMonetizationEnabled": false,
+    "simulatedPurchases": true,
+    "attPrompt": false,
+    "personalizedAds": false,
+    "firstPartyId": false,
+    "sdkCrashReporting": false,
+    "edmInstalled": false
+  },
+  "umpRegistration": {
+    "registeredTestDeviceCount": 1,
+    "debugGeography": "EEA",
+    "identifierSource": "Official UMP SDK log from owner-authorized bounded technical discovery launch.",
+    "identifierVerifiedInInstalledPlayerPayload": true,
+    "identifierCommittedOrPrintedInHandoff": false,
+    "privateConfigurationLocation": "Ignored/local preparation artifacts only; personal identifier omitted."
+  },
+  "adConfiguration": {
+    "appId": "ca-app-pub-3940256099942544~1458002511",
+    "interstitialUnit": "ca-app-pub-3940256099942544/4411468910",
+    "rewardedUnit": "ca-app-pub-3940256099942544/1712485313",
+    "googleTestAdsOnly": true,
+    "stateDirectory": "admob-review",
+    "ownership": "simulated Remove Ads; separate mock-ownership.bin",
+    "applePurchaseServiceComposed": false,
+    "attPrompt": false,
+    "personalizedAds": false,
+    "productionMonetization": false
+  },
+  "preparation": {
+    "ownerAuthorizedDiscoveryInstallAndLaunch": true,
+    "discoveryPurpose": "Obtain SDK-reported UMP test identifier before final registered EEA build.",
+    "discoveryNativeUiOperated": false,
+    "finalInPlaceInstall": true,
+    "installed": true,
+    "plainLaunch": true,
+    "runningProcessVerified": true,
+    "uninstall": false,
+    "appDataReset": false,
+    "consentReset": false,
+    "sandboxAccountActions": false,
+    "purchasesOrRedemptions": false,
+    "transactionHistoryReadOrChanged": false,
+    "keychainContentsReadOrReset": false
+  },
+  "preservation": {
+    "iosRelocatedDataContainerDuringInPlaceUpdate": true,
+    "oldDataPresence": "Pre-existing Unity, Apple review and issue64 diagnostic directories remain; Apple state/backup/lock timestamps predate discovery install.",
+    "appleStateMetadataUnchangedAcrossFinalInstallAndLaunch": true,
+    "retainedAppleFiles": {
+      "state.bin": {
+        "lastModDate": "2026-10-23T16:37:17.000Z",
+        "size": 268,
+        "permissions": 420
+      },
+      "state.bin.bak": {
+        "lastModDate": "2026-10-23T16:37:15.000Z",
+        "size": 268,
+        "permissions": 420
+      },
+      "state.bin.lock": {
+        "lastModDate": "2026-10-22T00:44:36.000Z",
+        "size": 0,
+        "permissions": 420
+      }
+    },
+    "limits": "Metadata-only check, not a byte-for-byte pre-discovery backup or a revalidation of existing Sandbox ownership/history. No state payloads, receipts, transaction records or Keychain contents were opened."
+  },
+  "technicalNativeBuildPassed": true,
+  "qa": "No blocking findings from independent source/export/state-separation review.",
+  "broadTestsRepeated": false,
+  "previousAutomatedEvidence": "validation.json",
+  "physicalInteractionReview": "pending explicit owner report",
+  "releaseBlocker82": "open and unchanged",
+  "mainOrDevelopMerge": false,
+  "uploadSubmissionOrRelease": false,
+  "ownerChecklist": [
+    "Confirm Google test-ad label and Privacy Options/required consent behavior; no ATT prompt.",
+    "Eligible Hint: unavailable gives one free Hint; close without reward gives none; earned reward gives one.",
+    "Fourth ordinary win: no victory ad; next deliberate board transition offers one interstitial without debt.",
+    "Simulated Remove Ads suppresses both formats; restart/Restore remain within admob-review.",
+    "Report pass/fail with source, device/OS and exact scope; #82 remains separate."
+  ]
+}
