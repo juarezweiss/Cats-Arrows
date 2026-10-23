@@ -1,0 +1,106 @@
+{
+  "issue": 66,
+  "sourceSha": "aefda544c15a43d77f8dfc2160437ebb387be63c",
+  "baseSha": "1acb87c0e6c1fae156b24baffd9419b84cc41ea6",
+  "date": "2026-10-23",
+  "tests": {
+    "focused": {
+      "command": "bash scripts/test-admob.sh",
+      "report": ".unity-results/admob-focused.hU4lLr/test-results.xml",
+      "sha256": "2b1e454294ab38b3f7c38b2c3fa88ff743d11fe23c3ab862367208e86875651b",
+      "exitCode": 0,
+      "total": "167",
+      "passed": "167",
+      "failed": "0",
+      "skipped": "0",
+      "inconclusive": "0",
+      "result": "Passed"
+    },
+    "full": {
+      "command": "bash scripts/test.sh",
+      "report": ".unity-results/editmode.u0TE04/test-results.xml",
+      "sha256": "b311252eed55561c25cb0ebf4fc3a8efebe1ac34709e0d263d3be7d06dfcc276",
+      "exitCode": 0,
+      "total": "668",
+      "passed": "668",
+      "failed": "0",
+      "skipped": "0",
+      "inconclusive": "0",
+      "result": "Passed"
+    }
+  },
+  "compile": {
+    "command": "bash scripts/compile.sh",
+    "log": ".unity-results/compile.Nr3754/Editor.log",
+    "exitCode": 0,
+    "unity": "6000.3.25f1"
+  },
+  "python": {
+    "command": "python3 -m unittest discover -s scripts/tests -v",
+    "total": 51,
+    "passed": 51,
+    "exitCode": 0
+  },
+  "repositoryValidation": {
+    "command": "bash scripts/validate.sh",
+    "exitCode": 0
+  },
+  "sdkPins": {
+    "files": 322,
+    "command": "python3 scripts/check-admob-sdk.py",
+    "exitCode": 0
+  },
+  "qa": "No blocking findings; independent final re-review accepted committed binding/build/privacy evidence.",
+  "ci": {
+    "url": "https://github.com/juarezweiss/Paws/actions/runs/39980700367",
+    "headSha": "aefda544c15a43d77f8dfc2160437ebb387be63c",
+    "conclusion": "success"
+  },
+  "physicalReview": {
+    "status": "pending-owner-report",
+    "scope": "Actual Google test-ad/UMP debug-geography and native callback/lifecycle interaction. No install, launch, phone automation or purchase performed."
+  },
+  "releaseBlocker82": "open; not modified or waived",
+  "productionActivation": false,
+  "nativeBuildEvidence": "native-build.json",
+  "disabledExportEvidence": "disabled-export.json",
+  "desktopCaptures": [
+    {
+      "path": "settings-privacy-en-320x568.png",
+      "sha256": "a3ef2222dc20449bc2d2d200bef04eb1482acd17a52ea8887f0c683970a27254"
+    },
+    {
+      "path": "settings-privacy-en-390x844.png",
+      "sha256": "5cde8712478ed92c0d02fbf5ef5a8aa33584cd0d99ea2697384abc883127eb2a"
+    },
+    {
+      "path": "settings-privacy-en-430x932.png",
+      "sha256": "279900f12292e6a793e357008bfaa343b1a1e5d213eb5f4b567b5d827de9e03f"
+    },
+    {
+      "path": "settings-privacy-es-320x568.png",
+      "sha256": "f4663d55882d7cdc8ad3497f0fe5a9b37a8137b9456430478f951f165c9ada01"
+    },
+    {
+      "path": "settings-privacy-es-390x844.png",
+      "sha256": "54fa5fa9a4eae1d57b9acfa0754eedbf1f87a4b64e5da8f0f67cfce508702e57"
+    },
+    {
+      "path": "settings-privacy-es-430x932.png",
+      "sha256": "69c9636c7be910a8ea5fdd4ad6323699b107847dac9ed125080416f10211a008"
+    },
+    {
+      "path": "settings-privacy-pt-BR-320x568.png",
+      "sha256": "c1ecf8ef1d7779de232fc74f74aa12a3df308778a0f5db9ff1a15c490e7ab9b6"
+    },
+    {
+      "path": "settings-privacy-pt-BR-390x844.png",
+      "sha256": "9d8406cdf29fc3d02da190c109d66a9eb8d488f359856c051cca3fa04a2528f8"
+    },
+    {
+      "path": "settings-privacy-pt-BR-430x932.png",
+      "sha256": "5b7b3353276a0d388196316f468f9afab4ce842684e8268630d1a47bd05b1221"
+    }
+  ],
+  "desktopCaptureScope": "SDK-free desktop privacy/purchase fakes; EN/pt-BR/es x 320x568,390x844,430x932. Not native consent/ad/phone acceptance."
+}

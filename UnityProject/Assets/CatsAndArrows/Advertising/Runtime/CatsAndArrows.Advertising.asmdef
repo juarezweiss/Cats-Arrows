@@ -1,0 +1,7 @@
+{
+  "name": "CatsAndArrows.Advertising",
+  "rootNamespace": "CatsAndArrows.Advertising",
+  "references": ["CatsAndArrows.Monetization"],
+  "autoReferenced": true,
+  "noEngineReferences": true
+}

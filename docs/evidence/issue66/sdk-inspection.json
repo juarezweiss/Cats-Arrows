@@ -1,0 +1,224 @@
+{
+  "issue": 66,
+  "date": "2026-10-23",
+  "baseSha": "1acb87c0e6c1fae156b24baffd9419b84cc41ea6",
+  "archives": {
+    "plugin-unitypackage": {
+      "filename": "GoogleMobileAds-v11.6.0.unitypackage",
+      "sha256": "e42c4af9284a6efa3e925ecb58047b722e07c12ac28dceb4547bb743f3db4763",
+      "sha1": "60ef96d2859a9193200d662def4bf25bac4904fa"
+    },
+    "plugin-tagged-source": {
+      "filename": "plugin-v11.6.0.tar.gz",
+      "sha256": "b49bea8d6bb5b1d211f43371fcf77d939acd9e529e267fd161813ba2ff14c93a",
+      "sha1": "aadfa9e461aa540696ca7dd688d01e093f3c355d"
+    },
+    "gma-ios": {
+      "filename": "gma-ios.zip",
+      "sha256": "e705195fd4f9048aa245316c2743777d0c689fd1a7e1edf307a54ecf32d70771",
+      "sha1": "f3f3a2d7d8ed5fbf93983d465c9e9ee2e378512b"
+    },
+    "ump-ios": {
+      "filename": "ump-ios.zip",
+      "sha256": "02b6b1925be8a6cfc294478c1a6bb1dd4de70cd9e4f31cbbfb789ab4de7b2955",
+      "sha1": "c033b599479d618afd79cbf947dc9dbb21d4fc4a"
+    },
+    "edm-inspected-not-installed": {
+      "filename": "edm-2.1.0.tgz",
+      "sha256": "d805846bc49f3f8b8edfc293315b442923438cdcee397f4d3ce9b7b6216f862f",
+      "sha1": "25588ede3cc6577b496fb9f47a380c0b0a1996d9"
+    }
+  },
+  "compatibility": {
+    "unityPinned": "6000.3.25f1",
+    "pluginDeclaredMinimumUnity": "2022.3.0f1",
+    "nativeGmaMinimumXcodeFromReleaseNotes": "26.2",
+    "localXcode": "27.1 (27A9275)",
+    "projectMinimumIOS": "16.3"
+  },
+  "dependencies": {
+    "plugin": "11.6.0",
+    "gmaIOS": "13.11.0",
+    "umpIOS": "3.1.0",
+    "upstreamGmaRange": "~> 13.11",
+    "upstreamUmpVersion": "3.1.0",
+    "upstreamEdm": "2.1.0 (not installed)",
+    "upstreamAndroidJNI": "1.0.0 (not installed)",
+    "nativePodspecDependencies": {
+      "GoogleUserMessagingPlatform": ">= 1.1"
+    },
+    "installation": "Selective unmodified official runtime/native bytes; custom reviewed export replaces vendor editor/EDM installation. No Android payload, Firebase, GoogleAppMeasurement, separate Analytics, remote config or mediation adapter installed."
+  },
+  "privacyManifests": {
+    "GoogleMobileAds": {
+      "sha256": "69fb112582fc23fc06c635c961d262a3f7b4b5654d284787491de3000dadf9d2",
+      "contents": {
+        "NSPrivacyCollectedDataTypes": [
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeOtherDiagnosticData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+              "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+              "NSPrivacyCollectedDataTypePurposeAnalytics"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCoarseLocation",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+              "NSPrivacyCollectedDataTypePurposeAnalytics",
+              "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypePerformanceData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+              "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+              "NSPrivacyCollectedDataTypePurposeAnalytics"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCrashData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAnalytics"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeAdvertisingData",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+              "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+              "NSPrivacyCollectedDataTypePurposeAnalytics"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeProductInteraction",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAnalytics",
+              "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+              "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeDeviceID",
+            "NSPrivacyCollectedDataTypeLinked": true,
+            "NSPrivacyCollectedDataTypeTracking": true,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+              "NSPrivacyCollectedDataTypePurposeAnalytics",
+              "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising"
+            ]
+          }
+        ],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPITypeReasons": [
+              "35F9.1"
+            ],
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime"
+          },
+          {
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ],
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults"
+          },
+          {
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1"
+            ],
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace"
+          }
+        ]
+      }
+    },
+    "UserMessagingPlatform": {
+      "sha256": "45b7adb99fcd2d962a1c800fbfcc1325b57a7fa4165f416182323bb5ffe9c900",
+      "contents": {
+        "NSPrivacyCollectedDataTypes": [
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeCoarseLocation",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypePerformanceData",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeProductInteraction",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
+          }
+        ],
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ],
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults"
+          }
+        ]
+      }
+    }
+  },
+  "staticNetworkStrings": {
+    "method": "strings -a on exact ios-arm64 static binaries; presence is not an observed request or exhaustive endpoint allowlist",
+    "gma": [
+      "https://googleads.g.doubleclick.net/getconfig/pubsetting",
+      "https://googleads.g.doubleclick-cn.net/getconfig/pubsetting",
+      "https://googleads.g.doubleclick.net/mads/static/sdk/native/sdk-core-v40.html",
+      "https://pagead2.googlesyndication.com/pagead/gen_204",
+      "https://imasdk.googleapis.com/admob/sdkloader/native_video.html",
+      "https://mediation.goog/getconfig/pubsetting",
+      "https://admob-gmats.uc.r.appspot.com",
+      "https://badad.googleplex.com/s/reportAd",
+      "https://www.google.com/dfp/debugSignals",
+      "https://www.google.com/dfp/linkDevice",
+      "https://www.google.com/dfp/sendDebugData"
+    ],
+    "ump": [
+      "https://fundingchoicesmessages.google.com/a/consent"
+    ]
+  },
+  "edmInspection": {
+    "editorOnly": true,
+    "automaticInstaller": "EdmDependencyInstaller.Initialize uses Client.Add(com.unity.external-dependency-manager@2.1.0) on first import",
+    "analytics": "EDMAnalytics uses EditorAnalytics.SendAnalytic on Unity 6000.3, gated by EditorAnalytics.enabled; init/build_guid/resolver settings/API usage/CocoaPods setup",
+    "mitigation": "Supported manual dependency path. Neither EDM package nor vendor editor installer imported; no Unity analytics preference changes."
+  },
+  "ownerDevelopmentDecision": {
+    "source": "Explicit reply in #66 implementation chat on 2026-10-23",
+    "approved": true,
+    "scope": "No ATT prompt, nonpersonalized requests, PublisherFirstPartyIdEnabled=false, SDK crash reporting disabled, no EDM telemetry, Google test ads only. Production disabled; separate production privacy approval required."
+  },
+  "limits": [
+    "No dynamic network capture or native device interaction performed by inspection.",
+    "Manifest declarations are SDK capability declarations, not per-request runtime proof.",
+    "Nonpersonalized/test ads do not mean zero identifiers, cookies, coarse location, interaction or measurement collection.",
+    "Closed native SDK code cannot be fully audited from public binding source. No universal measurement opt-out found."
+  ]
+}

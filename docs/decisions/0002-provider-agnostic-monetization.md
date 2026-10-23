@@ -1,6 +1,7 @@
 # ADR 0002: Provider-agnostic monetization services
 
-Status: Owner-approved architecture; SDK-free implementation in #30; activation deferred
+Status: Owner-approved architecture; rewarded-Hint policy amended 2026-10-19;
+SDK-free implementation in #30; activation deferred
 Date: 2026-10-14
 Task: [#29](https://github.com/juarezweiss/Paws/issues/29)
 
@@ -43,9 +44,39 @@ store ownership/accounts/backends are out of scope.
 
 Disabled configuration remains default, preserves direct free hints and hides
 purchase UI without initializing providers. Rollback retains purchases/counters.
-Enabled with unavailable adapters follows failure rules, not free unpaid hints.
+Enabled with unavailable rewarded-ad infrastructure grants an eligible unowned
+Hint directly for free; a voluntarily closed/cancelled presented ad grants no Hint.
 
 Full contracts/state/flows: [MONETIZATION.md](../MONETIZATION.md).
+
+## Amendment: rewarded-Hint infrastructure fail-open (2026-10-19)
+
+The owner explicitly approved this policy change on 2026-10-19. It supersedes the
+original decision that an unavailable rewarded ad leaves an unpaid Hint unavailable.
+
+For an unowned player, an eligible Hint requires confirmed rewarded completion
+when an ad can actually be served. Offline, no-fill, provider unavailable,
+initialization failure, restriction, timeout before presentation or equivalent
+infrastructure failure instead grants the eligible Hint directly for free, without
+retry, accumulated ad debt or blocking. If an ad was successfully presented and
+the player voluntarily cancels or closes it before earning the reward, no Hint is
+granted. Confirmed reward still authorizes exactly one Hint.
+
+Existing hint preparation, board/session/revision revalidation, durable reward
+deduplication, safe native-closure handling and progression-ad cadence remain
+unchanged. A plain close without reward is not reclassified as infrastructure
+failure. This amendment changes policy documentation only; provider implementation
+and production activation remain separately authorized work.
+
+## Development implementation #66 — 2026-10-23
+
+The owner authorized the AdMob/UMP adapter and implementation of the approved
+fail-open amendment in #66. After bounded SDK inspection, the owner explicitly
+approved development-only nonpersonalized Google test ads, no ATT prompt,
+first-party ID and SDK crash reports disabled, and no dependency-manager telemetry.
+[SDK evidence, exact versions and remaining production decisions](../ADMOB.md).
+The existing ports, coordinator and persistence remain authoritative. Default
+production composition stays disabled; this does not authorize live traffic.
 
 ## Consequences and alternatives
 
@@ -54,8 +85,9 @@ Full contracts/state/flows: [MONETIZATION.md](../MONETIZATION.md).
   #30 implements those seams and SDK-free service contracts. Cached-evidence
   verification is a purchase-port responsibility rather than a separate public
   interface in the first implementation.
-- Rewarded gating is a future policy change from current free hints. Unpaid
-  offline hints become unavailable. Solvability and #21 free trial remain intact.
+- Rewarded gating is a future policy change from current free hints when an ad can
+  be served. Infrastructure-unavailable Hints fail open to direct free delivery;
+  voluntary no-reward closure does not. Solvability and #21 free trial remain intact.
 - Client-only cache is not fraud-proof; reinstall requires restore. No counter
   cloud sync or persistent boards. Kill before commit/reward notification can lose
   unconfirmed state; favor honoring durably confirmed rewards.

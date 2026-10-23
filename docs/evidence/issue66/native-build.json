@@ -1,0 +1,213 @@
+{
+  "sourceSha": "aefda544c15a43d77f8dfc2160437ebb387be63c",
+  "build": "unsigned-development",
+  "xcode": "27.1 (27A9275)",
+  "unity": "6000.3.25f1",
+  "exitCode": 0,
+  "log": ".unity-results/issue66-native/xcodebuild.log",
+  "app": "Builds/Issue66/aefda54-native-review/Paws.app",
+  "appExecutableSha256": "1377eaaee619d4074848b35ac58d10840e1a2345eb180db20e604c575fc08672",
+  "frameworkSha256": "28854f36c83de2ef93cad88826d2122cc6fd09b2b257f7d6881cc15bf369571c",
+  "uuids": {
+    "app": "UUID: 9D223306-658F-3D34-8837-951639CF8922 (arm64) .unity-results/issue66-native/DerivedData/Build/Products/Release-iphoneos/Paws.app/Paws",
+    "framework": "UUID: F66E91B0-74D6-3370-89BD-C0C6E46FD235 (arm64) .unity-results/issue66-native/DerivedData/Build/Products/Release-iphoneos/Paws.app/Frameworks/UnityFramework.framework/UnityFramework",
+    "appDsym": "UUID: 9D223306-658F-3D34-8837-951639CF8922 (arm64) .unity-results/issue66-native/DerivedData/Build/Products/Release-iphoneos/Paws.app.dSYM/Contents/Resources/DWARF/Paws",
+    "frameworkDsym": "UUID: F66E91B0-74D6-3370-89BD-C0C6E46FD235 (arm64) .unity-results/issue66-native/DerivedData/Build/Products/Release-iphoneos/UnityFramework.framework.dSYM/Contents/Resources/DWARF/UnityFramework"
+  },
+  "nativeSymbols": {
+    "_GADUInitialize": true,
+    "_OBJC_CLASS_$_GADMobileAds": true,
+    "_OBJC_CLASS_$_UMPConsentInformation": true
+  },
+  "privacyManifests": [
+    {
+      "path": "Frameworks/UnityFramework.framework/PrivacyInfo.xcprivacy",
+      "sha256": "fde49afddbb152d10b222d0533bd3ed41dac7aa21db04d17af4ab79d87f4f92a"
+    },
+    {
+      "path": "Frameworks/UnityFramework.framework/UserMessagingPlatformResources.bundle/PrivacyInfo.xcprivacy",
+      "sha256": "45b7adb99fcd2d962a1c800fbfcc1325b57a7fa4165f416182323bb5ffe9c900"
+    },
+    {
+      "path": "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/PrivacyInfo.xcprivacy",
+      "sha256": "69fb112582fc23fc06c635c961d262a3f7b4b5654d284787491de3000dadf9d2"
+    }
+  ],
+  "info": {
+    "CFBundleIdentifier": "com.jweiss.paws",
+    "CFBundleShortVersionString": "0.1.0",
+    "CFBundleVersion": "1",
+    "MinimumOSVersion": "16.3",
+    "GADApplicationIdentifier": "ca-app-pub-3940256099942544~1458002511",
+    "SKAdNetworkItems": [
+      {
+        "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+      }
+    ]
+  },
+  "attUsageDescriptionPresent": false,
+  "signed": false,
+  "installedOrLaunched": false,
+  "physicalReview": "pending-owner",
+  "unityPackageManifest": {
+    "path": "UnityProject/Packages/manifest.json",
+    "sha256": "3c94b67e0c7916b3d49c2a9effdecfeed56835399ce77ef14ebc1c72bcb66e4b",
+    "contents": {
+      "dependencies": {
+        "com.unity.test-framework": "1.6.0",
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.screencapture": "1.0.0",
+        "com.unity.purchasing": "5.3.1",
+        "com.unity.services.core": "1.14.0"
+      }
+    }
+  },
+  "unityPackageLock": {
+    "path": "UnityProject/Packages/packages-lock.json",
+    "sha256": "796b99659f218a618e112e512234278701cce587ccf873edd993b217162eb362",
+    "contents": {
+      "dependencies": {
+        "com.unity.ext.nunit": {
+          "version": "2.0.5",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.nuget.newtonsoft-json": {
+          "version": "3.2.2",
+          "depth": 1,
+          "source": "registry",
+          "dependencies": {},
+          "url": "https://packages.unity.com"
+        },
+        "com.unity.purchasing": {
+          "version": "5.3.1",
+          "depth": 0,
+          "source": "registry",
+          "dependencies": {
+            "com.unity.ugui": "1.0.0",
+            "com.unity.services.core": "1.14.0",
+            "com.unity.modules.androidjni": "1.0.0",
+            "com.unity.modules.jsonserialize": "1.0.0",
+            "com.unity.modules.unitywebrequest": "1.0.0"
+          },
+          "url": "https://packages.unity.com"
+        },
+        "com.unity.services.core": {
+          "version": "1.14.0",
+          "depth": 0,
+          "source": "registry",
+          "dependencies": {
+            "com.unity.modules.androidjni": "1.0.0",
+            "com.unity.nuget.newtonsoft-json": "3.2.1",
+            "com.unity.modules.unitywebrequest": "1.0.0"
+          },
+          "url": "https://packages.unity.com"
+        },
+        "com.unity.test-framework": {
+          "version": "1.6.0",
+          "depth": 0,
+          "source": "builtin",
+          "dependencies": {
+            "com.unity.ext.nunit": "2.0.3",
+            "com.unity.modules.imgui": "1.0.0",
+            "com.unity.modules.jsonserialize": "1.0.0"
+          }
+        },
+        "com.unity.ugui": {
+          "version": "2.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {
+            "com.unity.modules.ui": "1.0.0",
+            "com.unity.modules.imgui": "1.0.0"
+          }
+        },
+        "com.unity.modules.androidjni": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.hierarchycore": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.imageconversion": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.imgui": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.jsonserialize": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.physics": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.screencapture": {
+          "version": "1.0.0",
+          "depth": 0,
+          "source": "builtin",
+          "dependencies": {
+            "com.unity.modules.imageconversion": "1.0.0"
+          }
+        },
+        "com.unity.modules.ui": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        },
+        "com.unity.modules.uielements": {
+          "version": "1.0.0",
+          "depth": 0,
+          "source": "builtin",
+          "dependencies": {
+            "com.unity.modules.ui": "1.0.0",
+            "com.unity.modules.imgui": "1.0.0",
+            "com.unity.modules.jsonserialize": "1.0.0",
+            "com.unity.modules.hierarchycore": "1.0.0",
+            "com.unity.modules.physics": "1.0.0"
+          }
+        },
+        "com.unity.modules.unitywebrequest": {
+          "version": "1.0.0",
+          "depth": 1,
+          "source": "builtin",
+          "dependencies": {}
+        }
+      }
+    }
+  },
+  "appContents": {
+    "fileCount": 42,
+    "treeSha256": "ff42154e91c2113ef10a55462932637f09f4ef03a5dc32075ca26d099b9a78dd",
+    "treeAlgorithm": "Sorted relative POSIX path, NUL, file SHA256 hex, newline; symlinks followed for file bytes.",
+    "embeddedFrameworks": [
+      "UnityFramework.framework"
+    ],
+    "sdkLicensePaths": [
+      "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/Licenses/CCTZ-LICENSE",
+      "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/Licenses/NanoPB-LICENSE",
+      "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/Licenses/OpenMeasurement-LICENSE",
+      "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/Licenses/OpenSSL-LICENSE",
+      "Frameworks/UnityFramework.framework/GoogleMobileAdsResources.bundle/Licenses/TCMalloc-LICENSE"
+    ],
+    "archiveKind": "Unsigned Xcode build product, not an App Store .xcarchive/RC archive."
+  }
+}

@@ -153,7 +153,9 @@ namespace CatsAndArrows.Tests
             foreach (var size in new[] { new Vector2(320, 568), new Vector2(390, 844), new Vector2(430, 932) })
             foreach (var locale in new[] { "en", "pt-BR", "es" })
             {
-                var ads = new Ads { Availability = AdAvailability.Offline };
+                // #66: unavailable infrastructure grants a free Hint. A presented
+                // ad closed without reward still exercises the dismissible alert.
+                var ads = new Ads { CloseWithoutRewardOnShow = true };
                 using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, new Purchases());
                 yield return Mount(coordinator);
                 var root = host.GetComponent<UIDocument>().rootVisualElement;
@@ -164,7 +166,7 @@ namespace CatsAndArrows.Tests
                 mountedShell.RequestHint();
                 yield return null; yield return null;
                 Assert.That(mountedShell.Modal, Is.EqualTo("notification"));
-                Assert.That(mountedShell.Q<Label>("notification-message").text, Is.EqualTo(messages["monetization.status.AdUnavailable"]));
+                Assert.That(mountedShell.Q<Label>("notification-message").text, Is.EqualTo(messages["monetization.status.RewardNotEarned"]));
                 var card = mountedShell.Q("notification-alert"); var ok = mountedShell.Q<Button>("notification-ok");
                 Assert.That(card.Query<Button>().ToList().Count, Is.EqualTo(1));
                 Assert.That(ok.text, Is.EqualTo(messages["notification.ok"]));
@@ -210,7 +212,7 @@ namespace CatsAndArrows.Tests
         [Test]
         public void NavigationRebindAndSuspensionDiscardAlertsAndLateNotifications()
         {
-            var ads = new Ads { Availability = AdAvailability.Offline };
+            var ads = new Ads { CloseWithoutRewardOnShow = true };
             var purchases = new Purchases { HoldPurchase = true };
             using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, purchases);
             var shell = new GameShellView(14, "en", PlayTestFactory.Loop(), tutorialSeen: () => true,
@@ -239,6 +241,7 @@ namespace CatsAndArrows.Tests
         {
             private Action<AdSignal> receive;
             public int HintShows, ProgressionShows;
+            public bool CloseWithoutRewardOnShow;
             public AdAvailability Availability = AdAvailability.Ready;
             public bool IsPresenting => receive != null;
             public AdAvailability GetAvailability(AdPlacement placement) => Availability;
@@ -246,6 +249,7 @@ namespace CatsAndArrows.Tests
             {
                 if (placement == AdPlacement.Hint) HintShows++; else ProgressionShows++;
                 receive = callback; callback(new AdSignal(AdSignalKind.Presented));
+                if (CloseWithoutRewardOnShow) Close(false);
             }
             public void Cancel(long requestId) { }
             public void Close(bool rewarded)
@@ -563,25 +567,33 @@ namespace CatsAndArrows.Tests
             Assert.That(coordinator.Snapshot.OrdinaryBoardsCompleted, Is.EqualTo(4));
         }
 
-        [Test]
-        public void TutorialAndUnavailableAdsDoNotGrantUnpaidHintsOrCountTutorialWin()
+        [TestCase(AdAvailability.Offline)]
+        [TestCase(AdAvailability.Unavailable)]
+        [TestCase(AdAvailability.Restricted)]
+        public void TutorialWinIsExcludedAndUnavailableOrdinaryHintIsDeliveredFree(AdAvailability availability)
         {
-            var ads = new Ads { Availability = AdAvailability.Offline };
+            var ads = new Ads { Availability = availability };
             using var coordinator = new MonetizationCoordinator(true, new MemoryMonetizationStateStore(), ads, new Purchases());
             var shell = new GameShellView(14, "en", PlayTestFactory.Loop(), tutorialSeen: () => true,
                 markTutorialSeen: () => { }, monetization: coordinator);
             shell.StartTutorial();
             foreach (var paw in shell.ActiveSession.Puzzle.SolutionPaws) { shell.ActiveSession.Tap(paw); shell.ActiveSession.Tap(paw); }
+            var tutorialMarks = shell.ActiveSession.Marks.ToArray();
             coordinator.RecordCompletion(); shell.RequestHint();
+            Assert.That(shell.ActiveSession.Marks, Is.EquivalentTo(tutorialMarks));
             Assert.That(coordinator.Snapshot.OrdinaryBoardsCompleted, Is.Zero);
             Assert.That(coordinator.Snapshot.NextBoardInstance, Is.EqualTo(1));
             Assert.That(ads.HintShows, Is.Zero);
             Assert.That(shell.StartNewGame(), Is.True);
             shell.RequestHint();
-            Assert.That(shell.ActiveSession.Marks.Values, Is.All.EqualTo(PlayerMark.Empty));
-            Assert.That(shell.BoardView.InteractionEnabled, Is.False);
-            Assert.That(shell.Modal, Is.EqualTo("notification"));
-            Assert.That(shell.Q<Label>("notification-message").text, Does.Contain("unavailable"));
+            Assert.That(shell.ActiveSession.Marks.Values.Count(mark => mark != PlayerMark.Empty), Is.EqualTo(1));
+            Assert.That(shell.BoardView.InteractionEnabled, Is.True);
+            Assert.That(shell.Q<Button>("action-hint").enabledSelf, Is.True);
+            Assert.That(shell.Modal, Is.Null);
+            Assert.That(coordinator.IsBusy, Is.False);
+            Assert.That(coordinator.HasEarnedHint, Is.False);
+            Assert.That(coordinator.Snapshot.OrdinaryBoardsCompleted, Is.Zero);
+            Assert.That(ads.HintShows, Is.Zero);
             Assert.That(shell.Q<Label>("completion-status").text, Is.Null.Or.Empty);
         }
 

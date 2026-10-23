@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: e848119cea6da688ce1a634e83cd60cd
+PluginImporter:
+  serializedVersion: 2
+  isPreloaded: 0
+  isOverridable: 0
+  isExplicitlyReferenced: 1
+  validateReferences: 1
+  defineConstraints:
+  - UNITY_EDITOR || PAWS_ADMOB_REVIEW
+  platformData:
+  - first:
+      Any:
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      iPhone: iOS
+    second:
+      enabled: 1
+      settings: {}
+  userData:
+  assetBundleName:
+  assetBundleVariant:

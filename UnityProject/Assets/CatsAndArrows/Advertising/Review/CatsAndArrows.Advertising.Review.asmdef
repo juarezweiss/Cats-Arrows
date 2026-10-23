@@ -1,0 +1,23 @@
+{
+  "name": "CatsAndArrows.Advertising.Review",
+  "references": [
+    "CatsAndArrows.Advertising",
+    "CatsAndArrows.Advertising.Google",
+    "CatsAndArrows.Monetization",
+    "CatsAndArrows.UI",
+    "CatsAndArrows.Gameplay",
+    "CatsAndArrows.Core"
+  ],
+  "includePlatforms": [
+    "Editor",
+    "iOS"
+  ],
+  "defineConstraints": [
+    "UNITY_EDITOR || PAWS_ADMOB_REVIEW"
+  ],
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "GoogleMobileAds.Ump.dll"
+  ],
+  "autoReferenced": false
+}

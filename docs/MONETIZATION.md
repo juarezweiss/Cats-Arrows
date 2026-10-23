@@ -9,18 +9,26 @@ requirements dated 2026-10-14. Decision:
 Architecture and documented policy approved by the owner on 2026-10-14 after
 review of #29. The owner subsequently authorized SDK-free implementation and a
 PR to develop in [#30](https://github.com/juarezweiss/Paws/issues/30).
-Current default remains free with direct unlimited hints, no monetization SDK
-and no change to #21 sequencing. Real integration and activation require separate
-tracked work. No provider, price, purchase, store configuration, SDK, production
-traffic or release is authorized. This replaces
+On 2026-10-19 the owner approved a rewarded-Hint fail-open amendment: provider
+or infrastructure unavailability grants an eligible unowned Hint directly, while
+a voluntarily cancelled or closed presented ad grants no Hint. This supersedes
+the earlier rule that unavailable unpaid hints remain unavailable; it does not
+authorize implementation or activation.
+Default production composition remains free with direct unlimited hints and no
+provider initialization. #66 adds an explicit Google-test-ad development adapter;
+see [AdMob/UMP privacy, architecture and review gates](ADMOB.md). Real integration and activation require separate
+tracked work. Production traffic, provider activation and release remain separately authorized
+work. Development-only SDK work is scoped by its tracked issues. This replaces
 the earlier future suggestion of rewarded ads for enhanced hints; it does not
 silently change current ad-free gameplay.
 
 When enabled:
 
 - Progression interstitial opportunity every fourth completed ordinary board.
-- Unowned button reads **Hint (ads)**; a confirmed rewarded ad authorizes one
-  existing clue-derived hint. No daily hint cap.
+- Unowned button reads **Hint (ads)**. If a rewarded ad can be served, confirmed
+  completion authorizes one existing clue-derived hint; voluntary close/cancel
+  before reward authorizes none. Provider or infrastructure unavailability grants
+  the eligible Hint directly for free, without retry or ad debt. No daily hint cap.
 - Main menu offers non-consumable **Remove All Ads**, covering progression and
   hint ads, plus a separate **Restore Purchases** action.
 - Owned button reads **Hint** and applies directly, including offline.
@@ -80,8 +88,10 @@ board save/resume is required.
 
 Injected build configuration has `Disabled` (current default) and `Enabled` modes.
 Disabled gives direct free hints, hides purchase UI and does not initialize
-providers. Enabled with unavailable adapters follows failure rules; it does not
-manufacture unpaid hints. Test fakes are restricted to tests/review builds.
+providers. In Enabled mode an unowned eligible Hint fails open to direct free
+delivery when provider or infrastructure unavailability prevents rewarded service;
+voluntary no-reward closure remains no Hint. Test fakes are restricted to
+tests/review builds.
 
 ## Durable state
 
@@ -148,6 +158,11 @@ either order and duplicates. Separate presentation/reward/closed state: dismissa
 does not prove reward. Unlock only after native presentation safely ends. Timeout
 or cancellation cannot be assumed to close an already presented native ad. All
 loading waits have injected bounded deadlines; no wait blocks ordinary play forever.
+Rewarded-Hint outcomes must distinguish infrastructure failure from a presented
+ad's voluntary close/cancel without reward. Offline, no-fill, unavailable,
+initialization failure, restriction, timeout before presentation and equivalent
+confirmed infrastructure failures use the direct-free path. A plain close/cancel
+after presentation is not infrastructure evidence and grants no Hint.
 
 Purchase adapters own verification, store-specific acknowledgement/finish and
 replay of unfinished transactions on launch/resume. RemoveAllAds is never consumed.
@@ -193,8 +208,14 @@ an explicit policy change and tests.
    not another solver inside Monetization.
 2. Disabled mode or verified Owned applies one existing hint directly.
 3. Unowned may redeem an existing confirmed grant on explicit Hint. Otherwise
-   request one rewarded ad; suspend board mutation and serialize repeated taps.
-   Cancel/skip/close without reward/no-fill/unconfirmed timeout grants no hint.
+   request one rewarded ad only when the provider can serve it; suspend board
+   mutation and serialize repeated taps. Offline, no-fill, provider unavailable,
+   initialization failure, restriction, timeout before presentation or equivalent
+   infrastructure failure revalidates and applies that eligible Hint directly for
+   free, without retry or ad debt. If native presentation began, wait for safe
+   closure before any fail-open delivery. A voluntarily cancelled/skipped/closed
+   presented ad without reward grants no Hint; an ambiguous close never implies
+   infrastructure failure or reward.
 4. Persist one authorization on trusted RewardEarned before delivery. After safe
    closure, only matching request/board/revision can receive automatic delivery.
    Revalidate/apply one fact, then commit grant consumption before re-enabling input
@@ -268,12 +289,14 @@ restore/retry status rather than showing a possible owner's ad. No indefinite wa
 | Condition | Outcome |
 | --- | --- |
 | Unavailable progression ad | Proceed; consume opportunity, no debt |
-| Unavailable rewarded ad, unowned | No new hint; concise localized status, explicit retry or continue solving |
+| Rewarded infrastructure unavailable, unowned | Revalidate and apply one eligible Hint directly for free; no retry or ad debt |
+| Presented rewarded ad voluntarily closed/cancelled before reward | No Hint; return safely to the unchanged board |
+| Confirmed rewarded completion | Authorize exactly one Hint through the existing durable, deduplicated grant path |
 | Owned offline | No ads; direct Hint works |
 | Unknown without usable cache | Normal play; skip progression; Hint restore/retry status |
 | Pending/cancelled/unverified purchase | No new grant; preserve existing verified access |
 | Restore/network failure | Preserve cached access; retry explicitly or at later lifecycle refresh |
-| Duplicate/stale/timeout callback | No duplicate mutation or inferred reward; never unlock beneath native presentation |
+| Duplicate/stale/ambiguous post-presentation callback | No duplicate mutation, fail-open, or inferred reward; never unlock beneath native presentation |
 | Corrupt/write-failed state | Recover if possible; no mandatory ad loop or invented ownership |
 
 Advertising eligibility is not presumed: Restricted is a normal unavailable
@@ -287,6 +310,9 @@ deterministic/fault/mounted coverage. #30 implements SDK-free service, storage,
 hint preparation and shell tests; real-provider integration cases remain future gates.
 Fakes control callback order, store evidence, time, persistence faults and restart.
 Replacement adapters must pass the same contract suite before activation.
+The suite must distinguish direct-free infrastructure outcomes from voluntary
+no-reward closure and confirmed one-Hint reward, including pre-presentation timeout,
+safe native closure, board/revision revalidation and duplicate/late callbacks.
 
 Future hypothesis: these placements fund the game while players still finish and
 choose another board. Compare subsequent-board starts and hint failures against
@@ -304,8 +330,9 @@ documents pending/completed purchases, querying and acknowledging non-consumable
 No provider is selected.
 
 No owner decision blocks architecture. Chosen defaults include tutorial exclusion,
-next-board placement, skipping progression failures, unavailable unpaid offline
-hints, offline verified paid access and one unused reward recovery authorization.
+next-board placement, skipping progression failures, direct-free rewarded Hints
+when infrastructure is unavailable, no Hint after voluntary no-reward closure,
+offline verified paid access and one unused reward recovery authorization.
 Pricing, provider selection, eligibility/privacy, experiment thresholds and rollout
 remain future decisions. Rollback disables policy/providers without deleting state
 or verified ownership. Client-only evidence and crash-before-commit limits remain.

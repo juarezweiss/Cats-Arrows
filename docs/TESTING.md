@@ -1,5 +1,33 @@
 # Testing Strategy
 
+## Issue #66 AdMob / UMP gate
+
+[Exact SDK inspection, development-only privacy policy and owner checklist](ADMOB.md).
+Focused gate: `bash scripts/test-admob.sh`; SDK byte/installation gate:
+`python3 scripts/check-admob-sdk.py`. Full EditMode/compile and a clean native
+iOS review build are separate required evidence. Physical ad/consent/lifecycle
+acceptance remains owner-operated; latest scoped results are recorded below.
+No #66 result closes #82 or enables production.
+
+2026-10-23 source `aefda544c15a43d77f8dfc2160437ebb387be63c`: focused **167/167**,
+full **668/668**, Python **51/51**, pinned compile, SDK integrity and independent QA
+pass. Unsigned iOS native link/privacy/dSYM checks and disabled production-export
+SDK exclusion pass. Nine localized desktop Settings captures pass visual review.
+[Evidence and validation limits](evidence/issue66/validation.json). At that initial
+automated gate no installation, launch or purchase had occurred. Later technical
+preparation and the scoped physical report follow; neither changes that snapshot.
+
+Owner report on the prepared registered EEA `f3539da` candidate: **13 checked
+conditions passed; one unchecked condition NOT VALIDATED**. Covers reported
+consent/privacy, progression placement/return, one-Hint rewarded completion,
+offline free Hint, no debt, background safety and simulated ownership/restart/mock
+Restore. **Early presented rewarded close → no Hint was not exercised** because
+the Google test ads offered no early-exit option. Existing fake-driven no-reward
+close tests do not substitute for that physical check. No failure/pass/waiver is
+inferred; additional unreported RC scenarios remain unclaimed. [Exact owner report](evidence/issue66/owner-validation-2026-10-23.json).
+#82 remains open; production stays disabled. Documentation-only recording repeats
+repository/whitespace checks, not Unity suites or device interactions.
+
 ## Issue #65 Apple Offer Code gate
 
 The [implementation, OS/API limits and owner-only test matrix](APPLE_OFFER_CODES.md)

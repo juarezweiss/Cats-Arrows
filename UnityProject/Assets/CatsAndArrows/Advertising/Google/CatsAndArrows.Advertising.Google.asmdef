@@ -1,0 +1,9 @@
+{
+  "name": "CatsAndArrows.Advertising.Google",
+  "references": ["CatsAndArrows.Advertising", "CatsAndArrows.Monetization"],
+  "includePlatforms": ["Editor", "iOS"],
+  "defineConstraints": ["UNITY_EDITOR || PAWS_ADMOB_REVIEW"],
+  "overrideReferences": true,
+  "precompiledReferences": ["GoogleMobileAds.dll", "GoogleMobileAds.Core.dll", "GoogleMobileAds.Common.dll", "GoogleMobileAds.Ump.dll"],
+  "autoReferenced": false
+}
