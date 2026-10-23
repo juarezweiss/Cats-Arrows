@@ -1,0 +1,58 @@
+{
+  "schema": "paws-issue65-owner-validation-v1",
+  "date": "2026-10-23",
+  "reviewer": "repository owner (juarezweiss)",
+  "evidenceSource": "explicit human reports in #65 implementation chat",
+  "sourceSha": "87772f283bf5ca14dcd477ca26b404a02faf9725",
+  "preparedDevice": {
+    "model": "iPhone 17",
+    "iOS": "27.0.1",
+    "version": "0.1.0",
+    "build": "1",
+    "scope": "from preparation receipt; owner reports identify source build 87772f2"
+  },
+  "reports": [
+    {
+      "environment": "Xcode StoreKit Test",
+      "startingOwnership": "owned",
+      "nativeRedemptionSheetOpens": "PASS",
+      "cancellationReturnsToGameplay": "PASS",
+      "codeRedemptionSucceeds": "NOT TESTED",
+      "verifiedOwnershipAppears": "NOT TESTED",
+      "ownershipSurvivesRestart": "PASS",
+      "restorePreservesOwnership": "PASS",
+      "notes": "None",
+      "reportedBuild": "87772f2",
+      "purchaseHistoryReset": false
+    },
+    {
+      "environment": "Apple Sandbox",
+      "startingOwnership": "owned",
+      "nativeRedemptionSheetOpens": "PASS",
+      "cancellationReturnsToGameplay": "PASS",
+      "codeRedemptionSucceeds": "PASS",
+      "verifiedOwnershipAppears": "PASS",
+      "ownershipSurvivesRestart": "PASS",
+      "restorePreservesOwnership": "PASS",
+      "notes": "None",
+      "reportedBuild": "87772f2",
+      "purchaseHistoryReset": false
+    }
+  ],
+  "assessment": {
+    "xcodeStoreKitTest": "Owner-passed native sheet opening, cancellation/play, retained ownership after restart and Restore; code redemption and new verified grant not tested. Simulated environment only.",
+    "appleSandbox": "Owner-passed native sheet opening, cancellation/play, code redemption and Owned UI, retained ownership after restart and Restore. Actual Sandbox environment as explicitly reported by owner; no simulated result is substituted.",
+    "freshGrantFromUnowned": "NOT DEMONSTRATED: both reports explicitly start owned; Sandbox Owned PASS is retained as reported but cannot establish a new unowned-to-Owned transition.",
+    "transactionFinalization": "No separate native transaction/finalization evidence supplied; existing automated contract evidence remains separate.",
+    "minimumFreshGrantGate": "pending owner coverage",
+    "fullRCMatrix": "remaining unreported scenarios stay pending; these reports do not establish external/pre-first-launch, invalid/expired, offline/late, revocation or interrupted-finalization physical acceptance",
+    "mergePreparation": "deferred until the fresh-grant coverage/acceptance gap is resolved; broad merge gates not rerun"
+  },
+  "agentsPerformedNoDeviceOrStoreActions": true,
+  "codeChanged": false,
+  "productionMonetizationEnabled": false,
+  "issue82": "open; independent hard Paws 1.0 release blocker",
+  "issue65": "open",
+  "pr85": "draft; no merge authorized/performed",
+  "noPurchaseHistoryReset": true
+}

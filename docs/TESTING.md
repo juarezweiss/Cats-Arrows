@@ -6,15 +6,23 @@ The [implementation, OS/API limits and owner-only test matrix](APPLE_OFFER_CODES
 extend the monetization RC gate with native sheet and external/pre-first-launch
 redemption, invalid/expired/duplicate/cancelled codes, delayed/offline delivery,
 restore/revocation and interrupted finalization. Automated fake-driven contracts
-are separate from pending owner StoreKit Test and Apple Sandbox acceptance.
+are separate from owner StoreKit Test and Apple Sandbox acceptance.
 Production remains disabled; #82 remains an independent hard release blocker.
+
+2026-10-23 owner reports for `87772f2`: both environments started **Owned**.
+Native sheet/cancellation/play, ownership after restart and Restore pass in each;
+actual Sandbox code redemption and Owned UI pass as reported. Xcode code redemption
+and verified ownership appearance are **NOT TESTED**. Neither run demonstrates a
+new unowned → Owned grant. That owner coverage remains pending, so #65 stays open,
+PR #85 stays draft and broad merge gates are deferred. No history reset occurred.
+[Exact reports and limitations](evidence/issue65/owner-validation-2026-10-23.json).
 
 Candidate `87772f283bf5ca14dcd477ca26b404a02faf9725`: pinned compile,
 focused **80/80**, full EditMode **578/578**, Python **51/51**, Swift compatibility
 typechecks, repository/whitespace checks and independent QA pass. Fresh unsigned
 native iOS build passes with linked bridge and matching ARM64 dSYMs. Desktop
-captures cover EN/pt-BR/es; physical/native sheet and real code acceptance remain
-pending. [Exact evidence and limits](evidence/issue65/validation.json).
+captures cover EN/pt-BR/es. These automated results predate the scoped owner reports
+above and do not expand their coverage. [Exact evidence and limits](evidence/issue65/validation.json).
 
 ## Latest #64 / PR #79 integration validation — 2026-10-22
 

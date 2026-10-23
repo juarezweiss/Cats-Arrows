@@ -69,6 +69,37 @@ establish VoiceOver or physical comfort acceptance.
 
 ## Owner-only StoreKit Test and Sandbox acceptance
 
+### Owner results — 2026-10-23
+
+The owner explicitly reported the following for source **`87772f2`**, with **no
+purchase-history reset**. Preserve the starting **Owned** baseline in both runs.
+[Exact reported results and scope assessment](evidence/issue65/owner-validation-2026-10-23.json).
+
+| Check | Xcode StoreKit Test (simulated) | Apple Sandbox (owner-reported actual Sandbox) |
+| --- | --- | --- |
+| Starting ownership | Owned | Owned |
+| Native redemption sheet opens | PASS | PASS |
+| Cancellation returns to gameplay | PASS | PASS |
+| Code redemption succeeds | NOT TESTED | PASS |
+| Verified ownership appears | NOT TESTED | PASS |
+| Ownership survives restart | PASS | PASS |
+| Restore preserves ownership | PASS | PASS |
+| Notes | None | None |
+
+These reports pass native presentation/cancellation and retained-ownership
+restart/Restore in each named environment. Sandbox code redemption and Owned UI
+are passed **as reported by the owner**. Because both sessions started Owned,
+neither demonstrates the minimal handoff's **unowned → Owned grant**. Do not
+relabel the local NOT TESTED results or infer a new verified transaction from an
+already-Owned label. No separate transaction/finalization evidence was supplied.
+
+Fresh-grant owner coverage remains pending. Keep #65 open and PR #85 draft;
+defer broad merge gates/integration preparation until this acceptance gap is
+resolved. Preserve existing app/account/transaction history; no reset or new
+purchase is requested/performed by this evidence update. Remaining RC scenarios
+are not covered by these two reports. #82 stays open as the separate hard Paws
+1.0 release blocker. Production remains disabled; main is unchanged.
+
 ### Minimal owner handoff — 2026-10-23
 
 The exact reviewed implementation **`87772f2`** has been development-signed and
@@ -78,10 +109,11 @@ ARM64 dSYMs pass. The existing local profile expires **2026-10-27 17:36:44 UTC**
 No rebuild or code change was needed. No broad automated tests were repeated.
 [Preparation receipt](evidence/issue65/owner-preparation.json).
 
-The app has **not been launched** for this handoff. No app-state/Keychain access,
-reset, uninstall, account action or transaction action was performed. Physical
-acceptance and both test environments remain pending. #82 remains open and is a
-separate hard Paws 1.0 release blocker; its investigations are outside this run.
+At preparation time, the app had **not been launched** by the agent. No app-state/
+Keychain access, reset, uninstall, account action or transaction action was
+performed. Physical acceptance was pending; the later scoped owner reports are
+recorded above. #82 remains open as a separate hard Paws 1.0 release blocker;
+its investigations are outside this run.
 
 Open the ignored local project `Builds/Issue65-OfferCodes-87772f2/Unity-iPhone.xcodeproj`.
 Select the connected iPhone, then use **Product > Perform Action > Run Without
@@ -113,8 +145,8 @@ For each environment, prioritize this short sequence:
 
 Report `environment; starting state; cancellation; redemption/Owned transition;
 restart; Restore` with pass/fail or blocked for each, plus any native error text
-without codes/account details. Results are currently empty. After the owner
-report, record scoped evidence in #65 and PR #85. If accepted, run the required
+without codes/account details. The received scoped results are recorded above.
+Record additional scoped evidence in #65 and PR #85. If accepted, run the required
 merge gates and prepare integration into develop; otherwise retain the blocker
 without expanding scope. No merge, main change, production activation or App Store
 submission is authorized by this preparation.
@@ -141,13 +173,15 @@ The scheme editor is not needed to run either configuration. In the existing
 #65 project choose **Product > Scheme > Paws 65 StoreKit Test** (local free offer)
 or **Paws 65 Sandbox** (None), select **iPhone 17 Juca**, then **Product > Perform
 Action > Run Without Building** (Control-Command-R). The owner performs redemption.
-Runtime launch and StoreKit/Sandbox acceptance remain pending; configuration
-verification is not a passing purchase/physical test.
+At this configuration-repair stage runtime launch and StoreKit/Sandbox acceptance
+were pending; later scoped owner results are recorded above. Configuration
+verification itself is not a passing purchase/physical test.
 
 ### Full RC matrix
 
-**Pending. No physical redemption or purchase acceptance is claimed.** Build
-preparation and automated contracts are separate evidence. Record the exact source
+**Remaining scenarios pending.** The scoped owner reports above are the only
+physical results claimed. Build preparation and automated contracts are separate
+evidence. Record the exact source
 SHA, app build, OS, Xcode version, locale and environment with each explicit human
 pass/fail. Screenshots must redact codes, account details and raw transaction data.
 Retain existing test history; a reset/deletion or new account change requires owner
@@ -220,10 +254,11 @@ runner contracts **51/51**, repository validation/whitespace and independent QA.
 Swift typechecks against the installed iOS 27.1 SDK at deployment targets 15.0
 and 16.3. Fresh development export and **unsigned** Xcode 27.1 native build pass;
 the new bridge symbol is linked, ARM64 app/framework dSYMs match, iOS 16.3 and all
-current scene/settings/branding/package inputs are retained. No signing, install,
-launch, purchase, code redemption, App Store change or upload followed.
+current scene/settings/branding/package inputs are retained. At this automated-
+gate milestone, no signing, install, launch, purchase, code redemption, App Store
+change or upload had followed. Later preparation and owner results are above.
 
 [Exact source, check results and artifact provenance](evidence/issue65/validation.json)
-record the candidate and ignored local build paths. Owner-operated Xcode StoreKit
-Test and Apple Sandbox code redemption remain pending until an explicit human
-result is recorded; automated verified-evidence fakes cannot satisfy them.
+record the candidate and ignored local build paths. The later explicit owner
+reports are recorded separately above. Fresh-grant coverage remains pending;
+automated verified-evidence fakes cannot replace that physical result.
