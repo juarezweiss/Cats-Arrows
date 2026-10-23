@@ -92,7 +92,7 @@ Only ignored local launch settings were adjusted; compiled inputs are unchanged.
 
 | Environment | Scheme and owner setup | Evidence scope |
 | --- | --- | --- |
-| Xcode StoreKit Test | **Paws 65 StoreKit Test** references the retained existing `Builds/Issue64-AppleIapReview/Paws-RemoveAds-OwnerReview.storekit`. Ask to Buy is off; product metadata/history were not changed. The owner must configure/select a local free Offer Code for the same non-consumable in Xcode before redemption. If the synced configuration prevents that, stop and report rather than resetting/converting existing history. | Simulated StoreKit only; never label this an actual Sandbox code result. |
+| Xcode StoreKit Test | **Paws 65 StoreKit Test** references the new local `Builds/Issue65-OfferCodes-87772f2/Paws65-FreeOffer.storekit`. The native Xcode editor created free offer **Paws65-Free-Local** for the copied approved non-consumable. Ask to Buy is off. The original configuration/history is retained. | Simulated StoreKit only; never label this an actual Sandbox code result. A new configuration does not prove a fresh/unowned baseline. |
 | Apple Sandbox | **Paws 65 Sandbox**, StoreKit Configuration **None**. Owner verifies the intended Sandbox Apple Account in Settings > Developer, and **Environment: Sandbox** on any payment sheet. Owner supplies/enters a test-only Sandbox code for `com.jweiss.paws.removeads`. | Actual Sandbox redemption only after these environment checks; a cached Owned label is not a new redemption. |
 
 Keep existing app/account/transaction history. Record the starting state first:
@@ -118,6 +118,31 @@ report, record scoped evidence in #65 and PR #85. If accepted, run the required
 merge gates and prepare integration into develop; otherwise retain the blocker
 without expanding scope. No merge, main change, production activation or App Store
 submission is authorized by this preparation.
+
+### Xcode 27.1 scheme-editor crash correction — 2026-10-23
+
+The owner's three Edit Scheme crashes share the StoreKit option controller's
+workspace-relative path-resolution assertion. The agent-generated scheme supplied
+an absolute `StoreKitConfigurationFileReference`; this was a preparation error.
+It now uses **`../../Paws65-FreeOffer.storekit`**, relative to the project workspace.
+The local file was created with Xcode's native unsynced StoreKit template, then
+the approved product metadata was copied and **Paws65-Free-Local / Free** was
+created/saved with the native offer editor. No live/store code was generated.
+
+Both scheme editors now open: Local shows `Paws65-FreeOffer.storekit`, Sandbox
+shows **None**. XML/target references validate, and read-only Release build-setting
+resolution for both points to the retained signed app. Its tree hash and the
+original StoreKit configuration hash are unchanged. No build, install, app launch,
+account action, transaction access/reset or redemption test was performed.
+[Configuration repair evidence](evidence/issue65/scheme-repair.json) supersedes
+the original preparation receipt's local StoreKit reference only.
+
+The scheme editor is not needed to run either configuration. In the existing
+#65 project choose **Product > Scheme > Paws 65 StoreKit Test** (local free offer)
+or **Paws 65 Sandbox** (None), select **iPhone 17 Juca**, then **Product > Perform
+Action > Run Without Building** (Control-Command-R). The owner performs redemption.
+Runtime launch and StoreKit/Sandbox acceptance remain pending; configuration
+verification is not a passing purchase/physical test.
 
 ### Full RC matrix
 
