@@ -1,0 +1,140 @@
+{
+  "schema": "paws-issue66-owner-validation-v1",
+  "date": "2026-10-23",
+  "issue": 66,
+  "pullRequest": 86,
+  "reporter": "Owner, explicit checklist in the active chat",
+  "candidate": {
+    "sourceSha": "f3539dae9db084ea4cd97159167c8d6b1a87b83c",
+    "version": "0.1.0",
+    "build": "1",
+    "deviceModel": "iPhone 17",
+    "iOS": "27.0.1",
+    "debugGeography": "EEA",
+    "registeredUmpTestDeviceCount": 1,
+    "metadataSource": "device-preparation.json",
+    "correlation": "Report names #66 / PR #86 and follows this chat’s preparation of the installed registered EEA candidate. Device/build metadata is inherited from that preparation, not newly asserted in the checklist or reread from the phone."
+  },
+  "summary": {
+    "checkedConditionsPassed": 13,
+    "uncheckedConditionsNotValidated": 1,
+    "reportedFailures": 0,
+    "overall": "Partial physical validation; the submitted early rewarded-close condition remains unvalidated."
+  },
+  "checks": [
+    {
+      "area": "consent_privacy",
+      "condition": "Launch Paws: UMP consent flow loads without freezing gameplay",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "consent_privacy",
+      "condition": "If a consent form is required, it appears and can be completed",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "consent_privacy",
+      "condition": "Privacy Options appears in Settings when required and reopens the form",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "interstitial",
+      "condition": "Complete boards 1–3: no interstitial appears",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "interstitial",
+      "condition": "Complete board 4: victory remains visible, without an ad",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "interstitial",
+      "condition": "Tap New Game: one Google test interstitial appears, if ready",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "interstitial",
+      "condition": "Close the ad: next board starts and controls work",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "rewarded_hint",
+      "condition": "Close a presented rewarded ad early: no Hint granted",
+      "ownerChecked": false,
+      "result": "not_validated"
+    },
+    {
+      "area": "rewarded_hint",
+      "condition": "Finish a rewarded test ad: exactly one Hint granted",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "rewarded_hint",
+      "condition": "Airplane Mode / unavailable ad: eligible Hint granted directly for free",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "recovery_ownership",
+      "condition": "Return online after a skipped ad: no accumulated interstitial appears",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "recovery_ownership",
+      "condition": "Background and reopen during an ad/form: gameplay remains safe",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "recovery_ownership",
+      "condition": "Use simulated Remove Ads: interstitials and rewarded ads suppressed",
+      "ownerChecked": true,
+      "result": "passed"
+    },
+    {
+      "area": "recovery_ownership",
+      "condition": "Owned player receives direct Hints; restart and mock Restore preserve ownership",
+      "ownerChecked": true,
+      "result": "passed"
+    }
+  ],
+  "ownerNoteVerbatim": "only thing is 3 - the test ads didn't make a \"end ad early\" option to test, I had to wait for the whole ad to finish",
+  "uncheckedInstructionVerbatim": "Unchecked items are not validated; no pass inferred.",
+  "outstandingEarlyClose": {
+    "result": "not_validated",
+    "ownerReportedReason": "The presented Google test ads offered no end-ad-early option; the owner waited for completion.",
+    "interpretation": "Creative availability prevented exercising early closure. No app defect, early-close success or waiver is inferred.",
+    "existingAutomatedCoverage": {
+      "evidence": "validation.json",
+      "adapterTest": "VoluntaryCloseWithoutRewardNeverMeansInfrastructureFailure",
+      "coordinatorTest": "PresentedCloseOrAmbiguousFailureAndLateUnconfirmedRewardDoNotApplyHint",
+      "scope": "Previously passing deterministic fake-driven contracts; separate from physical native-SDK acceptance."
+    }
+  },
+  "scopeLimits": [
+    "Only checked conditions are recorded as physical passes; other scenarios remain unclaimed.",
+    "Ownership checks use the simulated Remove Ads/mock Restore path; real Apple IAP and #82 were not validated by this report.",
+    "The tested debug geography is the prepared EEA configuration; no additional geography, native fault timing, locale/aspect-ratio matrix or full #67 release-candidate pass is inferred."
+  ],
+  "actionsThisRecord": {
+    "documentationOnly": true,
+    "runtimeOrSdkChanged": false,
+    "phoneAutomated": false,
+    "rebuildOrInstall": false,
+    "adOrConsentInteractionByAgent": false,
+    "productionActivation": false,
+    "mergeOrIssueClosure": false
+  },
+  "releaseBlocker82": "open and unchanged",
+  "productionMonetization": "disabled",
+  "followUp": "Retain the physical presented-close-before-reward/no-Hint item for a future owner-operated opportunity or explicit owner decision. This report grants no merge/release authorization."
+}

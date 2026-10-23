@@ -183,8 +183,10 @@ The development app uses `admob-review/state.bin` and a separate **mock ownershi
 ledger. Its Remove Ads action is simulated and does not invoke StoreKit or spend.
 Production and existing Apple review state are preserved.
 
-Physical iPhone review is **pending until an explicit owner report**. Agents must
-not operate the phone's interactions/appearance/lifecycle tests. Owner checklist:
+Physical iPhone review requires an **explicit owner report**. The scoped report
+below records 13 checked conditions as passed; early rewarded closure remains
+unvalidated. Agents must not operate the phone's interaction/appearance/lifecycle
+tests. Owner checklist:
 
 1. Confirm exact reviewed SHA/build, device/OS, Google test labels, mock purchases
    and correct UMP debug device/geography; never enter live IDs or buy anything.
@@ -233,8 +235,34 @@ account action, purchase, redemption, transaction-history operation or Keychain
 content access occurred. This is a metadata-only preservation check, not a full
 pre-discovery data backup or a revalidation of Sandbox ownership/history.
 
-No native consent form, ad or game interaction was automated. Physical UMP/ad/
-lifecycle acceptance is **pending the owner's explicit report** using the checklist
-above. #82 and production gates remain unchanged. Runtime source, shared scenes,
-assets and ProjectSettings were not changed for this preparation; broad suites
+No native consent form, ad or game interaction was automated. At preparation
+time, physical UMP/ad/lifecycle acceptance remained pending. The subsequent scoped
+owner report is recorded below. #82 and production gates remain unchanged.
+Runtime source, shared scenes, assets and ProjectSettings were not changed for this preparation; broad suites
 were not repeated because compiled implementation inputs are unchanged.
+
+## Owner physical validation — 2026-10-23
+
+The owner reported **13 checked conditions passed**, with **one unchecked condition
+not validated**, on the registered EEA candidate prepared above (`f3539da`, iPhone
+17 / iOS 27.0.1, Paws 0.1.0 build 1). Candidate metadata comes from the preparation
+receipt. [Exact checklist, owner note and scope](evidence/issue66/owner-validation-2026-10-23.json).
+
+Passed scope covers UMP startup/required form/Settings Privacy Options; boards
+1–3 without interstitials, fourth-board victory review and one next-New-Game test
+interstitial with safe return; exactly one Hint after rewarded completion and a
+free eligible Hint when offline/unavailable; no accumulated interstitial after
+reconnection; reported ad/form background safety; and simulated Remove Ads/direct
+owned Hints with restart/mock Restore persistence.
+
+**Presented rewarded ad closed early → no Hint remains NOT VALIDATED.** The owner
+reported that the test ads offered no early-exit option and had to finish.
+This is an unexercised physical scenario, not an observed app failure or a pass.
+Previously passing deterministic adapter/coordinator no-reward-close contracts
+remain separate evidence and do not satisfy this physical item. No forced native
+closure, new build, phone automation or creative/console change follows this note.
+
+Other unreported #66/#67 scenarios remain unclaimed. Simulated ownership does not
+validate Apple IAP or #82. PR #86 remains draft; #66 stays open, production stays
+disabled, and #82 remains an independent release blocker. No merge, closure,
+production or release authorization follows from this owner report.
