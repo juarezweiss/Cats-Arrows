@@ -1,5 +1,22 @@
 # Testing Strategy
 
+## Current #67 monetized Paws 1.0 gate — 2026-10-24
+
+The owner's current release plan enables Apple IAP/Offer Codes and AdMob/UMP.
+Only #82's unresolved Ask to Buy button becoming available after restart is an
+accepted, non-blocking known issue. #82 stays open for post-release work.
+Verified paid ownership, persistence/Restore, no already-owned duplicate charge,
+safe finalization, no deferred/failed/cancelled false grant and reliable recovery
+remain mandatory. Actual failures block release; missing physical evidence is
+pending and cannot be promoted to a pass.
+
+[Exact gates and minimal human checklist](RELEASE_RC_1_0.md) supersede historical
+blanket #82-blocker and disabled-only scope statements in the dated snapshots below.
+Normal priced-product Apple Sandbox testing and Xcode StoreKit Test simulated
+Ask to Buy approval/decline have separate evidence. Existing simulated ownership,
+native inconclusive results, unit tests and technical launch do not establish
+normal paid Sandbox acceptance. No production action follows from passing tests.
+
 ## Issue #66 AdMob / UMP gate
 
 [Exact SDK inspection, development-only privacy policy and owner checklist](ADMOB.md).
@@ -74,7 +91,7 @@ and unsigned native iOS build pass; ARM64 app/framework dSYM UUIDs match.
 No physical/device/purchase test followed. Prior artifacts remain historical;
 #82 still blocks Paws 1.0 release and production monetization remains disabled.
 
-## Current IAP scope and Paws 1.0 release gate
+## Historical 2026-10-22 IAP scope and release gate (superseded)
 
 Owner-directed split (2026-10-22): [#64](https://github.com/juarezweiss/Paws/issues/64)
 is completed IAP foundation scope; [PR #79](https://github.com/juarezweiss/Paws/pull/79)

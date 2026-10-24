@@ -1,7 +1,7 @@
 # ADR 0002: Provider-agnostic monetization services
 
 Status: Owner-approved architecture; rewarded-Hint policy amended 2026-10-19;
-SDK-free implementation in #30; activation deferred
+monetized production preparation authorized 2026-10-24 in #67; live activation deferred
 Date: 2026-10-14
 Task: [#29](https://github.com/juarezweiss/Paws/issues/29)
 
@@ -77,6 +77,20 @@ first-party ID and SDK crash reports disabled, and no dependency-manager telemet
 [SDK evidence, exact versions and remaining production decisions](../ADMOB.md).
 The existing ports, coordinator and persistence remain authoritative. Default
 production composition stays disabled; this does not authorize live traffic.
+
+## Production preparation amendment — 2026-10-24
+
+The owner explicitly authorizes #67 to prepare Paws 1.0 with Apple IAP/Offer Codes
+and AdMob/UMP enabled, reusing the existing ports, persistence and SDK pins.
+Build profiles select actual production providers, integrated real-IAP/Google-test-
+ad validation, or disabled rollback. Only verified current Apple entitlement grants
+ownership; production also accepts Apple's Sandbox environment for App Review and
+TestFlight, while Xcode is confined to validation/review. No mock grants are used.
+The one #82 restart-button limitation is accepted as non-blocking; paid entitlement,
+Restore, finalization and no-false-grant requirements remain mandatory.
+[Current release criteria](../RELEASE_RC_1_0.md) govern evidence and remaining owner
+privacy/configuration decisions. This changes preparation scope, not authority to
+activate live ads, change accounts, merge main or distribute/release.
 
 ## Consequences and alternatives
 

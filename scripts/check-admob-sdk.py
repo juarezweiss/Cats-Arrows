@@ -19,7 +19,7 @@ for base in ['UnityProject/ThirdParty~/GoogleMobileAds', 'UnityProject/Assets/Th
                 raise SystemExit(f'Uninspected SDK file: {relative}')
 for path in (ROOT / 'UnityProject/Assets/ThirdParty/GoogleMobileAds').glob('*.dll'):
     metadata = path.with_name(path.name + '.meta').read_text()
-    if 'isExplicitlyReferenced: 1' not in metadata or 'UNITY_EDITOR || PAWS_ADMOB_REVIEW' not in metadata:
+    if 'isExplicitlyReferenced: 1' not in metadata or 'UNITY_EDITOR || PAWS_ADMOB_REVIEW || PAWS_MONETIZATION' not in metadata:
         raise SystemExit(f'SDK player isolation missing: {path.name}')
 manifest = json.loads((ROOT / 'UnityProject/Packages/manifest.json').read_text())
 if any('external-dependency-manager' in key or 'ads.mobile' in key for key in manifest['dependencies']):

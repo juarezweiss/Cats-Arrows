@@ -4,6 +4,6 @@ enum PawsEvidencePolicy {
         revoked && (ownedID == nil || ownedID == latestID)
     }
     static func acceptsEnvironment(review: Bool, production: Bool, sandbox: Bool, xcode: Bool) -> Bool {
-        review ? (sandbox || xcode) : production
+        review ? (sandbox || xcode) : (production || sandbox)
     }
 }

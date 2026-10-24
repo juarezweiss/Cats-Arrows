@@ -1,5 +1,13 @@
 # AdMob / UMP development integration — #66
 
+Current 2026-10-24 authority: [#67 monetized Paws 1.0 preparation](RELEASE_RC_1_0.md)
+adds actual enabled production composition and an integrated real-IAP/test-ad
+validation profile using this unchanged SDK infrastructure. The development-only
+scope statements below describe #66's historical implementation/evidence. Live
+IDs are injected outside Git; production policy/console readiness and live traffic
+remain owner-controlled. #82 is non-blocking only for the specifically accepted
+pending-button-after-restart limitation; purchase safety remains mandatory.
+
 Authority: [#66](https://github.com/juarezweiss/Paws/issues/66),
 [#29](https://github.com/juarezweiss/Paws/issues/29)/[#30](https://github.com/juarezweiss/Paws/issues/30),
 [ADR 0002](decisions/0002-provider-agnostic-monetization.md), and

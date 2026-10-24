@@ -1,15 +1,27 @@
 {
   "name": "CatsAndArrows.EditModeTests",
   "rootNamespace": "CatsAndArrows.Tests",
-  "references": ["CatsAndArrows.Core", "CatsAndArrows.Gameplay", "CatsAndArrows.Monetization", "CatsAndArrows.UI"],
-  "includePlatforms": ["Editor"],
+  "references": [
+    "CatsAndArrows.Core",
+    "CatsAndArrows.Gameplay",
+    "CatsAndArrows.Monetization",
+    "CatsAndArrows.UI",
+    "CatsAndArrows.Advertising"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
   "precompiledReferences": [],
   "autoReferenced": false,
-  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
   "versionDefines": [],
   "noEngineReferences": false,
-  "optionalUnityReferences": ["TestAssemblies"]
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
 }

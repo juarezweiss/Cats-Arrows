@@ -1,10 +1,12 @@
 # Environments, Releases, and Rollback
 
-Apple Offer Code integration (#65) adds the [owner-only redemption matrix](APPLE_OFFER_CODES.md#owner-only-storekit-test-and-sandbox-acceptance)
-to the monetization RC gate (#67). Native sheet, Xcode StoreKit Test and Sandbox
-code results must be recorded before activation; automated contracts or launch
-readiness cannot satisfy physical acceptance. #82 remains a separate hard Paws
-1.0 release blocker, including a release with monetization disabled.
+Current authority: the owner's **2026-10-24 decision** in [#67](https://github.com/juarezweiss/Paws/issues/67).
+Paws 1.0 ships **with Apple IAP, Offer Codes, AdMob and UMP**. Disabled mode is a
+rollback profile, not the release plan. The narrow [#82](https://github.com/juarezweiss/Paws/issues/82)
+restart-button limitation is accepted and non-blocking; purchase safety is mandatory.
+See [candidate gates and minimal physical checklist](RELEASE_RC_1_0.md).
+The dated #63–#66 evidence below retains its original scope; historical blanket
+#82-blocker and disabled-only statements are superseded by this decision.
 
 ## Branch/environment model
 - Feature branches: isolated development.
@@ -14,45 +16,41 @@ readiness cannot satisfy physical acceptance. #82 remains a separate hard Paws
 
 Environments should differ through build profiles/configuration, not divergent code copies.
 
-## Paws 1.0 App Store hard release gate — #82
+## Paws 1.0 revised release gate — #67 / #82
 
-**HARD BLOCKER:** [#82 — Fix Ask to Buy / deferred IAP lifecycle](https://github.com/juarezweiss/Paws/issues/82)
-must pass before Paws 1.0 is declared release-ready, its release is merged to
-`main`, uploaded/submitted to App Store Connect or released. Keeping monetization
-disabled does not waive this owner-required Paws 1.0 gate. Release validation
-[#67](https://github.com/juarezweiss/Paws/issues/67) must record the evidence.
+**Accepted known issue:** an unresolved Ask to Buy request may leave Remove Ads
+available again after restarting the app. Keep #82 open for post-release resolution.
+The root cause is unproven. No second purchase was initiated in the verified
+Sandbox restart failure; repeat requests are not asserted to be universally harmless.
 
-Release checklist (all remain pending):
+**Release blockers:** failure to grant/restore a paid verified entitlement; loss of
+ownership through unsafe finalization; charging an already-owned user for the same
+non-consumable; fabricated ownership from deferred/failed/cancelled/unverified
+transactions; unreliable Restore recovery; actual compliance/security problems.
+Only verified Apple current entitlement for `com.jweiss.paws.removeads` grants
+access. Unknown/offline/partial inventory preserves verified cached access;
+authoritative revocation remains effective. The accepted button behavior waives
+none of these requirements.
 
-- [ ] Pending/deferred never grants ownership.
-- [ ] Pending survives force-quit/relaunch and blocks duplicate purchases.
-- [ ] Verified approval grants once with durable ownership and correct finalization.
-- [ ] Cancellation/decline/revocation and ambiguous/offline recovery resolve safely.
-- [ ] Owner physical Sandbox validation passes on the exact candidate; record
-  device/OS/build/source, environment checks, explicit pass/fail and coverage in #82.
-- [ ] Review all #82 acceptance evidence and resolve the blocker before approving
-  Paws 1.0 readiness; obtain separate explicit owner approval for production actions.
+The exact candidate must pass normal priced-product Apple Sandbox purchase,
+restart/Restore/ad suppression and finalization/recovery gates. Xcode StoreKit Test
+provides simulated Ask to Buy approval/decline; it is not real Apple approval
+evidence. Do not demand Xcode's approval controls from Sandbox. The owner operates
+the physical iPhone and reports explicit results. Sandbox confirmation requires
+the intended account visible in Settings > Developer and the sheet visibly
+identifying Sandbox; otherwise stop. No real-money transaction is authorized.
 
-This is **not a blocker for continued development on `develop`**. The completed
-[#64 IAP foundation](https://github.com/juarezweiss/Paws/issues/64) / [PR #79](https://github.com/juarezweiss/Paws/pull/79)
-may be reviewed/integrated under normal checks and owner instructions without
-claiming lifecycle acceptance. Production monetization stays disabled. Closing
-#64 or merging #79 does not resolve #82 or authorize production.
-
-No new purchase test follows this scope split. Any separately authorized future
-purchase requires both the intended Sandbox Apple Account visibly present under
-Settings > Developer and **Environment: Sandbox on the purchase sheet itself**.
-If either is missing, do not initiate or approve anything. Historical unverified
-attempts remain separate from verified Sandbox evidence. See [Apple evidence and
-handoff](APPLE_IAP.md); direct StoreKit 2 is only a future architecture option,
-not an approved implementation.
+Release readiness is recorded in #67. No main merge, upload/submission, live ad
+activation, account change or release follows from preparation. Separate explicit
+owner authorization remains required at those boundaries.
 
 ## Production control
 Agents may prepare lower-environment artifacts only when explicitly instructed. Production actions require explicit human instruction in the current task.
 
 ## Versioning
 Owner-approved for #63 on 2026-10-20: initial product version **0.1.0**, iOS
-build **1**. Use semantic `0.x.y` product versions and a separate globally
+build **1**. The 2026-10-24 Paws 1.0 preparation targets **1.0.0**, with build 1
+retained only for unreleased local validation. Use semantic product versions and a separate globally
 increasing positive integer iOS build number. Before each new distribution
 artifact, the owner checks the highest allocated/uploaded number and commits a
 larger number in `PlayerSettings.iOS.buildNumber`; never reuse numbers across
@@ -93,12 +91,14 @@ never persisted as a global define. Inherited defines/development/profiler/debug
 settings are rejected. Review checks/bootstrap/mocks are compiled out; benchmark
 code remains excluded. The receipt also checks generated IL2CPP sources.
 
-`PawsBootstrap` starts the ordinary game with saved preferences, real safe area,
-normal tutorial/lifecycle and `monetization: null`. No providers initialize;
-Hints remain free; Settings shows unavailable purchase/restore rows (#76). This
-is the binary disabled/rollback configuration. Future enabled releases require separate approved real adapters
-and tests; reverting to this composition retains existing monetization storage
-and verified ownership. No remote kill switch is claimed.
+The enabled #67 production composition starts the ordinary game with saved
+preferences, real safe area and normal tutorial/lifecycle, plus the existing real
+Apple IAP/Offer Code and AdMob/UMP adapters. Build-time configuration selects
+production, integrated validation or disabled rollback; missing production inputs
+fail export. The validation artifact uses real Apple verification and Google test
+ads with no simulated ownership. It is not the final distribution profile.
+Disabled rollback initializes no providers and keeps free Hints; existing storage
+and verified ownership are retained. No remote kill switch is claimed.
 
 Compatibility-sensitive `CatsAndArrows` namespaces, preference/storage keys,
 product GUID, company name, generator/ruleset versions and fingerprints are
@@ -122,9 +122,16 @@ bash scripts/unity.sh
 bash scripts/validate.sh
 bash scripts/compile.sh
 bash scripts/test.sh
-bash scripts/build-ios.sh export "$PWD/Builds/Paws-0.1.0-1-export"
-bash scripts/build-ios.sh archive-unsigned "$PWD/Builds/Paws-0.1.0-1-export" "$PWD/Builds/Paws-0.1.0-1.xcarchive"
+PAWS_MONETIZATION_PROFILE=validation bash scripts/build-ios.sh export "$PWD/Builds/Issue67-1.0.0-validation-export"
+bash scripts/build-ios.sh archive-unsigned "$PWD/Builds/Issue67-1.0.0-validation-export" "$PWD/Builds/Issue67-1.0.0-validation.xcarchive"
 ```
+
+The default profile is `production`; it requires an absolute owner-local
+`PAWS_MONETIZATION_CONFIG` JSON file and rejects Google sample IDs/debug settings.
+Do not invent production identifiers to bypass this gate. Use
+`PAWS_MONETIZATION_PROFILE=disabled` explicitly for rollback validation. The
+validation example above prepares actual IAP with test advertising and is not
+eligible for distribution. See [candidate preparation](RELEASE_RC_1_0.md).
 
 An unsigned archive validates compilation/configuration only. It is not an
 installable, distribution-signed or App Store accepted build. For an explicitly

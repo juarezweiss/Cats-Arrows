@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Issue #63: inspect immutable Unity iOS exports/archives; never modify them."""
+"""#63/#67: inspect immutable iOS rollback, validation and monetized releases."""
 
 import argparse
 import hashlib
@@ -7,12 +7,20 @@ import json
 import os
 import plistlib
 import re
+import struct
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 BUNDLE_ID = "com.jweiss.paws"
-EXCLUDED_TYPES = re.compile(rb"BoardReviewBootstrap|(?:BoardInput|GameLoop|Completion|HintIdle|ArrowHold|Tutorial|Monetization)ReviewChecks|ReviewAdService|ReviewPurchaseService|GenerationBenchmark")
+EXCLUDED_TYPES = re.compile(rb"BoardReviewBootstrap|(?:BoardInput|GameLoop|Completion|HintIdle|ArrowHold|Tutorial|Monetization)ReviewChecks|ReviewAdService|ReviewPurchaseService|AppleIapReviewBootstrap|AdMobReviewBootstrap|GenerationBenchmark")
+PRODUCT_ID = "com.jweiss.paws.removeads"
+TEST_PUBLISHER = "ca-app-pub-3940256099942544"
+TEST_IDS = {"adMobAppId": TEST_PUBLISHER + "~1458002511",
+            "interstitialAdUnitId": TEST_PUBLISHER + "/4411468910",
+            "rewardedAdUnitId": TEST_PUBLISHER + "/1712485313"}
+PROVIDERS = ("appleIapEnabled", "offerCodesEnabled", "admobEnabled", "umpEnabled")
 
 
 class InspectionError(ValueError):
@@ -200,11 +208,13 @@ def inventory(path):
             "privacyManifests": manifests, "entitlementFiles": entitlements}
 
 
-def inspect_il2cpp(export):
+def inspect_il2cpp(export, profile="disabled"):
     directory = export / "Il2CppOutputProject/Source/il2cppOutput"
     sources = sorted(item for item in directory.rglob("*") if item.suffix in (".cpp", ".h") and item.is_file())
     if not sources:
         raise InspectionError("Missing generated IL2CPP sources; cannot verify diagnostic exclusion.")
+    found = set()
+    required = (b"ApplePurchaseService", b"GoogleAdsBridge", b"AdMobAdService")
     for source in sources:
         if EXCLUDED_TYPES.search(source.name.encode()):
             raise InspectionError("Review, benchmark or mock type found in production IL2CPP output.")
@@ -214,8 +224,199 @@ def inspect_il2cpp(export):
                 data = tail + block
                 if EXCLUDED_TYPES.search(data):
                     raise InspectionError("Review, benchmark or mock type found in production IL2CPP output.")
+                if profile == "production" and TEST_PUBLISHER.encode() in data:
+                    raise InspectionError("Google test identifier found in production IL2CPP output.")
+                for provider in required:
+                    if provider in data:
+                        found.add(provider)
                 tail = data[-256:]
+    if profile != "disabled" and found != set(required):
+        raise InspectionError("Enabled export is missing a real purchase/advertising provider.")
+    if profile == "disabled" and b"GoogleAdsBridge" in found:
+        raise InspectionError("Disabled rollback includes the Google provider binding.")
     return {"sourceFilesInspected": len(sources), "excludedTypesAbsent": True}
+
+
+def inspect_monetization(metadata, export, info):
+    # Missing profile is accepted only for immutable historical #63 disabled exports.
+    profile = metadata.get("profile", "disabled")
+    if profile not in ("disabled", "validation", "production"):
+        raise InspectionError("Unknown monetization profile.")
+    enabled = profile != "disabled"
+    expect(metadata.get("monetizationEnabled"), enabled, "profile monetization state")
+    if not enabled:
+        if info.get("GADApplicationIdentifier") or (export / "paws-monetization.json").exists():
+            raise InspectionError("Disabled rollback contains advertising configuration.")
+        return {"profile": profile, "distributionEligible": False,
+                "purpose": "disabled-rollback", "providersEnabled": False}
+    for flag in PROVIDERS:
+        expect(metadata.get(flag), True, flag)
+    expect(metadata.get("appleProductId"), PRODUCT_ID, "non-consumable product identity")
+    expect(metadata.get("simulatedPurchases"), False, "simulated ownership exclusion")
+    expect(metadata.get("testAds"), profile == "validation", "Google test-ad isolation")
+    count = metadata.get("testDeviceCount")
+    geography = metadata.get("consentDebugGeography")
+    if type(count) is not int or count < 0 or geography not in ("Disabled", "EEA", "RegulatedUSState", "Other"):
+        raise InspectionError("Invalid UMP validation configuration.")
+    if profile == "production":
+        expect(count, 0, "production test-device configuration")
+        expect(geography, "Disabled", "production UMP debug geography")
+    runtime = read_json(export / "paws-monetization.json")
+    expect(runtime.get("profile"), profile, "runtime profile")
+    expect(metadata.get("audiencePolicy"), "local-adult-only-v1", "approved audience policy")
+    expect(runtime.get("audiencePolicy"), metadata["audiencePolicy"], "runtime audience policy")
+    for key in ("privacyPolicyUrl", "supportUrl"):
+        value = metadata.get(key, "")
+        if value or profile == "production":
+            if not isinstance(value, str):
+                raise InspectionError("Invalid public HTTPS support/privacy URL.")
+            url = urlsplit(value)
+            if url.scheme != "https" or not url.hostname or url.username is not None or url.password is not None:
+                raise InspectionError("Production requires public HTTPS support/privacy URLs without credentials.")
+        expect(runtime.get(key, ""), value, "runtime public support/privacy URL")
+    for key in TEST_IDS:
+        value = metadata.get(key, "")
+        pattern = r"ca-app-pub-\d{16}" + (r"~\d{10}" if key == "adMobAppId" else r"/\d{10}")
+        if not isinstance(value, str) or not re.fullmatch(pattern, value):
+            raise InspectionError("Missing or invalid advertising identifier.")
+        if profile == "production" and value.startswith(TEST_PUBLISHER):
+            raise InspectionError("Google test identifiers are prohibited in production.")
+        if profile == "validation" and key != "adMobAppId":
+            expect(value, TEST_IDS[key], "official Google validation identifier")
+        expect(runtime.get(key), value, "runtime advertising identifier")
+    if metadata["interstitialAdUnitId"] == metadata["rewardedAdUnitId"]:
+        raise InspectionError("Advertising placements must have distinct units.")
+    if profile == "production":
+        publisher = metadata["adMobAppId"].split("~")[0]
+        if any(not metadata[key].startswith(publisher + "/") for key in ("interstitialAdUnitId", "rewardedAdUnitId")):
+            raise InspectionError("Production ad units must match the configured app publisher.")
+    # This readable copy is deliberately sanitized; only the serialized TextAsset
+    # below can establish the actual device-debug configuration shipped in Data.
+    if runtime.get("umpTestDeviceIds", []) != []:
+        raise InspectionError("Export configuration copy must redact test-device identifiers.")
+    expect(runtime.get("consentDebugGeography", "Disabled"), geography, "sanitized UMP geography")
+    expect(info.get("GADApplicationIdentifier"), metadata["adMobAppId"], "native Google app identifier")
+    expect(info.get("GADDisableAdInspector"), True, "disabled Ad Inspector")
+    if "NSUserTrackingUsageDescription" in info:
+        raise InspectionError("Unexpected ATT prompt configuration for approved nontracking profile.")
+    resource = inspect_runtime_resource(export, metadata)
+    return {"profile": profile, "providersEnabled": True,
+            "runtimeConfigurationSha256": resource["sha256"], "exportRuntimeResource": resource,
+            "distributionEligible": profile == "production",
+            "purchaseEnvironmentEvidence": "pending-human-apple-sandbox",
+            "storeKitTestEvidence": "separate-simulation-only",
+            "liveTrafficAuthorization": "not-granted"}
+
+
+def inspect_runtime_resource(path, metadata):
+    """Inspect Unity's serialized TextAsset payload, not an unbundled JSON copy.
+
+    TextAsset serializes length-prefixed m_Name then aligned length-prefixed
+    m_Script. Require a unique, valid named payload and its build-recorded hash;
+    do not claim a complete Unity serialized-file/dependency graph validation.
+    Never include private UMP device identifiers in the receipt or diagnostics.
+    """
+    files = list(path.rglob("Data/resources.assets"))
+    name = b"PawsMonetization.generated"
+    candidates = []
+    for file in files:
+        data = file.read_bytes()
+        offset = data.find(name)
+        while offset != -1:
+            if offset >= 4 and data[offset - 4:offset] == struct.pack("<I", len(name)):
+                cursor = (offset + len(name) + 3) & ~3
+                if cursor + 4 <= len(data):
+                    length = struct.unpack_from("<I", data, cursor)[0]
+                    if 0 < length <= 1024 * 1024 and cursor + 4 + length <= len(data):
+                        payload = data[cursor + 4:cursor + 4 + length]
+                        try:
+                            config = json.loads(payload.decode("utf-8"))
+                            if isinstance(config, dict):
+                                candidates.append((file, payload, config))
+                        except (UnicodeDecodeError, ValueError):
+                            pass
+            offset = data.find(name, offset + len(name))
+    if len(candidates) != 1:
+        raise InspectionError("Bundled monetization TextAsset is missing, malformed or ambiguous.")
+    file, payload, config = candidates[0]
+    digest = hashlib.sha256(payload).hexdigest()
+    expect(digest, metadata.get("runtimeConfigurationSha256"), "bundled runtime configuration hash")
+    for key in ("profile", *TEST_IDS, "privacyPolicyUrl", "supportUrl", "audiencePolicy"):
+        expect(config.get(key), metadata.get(key), "bundled runtime configuration")
+    geography = config.get("consentDebugGeography", "Disabled")
+    devices = config.get("umpTestDeviceIds", [])
+    if not isinstance(devices, list) or any(not isinstance(item, str) or not re.fullmatch(r"[0-9A-Fa-f]{32,64}", item) for item in devices):
+        raise InspectionError("Invalid bundled UMP test-device configuration.")
+    expect(len(devices), metadata.get("testDeviceCount"), "bundled UMP test-device count")
+    expect(geography, metadata.get("consentDebugGeography"), "bundled UMP geography")
+    if metadata.get("profile") == "production" and (devices or geography != "Disabled"):
+        raise InspectionError("Production runtime contains UMP debug configuration.")
+    return {"path": file.relative_to(path).as_posix(), "sha256": digest,
+            "payloadBytes": len(payload), "namedTextAssetPayloadVerified": True,
+            "testDeviceCount": len(devices), "consentDebugGeography": geography}
+
+
+def inspect_sdk_pins(root, source_sha):
+    relative = "docs/evidence/issue66/sdk-inventory.json"
+    path = root / relative
+    pinned = command(["git", "-C", str(root), "show", source_sha + ":" + relative])
+    current = path.read_text(encoding="utf-8")
+    expect(current.rstrip("\n"), pinned.rstrip("\n"), "SDK inventory versus source commit")
+    files = read_json(path).get("files", [])
+    if not files:
+        raise InspectionError("SDK content pin inventory is empty.")
+    seen = set()
+    for item in files:
+        source = root / item["path"]
+        if not source.resolve().is_relative_to(root.resolve()) or item["path"] in seen:
+            raise InspectionError("SDK inventory contains an unsafe or duplicate path.")
+        seen.add(item["path"])
+        expect(file_sha256(source), item["sha256"], "inspected SDK content pin")
+    return {"sourceSha": source_sha, "inventoryPath": relative,
+            "inventorySha256": file_sha256(path), "filesVerified": len(files)}
+
+
+def inspect_provider_resources(path, config):
+    if not config["providersEnabled"]:
+        if any("PawsAdMob" in str(item) or "GoogleMobileAds" in item.name or
+               "UserMessagingPlatform" in item.name for item in path.rglob("*")):
+            raise InspectionError("Disabled rollback contains Google native SDK resources.")
+        return
+    for name in ("GoogleMobileAds", "UserMessagingPlatform"):
+        manifests = list(path.rglob(name + "Resources.bundle/PrivacyInfo.xcprivacy"))
+        if len(manifests) != 1:
+            raise InspectionError("Required Google SDK privacy resource is missing or ambiguous.")
+        read_plist(manifests[0])
+
+
+def inspect_native_integrity(archive):
+    apps = list((archive / "Products/Applications").glob("*.app"))
+    app = apps[0]
+    executable = app / read_plist(app / "Info.plist")["CFBundleExecutable"]
+    framework = app / "Frameworks/UnityFramework.framework/UnityFramework"
+    records = []
+    for binary, symbols in ((executable, archive / "dSYMs" / (app.name + ".dSYM")),
+                            (framework, archive / "dSYMs/UnityFramework.framework.dSYM")):
+        if not binary.is_file() or not symbols.is_dir():
+            raise InspectionError("Release binary or matching dSYM is missing.")
+        expect(command(["lipo", "-archs", str(binary)]).strip(), "arm64", "release binary architecture")
+        def uuids(target):
+            output = command(["dwarfdump", "--uuid", str(target)])
+            values = re.findall(r"UUID: ([0-9A-Fa-f-]{36}) \(([^)]+)\)", output)
+            if not values:
+                raise InspectionError("Missing Mach-O UUID evidence.")
+            return sorted((uuid.upper(), arch) for uuid, arch in values)
+        binary_ids = uuids(binary)
+        expect(uuids(symbols), binary_ids, "binary/dSYM UUID match")
+        records.append({"binary": binary.relative_to(archive).as_posix(),
+                        "dSYM": symbols.relative_to(archive).as_posix(), "uuids": binary_ids})
+    native_symbols = command(["nm", "-gjU", str(framework)])
+    required = ("_PawsIapRead", "_PawsIapVerifyCache", "_PawsIapPresentOfferCodeSheet",
+                "_GADUInitializeWithCallback", "_GADURequestConsentInfoUpdate", "_GADUUMPCanRequestAds")
+    lines = set(native_symbols.splitlines())
+    if not all(symbol in lines for symbol in required):
+        raise InspectionError("Real Apple IAP/Offer Code/AdMob/UMP native entry point is missing.")
+    return {"binaries": records, "requiredProviderSymbolsPresent": True}
 
 
 def inspect_archive(archive, config):
@@ -273,8 +474,8 @@ def build_receipt(root, export, archive=None):
         raise InspectionError("UnityProject/scripts build inputs differ from HEAD; commit or restore them before receipt inspection.")
     config = unity_config(root)
     expect(config["bundleIdentifier"], BUNDLE_ID, "approved production identity")
-    if not re.fullmatch(r"0\.\d+\.\d+", config["version"]):
-        raise InspectionError("Production preparation requires an approved 0.x.y app version.")
+    if not re.fullmatch(r"(?:0\.\d+\.\d+|1\.0\.0)", config["version"]):
+        raise InspectionError("Production preparation requires an approved 0.x.y or 1.0.0 app version.")
     if not re.fullmatch(r"[1-9]\d*", config["buildNumber"]):
         raise InspectionError("iOS build number must be a positive integer.")
     metadata = read_json(export / "paws-export.json")
@@ -284,7 +485,6 @@ def build_receipt(root, export, archive=None):
     expect(metadata.get("sourceSha"), sha, "export source SHA versus current checkout")
     for key in ("bundleIdentifier", "version", "buildNumber", "minimumIOS", "deviceFamily", "unityVersion"):
         expect(metadata.get(key), config[key], f"export {key}")
-    expect(metadata.get("monetizationEnabled"), False, "disabled monetization")
     expect(metadata.get("productionDefine"), "PAWS_PRODUCTION", "production compilation define")
     for flag in ("developmentBuild", "scriptDebugging", "profilerEnabled"):
         expect(metadata.get(flag, False), False, flag)
@@ -292,10 +492,12 @@ def build_receipt(root, export, archive=None):
     expect(settings.get("PRODUCT_BUNDLE_IDENTIFIER"), BUNDLE_ID, "Unity-generated Xcode bundle identifier")
     info = read_plist(export / "Info.plist")
     inspect_identity(info, config, settings)
-    exclusion = inspect_il2cpp(export)
+    monetization = inspect_monetization(metadata, export, info)
+    inspect_provider_resources(export, monetization)
+    exclusion = inspect_il2cpp(export, monetization["profile"])
     packages = read_json(root / "UnityProject/Packages/packages-lock.json").get("dependencies", {})
     receipt = {"schema": "paws-ios-release-receipt-v1", "sourceSha": sha, "configuration": config,
-               "enabledConfiguration": metadata, "stage": "export-validated",
+               "enabledConfiguration": metadata, "monetization": monetization, "stage": "export-validated",
                "unityVersion": config["unityVersion"], "xcodeVersion": command(["xcodebuild", "-version"]).strip(),
                "exportInfoPlist": info, "exportInventory": inventory(export),
                "exportLinkedSDKReferences": sorted({str(item.get("path", ""))
@@ -306,8 +508,17 @@ def build_receipt(root, export, archive=None):
                                              for item in project.get("objects", {}).values() if item.get("isa") == "PBXProject"],
                "unityPackages": packages, "diagnosticExclusion": exclusion,
                "physicalIPhoneReview": "pending-human", "distributionApproval": "pending-owner"}
+    if monetization["providersEnabled"]:
+        receipt["sdkContentPins"] = inspect_sdk_pins(root, sha)
     if archive:
         receipt["archive"] = inspect_archive(archive, config)
+        inspect_provider_resources(archive, monetization)
+        if monetization["providersEnabled"]:
+            archived_info = receipt["archive"]["infoPlist"]
+            for key in ("GADApplicationIdentifier", "GADDisableAdInspector", "NSUserTrackingUsageDescription"):
+                expect(archived_info.get(key), info.get(key), "archived native advertising/privacy configuration")
+            receipt["archive"]["nativeIntegrity"] = inspect_native_integrity(archive)
+            receipt["archive"]["runtimeResource"] = inspect_runtime_resource(archive, metadata)
         receipt["stage"] = receipt["archive"]["stage"]
     return receipt
 

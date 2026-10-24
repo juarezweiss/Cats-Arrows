@@ -1,4 +1,4 @@
-#if UNITY_EDITOR || PAWS_ADMOB_REVIEW
+#if UNITY_EDITOR || PAWS_ADMOB_REVIEW || PAWS_MONETIZATION
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +9,46 @@ using UnityEngine;
 
 namespace CatsAndArrows.Advertising.Google
 {
-    // #66: AdMob only. This binding cannot accept live IDs or run in a release player.
+    // #66/#67: AdMob only; production IDs are injected by the release build.
     public sealed class GoogleAdsBridge : IGoogleAdsBridge
     {
+        private readonly string interstitialId, rewardedId;
+#if UNITY_EDITOR || PAWS_ADMOB_REVIEW || PAWS_MONETIZATION_VALIDATION
         public const string TestAppId = "ca-app-pub-3940256099942544~1458002511";
         public const string TestInterstitial = "ca-app-pub-3940256099942544/4411468910";
         public const string TestRewarded = "ca-app-pub-3940256099942544/1712485313";
+#endif
         private readonly ConsentRequestParameters consent;
+        public GoogleAdsBridge(string interstitialId, string rewardedId)
+        {
+            if (Debug.isDebugBuild || Application.platform != RuntimePlatform.IPhonePlayer)
+                throw new InvalidOperationException("Production AdMob requires a non-development iOS player.");
+            this.interstitialId = interstitialId;
+            this.rewardedId = rewardedId;
+            consent = new ConsentRequestParameters();
+        }
+#if UNITY_EDITOR || PAWS_MONETIZATION_VALIDATION
+        public GoogleAdsBridge(string interstitialId, string rewardedId, string geography, IEnumerable<string> testDevices)
+            : this(interstitialId, rewardedId)
+        {
+            var devices = new List<string>(testDevices ?? Array.Empty<string>());
+            if (geography != "Disabled" || devices.Count > 0)
+            {
+                var debug = geography == "EEA" ? DebugGeography.EEA : geography == "RegulatedUSState" ?
+                    DebugGeography.RegulatedUSState : geography == "Other" ? DebugGeography.Other : DebugGeography.Disabled;
+                consent = new ConsentRequestParameters
+                {
+                    ConsentDebugSettings = new ConsentDebugSettings { DebugGeography = debug, TestDeviceHashedIds = devices }
+                };
+            }
+        }
+#endif
+#if UNITY_EDITOR || PAWS_ADMOB_REVIEW
         public GoogleAdsBridge(DebugGeography geography, IEnumerable<string> testDevices)
         {
             if (!Debug.isDebugBuild || Application.platform != RuntimePlatform.IPhonePlayer)
                 throw new InvalidOperationException("AdMob binding requires the explicit iOS development review build.");
+            interstitialId = TestInterstitial; rewardedId = TestRewarded;
             consent = new ConsentRequestParameters
             {
                 ConsentDebugSettings = new ConsentDebugSettings
@@ -29,6 +58,7 @@ namespace CatsAndArrows.Advertising.Google
                 }
             };
         }
+#endif
         public bool CanRequestAds => ConsentInformation.CanRequestAds();
         public bool PrivacyOptionsRequired => ConsentInformation.PrivacyOptionsRequirementStatus == PrivacyOptionsRequirementStatus.Required;
         public void UpdateConsent(Action<bool> complete) => ConsentInformation.Update(consent, error => complete(error == null));
@@ -62,9 +92,9 @@ namespace CatsAndArrows.Advertising.Google
             var request = new AdRequest();
             request.Extras.Add("npa", "1");
             if (placement == AdPlacement.Progression)
-                InterstitialAd.Load(TestInterstitial, request, (ad, error) => complete(error == null && ad != null ? new GoogleAd(ad) : null));
+                InterstitialAd.Load(interstitialId, request, (ad, error) => complete(error == null && ad != null ? new GoogleAd(ad) : null));
             else if (placement == AdPlacement.Hint)
-                RewardedAd.Load(TestRewarded, request, (ad, error) => complete(error == null && ad != null ? new GoogleAd(ad) : null));
+                RewardedAd.Load(rewardedId, request, (ad, error) => complete(error == null && ad != null ? new GoogleAd(ad) : null));
             else complete(null);
         }
         private sealed class GoogleAd : IGoogleAd

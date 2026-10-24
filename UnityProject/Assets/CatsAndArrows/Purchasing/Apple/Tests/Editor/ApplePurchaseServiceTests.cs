@@ -382,6 +382,43 @@ namespace CatsAndArrows.Purchasing.Apple.Tests
                 Assert.That(client.Confirms, Is.EqualTo(1)); // No second confirmation of an already finished order.
             }
         }
+        // #67: an SDK-replayed/previously finished non-consumable must remain
+        // recoverable from current entitlement even when no PendingOrder is delivered.
+        // This models the callback boundary; it does not prove native SDK replay safety.
+        [Test] public void FinishedPurchaseWithoutPaidCallbackRestoresAndSurvivesRestartWithoutRebuy()
+        {
+            var store = new MemoryMonetizationStateStore();
+            using (var coordinator = Coordinator(store))
+            {
+                coordinator.RestorePurchases();
+                Own(); evidence.Proof.confirmed = new[] { "123" };
+                client.RestoreComplete(true); client.EmitInventory();
+                Assert.That(coordinator.IsOwned, Is.True);
+                Assert.That(coordinator.CanPurchase, Is.False);
+                coordinator.PurchaseRemoveAds();
+                Assert.That(client.Buys, Is.Zero);
+                Assert.That(client.Confirms, Is.Zero, "already-finished entitlement needs no new finish");
+                Assert.That(store.TryLoad(out var saved), Is.True);
+                Assert.That(saved.Access, Is.EqualTo(AccessState.Owned));
+            }
+            service.Dispose(); service = CreateService(); client.FetchFailure = true;
+            using (var restarted = Coordinator(store))
+            {
+                Assert.That(restarted.IsOwned, Is.True);
+                restarted.PurchaseRemoveAds();
+                Assert.That(client.Buys, Is.Zero);
+            }
+        }
+
+        [Test] public void FinishedHistoryWithoutCurrentEntitlementCannotGrantThroughRestore()
+        {
+            using var coordinator = Coordinator();
+            coordinator.RestorePurchases();
+            evidence.Proof = new AppleEvidence { state = 3, complete = true, confirmed = new[] { "123" } };
+            client.RestoreComplete(true); client.EmitInventory();
+            Assert.That(coordinator.IsOwned, Is.False);
+            Assert.That(client.Confirms, Is.Zero);
+        }
         [Test] public void DuplicatePaidAndConfirmedCallbacksAreIdempotent()
         {
             using (var coordinator = Coordinator())
