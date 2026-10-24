@@ -1,0 +1,60 @@
+{
+  "schema": "paws-release-decisions-v1",
+  "date": "2026-10-24",
+  "issue": 67,
+  "developBaseSha": "3a44192697b8f1c416cc49afabeb839c5a0c3dc7",
+  "releasePlan": "Paws 1.0 with Apple IAP, Offer Codes, AdMob and UMP enabled",
+  "acceptedKnownIssue": {
+    "issue": 82,
+    "behavior": "An unresolved Ask to Buy request may leave the Remove Ads button available again after restarting the app.",
+    "blocking": false,
+    "keepIssueOpen": true,
+    "rootCauseProven": false,
+    "repeatRequestsUniversallyHarmless": "not established",
+    "scope": "Only this pending-button-after-restart behavior is accepted. No purchase-safety requirement is waived."
+  },
+  "mandatoryPurchaseSafety": [
+    "Only verified Apple current entitlement grants Remove Ads",
+    "Normal completed priced-product Apple Sandbox purchase grants ownership",
+    "Ownership survives restart and successful Restore",
+    "Already-owned users are not charged for the same non-consumable again",
+    "Finalization and recovery do not lose a paid entitlement",
+    "Deferred, failed and cancelled transactions never fabricate ownership",
+    "Reliable Restore Purchases recovery remains available"
+  ],
+  "approvedProductionAdPolicy": {
+    "nonpersonalizedOnly": true,
+    "attPrompt": false,
+    "crossAppTracking": false,
+    "publisherFirstPartyId": false,
+    "sdkCrashReporting": false,
+    "maximumAdContentRating": "G",
+    "additionalAnalyticsAttributionTelemetrySdks": false,
+    "audience": "General Audience; adults and teenagers may play",
+    "childDirected": false,
+    "appleKidsCategory": false,
+    "underAgeRequirement": "Apply appropriate protections; do not classify everyone as children or assume everyone is 18+."
+  },
+  "productionResourceOwnerReport": "Owner has not confirmed whether live AdMob identifiers, published UMP messages, or public privacy/support URLs exist; local inspection authorized.",
+  "localResourceAudit": {
+    "liveAdMobConfigFound": false,
+    "rootEnvironmentFilesFound": false,
+    "configuredAdInputEnvironmentVariablesFound": false,
+    "publicPawsPrivacySupportUrlsFound": false,
+    "retainedTestArtifacts": [
+      "Builds/Issue66/f3539da-registered-eea-export/Info.plist",
+      "Builds/Issue66/f3539da-registered-eea-device/Paws.app/Info.plist"
+    ],
+    "retainedArtifactIdentifierScope": "Google sample app identifiers only; not production inputs",
+    "scopeLimit": "Repository and inspected ignored local configuration only; console publication/account readiness cannot be inferred. No identifier, device hash or credential values included."
+  },
+  "prohibitedWithoutSeparateOwnerAuthorization": [
+    "main merge",
+    "App Store or TestFlight upload/submission",
+    "live ad activation",
+    "production account or console changes",
+    "real-money purchases",
+    "release"
+  ],
+  "physicalValidation": "Pending human report on exact candidate; no automated phone interaction. Sandbox priced-product purchases and Xcode simulated approval/decline are separate evidence."
+}

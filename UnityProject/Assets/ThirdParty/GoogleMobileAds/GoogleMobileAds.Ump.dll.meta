@@ -7,7 +7,7 @@ PluginImporter:
   isExplicitlyReferenced: 1
   validateReferences: 1
   defineConstraints:
-  - UNITY_EDITOR || PAWS_ADMOB_REVIEW
+  - UNITY_EDITOR || PAWS_ADMOB_REVIEW || PAWS_MONETIZATION
   platformData:
   - first:
       Any:

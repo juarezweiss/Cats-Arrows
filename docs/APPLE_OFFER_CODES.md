@@ -1,5 +1,11 @@
 # Apple Offer Codes — #65
 
+Current 2026-10-24 authority: [monetized Paws 1.0 criteria](RELEASE_RC_1_0.md)
+supersede the dated blanket #82-blocker/disabled-only statements below. Only the
+pending-button-after-restart limitation is accepted; verified entitlement, normal
+paid purchase, Restore and finalization safety remain mandatory. #82 stays open
+for post-release resolution. Existing owner results keep their recorded scope.
+
 Authority: [#65](https://github.com/juarezweiss/Paws/issues/65),
 [#64](https://github.com/juarezweiss/Paws/issues/64),
 [ADR 0002](decisions/0002-provider-agnostic-monetization.md).

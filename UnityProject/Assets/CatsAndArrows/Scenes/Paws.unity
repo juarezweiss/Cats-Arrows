@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 850983741}
   - component: {fileID: 850983740}
   - component: {fileID: 850983739}
+  - component: {fileID: 850983742}
   m_Layer: 0
   m_Name: Paws
   m_TagString: Untagged
@@ -276,3 +277,15 @@ SceneRoots:
   m_Roots:
   - {fileID: 1527364791}
   - {fileID: 850983741}
+--- !u!114 &850983742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850983738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 671222d90a06404c9e2d6ef68e420756, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: CatsAndArrows.Production::CatsAndArrows.Production.ProductionMonetizationRuntime

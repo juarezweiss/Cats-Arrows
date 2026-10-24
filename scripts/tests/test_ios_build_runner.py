@@ -12,6 +12,8 @@ class IOSBuildRunnerTests(unittest.TestCase):
     def setUp(self):
         runners.UnityRunnerTests.setUp(self)
         self.env['UNITY_EDITOR'] = str(self.editor)
+        self.env['PAWS_MONETIZATION_PROFILE'] = 'disabled'
+        self.env.pop('PAWS_MONETIZATION_CONFIG', None)
         for key in ('PAWS_IOS_TEAM_ID', 'PAWS_IOS_SIGNING_IDENTITY', 'PAWS_IOS_PROFILE'):
             self.env.pop(key, None)
         self.editor.write_text('''#!/usr/bin/env python3
@@ -19,6 +21,11 @@ import os,sys,json
 from pathlib import Path
 args=sys.argv[1:]
 Path(os.environ['FIXTURE_ARGV']).write_text(json.dumps(args))
+Path(os.environ['FIXTURE_ARGV']+'.profile').write_text(os.environ['PAWS_MONETIZATION_PROFILE'])
+project=Path(args[args.index('-projectPath')+1])
+for relative in ['SceneTemplateSettings.json','Packages/com.unity.services.core/Settings.json']:
+ path=project/'ProjectSettings'/relative;path.parent.mkdir(parents=True,exist_ok=True)
+ if not path.exists(): path.write_text(os.environ.get('FIXTURE_CORE_CONTENT','') if relative.startswith('Packages') else '{}')
 Path(os.environ['PAWS_IOS_EXPORT']).mkdir()
 sys.exit(int(os.environ.get('FIXTURE_EXIT','0')))
 ''')
@@ -64,6 +71,60 @@ Path(args[args.index('-archivePath')+1]).mkdir()
         result = self.run_build('export', self.export)
         self.assertEqual(result.returncode, 7)
         self.assertEqual(list((self.repo / '.unity-results').rglob('*receipt.json')), [])
+
+    def test_production_default_fails_before_export_without_local_configuration(self):
+        self.env.pop('PAWS_MONETIZATION_PROFILE')
+        result = self.run_build('export', self.export)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('PAWS_MONETIZATION_CONFIG', result.stderr)
+        self.assertFalse(self.export.exists())
+
+    def test_profile_is_forwarded_without_reading_configuration_into_console(self):
+        for profile in ('validation', 'production'):
+            with self.subTest(profile=profile):
+                self.env['PAWS_MONETIZATION_PROFILE'] = profile
+                if profile == 'production':
+                    config = self.base / 'private-config.json'
+                    config.write_text('{"fixture":"DO-NOT-LOG"}')
+                    self.env['PAWS_MONETIZATION_CONFIG'] = str(config)
+                output = self.base / ('export-' + profile)
+                result = self.run_build('export', output)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(Path(self.env['FIXTURE_ARGV']+'.profile').read_text(), profile)
+                self.assertNotIn('DO-NOT-LOG', result.stdout + result.stderr)
+
+    def test_unknown_profile_is_rejected(self):
+        self.env['PAWS_MONETIZATION_PROFILE'] = 'simulated'
+        result = self.run_build('export', self.export)
+        self.assertEqual(result.returncode, 2)
+        self.assertFalse(self.export.exists())
+
+    def test_new_editor_defaults_are_removed_after_success_and_failure(self):
+        for exit_code in (0, 7):
+            with self.subTest(exit_code=exit_code):
+                self.env['FIXTURE_EXIT'] = str(exit_code)
+                result = self.run_build('export', self.base / ('export-' + str(exit_code)))
+                self.assertEqual(result.returncode, exit_code, result.stderr)
+                settings = self.repo / 'UnityProject/ProjectSettings'
+                self.assertFalse((settings / 'SceneTemplateSettings.json').exists())
+                self.assertFalse((settings / 'Packages/com.unity.services.core/Settings.json').exists())
+
+    def test_existing_owner_defaults_and_new_nonempty_core_configuration_are_preserved(self):
+        settings = self.repo / 'UnityProject/ProjectSettings'
+        template = settings / 'SceneTemplateSettings.json'
+        template.write_text('{"owner":true}')
+        core = settings / 'Packages/com.unity.services.core/Settings.json'
+        core.parent.mkdir(parents=True)
+        core.write_text('{"owner":true}')
+        result = self.run_build('export', self.export)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(template.read_text(), '{"owner":true}')
+        self.assertEqual(core.read_text(), '{"owner":true}')
+        core.unlink()
+        self.env['FIXTURE_CORE_CONTENT'] = '{"generated-nonempty":true}'
+        result = self.run_build('export', self.base / 'new-core-export')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(core.read_text(), '{"generated-nonempty":true}')
 
     def test_unsigned_archive_is_release_without_credentials_or_identifier_overrides(self):
         self.export.mkdir()

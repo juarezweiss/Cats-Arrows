@@ -2,7 +2,9 @@
   "name": "CatsAndArrows.ReleaseTests",
   "references": [
     "CatsAndArrows.UI.Editor",
-    "CatsAndArrows.UI"
+    "CatsAndArrows.UI",
+    "CatsAndArrows.Production",
+    "CatsAndArrows.Monetization"
   ],
   "includePlatforms": [
     "Editor"

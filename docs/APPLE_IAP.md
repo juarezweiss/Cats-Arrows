@@ -1,5 +1,22 @@
 # Apple Remove All Ads adapter — issue #64
 
+## Current release decision — 2026-10-24
+
+Paws 1.0 preparation in #67 enables this real adapter alongside Offer Codes and
+AdMob/UMP. Only #82's pending purchase button becoming available again after restart
+is accepted as non-blocking; #82 remains open for post-release correction. No
+Apple/Unity root cause or universally harmless repeat request is established.
+All verified-entitlement, paid-grant, persistence/Restore, no duplicate owned
+charge, finalization and no-false-grant requirements remain release gates.
+[Current criteria and environment-specific human checklist](RELEASE_RC_1_0.md)
+supersede the historical blanket blocker/production-disabled statements below;
+immutable receipts and previous failed/inconclusive observations are unchanged.
+
+The production verifier accepts verified Apple production and Sandbox current
+entitlements for App Review/TestFlight. Local Xcode evidence remains restricted to
+the validation/review namespace. Neither PendingOrder, unfinished/history alone
+nor a decoded JWS establishes ownership. SKU and pinned SDKs remain unchanged.
+
 Authority: [#64](https://github.com/juarezweiss/Paws/issues/64), [#29](https://github.com/juarezweiss/Paws/issues/29),
 [#30](https://github.com/juarezweiss/Paws/issues/30), [ADR 0002](decisions/0002-provider-agnostic-monetization.md).
 Dependency #63 is integrated in develop (`10695b018c71bad7bb07b6346b58f99f77d754ee`).

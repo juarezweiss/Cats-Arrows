@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Issue #63: local export/archive preparation only; never uploads or edits identifiers.
+# #63/#67: immutable local export/archive preparation; never uploads or activates ads.
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/unity.sh"
 mode="${1:-}"
@@ -7,10 +7,34 @@ case "$mode" in
   export)
     output="${2:-}"
     [[ "$output" == /* && ! -e "$output" ]] || { echo 'Usage: build-ios.sh export /absolute/fresh-export' >&2; exit 2; }
+    profile="${PAWS_MONETIZATION_PROFILE:-production}"
+    case "$profile" in
+      production)
+        [[ "${PAWS_MONETIZATION_CONFIG:-}" == /* && -f "${PAWS_MONETIZATION_CONFIG:-}" ]] || {
+          echo 'Production export requires PAWS_MONETIZATION_CONFIG naming an absolute local JSON configuration.' >&2; exit 2;
+        } ;;
+      validation|disabled) ;;
+      *) echo 'PAWS_MONETIZATION_PROFILE must be production, validation or disabled.' >&2; exit 2 ;;
+    esac
+    # Unity may create editor defaults. Only remove files absent at invocation;
+    # retain existing owner configuration and any nonempty Services Core file.
+    generated_defaults=("")
+    for relative in ProjectSettings/SceneTemplateSettings.json ProjectSettings/Packages/com.unity.services.core/Settings.json; do
+      [[ -e "$UNITY_PROJECT_PATH/$relative" ]] || generated_defaults+=("$UNITY_PROJECT_PATH/$relative")
+    done
+    cleanup_defaults() {
+      for path in "${generated_defaults[@]}"; do
+        [[ -n "$path" ]] || continue
+        if [[ "$path" == */com.unity.services.core/Settings.json && -s "$path" ]]; then continue; fi
+        rm -f -- "$path"
+      done
+    }
+    trap cleanup_defaults EXIT
     unity_prepare_run ios-export
-    PAWS_IOS_EXPORT="$output" "$UNITY_EXECUTABLE" -batchmode -nographics -quit \
+    PAWS_IOS_EXPORT="$output" PAWS_MONETIZATION_PROFILE="$profile" "$UNITY_EXECUTABLE" -batchmode -nographics -quit \
       -projectPath "$UNITY_PROJECT_PATH" -buildTarget iOS \
       -executeMethod CatsAndArrows.UI.Editor.ProductionIOSBuild.Build -logFile "$UNITY_LOG_FILE"
+    cleanup_defaults
     python3 "$UNITY_REPO_ROOT/scripts/ios-release.py" --export "$output" --output "$UNITY_RUN_DIR/export-receipt.json"
     ;;
   archive-unsigned|archive-signed)

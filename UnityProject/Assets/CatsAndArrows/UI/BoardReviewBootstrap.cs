@@ -45,7 +45,8 @@ namespace CatsAndArrows.UI
             var menuCapture = Argument("--menu-capture=");
             var settingsCapture = Argument("--settings-capture=");
             var languageCapture = Argument("--language-capture=");
-            var settingsReview = !string.IsNullOrEmpty(settingsCapture) || !string.IsNullOrEmpty(languageCapture);
+            var audienceCapture = Argument("--audience-capture=");
+            var settingsReview = !string.IsNullOrEmpty(settingsCapture) || !string.IsNullOrEmpty(languageCapture) || !string.IsNullOrEmpty(audienceCapture);
             var tutorialCheck = Argument("--tutorial-check=") == "1";
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             var monetizationCheck = Argument("--monetization-check=") == "1";
@@ -114,7 +115,8 @@ namespace CatsAndArrows.UI
                     markTutorialSeen: isolatedReview ? (Action)(() => reviewSeen = true) : null,
                     difficultyHistory: isolatedReview ? new MemoryDifficultyHistoryStore() : null,
                     idleClock: hintIdleCheck ? (Func<double>)(() => holdReviewTime) : null, monetization: monetization,
-                    completionClock: completionCheck ? (Func<double>)(() => holdReviewTime) : null, adPrivacy: adPrivacy);
+                    completionClock: completionCheck ? (Func<double>)(() => holdReviewTime) : null, adPrivacy: adPrivacy,
+                    audience: !string.IsNullOrEmpty(audienceCapture) ? new CaptureAudiencePreference() : null);
                 root.Add(shell);
                 shell.SetApplicationFocus(applicationFocused);
                 shell.SetApplicationPaused(applicationPaused);
@@ -135,7 +137,8 @@ namespace CatsAndArrows.UI
             {
                 shell.ShowSettings();
                 if (!string.IsNullOrEmpty(languageCapture)) shell.ShowLanguageSelector();
-                StartCoroutine(Capture(languageCapture ?? settingsCapture));
+                if (!string.IsNullOrEmpty(audienceCapture)) shell.ShowAudienceSelector();
+                StartCoroutine(Capture(audienceCapture ?? languageCapture ?? settingsCapture));
             }
             else if (!string.IsNullOrEmpty(menuCapture)) StartCoroutine(Capture(menuCapture));
         }
@@ -193,6 +196,12 @@ namespace CatsAndArrows.UI
             yield return new WaitForSecondsRealtime(1);
             if (File.Exists(path)) { Debug.Log("BOARD_REVIEW_CAPTURE " + path); Application.Quit(0); }
             else { Debug.LogError("Board review screenshot was not written."); Application.Quit(1); }
+        }
+        private sealed class CaptureAudiencePreference : IAudiencePreference
+        {
+            public AudienceBand Current { get; private set; } = AudienceBand.Unknown;
+            public event Action Changed;
+            public void Select(AudienceBand band) { Current = band; Changed?.Invoke(); }
         }
         private static string Argument(string prefix)
         {

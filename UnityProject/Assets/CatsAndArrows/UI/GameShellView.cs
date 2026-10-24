@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
 namespace CatsAndArrows.UI
 {
     // Sends gameplay intents and presents their results. No puzzle truth is evaluated here.
-    public sealed class GameShellView : VisualElement
+    public sealed partial class GameShellView : VisualElement
     {
         private readonly VisualElement safeFrame = new VisualElement();
         private readonly VisualElement menu = new VisualElement();
@@ -59,11 +59,15 @@ namespace CatsAndArrows.UI
         public int NewGameRequestId { get; private set; }
 
         public GameShellView(int initialSeed = 14, string locale = null, EasyGameLoop loop = null, bool useInlineHints = true,
-            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null, MonetizationCoordinator monetization = null, Func<double> completionClock = null, IAdPrivacyService adPrivacy = null)
+            bool enableTutorial = true, Func<bool> tutorialSeen = null, Action markTutorialSeen = null, IDifficultyHistoryStore difficultyHistory = null, Func<double> idleClock = null, MonetizationCoordinator monetization = null, Func<double> completionClock = null, IAdPrivacyService adPrivacy = null, IAudiencePreference audience = null, string privacyPolicyUrl = null, string supportUrl = null, Action<string> openExternalUrl = null)
         {
             name = "game-shell";
             this.monetization = monetization;
             this.adPrivacy = adPrivacy;
+            this.audience = audience;
+            this.privacyPolicyUrl = privacyPolicyUrl; this.supportUrl = supportUrl;
+            this.openExternalUrl = openExternalUrl ?? Application.OpenURL;
+            if (audience != null) audience.Changed += OnAudienceChanged;
             if (adPrivacy != null) adPrivacy.Changed += OnAdPrivacyChanged;
             var clock = idleClock ?? (() => Time.realtimeSinceStartupAsDouble);
             hintAttention = new HintIdleAttention(clock);
@@ -102,6 +106,8 @@ namespace CatsAndArrows.UI
                 if (evt.keyCode != KeyCode.Escape || loading || CommercialBusy) return;
                 if (Modal == "notification")
                 { DismissNotification(); evt.StopPropagation(); }
+                else if (Modal == "audience")
+                { CloseAudienceSelector(); evt.StopPropagation(); }
                 else if (Modal == "language")
                 { ShowSettings(); menu.Q<Button>("settings-language")?.Focus(); evt.StopPropagation(); }
                 else if (Screen == "settings")
@@ -333,9 +339,14 @@ namespace CatsAndArrows.UI
             AddSettingsRow(list, "settings-language", "game.language", ShowLanguageSelector);
             var tutorial = AddSettingsRow(list, "settings-tutorial", "tutorial.title", StartTutorial);
             tutorial.SetEnabled(enableTutorial);
+            if (audience != null) AddSettingsRow(list, "settings-age-range", "audience.title", () => ShowAudienceSelector());
             AddMonetizationSettings(list);
             if (adPrivacy?.PrivacyOptionsRequired == true)
                 AddSettingsRow(list, "settings-privacy-options", "privacy.options", ShowPrivacyOptions);
+            if (!string.IsNullOrEmpty(privacyPolicyUrl))
+                AddSettingsRow(list, "settings-privacy-policy", "privacy.policy", OpenPrivacyPolicy);
+            if (!string.IsNullOrEmpty(supportUrl))
+                AddSettingsRow(list, "settings-support", "privacy.support", OpenSupport);
         }
         private Button AddSettingsRow(VisualElement parent, string name, string key, Action action)
         {
@@ -527,7 +538,7 @@ namespace CatsAndArrows.UI
             controls.Clear();
             if (Tutorial != null) { BuildTutorialControls(); return; }
             var first = ActionRow(); var second = ActionRow();
-            hintButton = MakeButton("action-hint", monetization?.Enabled == true && !monetization.IsOwned ? "monetization.hint-ads" : "game.hint", RequestHint);
+            hintButton = MakeButton("action-hint", monetization?.Enabled == true && !monetization.IsOwned && (audience == null || audience.Current == AudienceBand.Adult) ? "monetization.hint-ads" : "game.hint", RequestHint);
             hintButton.style.transitionProperty = new List<StylePropertyName> { "background-color", "color" };
             clearButton = MakeButton("action-clear", "game.clear", ClearBoard);
             hintButton.SetEnabled(!ActiveSession.IsCompleted && !CommercialBusy); clearButton.SetEnabled(!ActiveSession.IsCompleted && !CommercialBusy);
@@ -800,6 +811,7 @@ namespace CatsAndArrows.UI
             if (disposed) return;
             disposed = true;
             if (adPrivacy != null) adPrivacy.Changed -= OnAdPrivacyChanged;
+            if (audience != null) audience.Changed -= OnAudienceChanged;
             ResetNotifications();
             if (monetization == null) return;
             monetization.Changed -= OnMonetizationChanged;

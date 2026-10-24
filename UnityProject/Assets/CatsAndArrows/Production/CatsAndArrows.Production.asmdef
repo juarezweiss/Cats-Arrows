@@ -1,0 +1,15 @@
+{
+  "name": "CatsAndArrows.Production",
+  "references": [
+    "CatsAndArrows.UI",
+    "CatsAndArrows.Monetization",
+    "CatsAndArrows.Purchasing.Apple",
+    "CatsAndArrows.Advertising",
+    "CatsAndArrows.Advertising.Google"
+  ],
+  "includePlatforms": [
+    "Editor",
+    "iOS"
+  ],
+  "autoReferenced": true
+}
